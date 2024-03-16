@@ -66,6 +66,7 @@ if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
 
 	require_once X2B_PATH . 'includes/admin/admin.php';
     require_once X2B_PATH . 'includes/modules/board/board.admin.view.php';
+	require_once X2B_PATH . 'includes/modules/board/board.admin.controller.php';
 	// require_once X2B_PATH . 'includes/admin/settings-page.php';
 	// require_once X2B_PATH . 'includes/admin/save-settings.php';
 	// require_once X2B_PATH . 'includes/admin/help-tab.php';
@@ -90,8 +91,8 @@ if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
  *
  * @var array
  */
-global $x2b_settings;
-$x2b_settings = x2b_get_settings();
+// global $x2b_settings;
+// $x2b_settings = x2b_get_settings();
 
 
 /**
@@ -102,17 +103,17 @@ $x2b_settings = x2b_get_settings();
  * @since  2.6.0
  * @return array X2 board settings
  */
-function x2b_get_settings() {
+// function x2b_get_settings() {
 
-	$settings = get_option( 'x2b_settings' );
+// 	$settings = get_option( 'x2b_settings' );
 
-	/**
-	 * Settings array
-	 *
-	 * Retrieves all plugin settings
-	 *
-	 * @since 2.0.0
-	 * @param array $settings Settings array
-	 */
-	return apply_filters( 'x2b_get_settings', $settings );
-}
+// 	/**
+// 	 * Settings array
+// 	 *
+// 	 * Retrieves all plugin settings
+// 	 *
+// 	 * @since 2.0.0
+// 	 * @param array $settings Settings array
+// 	 */
+// 	return apply_filters( 'x2b_get_settings', $settings );
+// }

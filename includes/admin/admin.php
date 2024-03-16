@@ -2,19 +2,21 @@
 /**
  * The admin-specific functionality of the plugin.
  *
- * @link  https://webberzone.com
+ * @link  https://singleview.co.kr
  * @since 2.6.0
  *
- * @package    Contextual Related Posts
+ * @package    x2board
  * @subpackage Admin
  */
+
+namespace X2board\Includes\Admin;
 
  if ( !defined( 'ABSPATH' ) ) {
     exit;  // Exit if accessed directly.
 }
 
 /*  Plugins Activation Hook */
-function x2b_activate() {
+function activate() {
 	global $wpdb;
 	
 	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
@@ -30,25 +32,19 @@ function x2b_activate() {
 	`wp_page_id` bigint(20) unsigned NOT NULL,
 	`board_name` varchar(127) NOT NULL,
 	`create_date` datetime NOT NULL,
-	`created` char(14) NOT NULL,
 	PRIMARY KEY (`board_id`)
 	) {$charset_collate};");
 }
 
-register_activation_hook( X2B__FILE__, 'x2b_activate' );
+register_activation_hook( X2B__FILE__, 'X2board\Includes\Admin\activate' );
 
-/* All Plugins Loaded Hook */
-function x2b_loaded_action() {
-// error_log(print_r('plugins_loaded_action', true));
+/* Plugins Loaded Hook */
+function plugin_loaded() {
+// error_log(print_r('x2b_plugin_loaded', true));
 	add_option('x2b_version', X2B_VERSION, null, 'no');
-	// 관리자에게 manage_x2board 권한 추가
-	$admin_role = get_role('administrator');
-	if(!$admin_role->has_cap('manage_x2board')){
-		$admin_role->add_cap('manage_x2board', true);
-	}
 }
 
-add_action( 'plugins_loaded', 'x2b_loaded_action' );
+add_action( 'plugins_loaded', 'X2board\Includes\Admin\plugin_loaded' );
 
 /**
  * Creates the admin submenu pages under the Downloads menu and assigns their
@@ -59,7 +55,7 @@ add_action( 'plugins_loaded', 'x2b_loaded_action' );
  * @global $x2b_settings_page, $x2b_settings_tools
  * @return void
  */
-function x2b_add_admin_pages_links() {
+function add_admin_pages_links() {
 
 	// $crp_settings_page = add_options_page(
 	// 	esc_html__( 'Contextual Related Posts', 'contextual-related-posts' ),
@@ -80,30 +76,60 @@ function x2b_add_admin_pages_links() {
 	// add_action( "load-$crp_settings_tools", 'crp_settings_help' );
 	global $_wp_last_object_menu;
 	$_wp_last_object_menu++;
-	add_menu_page(X2B_PAGE_TITLE, 'X2Board', 'manage_x2board', 'x2b_admin', 'disp_admin_idx', 'dashicons-admin-post', $_wp_last_object_menu);
-	add_submenu_page('x2b_admin', X2B_PAGE_TITLE, __('대시보드', 'x2board'), 'manage_x2board', 'x2b_disp_admin_idx', 'disp_admin_idx' );
-	add_submenu_page('x2b_admin', X2B_PAGE_TITLE, __('게시판 목록', 'x2board'), 'manage_x2board', 'x2b_disp_admin_boards', 'disp_admin_boards' );
-	add_submenu_page('x2b_admin', X2B_PAGE_TITLE, __('게시판 생성', 'x2board'), 'manage_x2board', 'x2b_disp_admin_insert_board', array( 'X2board\Includes\Admin', 'disp_admin_insert_board' ) );
+	// visible admin page
+	add_menu_page(X2B_PAGE_TITLE, 'X2Board', 'manage_x2board', 'x2b_disp_idx', 'X2board\Includes\Admin\disp_admin_board', 'dashicons-admin-post', $_wp_last_object_menu);
+	add_submenu_page('x2b_disp_idx', X2B_PAGE_TITLE, __('대시보드', 'x2board'), 'manage_x2board', 'x2b_disp_idx', 'X2board\Includes\Admin\disp_admin_board' );
+	add_submenu_page('x2b_disp_idx', X2B_PAGE_TITLE, __('게시판 목록', 'x2board'), 'manage_x2board', 'x2b_disp_board_list', 'X2board\Includes\Admin\disp_admin_board' );
+	add_submenu_page('x2b_disp_idx', X2B_PAGE_TITLE, __('게시판 생성', 'x2board'), 'manage_x2board', 'x2b_disp_board_insert', 'X2board\Includes\Admin\disp_admin_board' );
+	// hidden admin page
+	add_submenu_page(null, X2B_PAGE_TITLE, __('게시판 관리', 'x2board'), 'manage_x2board', 'x2b_disp_board_update', 'X2board\Includes\Admin\disp_admin_board' );
 }
-add_action( 'admin_menu', 'x2b_add_admin_pages_links', 99 );
+add_action( 'admin_menu', 'X2board\Includes\Admin\add_admin_pages_links', 99 );
+
+
+/* Plugins Loaded Hook */
+function admin_init() {
+// error_log(print_r('x2b_admin_init', true));
+	// 관리자에게 manage_x2board 권한 추가
+	$admin_role = get_role('administrator');
+	if(!$admin_role->has_cap('manage_x2board')){
+		$admin_role->add_cap('manage_x2board', true);
+	}
+	add_action('admin_post_x2b_proc_insert_board', 'X2board\Includes\Admin\proc_admin_board' );
+}
+	
+add_action( 'admin_init', 'X2board\Includes\Admin\admin_init' );
+
 
 /**
- * Admin Index Page.
+ * Trigger Board Admin View.
  *
  * @return void
  */
-function disp_admin_idx() {  
-	require_once X2B_PATH . 'includes/admin/tpl/index.php';
+function disp_admin_board() {
+	$o_module = new \X2board\Includes\Modules\Board\boardAdminView();
+	$calling_method = isset($_REQUEST['page']) ? str_replace( 'x2b_', '', sanitize_text_field($_REQUEST['page']) ) : '';
+	if(!method_exists( $o_module, $calling_method )) {
+		wp_die(__('requested module does not have '.$calling_method.'()', 'x2board'));
+	}
+	$o_module->$calling_method();
+	unset($o_module);
 }
 
+
 /**
- * 게시판 목록 페이지
+ * Trigger Board Admin control.
  */
-function disp_admin_boards(){
-	$o_board_admin_view = new \X2board\Includes\Modules\Board\boardAdminView();
-	$o_board_admin_view->dispBoardAdminListBoard();
-	unset($o_board_admin_view);
+function proc_admin_board(){
+	$o_module = new \X2board\Includes\Modules\Board\boardAdminController();
+	$calling_method = isset($_REQUEST['action']) ? str_replace( 'x2b_', '', sanitize_text_field($_REQUEST['action']) ) : '';
+	if(!method_exists( $o_module, $calling_method )) {
+		wp_die(__('requested module does not have '.$calling_method.'()', 'x2board'));
+	}
+	$o_module->$calling_method();
+	unset($o_module);
 }
+
 
 /**
  * Add rating links to the admin dashboard
@@ -113,7 +139,7 @@ function disp_admin_boards(){
  * @param string $footer_text The existing footer text.
  * @return string Updated Footer text
  */
-function x2b_admin_footer( $footer_text ) {
+function footer( $footer_text ) {
 	$current_screen = get_current_screen();
 	
 	if ( substr( $current_screen->id, 0, 12 ) === "x2board_page" ) {
@@ -133,7 +159,7 @@ function x2b_admin_footer( $footer_text ) {
 
 	}
 }
-add_filter( 'admin_footer_text', 'x2b_admin_footer' );
+add_filter( 'admin_footer_text', 'X2board\Includes\Admin\footer' );
 
 
 /**
@@ -143,7 +169,7 @@ add_filter( 'admin_footer_text', 'x2b_admin_footer' );
  *
  * @param string $hook The current admin page.
  */
-function x2b_load_admin_scripts( $hook ) {
+function load_scripts( $hook ) {
 
 	wp_register_script(
 		X2B_DOMAIN . '-admin-scripts',
@@ -186,7 +212,7 @@ function x2b_load_admin_scripts( $hook ) {
 
 	}
 }
-add_action( 'admin_enqueue_scripts', 'x2b_load_admin_scripts' );
+add_action( 'admin_enqueue_scripts', 'X2board\Includes\Admin\load_scripts' );
 
 
 /**

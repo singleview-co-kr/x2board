@@ -3,12 +3,14 @@
  * Renders the settings page.
  * Portions of this code have been inspired by Easy Digital Downloads, WordPress Settings Sandbox, etc.
  *
- * @link 
+ * @link https://singleview.co.kr
  * @since 2.6.0
  *
- * @package 
+ * @package x2board
  * @subpackage 
  */
+
+namespace X2board\Includes\Admin\Tpl;
 
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
@@ -23,18 +25,18 @@ if (!defined('ABSPATH')) {
  * @return void
  */
 function x2b_options_page() {
-	$active_tab = isset( $_GET['tab'] ) && array_key_exists( sanitize_key( wp_unslash( $_GET['tab'] ) ), crp_get_settings_sections() ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : 'general'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	$active_tab = isset( $_GET['tab'] ) && array_key_exists( sanitize_key( wp_unslash( $_GET['tab'] ) ), x2b_get_settings_sections() ) ? sanitize_key( wp_unslash( $_GET['tab'] ) ) : 'general'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 	ob_start();
 	?>
 	<div class="wrap">
 		<h1><?php esc_html_e( 'Contextual Related Posts Settings', 'contextual-related-posts' ); ?></h1>
 
-		<p>
-			<a class="crp_button" href="<?php echo admin_url( 'tools.php?page=crp_tools_page' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>">
-				<?php esc_html_e( 'Visit the Tools page', 'autoclose' ); ?>
+		<!-- <p>
+			<a class="x2b_button" href="<?php echo admin_url( 'tools.php?page=x2b_tools_page' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>">
+				<?php // esc_html_e( 'Visit the Tools page', 'autoclose' ); ?>
 			</a>
-		<p>
+		<p> -->
 
 		<div id="poststuff">
 		<div id="post-body" class="metabox-holder columns-2">
@@ -42,7 +44,7 @@ function x2b_options_page() {
 
 			<ul class="nav-tab-wrapper" style="padding:0">
 				<?php
-				foreach ( crp_get_settings_sections() as $tab_id => $tab_name ) {
+				foreach ( x2b_get_settings_sections() as $tab_id => $tab_name ) {
 
 					$active = $active_tab === $tab_id ? ' ' : '';
 
@@ -54,16 +56,18 @@ function x2b_options_page() {
 				?>
 			</ul>
 
-			<form method="post" action="options.php">
+			<!-- <form method="post" action="options.php"> -->
+			<form id="x2b-setting-form" action="<?php echo admin_url('admin-post.php')?>" method="post" enctype="multipart/form-data">
+				<input type="hidden" name="action" value="x2b_proc_insert_board">
+				<?php wp_nonce_field('x2b_proc_admin_insert_board');?>
 
-				<?php settings_fields( 'crp_settings' ); ?>
-
-				<?php foreach ( crp_get_settings_sections() as $tab_id => $tab_name ) : ?>
+				<?php foreach ( x2b_get_settings_sections() as $tab_id => $tab_name ) : ?>
 
 				<div id="<?php echo esc_attr( $tab_id ); ?>">
 					<table class="form-table">
 					<?php
-						do_settings_fields( 'crp_settings_' . $tab_id, 'crp_settings_' . $tab_id );
+// echo $tab_id.'<BR>';
+						do_settings_fields( 'x2b_settings_' . $tab_id, 'x2b_settings_' . $tab_id );
 					?>
 					</table>
 					<p>
@@ -76,19 +80,18 @@ function x2b_options_page() {
 							false
 						);
 
-						echo '&nbsp;&nbsp;';
-
-						// Reset button.
-						$confirm = esc_js( __( 'Do you really want to reset all these settings to their default values?', 'contextual-related-posts' ) );
-						submit_button(
-							__( 'Reset all settings', 'contextual-related-posts' ),
-							'secondary',
-							'settings_reset',
-							false,
-							array(
-								'onclick' => "return confirm('{$confirm}');",
-							)
-						);
+						// echo '&nbsp;&nbsp;';
+						// // Reset button.
+						// $confirm = esc_js( __( 'Do you really want to reset all these settings to their default values?', 'contextual-related-posts' ) );
+						// submit_button(
+						// 	__( 'Reset all settings', 'contextual-related-posts' ),
+						// 	'secondary',
+						// 	'settings_reset',
+						// 	false,
+						// 	array(
+						// 		'onclick' => "return confirm('{$confirm}');",
+						// 	)
+						// );
 					?>
 					</p>
 				</div><!-- /#tab_id-->
@@ -102,7 +105,7 @@ function x2b_options_page() {
 		<div id="postbox-container-1" class="postbox-container">
 
 			<div id="side-sortables" class="meta-box-sortables ui-sortable">
-				<?php include_once 'sidebar.php'; ?>
+				<?php include_once X2B_PATH . 'includes\admin\tpl\sidebar.php'; ?>
 			</div><!-- /#side-sortables -->
 
 		</div><!-- /#postbox-container-1 -->
@@ -124,13 +127,13 @@ function x2b_options_page() {
  * @return array Settings array
  */
 function x2b_get_settings_sections() {
-	$crp_settings_sections = array(
-		'general'   => __( 'General', 'contextual-related-posts' ),
-		'list'      => __( 'List tuning', 'contextual-related-posts' ),
-		'output'    => __( 'Output', 'contextual-related-posts' ),
-		'thumbnail' => __( 'Thumbnail', 'contextual-related-posts' ),
-		'styles'    => __( 'Styles', 'contextual-related-posts' ),
-		'feed'      => __( 'Feed', 'contextual-related-posts' ),
+	$x2b_settings_sections = array(
+		'general'   => __( '게시판 정보', 'x2board' ),
+		'list'      => __( '분류 관리', 'x2board' ),
+		'output'    => __( '사용자 정의', 'x2board' ),
+		'thumbnail' => __( '권한 관리', 'x2board' ),
+		'styles'    => __( '추가 설정', 'x2board' ),
+		'feed'      => __( '스킨 관리', 'x2board' ),
 	);
 
 	/**
@@ -138,9 +141,9 @@ function x2b_get_settings_sections() {
 	 *
 	 * @since 2.6.0
 	 *
-	 * @param array $crp_settings_sections Settings array
+	 * @param array $x2b_settings_sections Settings array
 	 */
-	return apply_filters( 'x2b_settings_sections', $crp_settings_sections );
+	return apply_filters( 'x2b_settings_sections', $x2b_settings_sections );
 }
 
 
@@ -194,10 +197,10 @@ function x2b_header_callback( $args ) {
 function x2b_text_callback( $args ) {
 
 	// First, we read the options collection.
-	global $crp_settings;
+	global $x2b_settings;
 
-	if ( isset( $crp_settings[ $args['id'] ] ) ) {
-		$value = $crp_settings[ $args['id'] ];
+	if ( isset( $x2b_settings[ $args['id'] ] ) ) {
+		$value = $x2b_settings[ $args['id'] ];
 	} else {
 		$value = isset( $args['options'] ) ? $args['options'] : '';
 	}
@@ -215,7 +218,7 @@ function x2b_text_callback( $args ) {
 		$attributes .= sprintf( ' %1$s="%2$s"', $attribute, esc_attr( $val ) );
 	}
 
-	$html  = sprintf( '<input type="text" id="crp_settings[%1$s]" name="crp_settings[%1$s]" class="%2$s" value="%3$s" %4$s />', sanitize_key( $args['id'] ), $class . ' ' . $size . '-text', esc_attr( stripslashes( $value ) ), $attributes );
+	$html  = sprintf( '<input type="text" id="x2b_settings[%1$s]" name="x2b_settings[%1$s]" class="%2$s" value="%3$s" %4$s />', sanitize_key( $args['id'] ), $class . ' ' . $size . '-text', esc_attr( stripslashes( $value ) ), $attributes );
 	$html .= '<p class="description">' . wp_kses_post( $args['desc'] ) . '</p>';
 
 	/** This filter has been defined in settings-page.php */
@@ -262,17 +265,17 @@ function x2b_numbercsv_callback( $args ) {
 function x2b_textarea_callback( $args ) {
 
 	// First, we read the options collection.
-	global $crp_settings;
+	global $x2b_settings;
 
-	if ( isset( $crp_settings[ $args['id'] ] ) ) {
-		$value = $crp_settings[ $args['id'] ];
+	if ( isset( $x2b_settings[ $args['id'] ] ) ) {
+		$value = $x2b_settings[ $args['id'] ];
 	} else {
 		$value = isset( $args['options'] ) ? $args['options'] : '';
 	}
 
 	$class = sanitize_html_class( $args['field_class'] );
 
-	$html  = sprintf( '<textarea class="%3$s" cols="50" rows="10" id="crp_settings[%1$s]" name="crp_settings[%1$s]">%2$s</textarea>', sanitize_key( $args['id'] ), esc_textarea( stripslashes( $value ) ), 'large-text ' . $class );
+	$html  = sprintf( '<textarea class="%3$s" cols="50" rows="4" id="x2b_settings[%1$s]" name="x2b_settings[%1$s]">%2$s</textarea>', sanitize_key( $args['id'] ), esc_textarea( stripslashes( $value ) ), 'large-text ' . $class );
 	$html .= '<p class="description">' . wp_kses_post( $args['desc'] ) . '</p>';
 
 	/** This filter has been defined in settings-page.php */
@@ -305,14 +308,14 @@ function x2b_css_callback( $args ) {
 function x2b_checkbox_callback( $args ) {
 
 	// First, we read the options collection.
-	global $crp_settings;
+	global $x2b_settings;
 
 	$default = isset( $args['options'] ) ? $args['options'] : '';
-	$set     = isset( $crp_settings[ $args['id'] ] ) ? $crp_settings[ $args['id'] ] : crp_get_default_option( $args['id'] );
+	$set     = isset( $x2b_settings[ $args['id'] ] ) ? $x2b_settings[ $args['id'] ] : crp_get_default_option( $args['id'] );
 	$checked = ! empty( $set ) ? checked( 1, (int) $set, false ) : '';
 
-	$html  = sprintf( '<input type="hidden" name="crp_settings[%1$s]" value="-1" />', sanitize_key( $args['id'] ) );
-	$html .= sprintf( '<input type="checkbox" id="crp_settings[%1$s]" name="crp_settings[%1$s]" value="1" %2$s />', sanitize_key( $args['id'] ), $checked );
+	$html  = sprintf( '<input type="hidden" name="x2b_settings[%1$s]" value="-1" />', sanitize_key( $args['id'] ) );
+	$html .= sprintf( '<input type="checkbox" id="x2b_settings[%1$s]" name="x2b_settings[%1$s]" value="1" %2$s />', sanitize_key( $args['id'] ), $checked );
 	$html .= ( (bool) $set !== (bool) $default ) ? '<em style="color:orange"> ' . esc_html__( 'Modified from default setting', 'contextual-related-posts' ) . '</em>' : ''; // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 	$html .= '<p class="description">' . wp_kses_post( $args['desc'] ) . '</p>';
 
@@ -332,21 +335,21 @@ function x2b_checkbox_callback( $args ) {
  * @return void
  */
 function x2b_multicheck_callback( $args ) {
-	global $crp_settings;
+	global $x2b_settings;
 	$html = '';
 
 	if ( ! empty( $args['options'] ) ) {
-		$html .= sprintf( '<input type="hidden" name="crp_settings[%1$s]" value="-1" />', sanitize_key( $args['id'] ) );
+		$html .= sprintf( '<input type="hidden" name="x2b_settings[%1$s]" value="-1" />', sanitize_key( $args['id'] ) );
 
 		foreach ( $args['options'] as $key => $option ) {
-			if ( isset( $crp_settings[ $args['id'] ][ $key ] ) ) {
+			if ( isset( $x2b_settings[ $args['id'] ][ $key ] ) ) {
 				$enabled = $key;
 			} else {
 				$enabled = null;
 			}
 
-			$html .= sprintf( '<input name="crp_settings[%1$s][%2$s]" id="crp_settings[%1$s][%2$s]" type="checkbox" value="%3$s" %4$s /> ', sanitize_key( $args['id'] ), sanitize_key( $key ), esc_attr( $key ), checked( $key, $enabled, false ) );
-			$html .= sprintf( '<label for="crp_settings[%1$s][%2$s]">%3$s</label> <br />', sanitize_key( $args['id'] ), sanitize_key( $key ), $option );
+			$html .= sprintf( '<input name="x2b_settings[%1$s][%2$s]" id="x2b_settings[%1$s][%2$s]" type="checkbox" value="%3$s" %4$s /> ', sanitize_key( $args['id'] ), sanitize_key( $key ), esc_attr( $key ), checked( $key, $enabled, false ) );
+			$html .= sprintf( '<label for="x2b_settings[%1$s][%2$s]">%3$s</label> <br />', sanitize_key( $args['id'] ), sanitize_key( $key ), $option );
 		}
 
 		$html .= '<p class="description">' . wp_kses_post( $args['desc'] ) . '</p>';
@@ -368,20 +371,20 @@ function x2b_multicheck_callback( $args ) {
  * @return void
  */
 function x2b_radio_callback( $args ) {
-	global $crp_settings;
+	global $x2b_settings;
 	$html = '';
 
 	foreach ( $args['options'] as $key => $option ) {
 		$checked = false;
 
-		if ( isset( $crp_settings[ $args['id'] ] ) && $crp_settings[ $args['id'] ] === $key ) {
+		if ( isset( $x2b_settings[ $args['id'] ] ) && $x2b_settings[ $args['id'] ] === $key ) {
 			$checked = true;
-		} elseif ( isset( $args['default'] ) && $args['default'] === $key && ! isset( $crp_settings[ $args['id'] ] ) ) {
+		} elseif ( isset( $args['default'] ) && $args['default'] === $key && ! isset( $x2b_settings[ $args['id'] ] ) ) {
 			$checked = true;
 		}
 
-		$html .= sprintf( '<input name="crp_settings[%1$s]" id="crp_settings[%1$s][%2$s]" type="radio" value="%2$s" %3$s /> ', sanitize_key( $args['id'] ), $key, checked( true, $checked, false ) );
-		$html .= sprintf( '<label for="crp_settings[%1$s][%2$s]">%3$s</label> <br />', sanitize_key( $args['id'] ), $key, $option );
+		$html .= sprintf( '<input name="x2b_settings[%1$s]" id="x2b_settings[%1$s][%2$s]" type="radio" value="%2$s" %3$s /> ', sanitize_key( $args['id'] ), $key, checked( true, $checked, false ) );
+		$html .= sprintf( '<label for="x2b_settings[%1$s][%2$s]">%3$s</label> <br />', sanitize_key( $args['id'] ), $key, $option );
 	}
 
 	$html .= '<p class="description">' . wp_kses_post( $args['desc'] ) . '</p>';
@@ -402,20 +405,20 @@ function x2b_radio_callback( $args ) {
  * @return void
  */
 function x2b_radiodesc_callback( $args ) {
-	global $crp_settings;
+	global $x2b_settings;
 	$html = '';
 
 	foreach ( $args['options'] as $option ) {
 		$checked = false;
 
-		if ( isset( $crp_settings[ $args['id'] ] ) && $crp_settings[ $args['id'] ] === $option['id'] ) {
+		if ( isset( $x2b_settings[ $args['id'] ] ) && $x2b_settings[ $args['id'] ] === $option['id'] ) {
 			$checked = true;
-		} elseif ( isset( $args['default'] ) && $args['default'] === $option['id'] && ! isset( $crp_settings[ $args['id'] ] ) ) {
+		} elseif ( isset( $args['default'] ) && $args['default'] === $option['id'] && ! isset( $x2b_settings[ $args['id'] ] ) ) {
 			$checked = true;
 		}
 
-		$html .= sprintf( '<input name="crp_settings[%1$s]" id="crp_settings[%1$s][%2$s]" type="radio" value="%2$s" %3$s /> ', sanitize_key( $args['id'] ), $option['id'], checked( true, $checked, false ) );
-		$html .= sprintf( '<label for="crp_settings[%1$s][%2$s]">%3$s</label>', sanitize_key( $args['id'] ), $option['id'], $option['name'] );
+		$html .= sprintf( '<input name="x2b_settings[%1$s]" id="x2b_settings[%1$s][%2$s]" type="radio" value="%2$s" %3$s /> ', sanitize_key( $args['id'] ), $option['id'], checked( true, $checked, false ) );
+		$html .= sprintf( '<label for="x2b_settings[%1$s][%2$s]">%3$s</label>', sanitize_key( $args['id'] ), $option['id'], $option['name'] );
 		$html .= ': <em>' . wp_kses_post( $option['description'] ) . '</em> <br />';
 	}
 
@@ -437,7 +440,7 @@ function x2b_radiodesc_callback( $args ) {
  * @return void
  */
 function x2b_thumbsizes_callback( $args ) {
-	global $crp_settings;
+	global $x2b_settings;
 	$html = '';
 
 	if ( ! isset( $args['options']['crp_thumbnail'] ) ) {
@@ -452,21 +455,21 @@ function x2b_thumbsizes_callback( $args ) {
 	foreach ( $args['options'] as $name => $option ) {
 		$checked = false;
 
-		if ( isset( $crp_settings[ $args['id'] ] ) && $crp_settings[ $args['id'] ] === $name ) {
+		if ( isset( $x2b_settings[ $args['id'] ] ) && $x2b_settings[ $args['id'] ] === $name ) {
 			$checked = true;
-		} elseif ( isset( $args['default'] ) && $args['default'] === $name && ! isset( $crp_settings[ $args['id'] ] ) ) {
+		} elseif ( isset( $args['default'] ) && $args['default'] === $name && ! isset( $x2b_settings[ $args['id'] ] ) ) {
 			$checked = true;
 		}
 		$cropped = $option['crop'] ? __( ' cropped', 'contextual-related-posts' ) : '';
 
 		$html .= sprintf(
-			'<input name="crp_settings[%1$s]" id="crp_settings[%1$s][%2$s]" type="radio" value="%2$s" %3$s /> ',
+			'<input name="x2b_settings[%1$s]" id="x2b_settings[%1$s][%2$s]" type="radio" value="%2$s" %3$s /> ',
 			sanitize_key( $args['id'] ),
 			$name,
 			checked( true, $checked, false )
 		);
 		$html .= sprintf(
-			'<label for="crp_settings[%1$s][%2$s]">%3$s</label> <br />',
+			'<label for="x2b_settings[%1$s][%2$s]">%3$s</label> <br />',
 			sanitize_key( $args['id'] ),
 			$name,
 			$name . ' (' . $option['width'] . 'x' . $option['height'] . $cropped . ')'
@@ -491,10 +494,10 @@ function x2b_thumbsizes_callback( $args ) {
  * @return void
  */
 function x2b_number_callback( $args ) {
-	global $crp_settings;
+	global $x2b_settings;
 
-	if ( isset( $crp_settings[ $args['id'] ] ) ) {
-		$value = $crp_settings[ $args['id'] ];
+	if ( isset( $x2b_settings[ $args['id'] ] ) ) {
+		$value = $x2b_settings[ $args['id'] ];
 	} else {
 		$value = isset( $args['options'] ) ? $args['options'] : '';
 	}
@@ -505,7 +508,7 @@ function x2b_number_callback( $args ) {
 
 	$size = isset( $args['size'] ) ? $args['size'] : 'regular';
 
-	$html  = sprintf( '<input type="number" step="%1$s" max="%2$s" min="%3$s" class="%4$s" id="crp_settings[%5$s]" name="crp_settings[%5$s]" value="%6$s"/>', esc_attr( $step ), esc_attr( $max ), esc_attr( $min ), sanitize_html_class( $size ) . '-text', sanitize_key( $args['id'] ), esc_attr( stripslashes( $value ) ) );
+	$html  = sprintf( '<input type="number" step="%1$s" max="%2$s" min="%3$s" class="%4$s" id="x2b_settings[%5$s]" name="x2b_settings[%5$s]" value="%6$s"/>', esc_attr( $step ), esc_attr( $max ), esc_attr( $min ), sanitize_html_class( $size ) . '-text', sanitize_key( $args['id'] ), esc_attr( stripslashes( $value ) ) );
 	$html .= '<p class="description">' . wp_kses_post( $args['desc'] ) . '</p>';
 
 	/** This filter has been defined in settings-page.php */
@@ -524,10 +527,10 @@ function x2b_number_callback( $args ) {
  * @return void
  */
 function x2b_select_callback( $args ) {
-	global $crp_settings;
+	global $x2b_settings;
 
-	if ( isset( $crp_settings[ $args['id'] ] ) ) {
-		$value = $crp_settings[ $args['id'] ];
+	if ( isset( $x2b_settings[ $args['id'] ] ) ) {
+		$value = $x2b_settings[ $args['id'] ];
 	} else {
 		$value = isset( $args['default'] ) ? $args['default'] : '';
 	}
@@ -538,7 +541,7 @@ function x2b_select_callback( $args ) {
 		$chosen = '';
 	}
 
-	$html = sprintf( '<select id="crp_settings[%1$s]" name="crp_settings[%1$s]" %2$s />', sanitize_key( $args['id'] ), $chosen );
+	$html = sprintf( '<select id="x2b_settings[%1$s]" name="x2b_settings[%1$s]" %2$s />', sanitize_key( $args['id'] ), $chosen );
 
 	foreach ( $args['options'] as $option => $name ) {
 		$html .= sprintf( '<option value="%1$s" %2$s>%3$s</option>', sanitize_key( $option ), selected( $option, $value, false ), $name );
@@ -580,11 +583,11 @@ function x2b_descriptive_text_callback( $args ) {
  */
 function x2b_posttypes_callback( $args ) {
 
-	global $crp_settings;
+	global $x2b_settings;
 	$html = '';
 
-	if ( isset( $crp_settings[ $args['id'] ] ) ) {
-		$options = $crp_settings[ $args['id'] ];
+	if ( isset( $x2b_settings[ $args['id'] ] ) ) {
+		$options = $x2b_settings[ $args['id'] ];
 	} else {
 		$options = isset( $args['options'] ) ? $args['options'] : '';
 	}
@@ -603,12 +606,12 @@ function x2b_posttypes_callback( $args ) {
 	);
 	$posts_types_inc = array_intersect( $wp_post_types, $post_types );
 
-	$html .= sprintf( '<input type="hidden" name="crp_settings[%1$s]" value="-1" />', sanitize_key( $args['id'] ) );
+	$html .= sprintf( '<input type="hidden" name="x2b_settings[%1$s]" value="-1" />', sanitize_key( $args['id'] ) );
 
 	foreach ( $wp_post_types as $wp_post_type ) {
 
-		$html .= sprintf( '<input name="crp_settings[%1$s][%2$s]" id="crp_settings[%1$s][%2$s]" type="checkbox" value="%2$s" %3$s /> ', sanitize_key( $args['id'] ), esc_attr( $wp_post_type ), checked( true, in_array( $wp_post_type, $posts_types_inc, true ), false ) );
-		$html .= sprintf( '<label for="crp_settings[%1$s][%2$s]">%2$s</label> <br />', sanitize_key( $args['id'] ), $wp_post_type );
+		$html .= sprintf( '<input name="x2b_settings[%1$s][%2$s]" id="x2b_settings[%1$s][%2$s]" type="checkbox" value="%2$s" %3$s /> ', sanitize_key( $args['id'] ), esc_attr( $wp_post_type ), checked( true, in_array( $wp_post_type, $posts_types_inc, true ), false ) );
+		$html .= sprintf( '<label for="x2b_settings[%1$s][%2$s]">%2$s</label> <br />', sanitize_key( $args['id'] ), $wp_post_type );
 
 	}
 
@@ -629,11 +632,11 @@ function x2b_posttypes_callback( $args ) {
  */
 function x2b_taxonomies_callback( $args ) {
 
-	global $crp_settings;
+	global $x2b_settings;
 	$html = '';
 
-	if ( isset( $crp_settings[ $args['id'] ] ) ) {
-		$options = $crp_settings[ $args['id'] ];
+	if ( isset( $x2b_settings[ $args['id'] ] ) ) {
+		$options = $x2b_settings[ $args['id'] ];
 	} else {
 		$options = isset( $args['options'] ) ? $args['options'] : '';
 	}
@@ -655,12 +658,12 @@ function x2b_taxonomies_callback( $args ) {
 
 	$taxonomies_inc = array_intersect( wp_list_pluck( (array) $wp_taxonomies, 'name' ), $taxonomies );
 
-	$html .= sprintf( '<input type="hidden" name="crp_settings[%1$s]" value="-1" />', sanitize_key( $args['id'] ) );
+	$html .= sprintf( '<input type="hidden" name="x2b_settings[%1$s]" value="-1" />', sanitize_key( $args['id'] ) );
 
 	foreach ( $wp_taxonomies as $wp_taxonomy ) {
 
-		$html .= sprintf( '<input name="crp_settings[%1$s][%2$s]" id="crp_settings[%1$s][%2$s]" type="checkbox" value="%2$s" %3$s /> ', sanitize_key( $args['id'] ), esc_attr( $wp_taxonomy->name ), checked( true, in_array( $wp_taxonomy->name, $taxonomies_inc, true ), false ) );
-		$html .= sprintf( '<label for="crp_settings[%1$s][%2$s]">%3$s (%4$s)</label> <br />', sanitize_key( $args['id'] ), esc_attr( $wp_taxonomy->name ), $wp_taxonomy->labels->name, $wp_taxonomy->name );
+		$html .= sprintf( '<input name="x2b_settings[%1$s][%2$s]" id="x2b_settings[%1$s][%2$s]" type="checkbox" value="%2$s" %3$s /> ', sanitize_key( $args['id'] ), esc_attr( $wp_taxonomy->name ), checked( true, in_array( $wp_taxonomy->name, $taxonomies_inc, true ), false ) );
+		$html .= sprintf( '<label for="x2b_settings[%1$s][%2$s]">%3$s (%4$s)</label> <br />', sanitize_key( $args['id'] ), esc_attr( $wp_taxonomy->name ), $wp_taxonomy->labels->name, $wp_taxonomy->name );
 
 	}
 

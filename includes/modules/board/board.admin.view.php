@@ -76,7 +76,14 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 		/**
 		 * @brief display the board module admin contents
 		 **/
-		public function dispBoardAdminListBoard() {
+		public function disp_idx() {
+			require_once X2B_PATH . 'includes/admin/tpl/index.php';
+		}
+
+		/**
+		 * @brief display the board module admin contents
+		 **/
+		public function disp_board_list() {
 			// https://wpengineer.com/2426/wp_list_table-a-step-by-step-guide/
 			// https://supporthost.com/wp-list-table-tutorial/
 			$this->prepare_items();
@@ -134,7 +141,11 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 		protected function column_default( $item, $column_name ) {
 			switch( $column_name ) {
 				case 'wp_page_id':
+					$o_post = get_post(intval($item->wp_page_id)); 
+					return '<A HREF='.$o_post->guid.' target="_blank">'.$o_post->post_title.' 보러 가기</A>';
 				case 'board_name':
+					$o_post = get_post(intval($item->wp_page_id)); 
+					return '<A HREF='.admin_url( 'admin.php?page=x2b_disp_board_update&board_id='.$o_post->ID ).'>'.$item->$column_name.' 관리하기</A>';
 				case 'create_date':
 					return $item->$column_name;
 				default:
@@ -145,16 +156,23 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 		/**
 		 * @brief display the selected board module admin information
 		 **/
-		public function dispBoardAdminBoardInfo() {
-			$this->dispBoardAdminInsertBoard();
-		}
+		// public function disp_board_info() {
+		// 	$this->disp_insert_board();
+		// }
 
 		/**
 		 * @brief display the module insert form
 		 **/
-		public function dispBoardAdminInsertBoard() {
-			require_once X2B_PATH . 'includes\modules\board\tpl\settings-page.php';
-			x2b_options_page();
+		public function disp_board_insert() {
+			require_once X2B_PATH . 'includes\admin\tpl\settings-page.php';
+			require_once X2B_PATH . 'includes\admin\tpl\default-settings.php';
+			require_once X2B_PATH . 'includes\admin\tpl\register-settings.php';
+
+			\X2board\Includes\Admin\Tpl\x2b_register_settings();
+			\X2board\Includes\Admin\Tpl\x2b_options_page();
+
+			// global $wp_settings_fields;
+// var_dump($wp_settings_fields);
 
 			// if(!in_array($this->module_info->module, array('admin', 'board','blog','guestbook'))) {
 			// 	return $this->alertMessage('msg_invalid_request');
