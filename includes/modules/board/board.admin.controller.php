@@ -1,6 +1,4 @@
 <?php
-/* Copyright (C) <https://singleview.co.kr> */
-
 /**
  * @class  boardAdminController
  * @author singleview.co.kr
@@ -44,7 +42,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 			$x2b_page  = array( 'post_title'     => $s_wp_page_title,
 								'post_type'      => 'page',
 								'post_name'      => $s_wp_page_title,
-								'post_content'   => 'This is x2board installed page.',
+								'post_content'   => X2B_PAGE_IDENTIFIER, // 'Keep this mark, x2board-installed',
 								'post_status'    => 'publish',  // 'pending'    
 								'comment_status' => 'closed',
 								'ping_status'    => 'closed',

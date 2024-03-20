@@ -1,6 +1,9 @@
 <?php
-/* Copyright (C) XEHub <https://www.xehub.io> */
 namespace X2board\Includes;
+
+if ( !defined( 'ABSPATH' ) ) {
+    exit;  // Exit if accessed directly.
+}
 
 /**
  * function library files for convenience
@@ -11,6 +14,320 @@ namespace X2board\Includes;
 // {
 // 	exit();
 // }
+
+/**
+ * Define a function to use {@see ModuleHandler::getModuleObject()} ($module_name, $type)
+ *
+ * @param string $module_name The module name to get a instance
+ * @param string $type disp, proc, controller, class
+ * @param string $kind admin, null
+ * @return mixed Module instance
+ */
+function getModule($module_name, $type = 'view', $kind = '') {
+	global $G_X2B_CACHE;
+	if(!isset($G_X2B_CACHE['__MODULE_EXTEND__'])) {
+		$G_X2B_CACHE['__MODULE_EXTEND__'] = array();
+	}
+	if(!isset($G_X2B_CACHE['_loaded_module'])) {
+		$G_X2B_CACHE['_loaded_module'] = array();
+	}
+	if(!isset($G_X2B_CACHE['_called_constructor'])) {
+		$G_X2B_CACHE['_called_constructor'] = array();
+	}
+	if(!isset($G_X2B_CACHE['__elapsed_class_load__'])) {
+		$G_X2B_CACHE['__elapsed_class_load__'] = null;
+	}
+
+	return \X2board\Includes\Classes\ModuleHandler::getModuleInstance($module_name, $type, $kind);
+}
+
+/**
+ * Create a controller instance of the module
+ *
+ * @param string $module_name The module name to get a controller instance
+ * @return mixed Module controller instance
+ */
+function getController($module_name) {
+	return getModule($module_name, 'controller');
+}
+
+/**
+ * Create a admin controller instance of the module
+ *
+ * @param string $module_name The module name to get a admin controller instance
+ * @return mixed Module admin controller instance
+ */
+function getAdminController($module_name) {
+	return getModule($module_name, 'controller', 'admin');
+}
+
+/**
+ * Create a view instance of the module
+ *
+ * @param string $module_name The module name to get a view instance
+ * @return mixed Module view instance
+ */
+function getView($module_name) {
+	return getModule($module_name, 'view');
+}
+
+/**
+ * Create a admin view instance of the module
+ *
+ * @param string $module_name The module name to get a admin view instance
+ * @return mixed Module admin view instance
+ */
+function getAdminView($module_name) {
+	return getModule($module_name, 'view', 'admin');
+}
+
+/**
+ * Create a model instance of the module
+ *
+ * @param string $module_name The module name to get a model instance
+ * @return mixed Module model instance
+ */
+function getModel($module_name) {
+	return getModule($module_name, 'model');
+}
+
+/**
+ * Create an admin model instance of the module
+ *
+ * @param string $module_name The module name to get a admin model instance
+ * @return mixed Module admin model instance
+ */
+function getAdminModel($module_name) {
+	return getModule($module_name, 'model', 'admin');
+}
+
+/**
+ * Create a class instance of the module
+ *
+ * @param string $module_name The module name to get a class instance
+ * @return mixed Module class instance
+ */
+function getClass($module_name) {
+	return getModule($module_name, 'class');
+}
+
+/**
+ * Function to handle the result of DB::executeQuery() as an array
+ *
+ * @see DB::executeQuery()
+ * @see executeQuery()
+ * @param string $query_id (module name.query XML file)
+ * @param object $args values of args object
+ * @param string[] $arg_columns Column list
+ * @return object Query result data
+ */
+function executeQueryArray($o_query, $arg_columns = NULL) {  // $query_id, $args = NULL, $arg_columns = NULL)
+
+	$o_db = \X2board\Includes\Classes\DB::getInstance();
+	$output = $o_db->executeQuery($o_query, $arg_columns);  // $args,
+	// if(!is_array($output->data) && count((array)$output->data) > 0)
+	// {
+	// 	$output->data = array($output->data);
+	// }
+	return $output;  // $o_db->executeQuery() always outputs array 
+}
+
+/**
+ * Alias of DB::getNextSequence()
+ *
+ * @see DB::getNextSequence()
+ * @return int
+ */
+function getNextSequence() {
+	$oDB = DB::getInstance();
+	$seq = $oDB->getNextSequence();
+	setUserSequence($seq);
+	return $seq;
+}
+
+/**
+ * microtime() return
+ *
+ * @return float
+ */
+function getMicroTime() {
+	list($time1, $time2) = explode(' ', microtime());
+	return (float) $time1 + (float) $time2;
+}
+
+/**
+ * This function is a shortcut to htmlspecialchars().
+ *
+ * @copyright Rhymix Developers and Contributors
+ * @link https://github.com/rhymix/rhymix
+ *
+ * @param string $str The string to escape
+ * @param bool $double_escape Set this to false to skip symbols that are already escaped (default: true)
+ * @return string
+ */
+function escape($str, $double_escape = true, $escape_defined_lang_code = false) {
+	if(!$escape_defined_lang_code && isDefinedLangCode($str)) return $str;
+
+	$flags = ENT_QUOTES | ENT_SUBSTITUTE;
+	return htmlspecialchars($str, $flags, 'UTF-8', $double_escape);
+}
+
+function isDefinedLangCode($str) {
+	return preg_match('!^\$user_lang->([a-z0-9\_]+)$!is', trim($str));
+}
+
+/**
+ * Change the time format YYYYMMDDHHIISS to the user defined format
+ *
+ * @param string|int $str YYYYMMDDHHIISS format time values
+ * @param string $format Time format of php date() function
+ * @param bool $conversion Means whether to convert automatically according to the language
+ * @return string
+ */
+function zdate($str, $format = 'Y-m-d H:i:s', $conversion = TRUE) {
+	if(!$str) {  // return null if no target time is specified
+		return;
+	}
+	if($conversion == TRUE)	{  // convert the date format according to the language
+		switch(substr(get_locale(), 0, 2)) {  // Context::getLangType()) {
+			case 'en' :
+			case 'es' :
+				if($format == 'Y-m-d') {
+					$format = 'M d, Y';
+				}
+				elseif($format == 'Y-m-d H:i:s') {
+					$format = 'M d, Y H:i:s';
+				}
+				elseif($format == 'Y-m-d H:i') {
+					$format = 'M d, Y H:i';
+				}
+				break;
+			case 'vi' :
+				if($format == 'Y-m-d') {
+					$format = 'd-m-Y';
+				}
+				elseif($format == 'Y-m-d H:i:s') {
+					$format = 'H:i:s d-m-Y';
+				}
+				elseif($format == 'Y-m-d H:i') {
+					$format = 'H:i d-m-Y';
+				}
+				break;
+		}
+	}
+	// If year value is less than 1970, handle it separately.
+	if((int) substr($str, 0, 4) < 1970) {
+		$hour = (int) substr($str, 8, 2);
+		$min = (int) substr($str, 10, 2);
+		$sec = (int) substr($str, 12, 2);
+		$year = (int) substr($str, 0, 4);
+		$month = (int) substr($str, 4, 2);
+		$day = (int) substr($str, 6, 2);
+		$trans = array(
+			'Y' => $year,
+			'y' => sprintf('%02d', $year % 100),
+			'm' => sprintf('%02d', $month),
+			'n' => $month,
+			'd' => sprintf('%02d', $day),
+			'j' => $day,
+			'G' => $hour,
+			'H' => sprintf('%02d', $hour),
+			'g' => $hour % 12,
+			'h' => sprintf('%02d', $hour % 12),
+			'i' => sprintf('%02d', $min),
+			's' => sprintf('%02d', $sec),
+			'M' => getMonthName($month),
+			'F' => getMonthName($month, FALSE)
+		);
+		$string = strtr($format, $trans);
+	}
+	else { // if year value is greater than 1970, get unixtime by using ztime() for date() function's argument. 
+		$string = date($format, ztime($str));
+	}
+	// change day and am/pm for each language
+	$a_unit_week = \X2board\Includes\Classes\Context::get( 'unit_week' ); //Context::getLang('unit_week');
+	$a_unit_meridiem = \X2board\Includes\Classes\Context::get( 'unit_meridiem' ); //Context::getLang('unit_meridiem');
+	$string = str_replace(array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'), $a_unit_week, $string);
+	$string = str_replace(array('am', 'pm', 'AM', 'PM'), $a_unit_meridiem, $string);
+	return $string;
+}
+
+/**
+ * Name of the month return
+ *
+ * @param int $month Month
+ * @param boot $short If set, returns short string
+ * @return string
+ */
+function getMonthName($month, $short = TRUE) {
+	$short_month = array('', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
+	$long_month = array('', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+	return !$short ? $long_month[$month] : $short_month[$month];
+}
+
+/**
+ * YYYYMMDDHHIISS format changed to unix time value
+ *
+ * @param string $str Time value in format of YYYYMMDDHHIISS
+ * @return int
+ */
+function ztime($str) {
+	if(!$str) {
+		return;
+	}
+	if (strlen($str) === 9 || (strlen($str) === 10 && $str <= 2147483647)) {
+ 		return intval($str);
+ 	}
+	$hour = (int) substr($str, 8, 2);
+	$min = (int) substr($str, 10, 2);
+	$sec = (int) substr($str, 12, 2);
+	$year = (int) substr($str, 0, 4);
+	$month = (int) substr($str, 4, 2);
+	$day = (int) substr($str, 6, 2);
+	if(strlen($str) <= 8) {
+		$gap = 0;
+	}
+	else {
+		$gap = zgap();
+	}
+	return mktime($hour, $min, $sec, $month ? $month : 1, $day ? $day : 1, $year) + $gap;
+}
+
+/**
+ * Get a time gap between server's timezone and XE's timezone
+ *
+ * @return int
+ */
+function zgap() {
+	// $time_zone = $GLOBALS['_time_zone'];
+	// if($time_zone < 0) {
+	// 	$to = -1;
+	// }
+	// else {
+	// 	$to = 1;
+	// }
+	$min       = 60 * get_option('gmt_offset');
+	$sign      = $min < 0 ? "-" : "+";
+	$absmin    = abs($min);
+	$time_zone = sprintf("%s%02d%02d", $sign, $absmin/60, $absmin%60);
+	$to = $time_zone < 0 ? -1 : 1;
+	$t_hour = $absmin/60 * $to; // substr($time_zone, 1, 2) * $to;
+	$t_min = $absmin%60 * $to; // substr($time_zone, 3, 2) * $to;
+	$server_time_zone = date("O");
+	// if($server_time_zone < 0) {
+	// 	$so = -1;
+	// }
+	// else {
+	// 	$so = 1;
+	// }
+	$so = $server_time_zone < 0 ? -1 : 1;
+	$c_hour = substr($server_time_zone, 1, 2) * $so;
+	$c_min = substr($server_time_zone, 3, 2) * $so;
+	$g_min = $t_min - $c_min;
+	$g_hour = $t_hour - $c_hour;
+	$gap = $g_min * 60 + $g_hour * 60 * 60;
+	return $gap;
+}
 
 // define an empty function to avoid errors when iconv function doesn't exist
 // if(!function_exists('iconv'))
@@ -70,94 +387,14 @@ namespace X2board\Includes;
 // );
 
 /**
- * Define a function to use {@see ModuleHandler::getModuleObject()} ($module_name, $type)
- *
- * @param string $module_name The module name to get a instance
- * @param string $type disp, proc, controller, class
- * @param string $kind admin, null
- * @return mixed Module instance
- */
-function getModule($module_name, $type = 'view', $kind = '')
-{
-	return ModuleHandler::getModuleInstance($module_name, $type, $kind);
-}
-
-/**
- * Create a controller instance of the module
- *
- * @param string $module_name The module name to get a controller instance
- * @return mixed Module controller instance
- */
-function getController($module_name)
-{
-	return getModule($module_name, 'controller');
-}
-
-/**
- * Create a admin controller instance of the module
- *
- * @param string $module_name The module name to get a admin controller instance
- * @return mixed Module admin controller instance
- */
-function getAdminController($module_name)
-{
-	return getModule($module_name, 'controller', 'admin');
-}
-
-/**
- * Create a view instance of the module
- *
- * @param string $module_name The module name to get a view instance
- * @return mixed Module view instance
- */
-function getView($module_name)
-{
-	return getModule($module_name, 'view');
-}
-
-/**
  * Create a mobile instance of the module
  *
  * @param string $module_name The module name to get a mobile instance
  * @return mixed Module mobile instance
  */
-function &getMobile($module_name)
-{
-	return getModule($module_name, 'mobile');
-}
-
-/**
- * Create a admin view instance of the module
- *
- * @param string $module_name The module name to get a admin view instance
- * @return mixed Module admin view instance
- */
-function getAdminView($module_name)
-{
-	return getModule($module_name, 'view', 'admin');
-}
-
-/**
- * Create a model instance of the module
- *
- * @param string $module_name The module name to get a model instance
- * @return mixed Module model instance
- */
-function getModel($module_name)
-{
-	return getModule($module_name, 'model');
-}
-
-/**
- * Create an admin model instance of the module
- *
- * @param string $module_name The module name to get a admin model instance
- * @return mixed Module admin model instance
- */
-function getAdminModel($module_name)
-{
-	return getModule($module_name, 'model', 'admin');
-}
+// function &getMobile($module_name) {
+// 	return getModule($module_name, 'mobile');
+// }
 
 /**
  * Create an api instance of the module
@@ -182,17 +419,6 @@ function getAdminModel($module_name)
 // }
 
 /**
- * Create a class instance of the module
- *
- * @param string $module_name The module name to get a class instance
- * @return mixed Module class instance
- */
-function getClass($module_name)
-{
-	return getModule($module_name, 'class');
-}
-
-/**
  * The alias of DB::executeQuery()
  *
  * @see DB::executeQuery()
@@ -206,41 +432,6 @@ function getClass($module_name)
 // 	$oDB = DB::getInstance();
 // 	return $oDB->executeQuery($query_id, $args, $arg_columns);
 // }
-
-/**
- * Function to handle the result of DB::executeQuery() as an array
- *
- * @see DB::executeQuery()
- * @see executeQuery()
- * @param string $query_id (module name.query XML file)
- * @param object $args values of args object
- * @param string[] $arg_columns Column list
- * @return object Query result data
- */
-// function executeQueryArray($query_id, $args = NULL, $arg_columns = NULL)
-// {
-// 	$oDB = DB::getInstance();
-// 	$output = $oDB->executeQuery($query_id, $args, $arg_columns);
-// 	if(!is_array($output->data) && count((array)$output->data) > 0)
-// 	{
-// 		$output->data = array($output->data);
-// 	}
-// 	return $output;
-// }
-
-/**
- * Alias of DB::getNextSequence()
- *
- * @see DB::getNextSequence()
- * @return int
- */
-function getNextSequence()
-{
-	$oDB = DB::getInstance();
-	$seq = $oDB->getNextSequence();
-	setUserSequence($seq);
-	return $seq;
-}
 
 /**
  * Set Sequence number to session
@@ -558,81 +749,6 @@ function getNextSequence()
 // }
 
 /**
- * Get a time gap between server's timezone and XE's timezone
- *
- * @return int
- */
-// function zgap()
-// {
-// 	$time_zone = $GLOBALS['_time_zone'];
-// 	if($time_zone < 0)
-// 	{
-// 		$to = -1;
-// 	}
-// 	else
-// 	{
-// 		$to = 1;
-// 	}
-
-// 	$t_hour = substr($time_zone, 1, 2) * $to;
-// 	$t_min = substr($time_zone, 3, 2) * $to;
-
-// 	$server_time_zone = date("O");
-// 	if($server_time_zone < 0)
-// 	{
-// 		$so = -1;
-// 	}
-// 	else
-// 	{
-// 		$so = 1;
-// 	}
-
-// 	$c_hour = substr($server_time_zone, 1, 2) * $so;
-// 	$c_min = substr($server_time_zone, 3, 2) * $so;
-
-// 	$g_min = $t_min - $c_min;
-// 	$g_hour = $t_hour - $c_hour;
-
-// 	$gap = $g_min * 60 + $g_hour * 60 * 60;
-// 	return $gap;
-// }
-
-/**
- * YYYYMMDDHHIISS format changed to unix time value
- *
- * @param string $str Time value in format of YYYYMMDDHHIISS
- * @return int
- */
-// function ztime($str)
-// {
-// 	if(!$str)
-// 	{
-// 		return;
-// 	}
-// 	if (strlen($str) === 9 || (strlen($str) === 10 && $str <= 2147483647))
-//  	{
-//  		return intval($str);
-//  	}
-
-// 	$hour = (int) substr($str, 8, 2);
-// 	$min = (int) substr($str, 10, 2);
-// 	$sec = (int) substr($str, 12, 2);
-// 	$year = (int) substr($str, 0, 4);
-// 	$month = (int) substr($str, 4, 2);
-// 	$day = (int) substr($str, 6, 2);
-// 	if(strlen($str) <= 8)
-// 	{
-// 		$gap = 0;
-// 	}
-// 	else
-// 	{
-// 		$gap = zgap();
-// 	}
-
-// 	return mktime($hour, $min, $sec, $month ? $month : 1, $day ? $day : 1, $year) + $gap;
-// }
-
-/**
  * If the recent post within a day, output format of YmdHis is "min/hours ago from now". If not within a day, it return format string.
  *
  * @param string $date Time value in format of YYYYMMDDHHIISS
@@ -666,114 +782,6 @@ function getNextSequence()
 // 	}
 
 // 	return $buff;
-// }
-
-/**
- * Name of the month return
- *
- * @param int $month Month
- * @param boot $short If set, returns short string
- * @return string
- */
-// function getMonthName($month, $short = TRUE)
-// {
-// 	$short_month = array('', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
-// 	$long_month = array('', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
-// 	return !$short ? $long_month[$month] : $short_month[$month];
-// }
-
-/**
- * Change the time format YYYYMMDDHHIISS to the user defined format
- *
- * @param string|int $str YYYYMMDDHHIISS format time values
- * @param string $format Time format of php date() function
- * @param bool $conversion Means whether to convert automatically according to the language
- * @return string
- */
-// function zdate($str, $format = 'Y-m-d H:i:s', $conversion = TRUE)
-// {
-// 	// return null if no target time is specified
-// 	if(!$str)
-// 	{
-// 		return;
-// 	}
-// 	// convert the date format according to the language
-// 	if($conversion == TRUE)
-// 	{
-// 		switch(Context::getLangType())
-// 		{
-// 			case 'en' :
-// 			case 'es' :
-// 				if($format == 'Y-m-d')
-// 				{
-// 					$format = 'M d, Y';
-// 				}
-// 				elseif($format == 'Y-m-d H:i:s')
-// 				{
-// 					$format = 'M d, Y H:i:s';
-// 				}
-// 				elseif($format == 'Y-m-d H:i')
-// 				{
-// 					$format = 'M d, Y H:i';
-// 				}
-// 				break;
-// 			case 'vi' :
-// 				if($format == 'Y-m-d')
-// 				{
-// 					$format = 'd-m-Y';
-// 				}
-// 				elseif($format == 'Y-m-d H:i:s')
-// 				{
-// 					$format = 'H:i:s d-m-Y';
-// 				}
-// 				elseif($format == 'Y-m-d H:i')
-// 				{
-// 					$format = 'H:i d-m-Y';
-// 				}
-// 				break;
-// 		}
-// 	}
-
-// 	// If year value is less than 1970, handle it separately.
-// 	if((int) substr($str, 0, 4) < 1970)
-// 	{
-// 		$hour = (int) substr($str, 8, 2);
-// 		$min = (int) substr($str, 10, 2);
-// 		$sec = (int) substr($str, 12, 2);
-// 		$year = (int) substr($str, 0, 4);
-// 		$month = (int) substr($str, 4, 2);
-// 		$day = (int) substr($str, 6, 2);
-
-// 		$trans = array(
-// 			'Y' => $year,
-// 			'y' => sprintf('%02d', $year % 100),
-// 			'm' => sprintf('%02d', $month),
-// 			'n' => $month,
-// 			'd' => sprintf('%02d', $day),
-// 			'j' => $day,
-// 			'G' => $hour,
-// 			'H' => sprintf('%02d', $hour),
-// 			'g' => $hour % 12,
-// 			'h' => sprintf('%02d', $hour % 12),
-// 			'i' => sprintf('%02d', $min),
-// 			's' => sprintf('%02d', $sec),
-// 			'M' => getMonthName($month),
-// 			'F' => getMonthName($month, FALSE)
-// 		);
-
-// 		$string = strtr($format, $trans);
-// 	}
-// 	else
-// 	{
-// 		// if year value is greater than 1970, get unixtime by using ztime() for date() function's argument. 
-// 		$string = date($format, ztime($str));
-// 	}
-// 	// change day and am/pm for each language
-// 	$unit_week = Context::getLang('unit_week');
-// 	$unit_meridiem = Context::getLang('unit_meridiem');
-// 	$string = str_replace(array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'), $unit_week, $string);
-// 	$string = str_replace(array('am', 'pm', 'AM', 'PM'), $unit_meridiem, $string);
-// 	return $string;
 // }
 
 /**
@@ -977,17 +985,6 @@ function getNextSequence()
 // 	$trigger_args->_log_type = 'flush';
 // 	$trigger_args->_elapsed_time = 0;
 // 	ModuleHandler::triggerCall('XE.writeSlowlog', 'after', $trigger_args);
-// }
-
-/**
- * microtime() return
- *
- * @return float
- */
-// function getMicroTime()
-// {
-// 	list($time1, $time2) = explode(' ', microtime());
-// 	return (float) $time1 + (float) $time2;
 // }
 
 /**
@@ -1797,30 +1794,6 @@ function getNextSequence()
 // //]]>
 // </script>';
 // }
-
-
-function isDefinedLangCode($str)
-{
-	return preg_match('!^\$user_lang->([a-z0-9\_]+)$!is', trim($str));
-}
-
-/**
- * This function is a shortcut to htmlspecialchars().
- *
- * @copyright Rhymix Developers and Contributors
- * @link https://github.com/rhymix/rhymix
- *
- * @param string $str The string to escape
- * @param bool $double_escape Set this to false to skip symbols that are already escaped (default: true)
- * @return string
- */
-function escape($str, $double_escape = true, $escape_defined_lang_code = false)
-{
-	if(!$escape_defined_lang_code && isDefinedLangCode($str)) return $str;
-
-	$flags = ENT_QUOTES | ENT_SUBSTITUTE;
-	return htmlspecialchars($str, $flags, 'UTF-8', $double_escape);
-}
 
 /**
  * This function escapes a string to be used in a CSS property.

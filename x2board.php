@@ -14,16 +14,20 @@
 
 if(!defined('ABSPATH')) exit;
 
-if ( ! defined( 'X2B_VERSION' ) ) {
+if ( !defined( 'X2B_VERSION' ) ) {
     define('X2B_VERSION', '0.0.1');
 }
-if ( ! defined( 'X2B_PAGE_TITLE' ) ) {
+if ( !defined( 'X2B_PAGE_TITLE' ) ) {
     define('X2B_PAGE_TITLE', __('x2Board', 'x2board'));
 }
-if ( ! defined( 'X2B_DOMAIN' ) ) {
+if ( !defined( 'X2B_DOMAIN' ) ) {
     define('X2B_DOMAIN', 'x2board');
 }
-if ( ! defined( 'X2B__FILE__' ) ) {
+if ( !defined( 'X2B_PAGE_IDENTIFIER' ) ) {
+    define('X2B_PAGE_IDENTIFIER', 'Keep this mark, x2board-installed');
+}
+
+if ( !defined( 'X2B__FILE__' ) ) {
     define('X2B__FILE__', __FILE__);
     define('X2B_PLUGIN_BASE', plugin_basename(X2B__FILE__));
     define('X2B_PATH', plugin_dir_path(X2B__FILE__));
@@ -32,9 +36,13 @@ if ( ! defined( 'X2B__FILE__' ) ) {
 
 /*
  *----------------------------------------------------------------------------
- * CRP modules & includes
+ * x2board modules & includes
  *----------------------------------------------------------------------------
  */
+
+if ( !is_admin() || !defined( 'WP_CLI' ) ) {
+	require_once X2B_PATH . 'includes/user.php';
+}
 
 // require_once X2B_PATH . 'includes/admin/default-settings.php';
 //  require_once X2B_PATH . 'includes/admin/register-settings.php';

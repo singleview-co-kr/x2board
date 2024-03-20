@@ -1,6 +1,4 @@
 <?php
-/* Copyright (C) <https://singleview.co.kr> */
-
 namespace X2board\Includes\Classes;
 
 if (!defined('ABSPATH')) {
@@ -26,7 +24,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 		 * Request method
 		 * @var string GET|POST|XMLRPC|JSON
 		 */
-		public $request_method = 'GET';
+		// public $request_method = 'GET';
 
 		/**
 		 * js callback function name.
@@ -134,22 +132,35 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 		 * variables from GET or form submit
 		 * @var mixed
 		 */
-		// public $get_vars = NULL;
+		public $get_vars = NULL;
 
 		/**
 		 * Checks uploaded
 		 * @var bool TRUE if attached file exists
 		 */
 		// public $is_uploaded = FALSE;
+		
 		/**
 		 * Pattern for request vars check
 		 * @var array
 		 */
-		public $patterns = array(
+		private $_a_patterns = array(
 				'/<\?/iUsm',
 				'/<\%/iUsm',
 				'/<script\s*?language\s*?=\s*?("|\')?\s*?php\s*("|\')?/iUsm'
 				);
+		
+		/**
+		 * Pattern for request vars check
+		 * @var array
+		 */
+		private $_a_ignore_request = array(
+				'woocommerce-login-nonce', '_wpnonce',
+				'woocommerce-reset-password-nonce',
+				'woocommerce-edit-address-nonce',
+				'save-account-details-nonce'
+				);
+
 		/**
 		 * Check init
 		 * @var bool FALSE if init fail
@@ -161,14 +172,12 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 		 *
 		 * @return object Instance
 		 */
-		public static function &getInstance()
-		{
+		public static function &getInstance() {
 			static $theInstance = null;
 			if(!$theInstance)
 			{
 				$theInstance = new Context();
 			}
-
 			return $theInstance;
 		}
 
@@ -177,8 +186,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 		 *
 		 * @return void
 		 */
-		function __construct()
-		{
+		public function __construct() {
 			// $this->oFrontEndFileHandler = new FrontEndFileHandler();
 			$this->get_vars = new \stdClass();
 
@@ -192,7 +200,6 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 			// 		$this->ssl_actions = $sslActions;
 			// 	}
 			// }
-
 			$this->context = new \stdClass();
 		}
 
@@ -202,8 +209,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 		 * @see This function should be called only once
 		 * @return void
 		 */
-		function init()
-		{
+		function init()	{
 			// fix missing HTTP_RAW_POST_DATA in PHP 5.6 and above
 			// if(!isset($GLOBALS['HTTP_RAW_POST_DATA']) && version_compare(PHP_VERSION, '5.6.0', '>=') === TRUE)
 			// {
@@ -230,7 +236,14 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 
 			// $this->_setXmlRpcArgument();
 			// $this->_setJSONRequestArgument();
+			global $pagename;
 			$this->_setRequestArgument();
+			$this->_convert_pretty_command_uri();
+
+			// set frequently used skin vars
+			self::set( 'board_id', get_the_ID() ); // x2board id is WP page ID
+			self::set( 'wp_page_name', $pagename ); // x2board id is WP page ID
+			
 			// $this->_setUploadedArgument();
 
 			// $this->loadDBInfo();
@@ -362,19 +375,19 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 
 			// 	if($oMemberController && $oMemberModel)
 			// 	{
-			// 		// if signed in, validate it.
-			// 		if($oMemberModel->isLogged())
-			// 		{
-			// 			$oMemberController->setSessionInfo();
-			// 		}
-			// 		// check auto sign-in
-			// 		elseif($_COOKIE['xeak'])
-			// 		{
-			// 			$oMemberController->doAutologin();
-			// 		}
-
-			// 		$this->set('is_logged', $oMemberModel->isLogged());
-			// 		$this->set('logged_info', $oMemberModel->getLoggedInfo());
+					// if signed in, validate it.
+					// if($oMemberModel->isLogged())
+					// {
+					// 	$oMemberController->setSessionInfo();
+					// }
+					// check auto sign-in
+					// elseif($_COOKIE['xeak'])
+					// {
+					// 	$oMemberController->doAutologin();
+					// }
+					
+					$this->set( 'is_logged', is_user_logged_in() );  // $oMemberModel->isLogged());
+					$this->set( 'logged_info', wp_get_current_user()->data );  // $oMemberModel->getLoggedInfo());
 			// 	}
 			// }
 
@@ -436,14 +449,329 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 		}
 
 		/**
+		 * execute view class of a requested module
+		 *
+		 * @return void
+		 */
+		public function render_view($s_req_module) {
+			$o_view = \X2board\Includes\getModule($s_req_module);
+			$o_view->init(); 
+			unset($o_view);
+		}
+
+		/**
+		 * handle request arguments for GET/POST
+		 *
+		 * @return void
+		 */
+		private function _setRequestArgument() {
+	// var_dump($_REQUEST);
+			if(!count($_REQUEST)) {
+				return;
+			}
+
+			$requestMethod = null; //$this->getRequestMethod();
+// var_dump($requestMethod);
+			foreach($_REQUEST as $key => $val) {
+				if($val === '' || self::get($key) || in_array($key, $this->_a_ignore_request) ) {
+					continue;
+				}
+	// error_log(print_r($key, true));
+	// error_log(print_r($val, true));			
+				$key = htmlentities($key);
+				$val = $this->_filterRequestVar($key, $val, false, ($requestMethod == 'GET'));
+
+				if($requestMethod == 'GET' && isset($_GET[$key])) {
+					$set_to_vars = TRUE;
+				}
+				elseif($requestMethod == 'POST' && isset($_POST[$key])) {
+					$set_to_vars = TRUE;
+				}
+				// elseif($requestMethod == 'JS_CALLBACK' && (isset($_GET[$key]) || isset($_POST[$key])))
+				// {
+				// 	$set_to_vars = TRUE;
+				// }
+				else {
+					$set_to_vars = FALSE;
+				}
+
+				if($set_to_vars) {
+					$this->_recursiveCheckVar($val);
+				}
+				$this->set($key, $val, $set_to_vars);
+			}
+		}
+
+		/**
+		 * pretty uri를  command query로 재설정함
+		 * pretty URL ?post/3 represents ?mod=post&post_id=3
+		 * http://127.0.0.1/wp-x2board?post/168
+		 * $_SERVER['REQUEST_URI']['path'] = /wp-x2board
+		 * $_SERVER['REQUEST_URI']['query'] = post/168
+		 */
+		private function _convert_pretty_command_uri() {
+			$a_cascaded_search_cmd = array('p' => 'page', 'cat' => 'category', 'tag' => 'tag', 
+										   'search' => 'search_field', 'q' => 'search_value', 
+										   'sort' => 'sort_field', 't' => 'sort_type');
+			$a_query_param = array( 'cmd'=>null, 'page'=>1,
+									'post_id'=>null, 'comment_id'=>null, 
+									'search_field'=>null, 'search_value'=>null, 
+									'sort_field'=>null, 'sort_type'=>null, 
+									'tag'=>null, 'category'=>null
+								);
+			$request_uri = wp_parse_url( $_SERVER['REQUEST_URI'] );
+			if( isset($request_uri['query'] ) )	{
+// var_dump($request_uri['query']);				
+				$s_uri = trim($request_uri['query']);
+				if( preg_match( "/^[-\w.]+\/[0-9]*$/m", $s_uri ) ) { // ex) post/1234
+					$a_uri = explode('/', sanitize_text_field( $s_uri ) );
+					$s_cmd = trim($a_uri[0]);
+					$n_val = intval($a_uri[1]);
+					switch($s_cmd) {
+						case 'p':
+							// $a_query_param['cmd'] = 'disp_list';
+							$a_query_param['page'] = $n_val;  // page_no
+							break;
+						case 'post':         // old_post_id
+						case 'modify_post':  // old_post_id
+						case 'delete_post':  // old_post_id
+						case 'reply_post':   // parent_post_id
+						case 'write_comment':    // parent_post_id
+							$a_query_param['cmd'] = $s_cmd;
+							$a_query_param['post_id'] = $n_val;
+							break;
+						case 'modify_comment':   // old_comment_id
+						case 'delete_comment':    // old_comment_id
+							$a_query_param['cmd'] = $s_cmd;
+							$a_query_param['comment_id'] = $n_val;
+							break;
+					}
+					unset($a_uri);
+				}
+				elseif( preg_match( "/^[-\w.]+$/m", $s_uri ) ) { // ex) disp_write_post
+					$s_cmd = sanitize_text_field( trim($s_uri) );
+					if( $s_cmd == 'disp_write_post') {
+						$a_query_param['cmd'] = $s_cmd;	
+					}
+				}
+				elseif( preg_match( "/^[-\w.]+\/[0-9]+\/[0-9]*$/m", $s_uri ) ) { // ex) write_comment/123/456
+					$a_uri = explode('/', sanitize_text_field( $s_uri ) );
+					$s_cmd = trim($a_uri[0]);
+					if( $s_cmd == 'write_comment') {
+						$a_query_param['cmd'] = $s_cmd;	
+						$a_query_param['post_id'] = intval($a_uri[1]);  // parent_post_id
+						$a_query_param['comment_id'] = intval($a_uri[2]);  // parent_comment_id
+					}
+					unset($a_uri);
+				}
+				elseif( preg_match( "/^[-\w.]+\/[-\w.]*$/m", $s_uri ) ) { // ex) cat/category_value
+					$a_uri = explode('/', sanitize_text_field( $s_uri ) );
+					$s_cmd = trim($a_uri[0]);
+					switch($s_cmd) {
+						case 'cat':
+							// $a_query_param['cmd'] = 'disp_list';
+							$a_query_param['category'] = trim($a_uri[1]);
+							break;
+						case 'tag':
+							// $a_query_param['cmd'] = 'disp_list';
+							$a_query_param['tag'] = trim($a_uri[1]);
+							break;
+					}
+					unset($a_uri);
+				}
+				elseif( preg_match( "/^[-\w.]+\/[-\w.]+\/[-\w.]+\/[-\w.]*$/m", $s_uri ) ) { // ex) search/search_field/q/search_value
+					$a_uri = explode('/', sanitize_text_field( $s_uri ) );
+					$s_cmd = trim($a_uri[0]);
+					$s_query = trim($a_uri[2]);
+					if( $s_cmd == 'search' && $s_query == 'q' ) {  // q means query
+						$a_query_param['search_field'] = trim($a_uri[1]);
+						$a_query_param['search_value'] = trim($a_uri[3]);
+					}
+					elseif( $s_cmd == 'sort' && $s_query == 't' ) {  // t means type
+						$a_query_param['sort_field'] = trim($a_uri[1]);
+						$a_query_param['sort_type'] = trim($a_uri[3]);
+					}
+					unset($a_uri);
+				}
+				else { // cascaded search
+					// $a_query_param['cmd'] = 'disp_list';
+					$a_uri = explode('/', sanitize_text_field( $s_uri ) );
+					foreach( $a_uri as $n_idx => $s_val ) {
+						if( $n_idx % 2 == 0 ) {
+							if( isset( $a_cascaded_search_cmd[$s_val] ) ){
+								$s_cmd = $a_cascaded_search_cmd[$s_val];
+								$a_query_param[$s_cmd] = $a_uri[$n_idx+1];
+							}
+						}
+					}
+					unset($a_uri);					
+				}
+			}
+// var_dump($a_query_param);
+			// all command should be set to avoid error on skin rendering
+			foreach($a_query_param as $s_qry_name => $s_qry_val ) {
+				self::set( $s_qry_name, $s_qry_val );
+			}
+			unset($a_cascaded_search_cmd);
+			unset($a_query_param);
+			unset($request_uri);
+		}
+
+		/**
+		 * ?post_id=xxx 값을 반환한다.
+		 * @return string
+		 */
+		// private function _get_post_id(){
+		// 	static $post_id;
+		// 	$a_rst = pretty_uri();
+		// 	if( isset($a_rst['post_id']))
+		// 		$_GET['post_id'] = $a_rst['post_id'];
+		// 	elseif( isset($a_rst['category_id']))
+		// 		$_GET['category_id'] = $a_rst['category_id'];
+		// 	if($post_id === null){
+		// 		$_GET['post_id'] = isset($_GET['post_id'])?intval($_GET['post_id']):'';
+		// 		// $_POST['post_id'] = isset($_POST['post_id'])?intval($_POST['post_id']):'';
+		// 		$post_id = $_GET['post_id']?$_GET['post_id']:$_POST['post_id'];
+		// 	}
+		// 	return apply_filters('get_post_id', $post_id);
+		// }
+
+		/**
+		 * ?mod=xxx 값을 반환한다.
+		 * @param string $default
+		 * @return string
+		 */
+		// private function _get_mod($default=''){
+		// 	static $mod;
+		// 	$a_rst = pretty_uri();
+		// 	if( isset($a_rst['mod']))
+		// 		$_GET['mod'] = $a_rst['mod'];
+		// 	if($mod === null){
+		// 		$_GET['mod'] = isset($_GET['mod'])?sanitize_key($_GET['mod']):'';
+		// 		$_POST['mod'] = isset($_POST['mod'])?sanitize_key($_POST['mod']):'';
+		// 		$mod = $_GET['mod']?$_GET['mod']:$_POST['mod'];
+		// 	}
+		// 	if(!in_array($mod, array('list', 'post', 'write_post', 'update_post', 'delete_doc'))){
+		// 		return $default;
+		// 	}
+		// 	return apply_filters('get_mod', $mod);
+		// }
+
+		private function _recursiveCheckVar($val) {
+			if(is_string($val)) {
+				foreach($this->_a_patterns as $pattern) {
+					if(preg_match($pattern, $val)) {
+						$this->isSuccessInit = FALSE;
+						return;
+					}
+				}
+			}
+			else if(is_array($val)) {
+				foreach($val as $val2) {
+					$this->_recursiveCheckVar($val2);
+				}
+			}
+		}
+
+		/**
+		 * Return request method
+		 * @return string Request method type. (Optional - GET|POST|XMLRPC|JSON)
+		 */
+		// public static function getRequestMethod() {
+		// 	$self = self::getInstance();
+		// 	return $self->request_method;
+		// }
+
+		/**
 		 * Finalize using resources, such as DB connection
 		 *
 		 * @return void
 		 */
-		// public static function close()
-		// {
-		// 	session_write_close();
-		// }
+		public static function close() {
+			// session_write_close();
+		}
+
+		/**
+		 * Set a context value with a key
+		 *
+		 * @param string $key Key
+		 * @param mixed $val Value
+		 * @param mixed $set_to_get_vars If not FALSE, Set to get vars.
+		 * @return void
+		 */
+		public static function set($key, $val, $set_to_get_vars = 0) {
+			$self = self::getInstance();
+			$self->context->{$key} = $val;
+			if($set_to_get_vars === FALSE) {
+				return;
+			}
+			if($val === NULL || $val === '') {
+				unset($self->get_vars->{$key});
+				return;
+			}
+// var_dump($key);
+// var_dump($self->get_vars->{$key});
+			if($set_to_get_vars || !isset($self->get_vars->{$key})) {
+				$self->get_vars->{$key} = $val;
+			}
+		}
+
+		/**
+		 * Return key's value
+		 *
+		 * @param string $key Key
+		 * @return string Key
+		 */
+		public static function get($key) {
+			$self = self::getInstance();
+			if(!isset($self->context->{$key})) {
+				return null;
+			}
+	// error_log(print_r($self->context, true));	
+			return $self->context->{$key};
+		}
+
+		/**
+		 * Get one more vars in object vars with given arguments(key1, key2, key3,...)
+		 *
+		 * @return object
+		 */
+		public static function gets() {
+			$num_args = func_num_args();
+			if($num_args < 1) {
+				return;
+			}
+			$self = self::getInstance();
+			$args_list = func_get_args();
+			$output = new \stdClass();
+			foreach($args_list as $v) {
+				$output->{$v} = $self->get($v);
+			}
+			return $output;
+		}
+
+		/**
+		 * Return all data for \X2board\Includes\Classes\Skin::load()
+		 *
+		 * @return object All data
+		 */
+		public static function getAll4Skin() {
+			$self = self::getInstance();
+			return (array)$self->context;
+		}
+
+		/**
+		 * Return values from the GET/POST/XMLRPC
+		 *
+		 * @return BaseObject Request variables.
+		 */
+		public static function getRequestVars() {
+			$self = self::getInstance();
+			if($self->get_vars) {
+				return clone($self->get_vars);
+			}
+			return new \stdClass;
+		}
 
 		/**
 		 * Load the database information
@@ -1167,20 +1495,20 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 		 *
 		 * @return string Response method. If it's not set, returns request method.
 		 */
-		public static function getResponseMethod()
-		{
-			$self = self::getInstance();
+		// public static function getResponseMethod()
+		// {
+		// 	$self = self::getInstance();
 
-			if($self->response_method)
-			{
-				return $self->response_method;
-			}
+		// 	if($self->response_method)
+		// 	{
+		// 		return $self->response_method;
+		// 	}
 
-			$method = $self->getRequestMethod();
-			$methods = array('HTML' => 1, 'XMLRPC' => 1, 'JSON' => 1, 'JS_CALLBACK' => 1);
+		// 	$method = $self->getRequestMethod();
+		// 	$methods = array('HTML' => 1, 'XMLRPC' => 1, 'JSON' => 1, 'JS_CALLBACK' => 1);
 
-			return isset($methods[$method]) ? $method : 'HTML';
-		}
+		// 	return isset($methods[$method]) ? $method : 'HTML';
+		// }
 
 		/**
 		 * Determine request method
@@ -1188,18 +1516,18 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 		 * @param string $type Request method. (Optional - GET|POST|XMLRPC|JSON)
 		 * @return void
 		 */
-		public static function setRequestMethod($type = '')
-		{
-			$self = self::getInstance();
+		// public static function setRequestMethod($type = '')
+		// {
+		// 	$self = self::getInstance();
 
-			$self->js_callback_func = $self->getJSCallbackFunc();
+		// 	$self->js_callback_func = $self->getJSCallbackFunc();
 
-			($type && $self->request_method = $type) or
-					((strpos($_SERVER['CONTENT_TYPE'], 'json') || strpos($_SERVER['HTTP_CONTENT_TYPE'], 'json')) && $self->request_method = 'JSON') or
-					($GLOBALS['HTTP_RAW_POST_DATA'] && $self->request_method = 'XMLRPC') or
-					($self->js_callback_func && $self->request_method = 'JS_CALLBACK') or
-					($self->request_method = $_SERVER['REQUEST_METHOD']);
-		}
+		// 	($type && $self->request_method = $type) or
+		// 			((strpos($_SERVER['CONTENT_TYPE'], 'json') || strpos($_SERVER['HTTP_CONTENT_TYPE'], 'json')) && $self->request_method = 'JSON') or
+		// 			($GLOBALS['HTTP_RAW_POST_DATA'] && $self->request_method = 'XMLRPC') or
+		// 			($self->js_callback_func && $self->request_method = 'JS_CALLBACK') or
+		// 			($self->request_method = $_SERVER['REQUEST_METHOD']);
+		// }
 
 		/**
 		 * handle global arguments
@@ -1216,78 +1544,6 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 		// 		$this->isSuccessInit = FALSE;
 		// 	}
 		// }
-
-		/**
-		 * handle request arguments for GET/POST
-		 *
-		 * @return void
-		 */
-		function _setRequestArgument()
-		{
-	// error_log(print_r($_REQUEST, true));		
-			if(!count($_REQUEST))
-			{
-				return;
-			}
-
-			$requestMethod = $this->getRequestMethod();
-			foreach($_REQUEST as $key => $val)
-			{
-				if($val === '' || self::get($key))
-				{
-					continue;
-				}
-	// error_log(print_r($key, true));
-	// error_log(print_r($val, true));			
-				$key = htmlentities($key);
-				$val = $this->_filterRequestVar($key, $val, false, ($requestMethod == 'GET'));
-
-				if($requestMethod == 'GET' && isset($_GET[$key]))
-				{
-					$set_to_vars = TRUE;
-				}
-				elseif($requestMethod == 'POST' && isset($_POST[$key]))
-				{
-					$set_to_vars = TRUE;
-				}
-				// elseif($requestMethod == 'JS_CALLBACK' && (isset($_GET[$key]) || isset($_POST[$key])))
-				// {
-				// 	$set_to_vars = TRUE;
-				// }
-				else
-				{
-					$set_to_vars = FALSE;
-				}
-
-				if($set_to_vars)
-				{
-					$this->_recursiveCheckVar($val);
-				}
-				$this->set($key, $val, $set_to_vars);
-			}
-		}
-
-		function _recursiveCheckVar($val)
-		{
-			if(is_string($val))
-			{
-				foreach($this->patterns as $pattern)
-				{
-					if(preg_match($pattern, $val))
-					{
-						$this->isSuccessInit = FALSE;
-						return;
-					}
-				}
-			}
-			else if(is_array($val))
-			{
-				foreach($val as $val2)
-				{
-					$this->_recursiveCheckVar($val2);
-				}
-			}
-		}
 
 		/**
 		 * Handle request arguments for JSON
@@ -1417,7 +1673,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 			$result = array();
 			foreach($val as $k => $v)
 			{
-				$k =  \X2board\Inc\escape($k);
+				$k =  \X2board\Includes\escape($k);
 	// error_log(print_r($_SERVER, true));
 	// error_log(print_r($v, true));				
 				$result[$k] = $v;
@@ -1430,7 +1686,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 				// }
 
 				if( $_SERVER['SCRIPT_NAME'] == '/wp-admin/admin.php' ) {  // for admin screen
-					$result[$k] = \X2board\Inc\escape($result[$k], false);
+					$result[$k] = \X2board\Includes\escape($result[$k], false);
 				}
 				elseif($key === 'page' || $key === 'cpage' )
 				{
@@ -1565,16 +1821,6 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 		// 		}
 		// 	}
 		// }
-
-		/**
-		 * Return request method
-		 * @return string Request method type. (Optional - GET|POST|XMLRPC|JSON)
-		 */
-		public static function getRequestMethod()
-		{
-			$self = self::getInstance();
-			return $self->request_method;
-		}
 
 		/**
 		 * Return request URL
@@ -1972,100 +2218,6 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 
 		// 	return $url[$ssl_mode][$domain_key];
 		// }
-
-		/**
-		 * Set a context value with a key
-		 *
-		 * @param string $key Key
-		 * @param mixed $val Value
-		 * @param mixed $set_to_get_vars If not FALSE, Set to get vars.
-		 * @return void
-		 */
-		public static function set($key, $val, $set_to_get_vars = 0)
-		{
-			$self = self::getInstance();
-			$self->context->{$key} = $val;
-			if($set_to_get_vars === FALSE)
-			{
-				return;
-			}
-			if($val === NULL || $val === '')
-			{
-				unset($self->get_vars->{$key});
-				return;
-			}
-			if($set_to_get_vars || $self->get_vars->{$key})
-			{
-				$self->get_vars->{$key} = $val;
-			}
-		}
-
-		/**
-		 * Return key's value
-		 *
-		 * @param string $key Key
-		 * @return string Key
-		 */
-		public static function get($key)
-		{
-			$self = self::getInstance();
-
-			if(!isset($self->context->{$key}))
-			{
-				return null;
-			}
-	// error_log(print_r($self->context, true));	
-			return $self->context->{$key};
-		}
-
-		/**
-		 * Get one more vars in object vars with given arguments(key1, key2, key3,...)
-		 *
-		 * @return object
-		 */
-		public static function gets()
-		{
-			$num_args = func_num_args();
-			if($num_args < 1)
-			{
-				return;
-			}
-			$self = self::getInstance();
-
-			$args_list = func_get_args();
-			$output = new \stdClass();
-			foreach($args_list as $v)
-			{
-				$output->{$v} = $self->get($v);
-			}
-			return $output;
-		}
-
-		/**
-		 * Return all data
-		 *
-		 * @return object All data
-		 */
-		function getAll()
-		{
-			$self = self::getInstance();
-			return $self->context;
-		}
-
-		/**
-		 * Return values from the GET/POST/XMLRPC
-		 *
-		 * @return BaseObject Request variables.
-		 */
-		public static function getRequestVars()
-		{
-			$self = self::getInstance();
-			if($self->get_vars)
-			{
-				return clone($self->get_vars);
-			}
-			return new \stdClass;
-		}
 
 		/**
 		 * Register if an action is to be encrypted by SSL. Those actions are sent to https in common/js/xml_handler.js
