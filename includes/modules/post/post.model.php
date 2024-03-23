@@ -17,9 +17,328 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 
 	class postModel extends post
 	{
+		public $default_fields = array();
+		public $extends_fields = array();
+		public $skin_fields = array();
+
 		private $documentConfig = NULL;
 		private $_n_list_count = 20;
 		private $_n_page_count = 10;
+		
+		/**
+		 * constructor
+		 *
+		 * @return void
+		 */
+		function __construct() {
+
+			$this->default_fields = array(
+				'title' => array(
+					'field_type' => 'title',
+					'field_label' => __('Title', 'x2board'),
+					'field_name' => '',
+					'class' => 'kboard-attr-title',
+					'meta_key' => 'title',
+					'permission' => 'all',
+					'roles' => array(),
+					'default_value' => '',
+					'placeholder' => '',
+					'description' => '',
+					'close_button' => ''
+				),
+				'option' => array(
+					'field_type' => 'option',
+					'field_label' => __('Options', 'x2board'),
+					'field_name' => '',
+					'class' => 'kboard-attr-option',
+					'meta_key' => 'option',
+					'secret_permission' => '',
+					'secret' => array(),
+					'notice_permission' => 'roles',
+					'notice'=> array('administrator'),
+					'allow_comment_permission' => 'roles',
+					'allow_comment'=> array('administrator'),
+					'description' => '',
+					'close_button' => 'yes'
+				),
+				'nick_name' => array(
+					'field_type' => 'nick_name',
+					'field_label' => __('Nickname', 'x2board'),
+					'field_name' => '',
+					'class' => 'kboard-attr-nick-name',
+					'meta_key' => 'nick_name',
+					'permission' => '',
+					'default_value' => '',
+					'placeholder' => '',
+					'description' => '',
+					'close_button' => ''
+				),
+				'tree_category' => array(
+					'field_type' => 'tree_category',
+					'field_label' => __('Tree Category', 'x2board'),
+					'field_name' => '',
+					'class' => 'kboard-attr-tree-category',
+					'meta_key' => 'tree_category',
+					'permission' => '',
+					'roles' => array(),
+					'option_field' => true,
+					'description' => '',
+					'close_button' => 'yes'
+				),
+				'captcha' => array(
+					'field_type' => 'captcha',
+					'field_label' => __('Captcha', 'x2board'),
+					'class' => 'kboard-attr-captcha',
+					'meta_key' => 'captcha',
+					'description' => '',
+					'close_button' => 'yes'
+				),
+				'content' => array(
+					'field_type' => 'content',
+					'field_label' => __('Content', 'x2board'),
+					'field_name' => '',
+					'class' => 'kboard-attr-content',
+					'meta_key' => 'content',
+					'placeholder' => '',
+					'description' => '',
+					'required' => '',
+					'close_button' => 'yes'
+				),
+				'attach' => array(
+					'field_type' => 'attach',
+					'field_label' => __('Attachment', 'x2board'),
+					'field_name' => '',
+					'class' => 'kboard-attr-attach',
+					'meta_key' => 'attach',
+					'permission' => '',
+					'roles' => array(),
+					'description' => '',
+					'close_button' => 'yes'
+				),
+				'search' => array(
+					'field_type' => 'search',
+					'field_label' => __('WP Search', 'x2board'),
+					'field_name' => '',
+					'class' => 'kboard-attr-search',
+					'meta_key' => 'search',
+					'permission' => '',
+					'roles' => array(),
+					'default_value' => '',
+					'description' => '',
+					'hidden' => '',
+					'close_button' => ''
+				)
+			);
+
+			$this->extends_fields = array(
+				'text' => array(
+					'field_type' => 'text',
+					'field_label' => __('Text/Hidden', 'x2board'),
+					'field_name' => '',
+					'class' => 'kboard-attr-text',
+					'custom_class' => '',
+					'meta_key' => '',
+					'permission' => '',
+					'roles' => array(),
+					'default_value' => '',
+					'placeholder' => '',
+					'description' => '',
+					'required' => '',
+					'show_document' => '',
+					'hidden' => '',
+					'close_button' => 'yes'
+				),
+				'select' => array(
+					'field_type' => 'select',
+					'field_label' => __('Select Box', 'x2board'),
+					'field_name' => '',
+					'class' => 'kboard-attr-select',
+					'custom_class' => '',
+					'meta_key' => '',
+					'row' => array(),
+					'default_value' => '',
+					'permission' => '',
+					'roles' => array(),
+					'description' => '',
+					'required' => '',
+					'show_document' => '',
+					'close_button' => 'yes'
+				),
+				'radio' => array(
+					'field_type' => 'radio',
+					'field_label' => __('Radio Button', 'x2board'),
+					'field_name' => '',
+					'class' => 'kboard-attr-radio',
+					'custom_class' => '',
+					'meta_key' => '',
+					'row' => array(),
+					'default_value' => '',
+					'permission' => '',
+					'roles' => array(),
+					'description' => '',
+					'required' => '',
+					'show_document' => '',
+					'close_button' => 'yes'
+				),
+				'checkbox' => array(
+					'field_type' => 'checkbox',
+					'field_label' => __('Checkbox', 'x2board'),
+					'field_name' => '',
+					'class' => 'kboard-attr-checkbox',
+					'custom_class' => '',
+					'meta_key' => '',
+					'row' => array(),
+					'permission' => '',
+					'roles' => array(),
+					'description' => '',
+					'required' => '',
+					'show_document' => '',
+					'close_button' => 'yes'
+				),
+				'textarea' => array(
+					'field_type' => 'textarea',
+					'field_label' => __('Textarea', 'x2board'),
+					'field_name' => '',
+					'class' => 'kboard-attr-textarea',
+					'custom_class' => '',
+					'meta_key' => '',
+					'permission' => '',
+					'roles' => array(),
+					'default_value' => '',
+					'placeholder' => '',
+					'required' => '',
+					'show_document' => '',
+					'description' => '',
+					'close_button' => 'yes'
+				),
+				'wp_editor' => array(
+					'field_type' => 'wp_editor',
+					'field_label' => __('WP Editor', 'x2board'),
+					'field_name' => '',
+					'class' => 'kboard-attr-wp-editor',
+					'custom_class' => '',
+					'meta_key' => '',
+					'permission' => '',
+					'roles' => array(),
+					'default_value' => '',
+					'placeholder' => '',
+					'required' => '',
+					'show_document' => '',
+					'description' => '',
+					'close_button' => 'yes'
+				),
+				'html' => array(
+					'field_type' => 'html',
+					'field_label' => __('HTML', 'x2board'),
+					'field_name' => '',
+					'class' => 'kboard-attr-html',
+					'custom_class' => '',
+					'meta_key' => '',
+					'permission' => '',
+					'roles' => array(),
+					'default_value' => '',
+					'show_document' => '',
+					'description' => '',
+					'close_button' => 'yes',
+					'html' => ''
+				),
+				'shortcode' => array(
+					'field_type' => 'shortcode',
+					'field_label' => __('Shortcode', 'x2board'),
+					'field_name' => '',
+					'class' => 'kboard-attr-shortcode',
+					'custom_class' => '',
+					'meta_key' => '',
+					'permission' => '',
+					'roles' => array(),
+					'default_value' => '',
+					'show_document' => '',
+					'description' => '',
+					'close_button' => 'yes',
+					'shortcode' => ''
+				),
+				'date' => array(
+					'field_type' => 'date',
+					'field_label' => __('Date Select', 'x2board'),
+					'field_name' => '',
+					'class' => 'kboard-attr-date',
+					'custom_class' => '',
+					'meta_key' => '',
+					'permission' => '',
+					'roles' => array(),
+					'default_value' => '',
+					'placeholder' => '',
+					'required' => '',
+					'show_document' => '',
+					'description' => '',
+					'close_button' => 'yes'
+				),
+				'time' => array(
+					'field_type' => 'time',
+					'field_label' => __('Time Select', 'x2board'),
+					'field_name' => '',
+					'class' => 'kboard-attr-time',
+					'custom_class' => '',
+					'meta_key' => '',
+					'permission' => '',
+					'roles' => array(),
+					'default_value' => '',
+					'placeholder' => '',
+					'required' => '',
+					'show_document' => '',
+					'description' => '',
+					'close_button' => 'yes'
+				),
+				'email' => array(
+					'field_type' => 'email',
+					'field_label' => __('Email', 'x2board'),
+					'field_name' => '',
+					'class' => 'kboard-attr-email',
+					'custom_class' => '',
+					'meta_key' => '',
+					'permission' => '',
+					'roles' => array(),
+					'default_value' => '',
+					'placeholder' => '',
+					'required' => '',
+					'show_document' => '',
+					'description' => '',
+					'hidden' => '',
+					'close_button' => 'yes'
+				),
+				'address' => array(
+					'field_type' => 'address',
+					'field_label' => __('Address', 'x2board'),
+					'field_name' => '',
+					'class' => 'kboard-attr-address',
+					'custom_class' => '',
+					'meta_key' => '',
+					'permission' => '',
+					'roles' => array(),
+					'default_value' => '',
+					'placeholder' => '',
+					'required' => '',
+					'show_document' => '',
+					'description' => '',
+					'close_button' => 'yes'
+				),
+				/*
+				'color' => array(
+					'field_type' => 'color',
+					'field_label' => __('Color Select', 'x2board'),
+					'field_name' => '',
+					'class' => 'kboard-attr-color',
+					'meta_key' => '',
+					'permission' => '',
+					'roles' => array(),
+					'default_value' => '',
+					'description' => '',
+					'show_document' => '',
+					'close_button' => 'yes'
+				)
+				*/
+			);
+		}
 
 		/**
 		 * Initialization
@@ -28,200 +347,20 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 		// function init() {}
 
 		/**
-		 * document checked the permissions on the session values
-		 * @param int $document_srl
-		 * @return void
+		 * $this->default_fields 반환한다.
+		 * @return array
 		 */
-		function isGranted($n_post_id) {
-			return $_SESSION['own_post'][$n_post_id];
-		}
-
+		// public function get_default_user_input_fields() {
+		// 	return $this->default_fields;
+		// }
+		
 		/**
-		 * Return document extra information from database
-		 * @param array $documentSrls
-		 * @return object
+		 * $this->default_fields 반환한다.
+		 * @return array
 		 */
-		function getDocumentExtraVarsFromDB($documentSrls)
-		{
-			if(!is_array($documentSrls) || count($documentSrls) == 0)
-			{
-				return new BaseObject(-1, 'msg_invalid_request');
-			}
-
-			$args = new stdClass();
-			$args->document_srl = $documentSrls;
-			$output = executeQueryArray('document.getDocumentExtraVars', $args);
-			return $output;
-		}
-
-		/**
-		 * Extra variables for each article will not be processed bulk select and apply the macro city
-		 * @return void
-		 */
-		function setToAllDocumentExtraVars()
-		{
-			static $checked_documents = array();
-			$_document_list = &$GLOBALS['XE_DOCUMENT_LIST'];
-
-			// XE XE_DOCUMENT_LIST all documents that the object referred to the global variable settings
-			if(count($_document_list) <= 0) return;
-
-			// Find all called the document object variable has been set extension
-			$document_srls = array();
-			foreach($_document_list as $key => $val)
-			{
-				if(!$val->document_srl || $checked_documents[$val->document_srl]) continue;
-				$checked_documents[$val->document_srl] = true;
-				$document_srls[] = $val->document_srl;
-			}
-			// If the document number, return detected
-			if(!count($document_srls)) return;
-			// Expand variables mijijeongdoen article about a current visitor to the extension of the language code, the search variable
-			//$obj->document_srl = implode(',',$document_srls);
-			$output = $this->getDocumentExtraVarsFromDB($document_srls);
-			if($output->toBool() && $output->data)
-			{
-				foreach($output->data as $key => $val)
-				{
-					if(!isset($val->value)) continue;
-					if(!$extra_vars[$val->module_srl][$val->document_srl][$val->var_idx][0]) $extra_vars[$val->module_srl][$val->document_srl][$val->var_idx][0] = trim($val->value);
-					$extra_vars[$val->document_srl][$val->var_idx][$val->lang_code] = trim($val->value);
-				}
-			}
-
-			$user_lang_code = Context::getLangType();
-			for($i=0,$c=count($document_srls);$i<$c;$i++)
-			{
-				$document_srl = $document_srls[$i];
-				unset($vars);
-
-				if(!$_document_list[$document_srl] || !is_object($_document_list[$document_srl]) || !$_document_list[$document_srl]->isExists()) continue;
-				$module_srl = $_document_list[$document_srl]->get('module_srl');
-				$extra_keys = $this->getExtraKeys($module_srl);
-				$vars = $extra_vars[$document_srl];
-				$document_lang_code = $_document_list[$document_srl]->get('lang_code');
-				// Expand the variable processing
-				if(count($extra_keys))
-				{
-					foreach($extra_keys as $idx => $key)
-					{
-						$extra_keys[$idx] = clone($key);
-						$val = $vars[$idx];
-						if(isset($val[$user_lang_code])) $v = $val[$user_lang_code];
-						else if(isset($val[$document_lang_code])) $v = $val[$document_lang_code];
-						else if(isset($val[0])) $v = $val[0];
-						else $v = null;
-						$extra_keys[$idx]->value = $v;
-					}
-				}
-
-				unset($evars);
-				$evars = new ExtraVar($module_srl);
-				$evars->setExtraVarKeys($extra_keys);
-				// Title Processing
-				if($vars[-1][$user_lang_code]) $_document_list[$document_srl]->add('title',$vars[-1][$user_lang_code]);
-				// Information processing
-				if($vars[-2][$user_lang_code]) $_document_list[$document_srl]->add('content',$vars[-2][$user_lang_code]);
-				
-				// static 데이터를 갱신해주기 위해 들어간 코드같으나 어차피 언어 변경 자체는 페이지 전환이 일어나면서 발생하는게 대부분이라 효용이 없음. 또한 예기치않게 권한이 없는 다국어 문서 내용을 보여주는 부효과가 일어남		
-				/*		
-				if($vars[-1][$user_lang_code] || $vars[-2][$user_lang_code])
-				{
-					unset($checked_documents[$document_srl]);
-				}
-				*/
-
-				$GLOBALS['XE_EXTRA_VARS'][$document_srl] = $evars->getExtraVars();
-			}
-		}
-
-		/**
-		 * Import Document
-		 * @param int $document_srl
-		 * @param bool $is_admin
-		 * @param bool $load_extra_vars
-		 * @param array $columnList
-		 * @return documentItem
-		 */
-		function getDocument($document_srl=0, $is_admin = false, $load_extra_vars=true, $columnList = array())
-		{
-			if(!$document_srl) return new documentItem();
-
-			if(!$GLOBALS['XE_DOCUMENT_LIST'][$document_srl])
-			{
-				$oDocument = new documentItem($document_srl, $load_extra_vars, $columnList);
-				if(!$oDocument->isExists())
-				{
-					return $oDocument;
-				}
-				$GLOBALS['XE_DOCUMENT_LIST'][$document_srl] = $oDocument;
-				if($load_extra_vars) $this->setToAllDocumentExtraVars();
-			}
-			if($is_admin) $GLOBALS['XE_DOCUMENT_LIST'][$document_srl]->setGrant();
-
-			return $GLOBALS['XE_DOCUMENT_LIST'][$document_srl];
-		}
-
-		/**
-		 * Bringing multiple documents (or paging)
-		 * @param array|string $document_srls
-		 * @param bool $is_admin
-		 * @param bool $load_extra_vars
-		 * @param array $columnList
-		 * @return array value type is documentItem
-		 */
-		function getDocuments($document_srls, $is_admin = false, $load_extra_vars=true, $columnList = array())
-		{
-			if(is_array($document_srls))
-			{
-				$list_count = count($document_srls);
-				$document_srls = implode(',',$document_srls);
-			}
-			else
-			{
-				$list_count = 1;
-			}
-			$args = new stdClass();
-			$args->document_srls = $document_srls;
-			$args->list_count = $list_count;
-			$args->order_type = 'asc';
-
-			$output = executeQuery('document.getDocuments', $args, $columnList);
-			$document_list = $output->data;
-			if(!$document_list) return;
-			if(!is_array($document_list)) $document_list = array($document_list);
-
-			$document_count = count($document_list);
-			foreach($document_list as $key => $attribute)
-			{
-				$document_srl = $attribute->document_srl;
-				if(!$document_srl) continue;
-
-				if(!$GLOBALS['XE_DOCUMENT_LIST'][$document_srl])
-				{
-					$oDocument = null;
-					$oDocument = new documentItem();
-					$oDocument->setAttribute($attribute, false);
-					if($is_admin) $oDocument->setGrant();
-					$GLOBALS['XE_DOCUMENT_LIST'][$document_srl] = $oDocument;
-				}
-
-				$result[$attribute->document_srl] = $GLOBALS['XE_DOCUMENT_LIST'][$document_srl];
-			}
-
-			if($load_extra_vars) $this->setToAllDocumentExtraVars();
-
-			$output = null;
-			if(count($result))
-			{
-				foreach($result as $document_srl => $val)
-				{
-					$output[$document_srl] = $GLOBALS['XE_DOCUMENT_LIST'][$document_srl];
-				}
-			}
-
-			return $output;
-		}
+		// public function get_extended_user_input_fields() {
+		// 	return $this->extends_fields;
+		// }
 
 		/**
 		 * bringing the list of documents
@@ -306,7 +445,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			}
 
 			// Return if no result or an error occurs
-			if(!$output->toBool()||!count($output->data)) return $output;
+			if(!$output->toBool()||!count($output->data)) {
+				return $output;
+			}
 
 			$idx = 0;
 			$data = $output->data;
@@ -327,16 +468,16 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			foreach($data as $key => $attribute) {
 				if($except_notice && $attribute->is_notice == 'Y') continue;
 				$post_id = $attribute->post_id;
-				if(!isset($G_X2B_CACHE['X2B_POST_LIST'][$post_id]))
+				if(!isset($G_X2B_CACHE['POST_LIST'][$post_id]))
 				{
 					$o_post = null;
 					$o_post = new \X2board\Includes\Modules\Post\postItem();
 					$o_post->set_attr($attribute, false);
 					// if($is_admin) $oDocument->setGrant();  // never executed command
-					$G_X2B_CACHE['X2B_POST_LIST'][$post_id] = $o_post;
+					$G_X2B_CACHE['POST_LIST'][$post_id] = $o_post;
 				}
 
-				$output->data[$virtual_number] = $G_X2B_CACHE['X2B_POST_LIST'][$post_id];
+				$output->data[$virtual_number] = $G_X2B_CACHE['POST_LIST'][$post_id];
 				$virtual_number--;
 			}
 
@@ -344,7 +485,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 
 			if(count($output->data)) {
 				foreach($output->data as $number => $post) {
-					$output->data[$number] = $G_X2B_CACHE['X2B_POST_LIST'][$post->post_id];
+					$output->data[$number] = $G_X2B_CACHE['POST_LIST'][$post->post_id];
 				}
 			}
 // var_dump($G_X2B_CACHE );
@@ -391,21 +532,366 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 				$post_id = $val->post_id;
 				if(!$post_id) continue;
 
-				if(!isset($G_X2B_CACHE['X2B_POST_LIST'][$post_id]))
+				if(!isset($G_X2B_CACHE['POST_LIST'][$post_id]))
 				{
 					$o_post = null;
 					$o_post = new postItem();
 					$o_post->set_attr($val, false);
-					$G_X2B_CACHE['X2B_POST_LIST'][$post_id] = $o_post;
+					$G_X2B_CACHE['POST_LIST'][$post_id] = $o_post;
 				}
-				$result->data[$post_id] = $G_X2B_CACHE['X2B_POST_LIST'][$post_id];
+				$result->data[$post_id] = $G_X2B_CACHE['POST_LIST'][$post_id];
 			}
 			// $this->setToAllDocumentExtraVars();
 // var_dump($G_X2B_CACHE);
 			foreach($result->data as $post_id => $val) {
-				$result->data[$post_id] = $G_X2B_CACHE['X2B_POST_LIST'][$post_id];
+				$result->data[$post_id] = $G_X2B_CACHE['POST_LIST'][$post_id];
 			}
 			return $result;
+		}
+
+		/**
+		 * Bringing the Categories list the specific module
+		 * Speed and variety of categories, considering the situation created by the php script to include a list of the must, in principle, to use
+		 * @param int $module_srl
+		 * @param array $columnList
+		 * @return array
+		 */
+		function get_category_list($columnList = array()) {  // $module_srl, 
+			// $module_srl = (int)$module_srl;
+			$n_board_id = \X2board\Includes\Classes\Context::get('board_id');
+
+			// Category of the target module file swollen
+			// $filename = sprintf("%sfiles/cache/document_category/%s.php", _XE_PATH_, $module_srl);
+			// If the target file to the cache file regeneration category
+			// if(!file_exists($filename))	{
+			// 	$oDocumentController = getController('document');
+			// 	if(!$oDocumentController->makeCategoryFile($module_srl)) return array();
+			// }
+			// include($filename);
+
+			// Cleanup of category
+			$document_category = array();
+			// $this->_arrangeCategory($document_category, $menu->list, 0);
+			return $document_category;
+		}
+
+		/**
+		 * 설정된 사용자 입력 필드를 반환한다.
+		 * @return array
+		 */
+		// public function getSkinFields() {
+		public function get_user_input_fields() {
+			$fields = array();
+			
+			if($this->skin_fields){
+				$fields = $this->skin_fields;
+			}
+			else{
+				$fields = $this->default_fields;
+				foreach($fields as $key=>$value){
+					if(isset($value['kboard_extends'])){
+						unset($fields[$key]);
+					}
+				}
+			}
+			return apply_filters('x2board_user_input_fields', $fields);
+		}
+
+		/**
+		 * Import Document
+		 * @param int $document_srl
+		 * @param bool $is_admin
+		 * @param bool $load_extra_vars
+		 * @param array $columnList
+		 * @return documentItem
+		 */
+		// function getDocument($document_srl=0, $is_admin = false, $load_extra_vars=true, $columnList = array())
+		public function get_post($n_post_id=0, $is_admin = false, $load_extra_vars=true, $columnList = array()) {
+			if(!$n_post_id) {
+				return new postItem();
+			}
+			global $G_X2B_CACHE;
+			// if(!$GLOBALS['XE_DOCUMENT_LIST'][$post_id])
+			if(!isset($G_X2B_CACHE['POST_LIST'][$n_post_id])) {
+				$o_post = new postItem($n_post_id, $load_extra_vars, $columnList);
+				if(!$o_post->is_exists()) {
+					return $o_post;
+				}
+				$G_X2B_CACHE['POST_LIST'][$n_post_id] = $o_post;
+				if($load_extra_vars) {
+					// $this->setToAllDocumentExtraVars();
+				}
+			}
+			if($is_admin) {
+				$G_X2B_CACHE['POST_LIST'][$n_post_id]->setGrant();
+			} 
+			return $G_X2B_CACHE['POST_LIST'][$n_post_id];
+		}
+
+		/**
+		 * A particular document to get the value of the extra variable function
+		 * @param int $module_srl
+		 * @param int $document_srl
+		 * @return array
+		 */
+		// function getExtraVars($module_srl, $document_srl)
+		public function get_extra_vars( $board_id, $post_id ) {
+			global $G_X2B_CACHE;
+			if(!isset($G_X2B_CACHE['EXTRA_VARS'][$board_id])) {
+				// Extended to extract the values of variables set
+				// $o_post = $this->getDocument($board_id, false);
+				$G_X2B_CACHE['POST_LIST'][$board_id] = $this->get_post($board_id, false); //$o_post;
+				// $this->setToAllDocumentExtraVars();
+			}
+			if(is_array($G_X2B_CACHE['EXTRA_VARS'][$board_id])) {
+				ksort($G_X2B_CACHE['EXTRA_VARS'][$board_id]);
+			} 
+			return $G_X2B_CACHE['EXTRA_VARS'][$board_id];
+		}
+
+		/**
+		 * Extra variables for each article will not be processed bulk select and apply the macro city
+		 * @return void
+		 */
+		// function setToAllDocumentExtraVars()
+		public function setToAllDocumentExtraVars()
+		{
+			global $G_X2B_CACHE;
+			static $checked_documents = array();
+			$_document_list = &$G_X2B_CACHE['POST_LIST'];
+
+			// X2B POST_LIST all posts that the object referred to the global variable settings
+			if(count($_document_list) <= 0) {
+				return;
+			}
+
+			// Find all called the document object variable has been set extension
+			$document_srls = array();
+			foreach($_document_list as $key => $val) {
+				if(!$val->document_srl || $checked_documents[$val->document_srl]) {
+					continue;
+				}
+				$checked_documents[$val->document_srl] = true;
+				$document_srls[] = $val->document_srl;
+			}
+			// If the document number, return detected
+			if(!count($document_srls)) {
+				return;
+			}
+			// Expand variables mijijeongdoen article about a current visitor to the extension of the language code, the search variable
+			//$obj->document_srl = implode(',',$document_srls);
+			$output = $this->getDocumentExtraVarsFromDB($document_srls);
+			if($output->toBool() && $output->data) {
+				foreach($output->data as $key => $val) {
+					if(!isset($val->value)) {
+						continue;
+					}
+					if(!$extra_vars[$val->module_srl][$val->document_srl][$val->var_idx][0]) {
+						$extra_vars[$val->module_srl][$val->document_srl][$val->var_idx][0] = trim($val->value);
+					}
+					$extra_vars[$val->document_srl][$val->var_idx][$val->lang_code] = trim($val->value);
+				}
+			}
+
+			$user_lang_code = Context::getLangType();
+			for($i=0,$c=count($document_srls);$i<$c;$i++)
+			{
+				$document_srl = $document_srls[$i];
+				unset($vars);
+
+				if(!$_document_list[$document_srl] || !is_object($_document_list[$document_srl]) || !$_document_list[$document_srl]->isExists()) continue;
+				$module_srl = $_document_list[$document_srl]->get('module_srl');
+				$extra_keys = $this->getExtraKeys($module_srl);
+				$vars = $extra_vars[$document_srl];
+				$document_lang_code = $_document_list[$document_srl]->get('lang_code');
+				// Expand the variable processing
+				if(count($extra_keys))
+				{
+					foreach($extra_keys as $idx => $key)
+					{
+						$extra_keys[$idx] = clone($key);
+						$val = $vars[$idx];
+						if(isset($val[$user_lang_code])) $v = $val[$user_lang_code];
+						else if(isset($val[$document_lang_code])) $v = $val[$document_lang_code];
+						else if(isset($val[0])) $v = $val[0];
+						else $v = null;
+						$extra_keys[$idx]->value = $v;
+					}
+				}
+
+				unset($evars);
+				$evars = new ExtraVar($module_srl);
+				$evars->setExtraVarKeys($extra_keys);
+				// Title Processing
+				if($vars[-1][$user_lang_code]) $_document_list[$document_srl]->add('title',$vars[-1][$user_lang_code]);
+				// Information processing
+				if($vars[-2][$user_lang_code]) $_document_list[$document_srl]->add('content',$vars[-2][$user_lang_code]);
+				
+				// static 데이터를 갱신해주기 위해 들어간 코드같으나 어차피 언어 변경 자체는 페이지 전환이 일어나면서 발생하는게 대부분이라 효용이 없음. 또한 예기치않게 권한이 없는 다국어 문서 내용을 보여주는 부효과가 일어남		
+				/*		
+				if($vars[-1][$user_lang_code] || $vars[-2][$user_lang_code])
+				{
+					unset($checked_documents[$document_srl]);
+				}
+				*/
+
+				$GLOBALS['EXTRA_VARS'][$document_srl] = $evars->getExtraVars();
+			}
+		}
+
+		/**
+		 * Category within a primary method to change the array type
+		 * @param array $document_category
+		 * @param array $list
+		 * @param int $depth
+		 * @return void
+		 */
+		private function _arrangeCategory(&$document_category, $list, $depth)
+		{
+			if(!count((array)$list)) return;
+			$idx = 0;
+			$list_order = array();
+			foreach($list as $key => $val)
+			{
+				$obj = new stdClass;
+				$obj->mid = $val['mid'];
+				$obj->module_srl = $val['module_srl'];
+				$obj->category_srl = $val['category_srl'];
+				$obj->parent_srl = $val['parent_srl'];
+				$obj->title = $obj->text = $val['text'];
+				$obj->description = $val['description'];
+				$obj->expand = $val['expand']=='Y'?true:false;
+				$obj->color = $val['color'];
+				$obj->document_count = $val['document_count'];
+				$obj->depth = $depth;
+				$obj->child_count = 0;
+				$obj->childs = array();
+				$obj->grant = $val['grant'];
+
+				if(Context::get('mid') == $obj->mid && Context::get('category') == $obj->category_srl) $selected = true;
+				else $selected = false;
+
+				$obj->selected = $selected;
+
+				$list_order[$idx++] = $obj->category_srl;
+				// If you have a parent category of child nodes apply data
+				if($obj->parent_srl)
+				{
+					$parent_srl = $obj->parent_srl;
+					$document_count = $obj->document_count;
+					$expand = $obj->expand;
+					if($selected) $expand = true;
+
+					while($parent_srl)
+					{
+						$document_category[$parent_srl]->document_count += $document_count;
+						$document_category[$parent_srl]->childs[] = $obj->category_srl;
+						$document_category[$parent_srl]->child_count = count($document_category[$parent_srl]->childs);
+						if($expand) $document_category[$parent_srl]->expand = $expand;
+
+						$parent_srl = $document_category[$parent_srl]->parent_srl;
+					}
+				}
+
+				$document_category[$key] = $obj;
+
+				if(count($val['list'])) $this->_arrangeCategory($document_category, $val['list'], $depth+1);
+			}
+			$document_category[$list_order[0]]->first = true;
+			$document_category[$list_order[count($list_order)-1]]->last = true;
+		}
+
+
+
+
+//////////////////////////////
+
+		/**
+		 * document checked the permissions on the session values
+		 * @param int $document_srl
+		 * @return void
+		 */
+		function isGranted($n_post_id) {
+			return $_SESSION['own_post'][$n_post_id];
+		}
+
+		/**
+		 * Return document extra information from database
+		 * @param array $documentSrls
+		 * @return object
+		 */
+		function getDocumentExtraVarsFromDB($documentSrls)
+		{
+			if(!is_array($documentSrls) || count($documentSrls) == 0)
+			{
+				return new BaseObject(-1, 'msg_invalid_request');
+			}
+
+			$args = new stdClass();
+			$args->document_srl = $documentSrls;
+			$output = executeQueryArray('document.getDocumentExtraVars', $args);
+			return $output;
+		}
+
+		/**
+		 * Bringing multiple documents (or paging)
+		 * @param array|string $document_srls
+		 * @param bool $is_admin
+		 * @param bool $load_extra_vars
+		 * @param array $columnList
+		 * @return array value type is documentItem
+		 */
+		function getDocuments($document_srls, $is_admin = false, $load_extra_vars=true, $columnList = array())
+		{
+			if(is_array($document_srls))
+			{
+				$list_count = count($document_srls);
+				$document_srls = implode(',',$document_srls);
+			}
+			else
+			{
+				$list_count = 1;
+			}
+			$args = new stdClass();
+			$args->document_srls = $document_srls;
+			$args->list_count = $list_count;
+			$args->order_type = 'asc';
+
+			$output = executeQuery('document.getDocuments', $args, $columnList);
+			$document_list = $output->data;
+			if(!$document_list) return;
+			if(!is_array($document_list)) $document_list = array($document_list);
+
+			$document_count = count($document_list);
+			foreach($document_list as $key => $attribute)
+			{
+				$document_srl = $attribute->document_srl;
+				if(!$document_srl) continue;
+
+				if(!$GLOBALS['XE_DOCUMENT_LIST'][$document_srl])
+				{
+					$oDocument = null;
+					$oDocument = new documentItem();
+					$oDocument->setAttribute($attribute, false);
+					if($is_admin) $oDocument->setGrant();
+					$GLOBALS['XE_DOCUMENT_LIST'][$document_srl] = $oDocument;
+				}
+
+				$result[$attribute->document_srl] = $GLOBALS['XE_DOCUMENT_LIST'][$document_srl];
+			}
+
+			if($load_extra_vars) $this->setToAllDocumentExtraVars();
+
+			$output = null;
+			if(count($result))
+			{
+				foreach($result as $document_srl => $val)
+				{
+					$output[$document_srl] = $GLOBALS['XE_DOCUMENT_LIST'][$document_srl];
+				}
+			}
+
+			return $output;
 		}
 
 		/**
@@ -496,25 +982,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			}
 
 			return $GLOBALS['XE_EXTRA_KEYS'][$module_srl];
-		}
-
-		/**
-		 * A particular document to get the value of the extra variable function
-		 * @param int $module_srl
-		 * @param int $document_srl
-		 * @return array
-		 */
-		function getExtraVars($module_srl, $document_srl)
-		{
-			if(!isset($GLOBALS['XE_EXTRA_VARS'][$document_srl]))
-			{
-				// Extended to extract the values of variables set
-				$oDocument = $this->getDocument($document_srl, false);
-				$GLOBALS['XE_DOCUMENT_LIST'][$document_srl] = $oDocument;
-				$this->setToAllDocumentExtraVars();
-			}
-			if(is_array($GLOBALS['XE_EXTRA_VARS'][$document_srl])) ksort($GLOBALS['XE_EXTRA_VARS'][$document_srl]);
-			return $GLOBALS['XE_EXTRA_VARS'][$document_srl];
 		}
 
 		/**
@@ -774,95 +1241,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			return false;
 			return isset($this->fields->getSkinFields()['tree_category']) ? true : false;
 		}
-
-		/**
-		 * Bringing the Categories list the specific module
-		 * Speed and variety of categories, considering the situation created by the php script to include a list of the must, in principle, to use
-		 * @param int $module_srl
-		 * @param array $columnList
-		 * @return array
-		 */
-		/* function getCategoryList($module_srl, $columnList = array()) {
-			$module_srl = (int)$module_srl;
-
-			// Category of the target module file swollen
-			$filename = sprintf("%sfiles/cache/document_category/%s.php", _XE_PATH_, $module_srl);
-			// If the target file to the cache file regeneration category
-			if(!file_exists($filename))
-			{
-				$oDocumentController = getController('document');
-				if(!$oDocumentController->makeCategoryFile($module_srl)) return array();
-			}
-
-			include($filename);
-
-			// Cleanup of category
-			$document_category = array();
-			$this->_arrangeCategory($document_category, $menu->list, 0);
-			return $document_category;
-		}*/
-
-		/**
-		 * Category within a primary method to change the array type
-		 * @param array $document_category
-		 * @param array $list
-		 * @param int $depth
-		 * @return void
-		 */
-		// function _arrangeCategory(&$document_category, $list, $depth)
-		// {
-		// 	if(!count((array)$list)) return;
-		// 	$idx = 0;
-		// 	$list_order = array();
-		// 	foreach($list as $key => $val)
-		// 	{
-		// 		$obj = new stdClass;
-		// 		$obj->mid = $val['mid'];
-		// 		$obj->module_srl = $val['module_srl'];
-		// 		$obj->category_srl = $val['category_srl'];
-		// 		$obj->parent_srl = $val['parent_srl'];
-		// 		$obj->title = $obj->text = $val['text'];
-		// 		$obj->description = $val['description'];
-		// 		$obj->expand = $val['expand']=='Y'?true:false;
-		// 		$obj->color = $val['color'];
-		// 		$obj->document_count = $val['document_count'];
-		// 		$obj->depth = $depth;
-		// 		$obj->child_count = 0;
-		// 		$obj->childs = array();
-		// 		$obj->grant = $val['grant'];
-
-		// 		if(Context::get('mid') == $obj->mid && Context::get('category') == $obj->category_srl) $selected = true;
-		// 		else $selected = false;
-
-		// 		$obj->selected = $selected;
-
-		// 		$list_order[$idx++] = $obj->category_srl;
-		// 		// If you have a parent category of child nodes apply data
-		// 		if($obj->parent_srl)
-		// 		{
-		// 			$parent_srl = $obj->parent_srl;
-		// 			$document_count = $obj->document_count;
-		// 			$expand = $obj->expand;
-		// 			if($selected) $expand = true;
-
-		// 			while($parent_srl)
-		// 			{
-		// 				$document_category[$parent_srl]->document_count += $document_count;
-		// 				$document_category[$parent_srl]->childs[] = $obj->category_srl;
-		// 				$document_category[$parent_srl]->child_count = count($document_category[$parent_srl]->childs);
-		// 				if($expand) $document_category[$parent_srl]->expand = $expand;
-
-		// 				$parent_srl = $document_category[$parent_srl]->parent_srl;
-		// 			}
-		// 		}
-
-		// 		$document_category[$key] = $obj;
-
-		// 		if(count($val['list'])) $this->_arrangeCategory($document_category, $val['list'], $depth+1);
-		// 	}
-		// 	$document_category[$list_order[0]]->first = true;
-		// 	$document_category[$list_order[count($list_order)-1]]->last = true;
-		// }
 
 		/**
 		 * Wanted number of documents belonging to category

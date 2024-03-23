@@ -69,19 +69,19 @@ class DB
 	 * @var array
 	 */
 	// var $slave_db = NULL;
-	var $result = NULL;
+	// var $result = NULL;
 
 	/**
 	 * error code (0 means no error)
 	 * @var int
 	 */
-	var $errno = 0;
+	// var $errno = 0;
 
 	/**
 	 * error message
 	 * @var string
 	 */
-	var $errstr = '';
+	// var $errstr = '';
 
 	/**
 	 * query string of latest executed query
@@ -151,6 +151,12 @@ class DB
 		if(!isset($G_X2B_CACHE['__DB__'])) {
 			$G_X2B_CACHE['__DB__'] = self::create();
 		}
+		if(!isset($G_X2B_CACHE['__dbclass_elapsed_time__'])) {
+			$G_X2B_CACHE['__dbclass_elapsed_time__'] = null;
+		}
+		if(!isset($G_X2B_CACHE['__db_queries__'])) {
+			$G_X2B_CACHE['__db_queries__'] = array();
+		}
 		return $G_X2B_CACHE['__DB__'];
 
 		// if(!$db_type)
@@ -197,143 +203,36 @@ class DB
 	 * constructor
 	 * @return void
 	 */
-	function __construct()
+	public function __construct()
 	{
 		// $this->count_cache_path = _XE_PATH_ . $this->count_cache_path;
 		// $this->cache_file = _XE_PATH_ . $this->cache_file;
 	}
 
-	/**
-	 * start recording log
-	 * @param string $query query string
-	 * @return void
-	 */
-	function actStart($query)
+	public function getNextSequence()
 	{
-		$this->setError(0, 'success');
-		$this->query = $query;
-		$this->act_start = \X2board\Includes\getMicroTime();
-		$this->elapsed_time = 0;
-	}
-
-	/**
-	 * finish recording log
-	 * @return void
-	 */
-	function actFinish()
-	{
-		if(!$this->query)
+		global $wpdb;
+		$this->query = "INSERT INTO `{$wpdb->prefix}x2b_sequence` (seq) values ('0')";
+		if ($wpdb->query($this->query) === FALSE) {
+			wp_die($wpdb->last_error);
+		} 		
+		$sequence = $wpdb->insert_id;
+		if($sequence % 10000 == 0)
 		{
-			return;
+			$this->query = "delete from  `{$wpdb->prefix}x2b_sequence` where seq < ".$sequence;
+			if ($wpdb->query($this->query) === FALSE) {
+				wp_die($wpdb->last_error);
+			} 
 		}
-		$this->act_finish = \X2board\Includes\getMicroTime();
-		$elapsed_time = $this->act_finish - $this->act_start;
-		$this->elapsed_time = $elapsed_time;
-		$GLOBALS['__db_elapsed_time__'] += $elapsed_time;
-
-		$site_module_info = Context::get('site_module_info');
-		$log = array();
-		$log['query'] = $this->query;
-		$log['elapsed_time'] = $elapsed_time;
-		// $log['connection'] = $this->connection;
-		// $log['query_id'] = $this->query_id;
-		$log['page'] = $site_module_info->module;
-		$log['act'] = 'some_act'; // Context::get('act');
-		$log['time'] = date('Y-m-d H:i:s');
-
-		$bt = version_compare(PHP_VERSION, '5.3.6', '>=') ? debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS) : debug_backtrace();
-
-		foreach($bt as $no => $call)
-		{
-			if($call['function'] == 'executeQuery' || $call['function'] == 'executeQueryArray')
-			{
-				$call_no = $no;
-				$call_no++;
-				$log['called_file'] = $bt[$call_no]['file'].':'.$bt[$call_no]['line'];
-				$log['called_file'] = str_replace(_XE_PATH_ , '', $log['called_file']);
-				$call_no++;
-				$log['called_method'] = $bt[$call_no]['class'].$bt[$call_no]['type'].$bt[$call_no]['function'];
-				break;
-			}
-		}
-
-		// leave error log if an error occured (if __DEBUG_DB_OUTPUT__ is defined)
-		if($this->isError())
-		{
-			$log['result'] = 'Failed';
-			$log['errno'] = $this->errno;
-			$log['errstr'] = $this->errstr;
-
-			if(__DEBUG_DB_OUTPUT__ == 1)
-			{
-				$debug_file = _XE_PATH_ . "files/_debug_db_query.php";
-				$buff = array();
-				if(!file_exists($debug_file))
-				{
-					$buff[] = '<?php exit(); ?' . '>';
-				}
-				$buff[] = print_r($log, TRUE);
-				@file_put_contents($debug_file, implode("\n", $buff) . "\n\n", FILE_APPEND|LOCK_EX);
-			}
-		}
-		else
-		{
-			$log['result'] = 'Success';
-		}
-
-		$this->_setQueryLog($log);
-
-		$log_args = new stdClass;
-		$log_args->query = $this->query;
-		$log_args->query_id = $this->query_id;
-		$log_args->caller = $log['called_method'] . '() in ' . $log['called_file'];
-		$log_args->connection = $log['connection'];
-		writeSlowlog('query', $elapsed_time, $log_args);
-	}
-
-	/**
-	 * set query debug log
-	 * @param array $log values set query debug
-	 * @return void
-	*/
-	private function _setQueryLog($log)
-	{
-		global $G_X2B_CACHE;
-		if(!isset($G_X2B_CACHE['__db_queries__'])) {
-			$G_X2B_CACHE['__db_queries__'] = array();
-		}
-		$G_X2B_CACHE['__db_queries__'][] = $log;
-	}
-
-	/**
-	 * set error
-	 * @param int $errno error code
-	 * @param string $errstr error message
-	 * @return void
-	 */
-	function setError($errno = 0, $errstr = 'success')
-	{
-		$this->errno = $errno;
-		$this->errstr = $errstr;
-	}
-
-	/**
-	 * Return error status
-	 * @return boolean true: error, false: no error
-	 */
-	function isError()
-	{
-		return ($this->errno !== 0);
-	}
-
-	/**
-	 * Returns object of error info
-	 * @return object object of error
-	 */
-	function getError()
-	{
-		$this->errstr = 'db class error'; //Context::convertEncodingStr($this->errstr);
-		return new BaseObject($this->errno, $this->errstr);
+		// $query = sprintf("insert into `%ssequence` (seq) values ('0')", $this->prefix);
+		// $this->_query($query);
+		// $sequence = $this->db_insert_id();
+		// if($sequence % 10000 == 0)
+		// {
+		// 	$query = sprintf("delete from  `%ssequence` where seq < %d", $this->prefix, $sequence);
+		// 	$this->_query($query);
+		// }
+		return $sequence;
 	}
 
 	/**
@@ -359,7 +258,7 @@ class DB
 
 		$o_query->s_query_type = strtoupper($o_query->s_query_type);
 
-		$this->actDBClassStart();
+		$this->_actDBClassStart();
 
 		// $this->query_id = $query_id;
 
@@ -400,11 +299,10 @@ class DB
 		// 	// look for cache file
 		// 	$cache_file[$query_id] = $this->checkQueryCacheFile($query_id, $xml_file);
 		// }
-		$result = $this->_executeQuery($o_query, $arg_columns); //$cache_file[$query_id], $args, $query_id, $arg_columns, $type);
-
-		$this->actDBClassFinish();
 		// execute query
-		return $result;
+		$output = $this->_executeQuery($o_query, $arg_columns); //$cache_file[$query_id], $args, $query_id, $arg_columns, $type);
+		$this->_actDBClassFinish();
+		return $output;
 	}
 
 	/**
@@ -457,10 +355,7 @@ class DB
 			}
 		}		
 
-		if($this->isError()) {
-			$output = $this->getError();
-		}
-		else if(!is_a($output, '\X2board\Includes\Classes\BaseObject') && !is_subclass_of($output, '\X2board\Includes\Classes\BaseObject')) {
+		if(!is_a($output, '\X2board\Includes\Classes\BaseObject') && !is_subclass_of($output, '\X2board\Includes\Classes\BaseObject')) {
 			$output = new \X2board\Includes\Classes\BaseObject();
 		}
 		$output->add('_query', $this->query);
@@ -574,7 +469,14 @@ class DB
 		// $count_output = $this->_fetch($result_count);
 		// $total_count = (int) (isset($count_output->count) ? $count_output->count : NULL);
 		global $wpdb;
-		$o_post_cnt = $wpdb->get_row("SELECT COUNT(*) as `post_cnt` FROM `{$wpdb->prefix}{$queryObject->s_table_name}` {$queryObject->s_where}");
+		$this->query = "SELECT COUNT(*) as `post_cnt` FROM `{$wpdb->prefix}{$queryObject->s_table_name}` {$queryObject->s_where}";
+		$o_post_cnt = $wpdb->get_row($this->query);
+		if ($o_post_cnt === null) {
+				return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error);
+		} 
+		else {
+			$wpdb->flush();
+		}
 		$n_post_cnt = intval($o_post_cnt->post_cnt);
 		$total_count = intval(isset($o_post_cnt->post_cnt) ? $o_post_cnt->post_cnt : NULL);
 
@@ -616,14 +518,17 @@ class DB
 		// $query .= (__DEBUG_QUERY__ & 1 && $queryObject->query_id) ? sprintf(' ' . $this->comment_syntax, $this->query_id) : '';
 		// $result = $this->_query($query, $connection);
 	
-		$a_result = $wpdb->get_results("SELECT {$queryObject->s_columns} FROM `{$wpdb->prefix}{$queryObject->s_table_name}` {$queryObject->s_where} {$queryObject->s_orderby} {$s_limit}");
-		if($this->isError()) {
-			return $this->queryError($queryObject);
+		$this->query = "SELECT {$queryObject->s_columns} FROM `{$wpdb->prefix}{$queryObject->s_table_name}` {$queryObject->s_where} {$queryObject->s_orderby} {$s_limit}";
+		if ($wpdb->query($this->query) === FALSE) {
+			return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error);
+		} 
+		else {
+			$a_result = $wpdb->get_results($this->query);
+			$wpdb->flush();
 		}
 
 		$virtual_no = $total_count - ($page - 1) * $list_count;
 		$data = $this->_fetch($a_result, $virtual_no);
-// var_dump("SELECT {$queryObject->s_columns} FROM `{$wpdb->prefix}{$queryObject->s_table_name}` {$queryObject->s_where} {$queryObject->s_orderby} {$s_limit}");
 		$buff = new BaseObject();
 		$buff->total_count = $total_count;
 		$buff->total_page = $total_page;
@@ -684,9 +589,8 @@ class DB
 	 * Start recording DBClass log
 	 * @return void
 	 */
-	function actDBClassStart()
-	{
-		$this->setError(0, 'success');
+	private function _actDBClassStart() {
+		// $this->setError(0, 'success');
 		$this->act_dbclass_start = \X2board\Includes\getMicroTime();
 		$this->elapsed_dbclass_time = 0;
 	}
@@ -695,23 +599,160 @@ class DB
 	 * Finish recording DBClass log
 	 * @return void
 	 */
-	function actDBClassFinish()
+	private function _actDBClassFinish()
 	{
-		if(!$this->query)
-		{
+		if(!$this->query) {
 			return;
 		}
+		
+		global $G_X2B_CACHE;
 		$this->act_dbclass_finish = \X2board\Includes\getMicroTime();
 		$elapsed_dbclass_time = $this->act_dbclass_finish - $this->act_dbclass_start;
 		$this->elapsed_dbclass_time = $elapsed_dbclass_time;
-		$GLOBALS['__dbclass_elapsed_time__'] += $elapsed_dbclass_time;
+		$G_X2B_CACHE['__dbclass_elapsed_time__'] += $elapsed_dbclass_time;
+		$G_X2B_CACHE['__db_queries__'] = $this->query;
 	}
 
+//////////////////////////////////////
 
 
 
 
 
+
+	
+	/**
+	 * set query debug log
+	 * @param array $log values set query debug
+	 * @return void
+	*/
+	// private function _setQueryLog($log)
+	// {
+	// 	global $G_X2B_CACHE;
+	// 	if(!isset($G_X2B_CACHE['__db_queries__'])) {
+	// 		$G_X2B_CACHE['__db_queries__'] = array();
+	// 	}
+	// 	$G_X2B_CACHE['__db_queries__'][] = $log;
+	// }
+
+	/**
+	 * start recording log
+	 * @param string $query query string
+	 * @return void
+	 */
+	// function actStart($query)
+	// {
+	// 	$this->setError(0, 'success');
+	// 	$this->query = $query;
+	// 	$this->act_start = \X2board\Includes\getMicroTime();
+	// 	$this->elapsed_time = 0;
+	// }
+
+	/**
+	 * finish recording log
+	 * @return void
+	 */
+	// function actFinish()
+	// {
+	// 	if(!$this->query)
+	// 	{
+	// 		return;
+	// 	}
+	// 	$this->act_finish = \X2board\Includes\getMicroTime();
+	// 	$elapsed_time = $this->act_finish - $this->act_start;
+	// 	$this->elapsed_time = $elapsed_time;
+	// 	$GLOBALS['__db_elapsed_time__'] += $elapsed_time;
+
+	// 	$site_module_info = Context::get('site_module_info');
+	// 	$log = array();
+	// 	$log['query'] = $this->query;
+	// 	$log['elapsed_time'] = $elapsed_time;
+	// 	// $log['connection'] = $this->connection;
+	// 	// $log['query_id'] = $this->query_id;
+	// 	$log['page'] = $site_module_info->module;
+	// 	$log['act'] = 'some_act'; // Context::get('act');
+	// 	$log['time'] = date('Y-m-d H:i:s');
+
+	// 	$bt = version_compare(PHP_VERSION, '5.3.6', '>=') ? debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS) : debug_backtrace();
+
+	// 	foreach($bt as $no => $call)
+	// 	{
+	// 		if($call['function'] == 'executeQuery' || $call['function'] == 'executeQueryArray')
+	// 		{
+	// 			$call_no = $no;
+	// 			$call_no++;
+	// 			$log['called_file'] = $bt[$call_no]['file'].':'.$bt[$call_no]['line'];
+	// 			$log['called_file'] = str_replace(_XE_PATH_ , '', $log['called_file']);
+	// 			$call_no++;
+	// 			$log['called_method'] = $bt[$call_no]['class'].$bt[$call_no]['type'].$bt[$call_no]['function'];
+	// 			break;
+	// 		}
+	// 	}
+
+	// 	// leave error log if an error occured (if __DEBUG_DB_OUTPUT__ is defined)
+	// 	if($this->isError())
+	// 	{
+	// 		$log['result'] = 'Failed';
+	// 		$log['errno'] = $this->errno;
+	// 		$log['errstr'] = $this->errstr;
+
+	// 		if(__DEBUG_DB_OUTPUT__ == 1)
+	// 		{
+	// 			$debug_file = _XE_PATH_ . "files/_debug_db_query.php";
+	// 			$buff = array();
+	// 			if(!file_exists($debug_file))
+	// 			{
+	// 				$buff[] = '<?php exit(); ?' . '>';
+	// 			}
+	// 			$buff[] = print_r($log, TRUE);
+	// 			@file_put_contents($debug_file, implode("\n", $buff) . "\n\n", FILE_APPEND|LOCK_EX);
+	// 		}
+	// 	}
+	// 	else
+	// 	{
+	// 		$log['result'] = 'Success';
+	// 	}
+
+	// 	$this->_setQueryLog($log);
+
+	// 	$log_args = new stdClass;
+	// 	$log_args->query = $this->query;
+	// 	$log_args->query_id = $this->query_id;
+	// 	$log_args->caller = $log['called_method'] . '() in ' . $log['called_file'];
+	// 	$log_args->connection = $log['connection'];
+	// 	writeSlowlog('query', $elapsed_time, $log_args);
+	// }
+
+	/**
+	 * set error
+	 * @param int $errno error code
+	 * @param string $errstr error message
+	 * @return void
+	 */
+	// function setError($errno = 0, $errstr = 'success')
+	// {
+	// 	$this->errno = $errno;
+	// 	$this->errstr = $errstr;
+	// }
+
+	/**
+	 * Return error status
+	 * @return boolean true: error, false: no error
+	 */
+	// function isError()
+	// {
+	// 	return ($this->errno !== 0);
+	// }
+
+	/**
+	 * Returns object of error info
+	 * @return object object of error
+	 */
+	// function getError()
+	// {
+	// 	$this->errstr = 'db class error'; //Context::convertEncodingStr($this->errstr);
+	// 	return new BaseObject($this->errno, $this->errstr);
+	// }
 
 	/**
 	 * Handles insertAct

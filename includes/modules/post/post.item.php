@@ -48,13 +48,13 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 		function __construct($post_id = 0, $load_extra_vars = true, $columnList = array()) {
 			$this->_n_wp_post_id = $post_id;
 			$this->_a_columnList = $columnList;
-			// $this->_loadFromDB($load_extra_vars);
+			$this->_load_from_db($load_extra_vars);
 		}
 
 		// public function setAttribute($attribute, $load_extra_vars=true) {
 		public function set_attr($attribute, $load_extra_vars=true) {
 			global $G_X2B_CACHE;
-			if(!$attribute->post_id) {
+			if(!isset($attribute->post_id)) {
 				$this->_n_wp_post_id = null;
 				return;
 			}
@@ -71,10 +71,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 
 			// $oDocumentModel = getModel('document');
 			if($load_extra_vars) {
-				$G_X2B_CACHE['X2B_POST_LIST'][$attribute->post_id] = $this;
+				$G_X2B_CACHE['POST_LIST'][$attribute->post_id] = $this;
 				// $oDocumentModel->setToAllDocumentExtraVars();
 			}
-			$G_X2B_CACHE['X2B_POST_LIST'][$this->_n_wp_post_id] = $this;
+			$G_X2B_CACHE['POST_LIST'][$this->_n_wp_post_id] = $this;
 		}
 
 		// function getCommentCount() {
@@ -108,106 +108,46 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			return \X2board\Includes\zdate($this->get('regdate'), $format);
 		}
 
-		/**
-		 * Return the value obtained from getExtraImages with image tag
-		 * @param int $time_check
-		 * @return string
-		 */
-		
-		// function printExtraImages($time_check = 43200)
-		// {
-		// 	if(!$this->_n_wp_post_id) return;
-
-		// 	$oDocumentModel = getModel('document');
-		// 	$documentConfig = $oDocumentModel->getDocumentConfig();
-		// 	if(Mobile::isFromMobilePhone()) {
-		// 		$iconSkin = $documentConfig->micons;
-		// 	}
-		// 	else {
-		// 		$iconSkin = $documentConfig->icons;
-		// 	}
-		// 	$path = sprintf('%s%s',getUrl(), "modules/document/tpl/icons/$iconSkin/");
-
-		// 	$buffs = $this->getExtraImages($time_check);
-		// 	if(!count($buffs)) return;
-
-		// 	$buff = array();
-		// 	foreach($buffs as $key => $val) {
-		// 		$buff[] = sprintf('<img src="%s%s.gif" alt="%s" title="%s" style="margin-right:2px;" />', $path, $val, $val, $val);
-		// 	}
-		// 	return implode('', $buff);
-		// }
-
-		/**
-		 * Functions to display icons for new post, latest update, secret(private) post, image/video/attachment
-		 * Determine new post and latest update by $time_interval
-		 * @param int $time_interval
-		 * @return array
-		 */
-		// function getExtraImages($time_interval = 43200)
-		// {
-		// 	if(!$this->_n_wp_post_id) return;
-		// 	// variables for icon list
-		// 	$buffs = array();
-
-		// 	$check_files = false;
-
-		// 	// Check if secret post is
-		// 	if($this->isSecret()) $buffs[] = "secret";
-
-		// 	// Set the latest time
-		// 	$time_check = date("YmdHis", $_SERVER['REQUEST_TIME']-$time_interval);
-
-		// 	// Check new post
-		// 	if($this->get('regdate')>$time_check) $buffs[] = "new";
-		// 	else if($this->get('last_update')>$time_check) $buffs[] = "update";
-
-		// 	// Check the attachment
-		// 	if($this->hasUploadedFiles()) $buffs[] = "file";
-
-		// 	return $buffs;
-		// }
-
-
-
-
-///////////////////
-		function setDocument($post_id, $load_extra_vars = true)	{
+		// function setDocument($post_id, $load_extra_vars = true)	{
+		public function set_post($post_id, $load_extra_vars = true)	{
 			$this->_n_wp_post_id = $post_id;
-			// $this->_loadFromDB($load_extra_vars);
+			$this->_load_from_db($load_extra_vars);
 		}
-
+		
 		/**
 		 * Get data from database, and set the value to postItem object
 		 * @param bool $load_extra_vars
 		 * @return void
 		 */
-		function _loadFromDB($load_extra_vars = true) {
-			if(!$this->_n_wp_post_id) return;
+		// function _loadFromDB($load_extra_vars = true) {
+		private function _load_from_db($load_extra_vars = true) {
+			if(!$this->_n_wp_post_id) {
+				return;
+			} 
 
-			$document_item = false;
-			$cache_put = false;
+			$post_item = false;  // $document_item = false;
+			// $cache_put = false;
 			$columnList = array();
 			$this->_a_columnList = array();
 
 			// cache controll
-			$post_item = false;
 			// $oCacheHandler = CacheHandler::getInstance('object');
 			// if($oCacheHandler->isSupport())
 			// {
 			// 	$cache_key = 'document_item:' . getNumberingPath($this->_n_wp_post_id) . $this->_n_wp_post_id;
-			// 	$document_item = $oCacheHandler->get($cache_key);
-			// 	if($document_item !== false)
+			// 	$post_item = $oCacheHandler->get($cache_key);
+			// 	if($post_item !== false)
 			// 	{
 			// 		$columnList = array('readed_count', 'voted_count', 'blamed_count', 'comment_count', 'trackback_count');
 			// 	}
 			// }
-
-			$o_post_cnt = $wpdb->get_row("SELECT * FROM `{$wpdb->prefix}x2b_post` WHERE `post_id`={$this->_n_wp_post_id}");
+			global $wpdb;
+			$o_post = $wpdb->get_row("SELECT * FROM `{$wpdb->prefix}x2b_post` WHERE `post_id`={$this->_n_wp_post_id}");
+// var_dump($o_post);
 			// $output = executeQuery('document.getDocument', $args, $columnList);
 
 			if($post_item === false) {
-				$post_item = $output->data;
+				$post_item = $o_post;  //$output->data;
 
 					//insert in cache
 				// if($document_item && $oCacheHandler->isSupport())
@@ -216,47 +156,65 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 				// }
 			}
 			else {
-				$document_item->readed_count = $output->data->readed_count;
-				$document_item->voted_count = $output->data->voted_count;
-				$document_item->blamed_count = $output->data->blamed_count;
-				$document_item->comment_count = $output->data->comment_count;
-				$document_item->trackback_count = $output->data->trackback_count;
+				$post_item->readed_count = $output->data->readed_count;
+				$post_item->voted_count = $output->data->voted_count;
+				$post_item->blamed_count = $output->data->blamed_count;
+				$post_item->comment_count = $output->data->comment_count;
+				$post_item->trackback_count = $output->data->trackback_count;
 			}
-
-			$this->setAttribute($document_item, $load_extra_vars);
+			$this->set_attr($post_item, $load_extra_vars);
 		}
 
-		function isExists() {
+		// function isExists() {
+		public function is_exists() {
 			return $this->_n_wp_post_id ? true : false;
 		}
 
-		function isGranted() {
-			if($_SESSION['own_document'][$this->_n_wp_post_id]) return $this->grant_cache = true;
-
+		// function isGranted() {
+		public function is_granted() {
+			if(isset($_SESSION['x2b_own_post'][$this->_n_wp_post_id])) {
+				return $this->grant_cache = true;
+			}
 			if($this->grant_cache !== null)	{
 				return $this->grant_cache;
 			}
 
-			if(!Context::get('is_logged')) return $this->grant_cache = false;
+			if(!\X2board\Includes\Classes\Context::get('is_logged')) {
+				return $this->grant_cache = false;
+			}
 
-			$logged_info = Context::get('logged_info');
-			if($logged_info->is_admin == 'Y') return $this->grant_cache = true;
-
-			$oModuleModel = getModel('module');
-			$grant = $oModuleModel->getGrant($oModuleModel->getModuleInfoByModuleSrl($this->get('module_srl')), $logged_info);
-			if($grant->manager) return $this->grant_cache = true;
-
-			if($this->get('member_srl') && abs($this->get('member_srl')) == $logged_info->member_srl)
-			{
+			$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
+			if($o_logged_info->is_admin == 'Y') {
 				return $this->grant_cache = true;
 			}
 
+			// $oModuleModel = getModel('module');
+			// $grant = $oModuleModel->getGrant($oModuleModel->getModuleInfoByModuleSrl($this->get('module_srl')), $logged_info);
+			// if($grant->manager) return $this->grant_cache = true;
+
+			// if($this->get('member_srl') && abs($this->get('member_srl')) == $o_logged_info->member_srl)	{
+			// 	return $this->grant_cache = true;
+			// }
 			return $this->grant_cache = false;
 		}
 
+		// function getExtraVars()
+		public function get_extra_vars() {
+			if(!$this->get('board_id') || !$this->_n_wp_post_id) {
+				return null;
+			}
+			$o_post_model = \X2board\Includes\getModel('post');
+			return $o_post_model->get_extra_vars($this->get('board_id'), $this->_n_wp_post_id);
+		}
+
+
+
+
+
+///////////////////
 		function setGrant()
 		{
-			$_SESSION['own_document'][$this->_n_wp_post_id] = true;
+			$_SESSION['x2b_own_post'][$this->_n_wp_post_id] = true;
 			$this->grant_cache = true;
 		}
 
@@ -715,14 +673,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			$oDocumentModel = getModel('document');
 			$extra_keys = $oDocumentModel->getExtraKeys($this->get('module_srl'));
 			return count($extra_keys)?true:false;
-		}
-
-		function getExtraVars()
-		{
-			if(!$this->get('module_srl') || !$this->_n_wp_post_id) return null;
-
-			$oDocumentModel = getModel('document');
-			return $oDocumentModel->getExtraVars($this->get('module_srl'), $this->_n_wp_post_id);
 		}
 
 		function getExtraValue($idx)
@@ -1248,5 +1198,65 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 		{
 			return $this->getModuleName();
 		}
+
+		/**
+		 * Return the value obtained from getExtraImages with image tag
+		 * @param int $time_check
+		 * @return string
+		 */
+		
+		// function printExtraImages($time_check = 43200)
+		// {
+		// 	if(!$this->_n_wp_post_id) return;
+
+		// 	$oDocumentModel = getModel('document');
+		// 	$documentConfig = $oDocumentModel->getDocumentConfig();
+		// 	if(Mobile::isFromMobilePhone()) {
+		// 		$iconSkin = $documentConfig->micons;
+		// 	}
+		// 	else {
+		// 		$iconSkin = $documentConfig->icons;
+		// 	}
+		// 	$path = sprintf('%s%s',getUrl(), "modules/document/tpl/icons/$iconSkin/");
+
+		// 	$buffs = $this->getExtraImages($time_check);
+		// 	if(!count($buffs)) return;
+
+		// 	$buff = array();
+		// 	foreach($buffs as $key => $val) {
+		// 		$buff[] = sprintf('<img src="%s%s.gif" alt="%s" title="%s" style="margin-right:2px;" />', $path, $val, $val, $val);
+		// 	}
+		// 	return implode('', $buff);
+		// }
+
+		/**
+		 * Functions to display icons for new post, latest update, secret(private) post, image/video/attachment
+		 * Determine new post and latest update by $time_interval
+		 * @param int $time_interval
+		 * @return array
+		 */
+		// function getExtraImages($time_interval = 43200)
+		// {
+		// 	if(!$this->_n_wp_post_id) return;
+		// 	// variables for icon list
+		// 	$buffs = array();
+
+		// 	$check_files = false;
+
+		// 	// Check if secret post is
+		// 	if($this->isSecret()) $buffs[] = "secret";
+
+		// 	// Set the latest time
+		// 	$time_check = date("YmdHis", $_SERVER['REQUEST_TIME']-$time_interval);
+
+		// 	// Check new post
+		// 	if($this->get('regdate')>$time_check) $buffs[] = "new";
+		// 	else if($this->get('last_update')>$time_check) $buffs[] = "update";
+
+		// 	// Check the attachment
+		// 	if($this->hasUploadedFiles()) $buffs[] = "file";
+
+		// 	return $buffs;
+		// }
 	}
 }

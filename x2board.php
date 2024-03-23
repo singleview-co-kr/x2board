@@ -12,7 +12,9 @@
  * Text Domain:       x2board
  */
 
-if(!defined('ABSPATH')) exit;
+if ( !defined( 'ABSPATH' ) ) {
+    exit;  // Exit if accessed directly.
+}
 
 if ( !defined( 'X2B_VERSION' ) ) {
     define('X2B_VERSION', '0.0.1');
@@ -36,10 +38,9 @@ if ( !defined( 'X2B__FILE__' ) ) {
 
 /*
  *----------------------------------------------------------------------------
- * x2board modules & includes
+ * Guest Service Functionality
  *----------------------------------------------------------------------------
  */
-
 if ( !is_admin() || !defined( 'WP_CLI' ) ) {
 	require_once X2B_PATH . 'includes/user.php';
 }
@@ -69,7 +70,6 @@ if ( !is_admin() || !defined( 'WP_CLI' ) ) {
  * Dashboard and Administrative Functionality
  *----------------------------------------------------------------------------
  */
-
 if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
 
 	require_once X2B_PATH . 'includes/admin/admin.php';

@@ -29,10 +29,24 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\post')) {
 		function __construct() {
 // var_dump('post claas');
 			global $G_X2B_CACHE;
-			if(!isset($G_X2B_CACHE['X2B_POST_LIST'])) {
-				$G_X2B_CACHE['X2B_POST_LIST'] = array();
+			if(!isset($G_X2B_CACHE['POST_LIST'])) {
+				$G_X2B_CACHE['POST_LIST'] = array();
+			}
+			
+			if(!isset($_SESSION['x2b_own_post'])) {
+				$_SESSION['x2b_own_post'] = array();
 			}
 		}
+
+		/**
+		 * Return default status
+		 * @return string
+		 */
+		// function getDefaultStatus() {
+		public function get_default_status() {
+			return $this->statusList['public'];
+		}
+
 
 		/**
 		 * Re-generate the cache file
@@ -53,15 +67,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\post')) {
 		// function getStatusList()
 		// {
 		// 	return $this->statusList;
-		// }
-
-		/**
-		 * Return default status
-		 * @return string
-		 */
-		// function getDefaultStatus()
-		// {
-		// 	return $this->statusList['public'];
 		// }
 
 		/**

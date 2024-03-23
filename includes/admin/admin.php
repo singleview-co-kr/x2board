@@ -55,7 +55,7 @@ function activate() {
 	`unlike` int(10) unsigned NOT NULL,
 	`is_notice` char(1) NOT NULL DEFAULT 'N',
 	`is_secret` char(1) NOT NULL DEFAULT 'N',
-	`allow_search` char(1) NOT NULL DEFAULT 'Y',
+	`allow_search` char(1) NOT NULL DEFAULT '1',
 	`allow_comment` char(1) NOT NULL DEFAULT 'Y',
 	`post_status` varchar(10),
 	`vote_count` int(11) NOT NULL,

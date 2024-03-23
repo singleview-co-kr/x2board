@@ -149,7 +149,8 @@ class BaseObject
 	 * @return string Returns value to a given key
 	 */
 	public function __get($key) {
-		return $this->variables[$key];
+		return $this->get($key);
+		// return $this->variables[$key];
 	}
 
 	/**
@@ -159,7 +160,10 @@ class BaseObject
 	 * @return string Returns value to a given key
 	 */
 	public function get($key) {
-		return $this->variables[$key];
+		if( isset( $this->variables[$key] )) {
+			return $this->variables[$key];
+		}
+		return null;
 	}
 
 	/**

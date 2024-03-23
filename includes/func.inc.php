@@ -8,12 +8,287 @@ if ( !defined( 'ABSPATH' ) ) {
 /**
  * function library files for convenience
  *
- * @author XEHub (developers@xpressengine.com)
  */
-// if(!defined('__XE__'))
-// {
-// 	exit();
-// }
+
+/**
+ * Content function with filter.
+ *
+ * @since 1.9
+ */
+function register_content_filter() {
+	add_filter( 'the_content', '\X2board\Includes\filter_the_content' );
+}
+
+function plugin_loaded(){
+	if(!session_id() && (!is_admin() ) && !wp_is_json_request()){
+		session_start();
+	}
+	// 언어 파일 추가
+	// load_plugin_textdomain('x2board', false, X2B_PATH . 'languages');
+	register_post_type('x2board', array(
+		'labels' => array('name'=>'X2Board'),
+		'show_ui'=> false,
+		'show_in_menu'=> false,
+		'rewrite' => false,
+		'query_var' => 'x2board_post_redirect',
+		'public'=> true
+	));
+}
+
+function init_proc_cmd() {
+	// $s_cmd = \X2board\Includes\Classes\Context::get('cmd');
+	$s_cmd = isset($_REQUEST['cmd']) ? $_REQUEST['cmd'] : '';
+
+	switch($s_cmd){
+		case X2B_CMD_PROC_WRITE_POST: 
+		case X2B_CMD_PROC_MODIFY_POST: 
+		case 'x2board_file_download': 	
+			_launch_x2b('proc');
+			break;
+	}
+}
+
+/**
+ * 스크립트와 스타일 파일 등록
+ */
+function enqueue_user_scripts(){
+	wp_enqueue_script('jquery');
+	wp_enqueue_script('x2board-script', X2B_URL . '/template/js/script.js', array(), X2B_VERSION, true);
+// error_log(print_r(X2B_URL, true));
+	// Tags Input 등록
+	// wp_register_style('tagsinput', KBOARD_URL_PATH . '/assets/tagsinput/jquery.tagsinput.css', array(), '1.3.3');
+	// wp_register_script('tagsinput', KBOARD_URL_PATH . '/assets/tagsinput/jquery.tagsinput.js', array('jquery'), '1.3.3');
+	
+	// Moment.js 등록
+	// wp_register_script('moment', KBOARD_URL_PATH . '/assets/moment/moment.js', array('jquery'), '2.17.1');
+	
+	// jQuery Date Range Picker Plugin 등록
+	// wp_register_style('daterangepicker', KBOARD_URL_PATH . '/assets/daterangepicker/daterangepicker.css', array(), '0.0.8');
+	// wp_register_script('daterangepicker', KBOARD_URL_PATH . '/assets/daterangepicker/jquery.daterangepicker.js', array('jquery', 'moment'), '0.0.8');
+	
+	// jQuery lightSlider 등록
+	// wp_register_style('lightslider', KBOARD_URL_PATH . '/assets/lightslider/css/lightslider.css', array(), '1.1.6');
+	// wp_register_script('lightslider', KBOARD_URL_PATH . '/assets/lightslider/js/lightslider.js', array('jquery'), '1.1.6');
+	
+	// 아임포트 등록
+	// wp_register_script('iamport-payment', 'https://cdn.iamport.kr/js/iamport.payment-1.1.7.js', array('jquery'), '1.1.7');
+	
+	// 구글 리캡차 등록
+	// wp_register_script('recaptcha', 'https://www.google.com/recaptcha/api.js');
+	
+	// jQuery Timepicker 등록
+	// wp_register_style('jquery-timepicker', KBOARD_URL_PATH . '/template/css/jquery.timepicker.css', array(), '1.3.5');
+	// wp_register_script('jquery-timepicker', KBOARD_URL_PATH . '/template/js/jquery.timepicker.js', array('jquery'), '1.3.5');
+		
+	// 우편번호 주소 검색
+	// wp_enqueue_script('daum-postcode', '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js', array(), NULL, true);
+	
+	// 필드 관련 스크립트 등록
+	// wp_register_script('kboard-field-date', KBOARD_URL_PATH . '/template/js/field-date.js', array('jquery'), X2B_VERSION, true);
+	// wp_register_script('kboard-field-time', KBOARD_URL_PATH . '/template/js/field-time.js', array('jquery'), X2B_VERSION, true);
+	// wp_register_script('kboard-field-address', KBOARD_URL_PATH . '/template/js/field-address.js', array('jquery', 'daum-postcode'), X2B_VERSION, true);
+	
+	// 설정 등록
+	// $localize = array(
+	// 	'version' => X2B_VERSION,
+	// 	'home_url' => home_url('/', 'relative'),
+	// 	'site_url' => site_url('/', 'relative'),
+	// 	'post_url' => admin_url('admin-post.php'),
+	// 	'ajax_url' => admin_url('admin-ajax.php'),
+	// 	'plugin_url' => KBOARD_URL_PATH,
+	// 	'view_iframe' => kboard_view_iframe(),
+	// 	'locale' => get_locale(),
+	// 	'ajax_security' => wp_create_nonce('kboard_ajax_security'),
+	// );
+	// wp_localize_script('kboard-script', 'kboard_settings', apply_filters('kboard_settings', $localize));
+	
+	// 번역 등록
+	// $localize = array(
+	// 	// 'kboard_add_media' => __('KBoard Add Media', 'kboard'),
+	// 	'next' => __('Next', 'kboard'),
+	// 	'prev' => __('Prev', 'kboard'),
+	// 	'required' => __('%s is required.', 'kboard'),
+	// 	'please_enter_the_title' => __('Please enter the title.', 'kboard'),
+	// 	'please_enter_the_author' => __('Please enter the author.', 'kboard'),
+	// 	'please_enter_the_password' => __('Please enter the password.', 'kboard'),
+	// 	'please_enter_the_CAPTCHA' => __('Please enter the CAPTCHA.', 'kboard'),
+	// 	'please_enter_the_name' => __('Please enter the name.', 'kboard'),
+	// 	'please_enter_the_email' => __('Please enter the email.', 'kboard'),
+	// 	'you_have_already_voted' => __('You have already voted.', 'kboard'),
+	// 	'please_wait' => __('Please wait.', 'kboard'),
+	// 	'newest' => __('Newest', 'kboard'),
+	// 	'best' => __('Best', 'kboard'),
+	// 	'updated' => __('Updated', 'kboard'),
+	// 	'viewed' => __('Viewed', 'kboard'),
+	// 	'yes' => __('Yes', 'kboard'),
+	// 	'no' => __('No', 'kboard'),
+	// 	'did_it_help' => __('Did it help?', 'kboard'),
+	// 	'hashtag' => __('Hashtag', 'kboard'),
+	// 	'tag' => __('Tag', 'kboard'),
+	// 	'add_a_tag' => __('Add a Tag', 'kboard'),
+	// 	'removing_tag' => __('Removing tag', 'kboard'),
+	// 	'changes_you_made_may_not_be_saved' => __('Changes you made may not be saved.', 'kboard'),
+	// 	'name' => __('Name', 'kboard'),
+	// 	'email' => __('Email', 'kboard'),
+	// 	'address' => __('Address', 'kboard'),
+	// 	'address_2' => __('Address 2', 'kboard'),
+	// 	'postcode' => __('Postcode', 'kboard'),
+	// 	'phone_number' => __('Phone number', 'kboard'),
+	// 	'mobile_phone' => __('Mobile phone', 'kboard'),
+	// 	'phone' => __('Phone', 'kboard'),
+	// 	'company_name' => __('Company name', 'kboard'),
+	// 	'vat_number' => __('VAT number', 'kboard'),
+	// 	'bank_account' => __('Bank account', 'kboard'),
+	// 	'name_of_deposit' => __('Name of deposit', 'kboard'),
+	// 	'find' => __('Find', 'kboard'),
+	// 	'rate' => __('Rate', 'kboard'),
+	// 	'ratings' => __('Ratings', 'kboard'),
+	// 	'waiting' => __('Waiting', 'kboard'),
+	// 	'complete' => __('Complete', 'kboard'),
+	// 	'question' => __('Question', 'kboard'),
+	// 	'answer' => __('Answer', 'kboard'),
+	// 	'notify_me_of_new_comments_via_email' => __('Notify me of new comments via email', 'kboard'),
+	// 	'ask_question' => __('Ask Question', 'kboard'),
+	// 	'categories' => __('Categories', 'kboard'),
+	// 	'pages' => __('Pages', 'kboard'),
+	// 	'use_points' => __('Use points', 'kboard'),
+	// 	'my_points' => __('My points', 'kboard'),
+	// 	'available_points' => __('Available points', 'kboard'),
+	// 	'apply_points' => __('Apply points', 'kboard'),
+	// 	'privacy_policy' => __('Privacy policy', 'kboard'),
+	// 	'i_agree_to_the_privacy_policy' => __('I agree to the privacy policy.', 'kboard'),
+	// 	'i_confirm_the_terms_of_the_transaction_and_agree_to_the_payment_process' => __('I confirm the terms of the transaction and agree to the payment process.', 'kboard'),
+	// 	'today' => __('Today', 'kboard'),
+	// 	'yesterday' => __('Yesterday', 'kboard'),
+	// 	'this_month' => __('This month', 'kboard'),
+	// 	'last_month' => __('Last month', 'kboard'),
+	// 	'last_30_days' => __('Last 30 days', 'kboard'),
+	// 	'agree' => __('Agree', 'kboard'),
+	// 	'disagree' => __('Disagree', 'kboard'),
+	// 	'opinion' => __('Opinion', 'kboard'),
+	// 	'comment' => __('Comment', 'kboard'),
+	// 	'comments' => __('Comments', 'kboard'),
+	// 	'point' => __('Point', 'kboard'),
+	// 	'zipcode' => __('Zip Code', 'kboard'),
+	// 	'this_year' => __('This year', 'kboard'),
+	// 	'last_year' => __('Last year', 'kboard'),
+	// 	'terms_of_service' => __('Terms of service', 'kboard'),
+	// 	'i_agree_to_the_terms_of_service' => __('I agree to the terms of service.', 'kboard'),
+	// 	'category' => __('Category', 'kboard'),
+	// 	'select' => __('Select', 'kboard'),
+	// 	'category_select' => __('Category select', 'kboard'),
+	// 	'information' => __('Information', 'kboard'),
+	// 	'telephone' => __('Telephone', 'kboard'),
+	// 	'add' => __('Add', 'kboard'),
+	// 	'close' => __('Close', 'kboard'),
+	// );
+	// wp_localize_script('kboard-script', 'kboard_localize_strings', apply_filters('kboard_localize_strings', $localize));
+}
+
+function _launch_x2b($s_cmd_type='view') {
+	global $G_X2B_CACHE;
+	$G_X2B_CACHE = array();
+
+	if ( !defined( '__DEBUG__' ) ) {
+		define('__DEBUG__', 0);
+	}
+
+	// load common classes
+	require_once X2B_PATH . 'includes/classes/Context.class.php';
+	require_once X2B_PATH . 'includes/classes/BaseObject.class.php';
+	require_once X2B_PATH . 'includes/classes/ModuleObject.class.php';
+	require_once X2B_PATH . 'includes/classes/ModuleHandler.class.php';
+	require_once X2B_PATH . 'includes/classes/DB.class.php';
+	require_once X2B_PATH . 'includes/classes/Skin.class.php';
+	require_once X2B_PATH . 'includes/classes/PageHandler.class.php';
+	require_once X2B_PATH . 'includes/classes/Password.class.php';
+	
+	// load modules
+	require_once X2B_PATH . 'includes/modules/board/board.class.php';
+	require_once X2B_PATH . 'includes/modules/board/board.model.php';
+	require_once X2B_PATH . 'includes/modules/board/board.view.php';
+	require_once X2B_PATH . 'includes/modules/board/board.controller.php';
+	require_once X2B_PATH . 'includes/modules/post/post.class.php';
+	require_once X2B_PATH . 'includes/modules/post/post.model.php';
+	require_once X2B_PATH . 'includes/modules/post/post.controller.php';
+	require_once X2B_PATH . 'includes/modules/member/member.class.php';
+	require_once X2B_PATH . 'includes/modules/member/member.model.php';
+
+	$o_context = \X2board\Includes\Classes\Context::getInstance();
+	$o_context->init($s_cmd_type);
+// var_dump($o_context->getAll4Skin());
+	$o_context->close();
+	unset($o_context);
+}
+
+/**
+ * Filter for 'the_content' to display the requested x2board.
+ * regarding a 3rd-party plugin which hooks the_content, do not change $content 
+ * just output HTML before the_content
+ *
+ * @since 1.0.1
+ *
+ * @param string $content Post content.
+ * @return string After the filter has been processed
+ */
+function filter_the_content( $content ) {
+	global $post, $wpdb; // , $wp_filters;
+
+	// Track the number of times this function  is called.
+	static $filter_calls = 0;
+	++$filter_calls;
+
+	if(isset($post->post_content) && is_page($post->ID) ){
+		if( $post->post_content === X2B_PAGE_IDENTIFIER ) {
+			_launch_x2b('view');
+			//return $content . kboard_builder(array('id'=>$board_id));
+		} 
+	}
+	return $content;
+
+	// // Return if it's not in the loop or in the main query.
+	// if ( ! ( in_the_loop() && is_main_query() && (int) get_queried_object_id() === (int) $post->ID ) ) {
+	// 	return $content;
+	// }
+
+	// // Check if this is the last call of the_content.
+	// if ( doing_filter( 'the_content' ) && isset( $wp_filters['the_content'] ) && (int) $wp_filters['the_content'] !== $filter_calls ) {
+	// 	return $content;
+	// }
+
+	// // Return if this is a mobile device and disable on mobile option is enabled.
+	// if ( wp_is_mobile() && x2b_get_option( 'disable_on_mobile' ) ) {
+	// 	return $content;
+	// }
+
+	// // Return if this is an amp page and disable on amp option is enabled.
+	// if ( function_exists( 'is_amp_endpoint' ) && is_amp_endpoint() && x2b_get_option( 'disable_on_amp' ) ) {
+	// 	return $content;
+	// }
+
+	// // Check exclusions.
+	// if ( x2b_exclude_on( $post, $x2b_settings ) ) {
+	// 	return $content;    // Exit without adding related posts.
+	// }
+
+	// $add_to = x2b_get_option( 'add_to', false );
+
+	// // Else add the content.
+	// if ( ( ( is_single() ) && ! empty( $add_to['single'] ) ) ||
+	// ( ( is_page() ) && ! empty( $add_to['page'] ) ) ||
+	// ( ( is_home() ) && ! empty( $add_to['home'] ) ) ||
+	// ( ( is_category() ) && ! empty( $add_to['category_archives'] ) ) ||
+	// ( ( is_tag() ) && ! empty( $add_to['tag_archives'] ) ) ||
+	// ( ( ( is_tax() ) || ( is_author() ) || ( is_date() ) ) && ! empty( $add_to['other_archives'] ) ) ) {
+
+	// 	$x2b_code = get_crp( 'is_widget=0' );
+
+	// 	return x2b_generate_content( $content, $x2b_code );
+
+	// } else {
+	// 	return $content;
+	// }
+}
 
 /**
  * Define a function to use {@see ModuleHandler::getModuleObject()} ($module_name, $type)
@@ -139,10 +414,28 @@ function executeQueryArray($o_query, $arg_columns = NULL) {  // $query_id, $args
  * @return int
  */
 function getNextSequence() {
-	$oDB = DB::getInstance();
-	$seq = $oDB->getNextSequence();
+	$o_db = \X2board\Includes\Classes\DB::getInstance();
+	$seq = $o_db->getNextSequence();
 	setUserSequence($seq);
 	return $seq;
+}
+
+/**
+ * Set Sequence number to session
+ *
+ * @param int $seq sequence number
+ * @return void
+ */
+function setUserSequence($seq) {
+	$arr_seq = array();
+	if(isset($_SESSION['seq']))	{
+		if(!is_array($_SESSION['seq'])) {
+			$_SESSION['seq'] = array($_SESSION['seq']);
+		}
+		$arr_seq = $_SESSION['seq'];
+	}
+	$arr_seq[] = $seq;
+	$_SESSION['seq'] = $arr_seq;
 }
 
 /**
@@ -329,6 +622,75 @@ function zgap() {
 	return $gap;
 }
 
+/**
+ * Pre-block the codes which may be hacking attempts
+ *
+ * @param string $content Taget content
+ * @return string
+ */
+function removeHackTag($content)
+{
+	require_once X2B_PATH . 'classes/security/EmbedFilter.class.php';
+	$oEmbedFilter = EmbedFilter::getInstance();
+	$oEmbedFilter->check($content);
+var_dump($content);
+	purifierHtml($content);
+
+	// change the specific tags to the common texts
+	$content = preg_replace('@<(\/?(?:html|body|head|title|meta|base|link|script|style|applet)(/*).*?>)@i', '&lt;$1', $content);
+
+	/**
+	 * Remove codes to abuse the admin session in src by tags of imaages and video postings
+	 * - Issue reported by Sangwon Kim
+	 */
+	$content = preg_replace_callback('@<(/?)([a-z]+[0-9]?)((?>"[^"]*"|\'[^\']*\'|[^>])*?\b(?:on[a-z]+|data|style|background|href|(?:dyn|low)?src)\s*=[\s\S]*?)(/?)($|>|<)@i', 'removeSrcHack', $content);
+
+	$content = checkXmpTag($content);
+	$content = blockWidgetCode($content);
+
+	return $content;
+}
+
+/**
+ * blocking widget code
+ *
+ * @param string $content Taget content
+ * @return string
+ **/
+function blockWidgetCode($content)
+{
+	$content = preg_replace('/(<(?:img|div)(?:[^>]*))(widget)(?:(=([^>]*?)>))/is', '$1blocked-widget$3', $content);
+
+	return $content;
+}
+
+/**
+ * Check xmp tag, close it.
+ *
+ * @param string $content Target content
+ * @return string
+ */
+function checkXmpTag($content)
+{
+	$content = preg_replace('@<(/?)xmp.*?>@i', '<\1xmp>', $content);
+
+	if(($start_xmp = strrpos($content, '<xmp>')) !== FALSE)
+	{
+		if(($close_xmp = strrpos($content, '</xmp>')) === FALSE)
+		{
+			$content .= '</xmp>';
+		}
+		else if($close_xmp < $start_xmp)
+		{
+			$content .= '</xmp>';
+		}
+	}
+
+	return $content;
+}
+
+
+///////////////////////////////
 // define an empty function to avoid errors when iconv function doesn't exist
 // if(!function_exists('iconv'))
 // {
@@ -431,26 +793,6 @@ function zgap() {
 // {
 // 	$oDB = DB::getInstance();
 // 	return $oDB->executeQuery($query_id, $args, $arg_columns);
-// }
-
-/**
- * Set Sequence number to session
- *
- * @param int $seq sequence number
- * @return void
- */
-// function setUserSequence($seq)
-// {
-// 	$arr_seq = array();
-// 	if(isset($_SESSION['seq']))
-// 	{
-// 		if(!is_array($_SESSION['seq'])) {
-// 			$_SESSION['seq'] = array($_SESSION['seq']);
-// 		}
-// 		$arr_seq = $_SESSION['seq'];
-// 	}
-// 	$arr_seq[] = $seq;
-// 	$_SESSION['seq'] = $arr_seq;
 // }
 
 /**
@@ -1113,48 +1455,6 @@ function zgap() {
 // }
 
 /**
- * Pre-block the codes which may be hacking attempts
- *
- * @param string $content Taget content
- * @return string
- */
-/*function removeHackTag($content)
-{
-	require_once(_XE_PATH_ . 'classes/security/EmbedFilter.class.php');
-	$oEmbedFilter = EmbedFilter::getInstance();
-	$oEmbedFilter->check($content);
-
-	purifierHtml($content);
-
-	// change the specific tags to the common texts
-	$content = preg_replace('@<(\/?(?:html|body|head|title|meta|base|link|script|style|applet)(/*).*?>)@i', '&lt;$1', $content);
-*/
-	/**
-	 * Remove codes to abuse the admin session in src by tags of imaages and video postings
-	 * - Issue reported by Sangwon Kim
-	 */
-/*	$content = preg_replace_callback('@<(/?)([a-z]+[0-9]?)((?>"[^"]*"|\'[^\']*\'|[^>])*?\b(?:on[a-z]+|data|style|background|href|(?:dyn|low)?src)\s*=[\s\S]*?)(/?)($|>|<)@i', 'removeSrcHack', $content);
-
-	$content = checkXmpTag($content);
-	$content = blockWidgetCode($content);
-
-	return $content;
-}*/
-
-/**
- * blocking widget code
- *
- * @param string $content Taget content
- * @return string
- **/
-// function blockWidgetCode($content)
-// {
-// 	$content = preg_replace('/(<(?:img|div)(?:[^>]*))(widget)(?:(=([^>]*?)>))/is', '$1blocked-widget$3', $content);
-
-// 	return $content;
-// }
-
-/**
  * check uploaded file which may be hacking attempts
  *
  * @param string $file Taget file path
@@ -1165,31 +1465,6 @@ function zgap() {
 // 	require_once(_XE_PATH_ . 'classes/security/UploadFileFilter.class.php');
 // 	return UploadFileFilter::check($file, $filename);
 // }
-
-/**
- * Check xmp tag, close it.
- *
- * @param string $content Target content
- * @return string
- */
-/*function checkXmpTag($content)
-{
-	$content = preg_replace('@<(/?)xmp.*?>@i', '<\1xmp>', $content);
-
-	if(($start_xmp = strrpos($content, '<xmp>')) !== FALSE)
-	{
-		if(($close_xmp = strrpos($content, '</xmp>')) === FALSE)
-		{
-			$content .= '</xmp>';
-		}
-		else if($close_xmp < $start_xmp)
-		{
-			$content .= '</xmp>';
-		}
-	}
-
-	return $content;
-}*/
 
 /**
  * Remove src hack(preg_replace_callback)
@@ -1883,7 +2158,4 @@ function zgap() {
 // 	}
 // 	return $result;
 // }
-
-
 /* End of file func.inc.php */
-/* Location: ./config/func.inc.php */

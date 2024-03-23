@@ -123,7 +123,7 @@
 	
 	<!-- 검색폼 시작 -->
 	<div class="kboard-search">
-		<form id="kboard-search-form-<?php echo $board->id?>" method="get" action="<?php echo esc_url($url->toString())?>">
+		<form id="kboard-search-form-<?php echo $board_id?>" method="get" action="<?php echo esc_url($url->toString())?>">
 			<?php echo $url->set('pageid', '1')->set('target', '')->set('keyword', '')->set('mod', 'list')->toInput()?>
 			
 			<select name="target">

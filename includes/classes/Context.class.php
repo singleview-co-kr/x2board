@@ -174,8 +174,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 		 */
 		public static function &getInstance() {
 			static $theInstance = null;
-			if(!$theInstance)
-			{
+			if(!$theInstance) {
 				$theInstance = new Context();
 			}
 			return $theInstance;
@@ -209,7 +208,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 		 * @see This function should be called only once
 		 * @return void
 		 */
-		function init()	{
+		function init($s_cmd_type='view')	{
 			// fix missing HTTP_RAW_POST_DATA in PHP 5.6 and above
 			// if(!isset($GLOBALS['HTTP_RAW_POST_DATA']) && version_compare(PHP_VERSION, '5.6.0', '>=') === TRUE)
 			// {
@@ -232,18 +231,53 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 			// 20140429 editor/image_link
 			// $this->_checkGlobalVars();
 
-			// $this->setRequestMethod('');
+			$this->setRequestMethod('');
 
 			// $this->_setXmlRpcArgument();
 			// $this->_setJSONRequestArgument();
-			global $pagename;
-			$this->_setRequestArgument();
-			$this->_convert_pretty_command_uri();
 
-			// set frequently used skin vars
-			self::set( 'board_id', get_the_ID() ); // x2board id is WP page ID
-			self::set( 'wp_page_name', $pagename ); // x2board id is WP page ID
+			$this->_setRequestArgument();
+
+			$o_logged_info = wp_get_current_user();
+			$o_logged_info->is_admin = current_user_can('manage_options') ? 'Y' : 'N';
+			$this->set( 'is_logged', is_user_logged_in() );
+			$this->set( 'logged_info', $o_logged_info );
 			
+			if( $s_cmd_type == 'proc' ) {  // load controller priority
+				$s_cmd = isset( $_REQUEST['cmd'])?$_REQUEST['cmd'] : '';
+				$s_cmd_prefix = substr( $s_cmd, 0, 4 );
+var_dump('detected proc cmd:'. $s_cmd);
+				if( $s_cmd_prefix === 'proc' ) {  
+					$o_controller = \X2board\Includes\getController('board');
+					$o_controller->init(); 
+					$next_page_url = $o_controller->get('s_wp_redirect_url');
+					if ( wp_redirect( $next_page_url ) ) {
+						unset($o_controller);
+						exit;  // required to execute wp_redirect()
+					}
+					unset($o_controller);
+				}
+				wp_redirect(home_url());
+				exit;  // required to execute wp_redirect()
+			}
+			///////// end of proc mode ////////////////////// 
+			///////// begin of view mode ////////////////////// 
+			// set frequently used skin vars
+			$this->set( 'board_id', get_the_ID() ); // x2board id is WP page ID  get_the_ID() work only view mode
+			// global $pagename;
+			// self::set( 'wp_page_name', $pagename ); // x2board URL is WP page name
+			
+			$this->_convert_pretty_command_uri(); // pretty url is for view only
+			$s_cmd = self::get('cmd');
+			$s_cmd_prefix = substr( $s_cmd, 0, 4 );
+var_dump('detected view cmd:'. $s_cmd);
+			if( $s_cmd_prefix === '' || $s_cmd_prefix === 'view' ) {  // load view
+				// $this->_render_view('board');
+				$o_view = \X2board\Includes\getModule('board');
+				$o_view->init(); 
+				unset($o_view);
+			}
+
 			// $this->_setUploadedArgument();
 
 			// $this->loadDBInfo();
@@ -385,9 +419,10 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 					// {
 					// 	$oMemberController->doAutologin();
 					// }
-					
-					$this->set( 'is_logged', is_user_logged_in() );  // $oMemberModel->isLogged());
-					$this->set( 'logged_info', wp_get_current_user()->data );  // $oMemberModel->getLoggedInfo());
+// $o_logged_info = wp_get_current_user();
+// $o_logged_info->is_admin = current_user_can('manage_options') ? 'Y' : 'N';
+// $this->set( 'is_logged', is_user_logged_in() );  // $oMemberModel->isLogged());
+// $this->set( 'logged_info', $o_logged_info );  // $oMemberModel->getLoggedInfo());
 			// 	}
 			// }
 
@@ -453,11 +488,11 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 		 *
 		 * @return void
 		 */
-		public function render_view($s_req_module) {
-			$o_view = \X2board\Includes\getModule($s_req_module);
-			$o_view->init(); 
-			unset($o_view);
-		}
+		// private function _render_view($s_req_module) {
+		// 	$o_view = \X2board\Includes\getModule($s_req_module);
+		// 	$o_view->init(); 
+		// 	unset($o_view);
+		// }
 
 		/**
 		 * handle request arguments for GET/POST
@@ -469,13 +504,13 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 			if(!count($_REQUEST)) {
 				return;
 			}
-
-			$requestMethod = null; //$this->getRequestMethod();
+			$requestMethod = $this->getRequestMethod();
 // var_dump($requestMethod);
 			foreach($_REQUEST as $key => $val) {
 				if($val === '' || self::get($key) || in_array($key, $this->_a_ignore_request) ) {
 					continue;
 				}
+
 	// error_log(print_r($key, true));
 	// error_log(print_r($val, true));			
 				$key = htmlentities($key);
@@ -498,6 +533,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 				if($set_to_vars) {
 					$this->_recursiveCheckVar($val);
 				}
+
 				$this->set($key, $val, $set_to_vars);
 			}
 		}
@@ -521,7 +557,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 								);
 			$request_uri = wp_parse_url( $_SERVER['REQUEST_URI'] );
 			if( isset($request_uri['query'] ) )	{
-// var_dump($request_uri['query']);				
+var_dump($request_uri['query']);
 				$s_uri = trim($request_uri['query']);
 				if( preg_match( "/^[-\w.]+\/[0-9]*$/m", $s_uri ) ) { // ex) post/1234
 					$a_uri = explode('/', sanitize_text_field( $s_uri ) );
@@ -529,35 +565,35 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 					$n_val = intval($a_uri[1]);
 					switch($s_cmd) {
 						case 'p':
-							// $a_query_param['cmd'] = 'disp_list';
+							// $a_query_param['cmd'] = X2B_CMD_VIEW_LIST;
 							$a_query_param['page'] = $n_val;  // page_no
 							break;
-						case 'post':         // old_post_id
-						case 'modify_post':  // old_post_id
-						case 'delete_post':  // old_post_id
-						case 'reply_post':   // parent_post_id
-						case 'write_comment':    // parent_post_id
+						case X2B_CMD_VIEW_POST:         // old_post_id
+						case X2B_CMD_VIEW_MODIFY_POST:  // old_post_id
+						case X2B_CMD_VIEW_DELETE_POST:  // old_post_id
+						case X2B_CMD_VIEW_REPLY_POST:   // parent_post_id
+						case X2B_CMD_VIEW_WRITE_COMMENT:    // parent_post_id
 							$a_query_param['cmd'] = $s_cmd;
 							$a_query_param['post_id'] = $n_val;
 							break;
-						case 'modify_comment':   // old_comment_id
-						case 'delete_comment':    // old_comment_id
+						case X2B_CMD_VIEW_MODIFY_COMMENT:   // old_comment_id
+						case X2B_CMD_VIEW_DELETE_COMMENT:    // old_comment_id
 							$a_query_param['cmd'] = $s_cmd;
 							$a_query_param['comment_id'] = $n_val;
 							break;
 					}
 					unset($a_uri);
 				}
-				elseif( preg_match( "/^[-\w.]+$/m", $s_uri ) ) { // ex) disp_write_post
+				elseif( preg_match( "/^[-\w.]+$/m", $s_uri ) ) { // ex) X2B_CMD_VIEW_WRITE_POST
 					$s_cmd = sanitize_text_field( trim($s_uri) );
-					if( $s_cmd == 'disp_write_post') {
+					if( $s_cmd == X2B_CMD_VIEW_WRITE_POST) {
 						$a_query_param['cmd'] = $s_cmd;	
 					}
 				}
-				elseif( preg_match( "/^[-\w.]+\/[0-9]+\/[0-9]*$/m", $s_uri ) ) { // ex) write_comment/123/456
+				elseif( preg_match( "/^[-\w.]+\/[0-9]+\/[0-9]*$/m", $s_uri ) ) { // ex) reply_comment/123/456
 					$a_uri = explode('/', sanitize_text_field( $s_uri ) );
 					$s_cmd = trim($a_uri[0]);
-					if( $s_cmd == 'write_comment') {
+					if( $s_cmd == X2B_CMD_VIEW_REPLY_COMMENT) {
 						$a_query_param['cmd'] = $s_cmd;	
 						$a_query_param['post_id'] = intval($a_uri[1]);  // parent_post_id
 						$a_query_param['comment_id'] = intval($a_uri[2]);  // parent_comment_id
@@ -569,11 +605,11 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 					$s_cmd = trim($a_uri[0]);
 					switch($s_cmd) {
 						case 'cat':
-							// $a_query_param['cmd'] = 'disp_list';
+							// $a_query_param['cmd'] = X2B_CMD_VIEW_LIST;
 							$a_query_param['category'] = trim($a_uri[1]);
 							break;
 						case 'tag':
-							// $a_query_param['cmd'] = 'disp_list';
+							// $a_query_param['cmd'] = X2B_CMD_VIEW_LIST;
 							$a_query_param['tag'] = trim($a_uri[1]);
 							break;
 					}
@@ -594,7 +630,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 					unset($a_uri);
 				}
 				else { // cascaded search
-					// $a_query_param['cmd'] = 'disp_list';
+					// $a_query_param['cmd'] = X2B_CMD_VIEW_LIST;
 					$a_uri = explode('/', sanitize_text_field( $s_uri ) );
 					foreach( $a_uri as $n_idx => $s_val ) {
 						if( $n_idx % 2 == 0 ) {
@@ -677,10 +713,10 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 		 * Return request method
 		 * @return string Request method type. (Optional - GET|POST|XMLRPC|JSON)
 		 */
-		// public static function getRequestMethod() {
-		// 	$self = self::getInstance();
-		// 	return $self->request_method;
-		// }
+		public static function getRequestMethod() {
+			$self = self::getInstance();
+			return $self->request_method;
+		}
 
 		/**
 		 * Finalize using resources, such as DB connection
@@ -713,7 +749,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 // var_dump($self->get_vars->{$key});
 			if($set_to_get_vars || !isset($self->get_vars->{$key})) {
 				$self->get_vars->{$key} = $val;
-			}
+			}	
 		}
 
 		/**
@@ -727,7 +763,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 			if(!isset($self->context->{$key})) {
 				return null;
 			}
-	// error_log(print_r($self->context, true));	
+// var_dump($self->context);		
 			return $self->context->{$key};
 		}
 
@@ -753,7 +789,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 		/**
 		 * Return all data for \X2board\Includes\Classes\Skin::load()
 		 *
-		 * @return object All data
+		 * @return object All context data
 		 */
 		public static function getAll4Skin() {
 			$self = self::getInstance();
@@ -771,6 +807,21 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 				return clone($self->get_vars);
 			}
 			return new \stdClass;
+		}
+
+		/**
+		 * Determine request method
+		 *
+		 * @param string $type Request method. (Optional - GET|POST|XMLRPC|JSON)
+		 * @return void
+		 */
+		public static function setRequestMethod($type = '') {
+			$self = self::getInstance();
+			// $self->js_callback_func = $self->getJSCallbackFunc();
+			($type && $self->request_method = $type) or
+			// ((strpos($_SERVER['CONTENT_TYPE'], 'json') || strpos($_SERVER['HTTP_CONTENT_TYPE'], 'json')) && $self->request_method = 'JSON') or
+			// ($GLOBALS['HTTP_RAW_POST_DATA'] && $self->request_method = 'XMLRPC') or ($self->js_callback_func && $self->request_method = 'JS_CALLBACK') or ($self->request_method = $_SERVER['REQUEST_METHOD']);
+			(isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'json') && $self->request_method = 'JSON') or	($self->request_method = $_SERVER['REQUEST_METHOD']);
 		}
 
 		/**
@@ -1508,25 +1559,6 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 		// 	$methods = array('HTML' => 1, 'XMLRPC' => 1, 'JSON' => 1, 'JS_CALLBACK' => 1);
 
 		// 	return isset($methods[$method]) ? $method : 'HTML';
-		// }
-
-		/**
-		 * Determine request method
-		 *
-		 * @param string $type Request method. (Optional - GET|POST|XMLRPC|JSON)
-		 * @return void
-		 */
-		// public static function setRequestMethod($type = '')
-		// {
-		// 	$self = self::getInstance();
-
-		// 	$self->js_callback_func = $self->getJSCallbackFunc();
-
-		// 	($type && $self->request_method = $type) or
-		// 			((strpos($_SERVER['CONTENT_TYPE'], 'json') || strpos($_SERVER['HTTP_CONTENT_TYPE'], 'json')) && $self->request_method = 'JSON') or
-		// 			($GLOBALS['HTTP_RAW_POST_DATA'] && $self->request_method = 'XMLRPC') or
-		// 			($self->js_callback_func && $self->request_method = 'JS_CALLBACK') or
-		// 			($self->request_method = $_SERVER['REQUEST_METHOD']);
 		// }
 
 		/**

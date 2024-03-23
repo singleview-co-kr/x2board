@@ -37,15 +37,17 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 
 			$this->except_notice = false; // $this->module_info->except_notice == 'N' ? FALSE : TRUE;
 
-// var_dump($g_a_x2b_query_param);
-// var_dump(\X2board\Includes\Classes\Context::get('mod'));
+			global $pagename;
+			\X2board\Includes\Classes\Context::set('skin_path', X2B_URL.'includes/modules/board/skins/'.$this->s_skin);
 
-			switch(\X2board\Includes\Classes\Context::get('cmd')) {
-				case 'disp_write_post':
-					$this->disp_list();
+			$s_cmd = \X2board\Includes\Classes\Context::get('cmd');
+			switch( $s_cmd ) {
+				case X2B_CMD_VIEW_LIST:
+				case X2B_CMD_VIEW_WRITE_POST:
+					$this->$s_cmd();
 					break;
 				default:
-					$this->disp_list();
+					$this->view_list();
 					break;
 			}
 
@@ -162,17 +164,31 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 		// }
 
 		/**
+		 * @brief display board message
+		 **/
+		// function dispBoardMessage($s_msg) {
+		private function _disp_message($s_msg) {
+			\X2board\Includes\Classes\Context::set('message', $s_msg);
+			// setup the tmeplate file
+			// $this->setTemplateFile('message');
+			$o_template = \X2board\Includes\Classes\Skin::getInstance();
+			// $this->s_skin = 'sketchbook5';
+			echo $o_template->render($this->s_skin, 'message.php');
+		}
+
+
+		/**
 		 * @brief display board contents
 		 **/
-		function disp_list()  // dispBoardContent
+		function view_list()  // dispBoardContent
 		{
-var_dump('disp_list()');
+var_dump(X2B_CMD_VIEW_LIST);
 			/**
 			 * check the access grant (all the grant has been set by the module object)
 			 **/
 			// if(!$this->grant->access || !$this->grant->list)
 			// {
-			// 	return $this->dispBoardMessage('msg_not_permitted');
+			// 	return $this->_disp_message('msg_not_permitted');
 			// }
 
 			/**
@@ -228,19 +244,25 @@ var_dump('disp_list()');
 			$unit_week = array( "am"=> "오전", "pm" => "오후", "AM" => "오전", "PM" => "오후" );
 			\X2board\Includes\Classes\Context::set( 'unit_meridiem', $unit_week );
 			
-			// // display the notice list
-			$this->_disp_notice_list();
+			// display the notice list
+			$output = $this->_disp_notice_list();
+			// Return if no result or an error occurs
+			if(!$output->toBool()) {
+				return $this->_disp_message($output->getMessage());
+			}
 
-			// // list
-			$this->disp_post_list();
+			// display the post list
+			$output = $this->_disp_post_list();
+			// Return if no result or an error occurs
+			if(!$output->toBool()) {
+				return $this->_disp_message($output->getMessage());
+			}
 
 			/**
 			 * add javascript filters
 			 **/
 			// Context::addJsFilter($this->module_path.'tpl/filter', 'search.xml');
-			global $pagename;
-			\X2board\Includes\Classes\Context::set('skin_path', X2B_URL.'includes/modules/board/skins/'.$this->s_skin);
-			\X2board\Includes\Classes\Context::set('url_write_post', get_site_url().'/'.$pagename.'?disp_write_post');
+			\X2board\Includes\Classes\Context::set('url_write_post', get_the_permalink().'?'.X2B_CMD_VIEW_WRITE_POST);
 
 			// setup the tmeplate file
 			// $this->setTemplateFile('list');
@@ -252,7 +274,7 @@ var_dump('disp_list()');
 		/**
 		 * @brief display board content list
 		 **/
-		function disp_post_list() {  // dispBoardContentList(){  
+		private function _disp_post_list() {  // dispBoardContentList(){  
 			// check the grant
 			// if(!$this->grant->list)
 			// {
@@ -270,7 +292,7 @@ var_dump('disp_list()');
 			// setup module_srl/page number/ list number/ page count
 			$o_args = new \stdClass();
 			// $o_args->module_srl = $this->module_srl;
-			$o_args->wp_page_id = \X2board\Includes\Classes\Context::get('board_id');
+			$o_args->wp_page_id = \X2board\Includes\Classes\Context::get('board_id'); //$this->board_id;
 			$o_args->page = \X2board\Includes\Classes\Context::get('page');
 
 			// $o_args->list_count = $this->list_count;
@@ -352,6 +374,7 @@ var_dump('disp_list()');
 			\X2board\Includes\Classes\Context::set('total_page', $output->total_page);
 			\X2board\Includes\Classes\Context::set('page', $output->page);
 			\X2board\Includes\Classes\Context::set('page_navigation', $output->page_navigation);
+			return $output;
 		}
 
 		/**
@@ -388,9 +411,11 @@ var_dump('disp_list()');
 			$o_post_model = \X2board\Includes\getModel('post');
 			$o_args = new \stdClass();
 			$o_args->wp_page_id = get_the_ID();  // $this->module_srl;
-			$notice_output = $o_post_model->get_notice_list($o_args, $this->columnList);
-			\X2board\Includes\Classes\Context::set('notice_list', $notice_output->data);
+			$output = $o_post_model->get_notice_list($o_args, $this->columnList);
+
 			unset($o_args);
+			\X2board\Includes\Classes\Context::set('notice_list', $output->data);	
+			return $output;
 		}
 
 		private function _makeListColumnList()
@@ -428,6 +453,166 @@ var_dump('disp_list()');
 			foreach($this->columnList as $no => $value)	{
 				$this->columnList[$no] = 'post.' . $value;
 			}
+		}
+
+		/**
+		 * @brief display post write form
+		 **/
+		function view_write_post()
+		{
+var_dump(X2B_CMD_VIEW_WRITE_POST);
+			// check grant
+			if(!$this->grant->write_post) {
+				return $this->_disp_message('msg_not_permitted');
+			}
+
+			$o_post_model = \X2board\Includes\getModel('post');
+
+			/**
+			 * check if the category option is enabled not not
+			 **/
+			if($this->module_info->use_category=='Y') {
+				// get the user group information
+				if(\X2board\Includes\Classes\Context::get('is_logged')) {
+					$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
+					$a_group_srls = array(); // array_keys($o_logged_info->group_list);
+				}
+				else {
+					$a_group_srls = array();
+				}
+				// $group_srls_count = count($a_group_srls);
+
+				// check the grant after obtained the category list
+				$a_category_list = array();
+				$n_normal_category_list = $o_post_model->get_category_list();
+				if(count($n_normal_category_list)) {
+					foreach($n_normal_category_list as $category_srl => $category) {
+						$is_granted = TRUE;
+						if($category->group_srls) {
+							$category_group_srls = explode(',',$category->group_srls);
+							$is_granted = FALSE;
+							if(count(array_intersect($a_group_srls, $category_group_srls))) {
+								$is_granted = TRUE;
+							}
+						}
+						if($is_granted) {
+							$a_category_list[$category_srl] = $category;
+						}
+					}
+				}
+				\X2board\Includes\Classes\Context::set('category_list', $a_category_list);
+				unset($a_category_list);
+			}
+
+			// GET parameter post_id from request
+			$n_post_id = \X2board\Includes\Classes\Context::get('post_id');
+			$o_post = $o_post_model->get_post(0, $this->grant->manager);
+			$o_post->set_post($n_post_id);
+
+			// if($oDocument->get('module_srl') == $oDocument->get('member_srl')) {
+			if($o_post->get('board_id') == $o_post->get('post_author')) {
+				$savedDoc = TRUE;
+			}
+			// $oDocument->add('module_srl', $this->module_srl);
+// var_dump($this->grant->write_post);
+			$o_post->add('board_id', \X2board\Includes\Classes\Context::get('board_id') ); // $this->board_id);
+
+			if($o_post->is_exists() && $this->module_info->protect_content=="Y" && $o_post->get('comment_count')>0 && $this->grant->manager==false) {
+				return new BaseObject(-1, 'msg_protect_content');
+			}
+
+			// if the post is not granted, then back to the password input form
+			if($o_post->is_exists()&&!$o_post->is_granted()) {
+				return $this->setTemplateFile('input_password_form');
+			}
+// var_dump($o_post->is_granted());
+			if(!$o_post->is_exists()) {
+				// $oModuleModel = getModel('module');
+				// $point_config = $oModuleModel->getModulePartConfig('point',$this->module_srl);
+				// unset($oModuleModel);
+				// $logged_info = \X2board\Includes\Classes\Context::get('logged_info');
+				// $oPointModel = getModel('point');
+				// $pointForInsert = $point_config["insert_document"];
+				// if($pointForInsert < 0)
+				// {
+				// 	if( !$logged_info )
+				// 	{
+				// 		return $this->_disp_message('msg_not_permitted');
+				// 	}
+				// 	else if (($oPointModel->getPoint($logged_info->member_srl) + $pointForInsert )< 0 )
+				// 	{
+				// 		return $this->_disp_message('msg_not_enough_point');
+				// 	}
+				// }
+			}
+			if(!$o_post->get('status')) {
+				$o_post->add('status', $o_post_model->get_default_status());
+			}
+
+			$statusList = $this->_get_status_name_list($o_post_model);
+			if(count($statusList) > 0) {
+				\X2board\Includes\Classes\Context::set('status_list', $statusList);
+			}
+
+			// get Document status config value
+			// \X2board\Includes\Classes\Context::set('document_srl',$document_srl);
+			\X2board\Includes\Classes\Context::set('o_post', $o_post);
+
+			// apply xml_js_filter on header
+			// $oDocumentController = getController('document');
+			// $oDocumentController->addXmlJsFilter($this->module_info->module_srl);
+
+			// if the post exists, then setup extra variabels on context
+			if($o_post->is_exists() && !$savedDoc) {
+				\X2board\Includes\Classes\Context::set('extra_keys', $o_post->get_extra_vars());
+			}
+			
+			/**
+			 * add JS filters
+			 **/
+			// if(Context::get('logged_info')->is_admin=='Y') Context::addJsFilter($this->module_path.'tpl/filter', 'insert_admin.xml');
+			// else Context::addJsFilter($this->module_path.'tpl/filter', 'insert.xml');
+
+			// $oSecurity = new Security();
+			// $oSecurity->encodeHTML('category_list.text', 'category_list.title');
+
+			\X2board\Includes\Classes\Context::set('post', $o_post);
+
+			$o_post_model = \X2board\Includes\getModel('post');
+			$a_user_input_field = $o_post_model->get_user_input_fields();
+// var_dump($a_user_input_field);
+			unset($o_post_model);
+			\X2board\Includes\Classes\Context::set('field', $a_user_input_field);
+
+			wp_localize_script('x2board-script', 'kboard_current', array(
+				'board_id'          => \X2board\Includes\Classes\Context::get('board_id'), // $this->board_id,
+				'content_uid'       => \X2board\Includes\Classes\Context::get('post_id'),
+				'tree_category'     => '',//unserialize($this->meta->tree_category),
+				'mod'               => \X2board\Includes\Classes\Context::get('cmd'), //$this->mod,
+				'use_editor' => ''  //$this->board->use_editor,
+			));
+
+			// $this->setTemplateFile('write_form');
+			$o_template = \X2board\Includes\Classes\Skin::getInstance();
+			echo $o_template->render($this->s_skin, 'editor.php');
+			unset($o_post_model);
+			unset($o_post);
+		}
+
+		// function _getStatusNameList(&$oDocumentModel)
+		private function _get_status_name_list($o_post_model)
+		{
+			$resultList = array();
+			if(!empty($this->module_info->use_status)) {
+				$statusNameList = $o_post_model->getStatusNameList();
+				$statusList = explode('|@|', $this->module_info->use_status);
+				if(is_array($statusList)) {
+					foreach($statusList as $key => $value) {
+						$resultList[$value] = $statusNameList[$value];
+					}
+				}
+			}
+			return $resultList;
 		}
 	
 /////////////////////////////////////
@@ -548,7 +733,7 @@ var_dump('disp_list()');
 			 **/
 			if(!$this->grant->access)
 			{
-				return $this->dispBoardMessage('msg_not_permitted');
+				return $this->_disp_message('msg_not_permitted');
 			}
 
 			// check document view grant
@@ -641,7 +826,7 @@ var_dump('disp_list()');
 			// check if there is not grant fot view list, then alert an warning message
 			if(!$this->grant->list)
 			{
-				return $this->dispBoardMessage('msg_not_permitted');
+				return $this->_disp_message('msg_not_permitted');
 			}
 
 			// generate the tag module model object
@@ -676,141 +861,6 @@ var_dump('disp_list()');
 		}
 
 		/**
-		 * @brief display document write form
-		 **/
-		function dispBoardWrite()
-		{
-			// check grant
-			if(!$this->grant->write_document)
-			{
-				return $this->dispBoardMessage('msg_not_permitted');
-			}
-
-			$oDocumentModel = getModel('document');
-
-			/**
-			 * check if the category option is enabled not not
-			 **/
-			if($this->module_info->use_category=='Y')
-			{
-				// get the user group information
-				if(Context::get('is_logged'))
-				{
-					$logged_info = Context::get('logged_info');
-					$group_srls = array_keys($logged_info->group_list);
-				}
-				else
-				{
-					$group_srls = array();
-				}
-				$group_srls_count = count($group_srls);
-
-				// check the grant after obtained the category list
-				$normal_category_list = $oDocumentModel->getCategoryList($this->module_srl);
-				if(count($normal_category_list))
-				{
-					foreach($normal_category_list as $category_srl => $category)
-					{
-						$is_granted = TRUE;
-						if($category->group_srls)
-						{
-							$category_group_srls = explode(',',$category->group_srls);
-							$is_granted = FALSE;
-							if(count(array_intersect($group_srls, $category_group_srls))) $is_granted = TRUE;
-
-						}
-						if($is_granted) $category_list[$category_srl] = $category;
-					}
-				}
-				Context::set('category_list', $category_list);
-			}
-
-			// GET parameter document_srl from request
-			$document_srl = Context::get('document_srl');
-			$oDocument = $oDocumentModel->getDocument(0, $this->grant->manager);
-			$oDocument->setDocument($document_srl);
-
-			if($oDocument->get('module_srl') == $oDocument->get('member_srl')) $savedDoc = TRUE;
-			$oDocument->add('module_srl', $this->module_srl);
-
-			if($oDocument->isExists() && $this->module_info->protect_content=="Y" && $oDocument->get('comment_count')>0 && $this->grant->manager==false)
-			{
-				return new BaseObject(-1, 'msg_protect_content');
-			}
-
-			// if the document is not granted, then back to the password input form
-			$oModuleModel = getModel('module');
-			if($oDocument->isExists()&&!$oDocument->isGranted())
-			{
-				return $this->setTemplateFile('input_password_form');
-			}
-
-			if(!$oDocument->isExists())
-			{
-				$point_config = $oModuleModel->getModulePartConfig('point',$this->module_srl);
-				$logged_info = Context::get('logged_info');
-				$oPointModel = getModel('point');
-				$pointForInsert = $point_config["insert_document"];
-				if($pointForInsert < 0)
-				{
-					if( !$logged_info )
-					{
-						return $this->dispBoardMessage('msg_not_permitted');
-					}
-					else if (($oPointModel->getPoint($logged_info->member_srl) + $pointForInsert )< 0 )
-					{
-						return $this->dispBoardMessage('msg_not_enough_point');
-					}
-				}
-			}
-			if(!$oDocument->get('status')) $oDocument->add('status', $oDocumentModel->getDefaultStatus());
-
-			$statusList = $this->_getStatusNameList($oDocumentModel);
-			if(count($statusList) > 0) Context::set('status_list', $statusList);
-
-			// get Document status config value
-			Context::set('document_srl',$document_srl);
-			Context::set('oDocument', $oDocument);
-
-			// apply xml_js_filter on header
-			$oDocumentController = getController('document');
-			$oDocumentController->addXmlJsFilter($this->module_info->module_srl);
-
-			// if the document exists, then setup extra variabels on context
-			if($oDocument->isExists() && !$savedDoc) Context::set('extra_keys', $oDocument->getExtraVars());
-
-			/**
-			 * add JS filters
-			 **/
-			if(Context::get('logged_info')->is_admin=='Y') Context::addJsFilter($this->module_path.'tpl/filter', 'insert_admin.xml');
-			else Context::addJsFilter($this->module_path.'tpl/filter', 'insert.xml');
-
-			$oSecurity = new Security();
-			$oSecurity->encodeHTML('category_list.text', 'category_list.title');
-
-			$this->setTemplateFile('write_form');
-		}
-
-		function _getStatusNameList(&$oDocumentModel)
-		{
-			$resultList = array();
-			if(!empty($this->module_info->use_status))
-			{
-				$statusNameList = $oDocumentModel->getStatusNameList();
-				$statusList = explode('|@|', $this->module_info->use_status);
-
-				if(is_array($statusList))
-				{
-					foreach($statusList as $key => $value)
-					{
-						$resultList[$value] = $statusNameList[$value];
-					}
-				}
-			}
-			return $resultList;
-		}
-
-		/**
 		 * @brief display board module deletion form
 		 **/
 		function dispBoardDelete()
@@ -818,7 +868,7 @@ var_dump('disp_list()');
 			// check grant
 			if(!$this->grant->write_document)
 			{
-				return $this->dispBoardMessage('msg_not_permitted');
+				return $this->_disp_message('msg_not_permitted');
 			}
 
 			// get the document_srl from request
@@ -845,7 +895,7 @@ var_dump('disp_list()');
 
 			if($this->module_info->protect_content=="Y" && $oDocument->get('comment_count')>0 && $this->grant->manager==false)
 			{
-				return $this->dispBoardMessage('msg_protect_content');
+				return $this->_disp_message('msg_protect_content');
 			}
 
 			Context::set('oDocument',$oDocument);
@@ -868,7 +918,7 @@ var_dump('disp_list()');
 			// check grant
 			if(!$this->grant->write_comment)
 			{
-				return $this->dispBoardMessage('msg_not_permitted');
+				return $this->_disp_message('msg_not_permitted');
 			}
 
 			// get the document information
@@ -876,13 +926,13 @@ var_dump('disp_list()');
 			$oDocument = $oDocumentModel->getDocument($document_srl);
 			if(!$oDocument->isExists())
 			{
-				return $this->dispBoardMessage('msg_invalid_request');
+				return $this->_disp_message('msg_invalid_request');
 			}
 
 			// Check allow comment
 			if(!$oDocument->allowComment())
 			{
-				return $this->dispBoardMessage('msg_not_allow_comment');
+				return $this->_disp_message('msg_not_allow_comment');
 			}
 
 			// obtain the comment (create an empty comment document for comment_form usage)
@@ -912,7 +962,7 @@ var_dump('disp_list()');
 			// check grant
 			if(!$this->grant->write_comment)
 			{
-				return $this->dispBoardMessage('msg_not_permitted');
+				return $this->_disp_message('msg_not_permitted');
 			}
 
 			// get the parent comment ID
@@ -931,11 +981,11 @@ var_dump('disp_list()');
 			// if the comment is not existed, opoup an error message
 			if(!$oSourceComment->isExists())
 			{
-				return $this->dispBoardMessage('msg_invalid_request');
+				return $this->_disp_message('msg_invalid_request');
 			}
 			if(Context::get('document_srl') && $oSourceComment->get('document_srl') != Context::get('document_srl'))
 			{
-				return $this->dispBoardMessage('msg_invalid_request');
+				return $this->_disp_message('msg_invalid_request');
 			}
 
 			// Check allow comment
@@ -943,7 +993,7 @@ var_dump('disp_list()');
 			$oDocument = $oDocumentModel->getDocument($oSourceComment->get('document_srl'));
 			if(!$oDocument->allowComment())
 			{
-				return $this->dispBoardMessage('msg_not_allow_comment');
+				return $this->_disp_message('msg_not_allow_comment');
 			}
 
 			// get the comment information
@@ -972,7 +1022,7 @@ var_dump('disp_list()');
 			// check grant
 			if(!$this->grant->write_comment)
 			{
-				return $this->dispBoardMessage('msg_not_permitted');
+				return $this->_disp_message('msg_not_permitted');
 			}
 
 			// get the document_srl and comment_srl
@@ -992,7 +1042,7 @@ var_dump('disp_list()');
 			// if the comment is not exited, alert an error message
 			if(!$oComment->isExists())
 			{
-				return $this->dispBoardMessage('msg_invalid_request');
+				return $this->_disp_message('msg_invalid_request');
 			}
 
 			// if the comment is not granted, then back to the password input form
@@ -1021,7 +1071,7 @@ var_dump('disp_list()');
 			// check grant
 			if(!$this->grant->write_comment)
 			{
-				return $this->dispBoardMessage('msg_not_permitted');
+				return $this->_disp_message('msg_not_permitted');
 			}
 
 			// get the comment_srl to be deleted
@@ -1059,50 +1109,40 @@ var_dump('disp_list()');
 		/**
 		 * @brief display the delete trackback form
 		 **/
-		function dispBoardDeleteTrackback()
-		{
-			$oTrackbackModel = getModel('trackback');
+		// function dispBoardDeleteTrackback()
+		// {
+		// 	$oTrackbackModel = getModel('trackback');
 
-			if(!$oTrackbackModel)
-			{
-				return;
-			}
+		// 	if(!$oTrackbackModel)
+		// 	{
+		// 		return;
+		// 	}
 
-			// get the trackback_srl
-			$trackback_srl = Context::get('trackback_srl');
+		// 	// get the trackback_srl
+		// 	$trackback_srl = Context::get('trackback_srl');
 
-			// get the trackback data
-			$columnList = array('trackback_srl');
-			$output = $oTrackbackModel->getTrackback($trackback_srl, $columnList);
-			$trackback = $output->data;
+		// 	// get the trackback data
+		// 	$columnList = array('trackback_srl');
+		// 	$output = $oTrackbackModel->getTrackback($trackback_srl, $columnList);
+		// 	$trackback = $output->data;
 
-			// if no trackback, then display the board content
-			if(!$trackback)
-			{
-				return $this->dispBoardContent();
-			}
+		// 	// if no trackback, then display the board content
+		// 	if(!$trackback)
+		// 	{
+		// 		return $this->dispBoardContent();
+		// 	}
 
-			//Context::set('trackback',$trackback);	//perhaps trackback variables not use in UI
+		// 	//Context::set('trackback',$trackback);	//perhaps trackback variables not use in UI
 
-			/**
-			 * add JS filters
-			 **/
-			Context::addJsFilter($this->module_path.'tpl/filter', 'delete_trackback.xml');
+		// 	/**
+		// 	 * add JS filters
+		// 	 **/
+		// 	Context::addJsFilter($this->module_path.'tpl/filter', 'delete_trackback.xml');
 
-			$this->setTemplateFile('delete_trackback_form');
-		}
+		// 	$this->setTemplateFile('delete_trackback_form');
+		// }
 
-		/**
-		 * @brief display board message
-		 **/
-		function dispBoardMessage($msg_code)
-		{
-			$msg = Context::getLang($msg_code);
-			if(!$msg) $msg = $msg_code;
-			Context::set('message', $msg);
-			$this->setTemplateFile('message');
-		}
-
+		
 		/**
 		 * @brief the method for displaying the warning messages
 		 * display an error message if it has not  a special design

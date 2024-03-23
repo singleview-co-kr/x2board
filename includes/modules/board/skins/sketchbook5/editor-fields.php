@@ -2,34 +2,28 @@
 	<div class="kboard-attr-row <?php echo esc_attr($field['class'])?> <?php echo esc_attr($required)?>">
 		<label class="attr-name" for="<?php echo esc_attr($meta_key)?>"><span class="field-name"><?php echo esc_html($field_name)?></span><?php if($required):?> <span class="attr-required-text">*</span><?php endif?></label>
 		<div class="kboard-content">
-			<?php
-			echo kboard_content_editor(array(
-				'board' => $board,
-				'content' => $content,
-				'required' => $required,
-				'placeholder' => $placeholder,
-				'editor_height' => '400',
-			));
+			<?php echo $board->editor_html;
+			// echo kboard_content_editor(array('board' => $board, 'content' => $content, 'required' => $required, 'placeholder' => $placeholder, 'editor_height' => '400' ));
 			?>
 		</div>
 	</div>
-<?php elseif($field['field_type'] == 'author'):?>
-	<?php if($field['permission'] == 'always_visible' || (!$field['permission'] && $board->viewUsernameField())):?>
+<?php elseif($field['field_type'] == 'nick_name'):?>
+	<?php if($field['permission'] == 'always_visible' || (!$field['permission'] && $board->viewUsernameField)):?>
 		<div class="kboard-attr-row <?php echo esc_attr($field['class'])?> required">
 			<label class="attr-name" for="kboard-input-member-display"><span class="field-name"><?php echo esc_html($field_name)?></span> <span class="attr-required-text">*</span></label>
-			<div class="attr-value"><input type="text" id="kboard-input-member-display" name="member_display" class="required" value="<?php echo $content->member_display?esc_attr($content->member_display):esc_attr($default_value)?>"<?php if($placeholder):?> placeholder="<?php echo esc_attr($placeholder)?>"<?php endif?>></div>
+			<div class="attr-value"><input type="text" id="kboard-input-nick-name" name="nick_name" class="required" value="<?php echo $content->nick_name?esc_attr($content->nick_name):esc_attr($default_value)?>"<?php if($placeholder):?> placeholder="<?php echo esc_attr($placeholder)?>"<?php endif?>></div>
 		</div>
 	<?php elseif($field['permission'] == 'always_hide'):?>
-		<input type="hidden" id="kboard-input-member-display" name="member_display" value="<?php echo $content->member_display?esc_attr($content->member_display):esc_attr($default_value)?>">
+		<input type="hidden" id="kboard-input-member-display" name="nick_name" value="<?php echo $content->nick_name?esc_attr($content->nick_name):esc_attr($default_value)?>">
 	<?php endif?>
-	<?php if($board->viewUsernameField()):?>
+	<?php if($board->viewUsernameField):?>
 		<div class="kboard-attr-row kboard-attr-password">
-			<label class="attr-name" for="kboard-input-password"><?php echo __('Password', 'kboard')?> <span class="attr-required-text">*</span></label>
-			<div class="attr-value"><input type="password" id="kboard-input-password" name="password" value="" placeholder="<?php echo __('Password', 'kboard')?>..."></div>
+			<label class="attr-name" for="kboard-input-password"><?php echo __('Password', 'x2board')?> <span class="attr-required-text">*</span></label>
+			<div class="attr-value"><input type="password" id="kboard-input-password" name="password" value="" placeholder="<?php echo __('Password', 'x2board')?>..."></div>
 		</div>
 	<?php endif?>
 <?php elseif($field['field_type'] == 'captcha'):?>
-	<?php if($board->useCAPTCHA() && !$content->uid):?>
+	<?php if($board->useCAPTCHA && !$content->uid):?>
 		<?php if(kboard_use_recaptcha()):?>
 		<div class="kboard-attr-row <?php echo esc_attr($field['class'])?>">
 			<label class="attr-name"></label>
@@ -39,7 +33,7 @@
 		<?php else:?>
 		<div class="kboard-attr-row <?php echo esc_attr($field['class'])?>">
 			<label class="attr-name" for="kboard-input-captcha"><img src="<?php echo kboard_captcha()?>" alt=""></label>
-			<div class="attr-value"><input type="text" id="kboard-input-captcha" name="captcha" value="" placeholder="<?php echo __('CAPTCHA', 'kboard')?>...">
+			<div class="attr-value"><input type="text" id="kboard-input-captcha" name="captcha" value="" placeholder="<?php echo __('CAPTCHA', 'x2board')?>...">
 			<?php if(isset($field['description']) && $field['description']):?><div class="description"><?php echo esc_html($field['description'])?></div><?php endif?></div>
 		</div>
 		<?php endif?>
@@ -53,7 +47,7 @@
 					<option value=""><?=__('Category select', 'kboard')?></option>
 					<!-- disabled="disabled"|cond="!$val->grant"  -->
 					<!-- selected="selected"|cond="$val->grant&&$val->selected||$val->category_srl==$oDocument->get('category_srl')" -->
-					<?php foreach($content->getCategoryList() as $cat_id=>$option_val):?>
+					<?php foreach($content->getCategoryList as $cat_id=>$option_val):?>
 						<option value="<?=$cat_id?>" <?php if($content->category_id == $cat_id):?> selected<?php endif?>>
 						<?=str_repeat("&nbsp;&nbsp;",$option_val->depth)?> <?=$option_val->category_name?> (<?=$option_val->document_count?>)
 						</option>
@@ -71,32 +65,32 @@
 			<?php if(isset($field['description']) && $field['description']):?><div class="description"><?php echo esc_html($field['description'])?></div><?php endif?>
 		</div>
 	</div>
-<?php elseif($field['field_type'] == 'option'):?>
+<?php elseif($field['field_type'] == '---option'):?>
 	<div class="kboard-attr-row <?php echo esc_attr($field['class'])?>">
 		<label class="attr-name" for="<?php echo esc_attr($meta_key)?>"><span class="field-name"><?php echo esc_html($field_name)?></span></label>
 		<div class="attr-value">
 			<?php if($fields->isUseFields($field['secret_permission'], $field['secret'])):?>
-				<label class="attr-value-option"><input type="checkbox" name="secret" value="true" onchange="kboard_toggle_password_field(this)"<?php if($board->meta->secret_checked_forced && !$board->isAdmin()):?> checked disabled<?php endif?> <?php if($content->secret):?>checked <?php endif?>> <?php echo __('Secret', 'kboard')?></label>
+				<label class="attr-value-option"><input type="checkbox" name="secret" value="true" onchange="kboard_toggle_password_field(this)"<?php if($board->meta->secret_checked_forced && !$board->isAdmin()):?> checked disabled<?php endif?> <?php if($content->secret):?>checked <?php endif?>> <?php echo __('Secret', 'x2board')?></label>
 			<?php endif?>
 			<?php if($fields->isUseFields($field['notice_permission'], $field['notice'])):?>
-				<label class="attr-value-option"><input type="checkbox" name="notice" value="true"<?php if($content->notice):?> checked<?php endif?>> <?php echo __('Notice', 'kboard')?></label>
+				<label class="attr-value-option"><input type="checkbox" name="notice" value="true"<?php if($content->notice):?> checked<?php endif?>> <?php echo __('Notice', 'x2board')?></label>
 			<?php endif?>
 			<?php if($fields->isUseFields($field['allow_comment_permission'], $field['allow_comment'])):?>
-				<label class="attr-value-option"><input type="checkbox" name="allow_comment" value="true"<?php if(strlen($content->title) == 0 || $content->allow_comment):?> checked<?php endif?>> <?php echo __('Comment', 'kboard')?></label>
+				<label class="attr-value-option"><input type="checkbox" name="allow_comment" value="true"<?php if(strlen($content->title) == 0 || $content->allow_comment):?> checked<?php endif?>> <?php echo __('Comment', 'x2board')?></label>
 			<?php endif?>
 			<?php do_action('kboard_skin_editor_option', $content, $board, $boardBuilder)?>
 			<?php if(isset($field['description']) && $field['description']):?><div class="description"><?php echo esc_html($field['description'])?></div><?php endif?>
 		</div>
 	</div>
-	<?php if(!$board->viewUsernameField()):?>
+	<?php if(!$board->viewUsernameField):?>
 	<div style="overflow:hidden;width:0;height:0;">
 		<input style="width:0;height:0;background:transparent;color:transparent;border:none;" type="text" name="fake-autofill-fields">
 		<input style="width:0;height:0;background:transparent;color:transparent;border:none;" type="password" name="fake-autofill-fields">
 	</div>
 	<!-- 비밀글 비밀번호 필드 시작 -->
 	<div class="kboard-attr-row kboard-attr-password secret-password-row"<?php if(!$content->secret):?> style="display:none"<?php endif?>>
-		<label class="attr-name" for="kboard-input-password"><?php echo __('Password', 'kboard')?> <span class="attr-required-text">*</span></label>
-		<div class="attr-value"><input type="password" id="kboard-input-password" name="password" value="" placeholder="<?php echo __('Password', 'kboard')?>..."></div>
+		<label class="attr-name" for="kboard-input-password"><?php echo __('Password', 'x2board')?> <span class="attr-required-text">*</span></label>
+		<div class="attr-value"><input type="password" id="kboard-input-password" name="password" value="" placeholder="<?php echo __('Password', 'x2board')?>..."></div>
 	</div>
 	<!-- 비밀글 비밀번호 필드 끝 -->
 	<?php endif?>
@@ -108,9 +102,9 @@
 			<label class="attr-name" for="kboard-select-wordpress-search"><span class="field-name"><?php echo esc_html($field_name)?></span></label>
 			<div class="attr-value">
 				<select id="kboard-select-wordpress-search" name="wordpress_search">
-					<option value="1"<?php if($wordpress_search == '1'):?> selected<?php endif?>><?php echo __('Public', 'kboard')?></option>
-					<option value="2"<?php if($wordpress_search == '2'):?> selected<?php endif?>><?php echo __('Only title (secret document)', 'kboard')?></option>
-					<option value="3"<?php if($wordpress_search == '3'):?> selected<?php endif?>><?php echo __('Exclusion', 'kboard')?></option>
+					<option value="1"<?php if($wordpress_search == '1'):?> selected<?php endif?>><?php echo __('Public', 'x2board')?></option>
+					<option value="2"<?php if($wordpress_search == '2'):?> selected<?php endif?>><?php echo __('Only title (secret document)', 'x2board')?></option>
+					<option value="3"<?php if($wordpress_search == '3'):?> selected<?php endif?>><?php echo __('Exclusion', 'x2board')?></option>
 				</select>
 				<?php if(isset($field['description']) && $field['description']):?><div class="description"><?php echo esc_html($field['description'])?></div><?php endif?>
 			</div>
@@ -133,7 +127,7 @@
 		<label class="attr-name" for="<?php echo esc_attr($meta_key)?>"><span class="field-name"><?php echo esc_html($field_name)?></span><?php if($required):?> <span class="attr-required-text">*</span><?php endif?></label>
 		<div class="attr-value">
 			<select id="<?php echo esc_attr($meta_key)?>" name="<?php echo esc_attr($fields->getOptionFieldName($meta_key))?>"class="<?php echo esc_attr($required)?>">
-				<option value=""><?php echo __('Select', 'kboard')?></option>
+				<option value=""><?php echo __('Select', 'x2board')?></option>
 				<?php foreach($field['row'] as $option_key=>$option_value):?>
 					<?php if(isset($option_value['label']) && $option_value['label']):?>
 						<?php if($content->option->{$meta_key}):?>
@@ -162,7 +156,7 @@
 					<?php endif?>
 				<?php endif?>
 			<?php endforeach?>
-			<label class="attr-reset-button" style="cursor:pointer" onclick="kboard_radio_reset(this)"><?php echo __('Reset', 'kboard')?></label>
+			<label class="attr-reset-button" style="cursor:pointer" onclick="kboard_radio_reset(this)"><?php echo __('Reset', 'x2board')?></label>
 			<?php if(isset($field['description']) && $field['description']):?><div class="description"><?php echo esc_html($field['description'])?></div><?php endif?>
 		</div>
 	</div>
@@ -252,13 +246,13 @@
 		<label class="attr-name" for="<?php echo esc_attr($meta_key)?>"><span class="field-name"><?php echo esc_html($field_name)?></span><?php if($required):?> <span class="attr-required-text">*</span><?php endif?></label>
 		<div class="attr-value">
 			<div class="kboard-row-postcode">
-				<input type="text" id="<?php echo esc_attr($meta_key)?>_postcode" class="kboard-postcode" name="<?php echo esc_attr($fields->getOptionFieldName($meta_key))?>_postcode" value="<?php echo esc_attr($content->option->{$meta_key.'_postcode'})?>" placeholder="<?php echo __('Zip Code', 'kboard')?>" style="width:160px;"> <button type="button" class="kboard-default-button-small kboard-postcode-address-search-button" onclick="kboard_postcode_address_search('<?php echo esc_attr($meta_key)?>_postcode', '<?php echo esc_attr($meta_key)?>_address_1', '<?php echo esc_attr($meta_key)?>_address_2')"><?php echo __('Search', 'kboard')?></button>
+				<input type="text" id="<?php echo esc_attr($meta_key)?>_postcode" class="kboard-postcode" name="<?php echo esc_attr($fields->getOptionFieldName($meta_key))?>_postcode" value="<?php echo esc_attr($content->option->{$meta_key.'_postcode'})?>" placeholder="<?php echo __('Zip Code', 'x2board')?>" style="width:160px;"> <button type="button" class="kboard-default-button-small kboard-postcode-address-search-button" onclick="kboard_postcode_address_search('<?php echo esc_attr($meta_key)?>_postcode', '<?php echo esc_attr($meta_key)?>_address_1', '<?php echo esc_attr($meta_key)?>_address_2')"><?php echo __('Search', 'x2board')?></button>
 			</div>
 			<div class="kboard-row-address-1">
-				<input type="text" id="<?php echo esc_attr($meta_key)?>_address_1" class="kboard-address-1" name="<?php echo esc_attr($fields->getOptionFieldName($meta_key))?>_address_1" value="<?php echo esc_attr($content->option->{$meta_key.'_address_1'})?>" placeholder="<?php echo __('Address', 'kboard')?>">
+				<input type="text" id="<?php echo esc_attr($meta_key)?>_address_1" class="kboard-address-1" name="<?php echo esc_attr($fields->getOptionFieldName($meta_key))?>_address_1" value="<?php echo esc_attr($content->option->{$meta_key.'_address_1'})?>" placeholder="<?php echo __('Address', 'x2board')?>">
 			</div>
 			<div class="kboard-row-address-2">
-				<input type="text" id="<?php echo esc_attr($meta_key)?>_address_2" class="kboard-address-2" name="<?php echo esc_attr($fields->getOptionFieldName($meta_key))?>_address_2" value="<?php echo esc_attr($content->option->{$meta_key.'_address_2'})?>" placeholder="<?php echo __('Address 2', 'kboard')?>">
+				<input type="text" id="<?php echo esc_attr($meta_key)?>_address_2" class="kboard-address-2" name="<?php echo esc_attr($fields->getOptionFieldName($meta_key))?>_address_2" value="<?php echo esc_attr($content->option->{$meta_key.'_address_2'})?>" placeholder="<?php echo __('Address 2', 'x2board')?>">
 			</div>
 			<?php if(isset($field['description']) && $field['description']):?><div class="description"><?php echo esc_html($field['description'])?></div><?php endif?>
 		</div>
