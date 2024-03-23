@@ -220,6 +220,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postController')) {
 			$a_new_post['vote_count'] = 0; //isset($data['vote'])?intval($data['vote']):0;
 			$a_new_post['category_id'] = intval($obj->category_id); //isset($data['category_id'])?intval($data['category_id']):0;
 			$a_new_post['is_notice'] = sanitize_text_field($obj->is_notice); //isset($data['notice'])?sanitize_key($data['notice']):'';
+			$a_new_post['update_order'] = intval($obj->update_order);
+			$a_new_post['list_order'] = intval($obj->list_order);
 
 			// <option value="1" selected="">제목과 내용 검색허용</option>
 			// <option value="2">제목만 검색허용 (비밀글)</option>
