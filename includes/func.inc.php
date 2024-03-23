@@ -199,7 +199,6 @@ function _launch_x2b($s_cmd_type='view') {
 	require_once X2B_PATH . 'includes/classes/ModuleObject.class.php';
 	require_once X2B_PATH . 'includes/classes/ModuleHandler.class.php';
 	require_once X2B_PATH . 'includes/classes/DB.class.php';
-	require_once X2B_PATH . 'includes/classes/Skin.class.php';
 	require_once X2B_PATH . 'includes/classes/PageHandler.class.php';
 	require_once X2B_PATH . 'includes/classes/Password.class.php';
 	

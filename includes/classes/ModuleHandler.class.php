@@ -9,7 +9,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleHandler')) {
 
 	class ModuleHandler //  extends Handler  -> blank abc
 	{
-		const MODULE_ABS_PATH = 'includes/modules/';
+		// const MODULE_ABS_PATH = 'includes/modules/';
 		var $module = NULL; ///< Module
 		// var $act = NULL; ///< action
 		// var $mid = NULL; ///< Module ID
@@ -406,13 +406,13 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleHandler')) {
 		 * @return ModuleObject module instance (if failed it returns null)
 		 * @remarks if there exists a module instance created before, returns it.
 		 * */
-		public static function &getModuleInstance($module, $type = 'view') {  //, $kind = '')
+		public static function &getModuleInstance($s_module_name, $type = 'view') {  //, $kind = '')
 			global $G_X2B_CACHE;
 			if(__DEBUG__ == 3) {
 				$start_time = \X2board\Includes\getMicroTime();
 			}
 
-			$parent_module = $module;
+			$parent_module = $s_module_name;
 			// $kind = strtolower($kind);
 			$type = strtolower($type);
 
@@ -422,28 +422,28 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleHandler')) {
 				$kind = 'svc';  // no admin feature allowed
 			}
 
-			$key = $module . '.' . ($kind != 'admin' ? '' : 'admin') . '.' . $type;
+			$key = $s_module_name . '.' . ($kind != 'admin' ? '' : 'admin') . '.' . $type;
 
 			$extend_module = null;
 			if(is_array($G_X2B_CACHE['__MODULE_EXTEND__']) && array_key_exists($key, $G_X2B_CACHE['__MODULE_EXTEND__'])) {
-				$module = $extend_module = $G_X2B_CACHE['__MODULE_EXTEND__'][$key];
+				$s_module_name = $extend_module = $G_X2B_CACHE['__MODULE_EXTEND__'][$key];
 			}
 
 			// if there is no instance of the module in global variable, create a new one
-			if(!isset($G_X2B_CACHE['_loaded_module'][$module][$type][$kind])) {
-				ModuleHandler::_getModuleFilePath($module, $type, $kind, $class_path, $high_class_file, $class_file, $instance_name);
+			if(!isset($G_X2B_CACHE['_loaded_module'][$s_module_name][$type][$kind])) {
+				ModuleHandler::_getModuleFilePath($s_module_name, $type, $kind, $class_path, $high_class_file, $class_file, $instance_name);
 
 				if($extend_module && (!is_readable($high_class_file) || !is_readable($class_file)))	{
-					$module = $parent_module;
-					ModuleHandler::_getModuleFilePath($module, $type, $kind, $class_path, $high_class_file, $class_file, $instance_name);
+					$s_module_name = $parent_module;
+					ModuleHandler::_getModuleFilePath($s_module_name, $type, $kind, $class_path, $high_class_file, $class_file, $instance_name);
 				}
-// var_dump('X2board\Includes\Modules\\'.ucfirst($module).'\\'.$module);
+// var_dump('X2board\Includes\Modules\\'.ucfirst($s_module_name).'\\'.$s_module_name);
 				// Check if the base class and instance class exist
-				if(!class_exists('\\X2board\\Includes\\Modules\\'.ucfirst($module).'\\'.$module, true)) {
+				if(!class_exists('\\X2board\\Includes\\Modules\\'.ucfirst($s_module_name).'\\'.$s_module_name, true)) {
 					return NULL;
 				}
 // var_dump($instance_name);
-				$s_instance_in_namespace = '\\X2board\\Includes\\Modules\\'.ucfirst($module).'\\'.$instance_name;
+				$s_instance_in_namespace = '\\X2board\\Includes\\Modules\\'.ucfirst($s_module_name).'\\'.$instance_name;
 // var_dump($s_instance_in_namespace);
 				if(!class_exists($s_instance_in_namespace, true)) {
 					return NULL;
@@ -457,11 +457,12 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleHandler')) {
 				// Load language files for the class
 				// Context::loadLang($class_path . 'lang');
 				// if($extend_module) {
-				// 	Context::loadLang(ModuleHandler::getModulePath($parent_module) . 'lang');
+				// 	Context::loadLang(ModuleHandler::_getModulePath($parent_module) . 'lang');
 				// }
 
 				// Set variables to the instance
-				$oModule->setModule($module);
+				$oModule->setModule($s_module_name);
+				$class_path = ModuleHandler::_getRealPath($class_path);
 				$oModule->setModulePath($class_path);
 
 				// If the module has a constructor, run it.
@@ -473,7 +474,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleHandler')) {
 				}
 
 				// Store the created instance into GLOBALS variable
-				$G_X2B_CACHE['_loaded_module'][$module][$type][$kind] = $oModule;
+				$G_X2B_CACHE['_loaded_module'][$s_module_name][$type][$kind] = $oModule;
 			}
 
 			if(__DEBUG__ == 3) {
@@ -481,15 +482,17 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleHandler')) {
 			}
 // var_dump('dd');
 			// return the instance
-			return $G_X2B_CACHE['_loaded_module'][$module][$type][$kind];
+			return $G_X2B_CACHE['_loaded_module'][$s_module_name][$type][$kind];
 		}
 
-		private static function _getModuleFilePath($module, $type, $kind, &$classPath, &$highClassFile, &$classFile, &$instanceName)
-		{
-			$classPath = ModuleHandler::getModulePath($module);
-			$highClassFile = sprintf('%s%s%s.class.php', X2B_PATH, $classPath, $module);
-// var_dump($highClassFile);
-			$highClassFile = ModuleHandler::getRealPath($highClassFile);
+		/**
+		 * @remarks 
+		 * */
+		private static function _getModuleFilePath($module, $type, $kind, &$classPath, &$highClassFile, &$classFile, &$instanceName) {
+			$classPath = ModuleHandler::_getModulePath($module);
+			$highClassFile = sprintf('%s%s.class.php', $classPath, $module);
+			$highClassFile = ModuleHandler::_getRealPath($highClassFile);
+// var_Dump($highClassFile );
 
 			$types = array('view','controller','model','class');  // 'api','wap','mobile',
 			if(!in_array($type, $types)) {
@@ -508,7 +511,9 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleHandler')) {
 				$classFile = '%s%s.%s.php';
 			}
 			$instanceName = sprintf($instanceName, $module, ucfirst($type));
-			$classFile = ModuleHandler::getRealPath(sprintf($classFile, $classPath, $module, $type));
+			$classFile = ModuleHandler::_getRealPath(sprintf($classFile, $classPath, $module, $type));
+// var_Dump($classPath );			
+// var_Dump($classFile );	
 		}
 
 		/**
@@ -517,11 +522,10 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleHandler')) {
 		 * @param string $source path to change into absolute path
 		 * @return string Absolute path
 		 */
-		public static function getRealPath($source) {
+		private static function _getRealPath($source) {
 			if(strlen($source) >= 2 && substr_compare($source, './', 0, 2) === 0) {
 				return X2B_PATH . substr($source, 2);
 			}
-
 			return $source;
 		}
 
@@ -530,9 +534,8 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleHandler')) {
 		 * @param string $module module name
 		 * @return string path of the module
 		 * */
-		public static function getModulePath($module) {
-			// const MODULE_ABS_PATH = 'includes/modules/';
-			return './' . self::MODULE_ABS_PATH . $module . '/'; // sprintf('./modules/%s/', $module);
+		private static function _getModulePath($module) {
+			return './includes/modules/' . $module . '/';
 		}
 
 		/**

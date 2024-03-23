@@ -242,6 +242,26 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 			$o_logged_info->is_admin = current_user_can('manage_options') ? 'Y' : 'N';
 			$this->set( 'is_logged', is_user_logged_in() );
 			$this->set( 'logged_info', $o_logged_info );
+
+			$o_grant = new \stdClass();
+			$o_grant->is_site_admin = true;
+			$o_grant->manager = true; 
+			$o_grant->access = true;
+			$o_grant->is_admin = true;
+			$o_grant->list = true;
+			$o_grant->view = true; 
+			$o_grant->write_post = true;
+			$o_grant->write_comment = true;
+			// $o_grant->consultation_read = true;
+
+			$o_module_info = new \stdClass();
+			$o_module_info->module = 'board';
+			$o_module_info->skin = 'sketchbook5';
+			$o_module_info->skin_vars = new \stdClass();
+			$o_module_info->use_category = 'Y';
+			$o_module_info->use_anonymous = 'Y';
+			$o_module_info->use_status = '';
+			$o_module_info->list = true;
 			
 			if( $s_cmd_type == 'proc' ) {  // load controller priority
 				$s_cmd = isset( $_REQUEST['cmd'])?$_REQUEST['cmd'] : '';
@@ -249,7 +269,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 var_dump('detected proc cmd:'. $s_cmd);
 				if( $s_cmd_prefix === 'proc' ) {  
 					$o_controller = \X2board\Includes\getController('board');
-					$o_controller->init(); 
+					$o_controller->setModuleInfo($o_module_info, $o_grant);
 					$next_page_url = $o_controller->get('s_wp_redirect_url');
 					if ( wp_redirect( $next_page_url ) ) {
 						unset($o_controller);
@@ -272,9 +292,8 @@ var_dump('detected proc cmd:'. $s_cmd);
 			$s_cmd_prefix = substr( $s_cmd, 0, 4 );
 var_dump('detected view cmd:'. $s_cmd);
 			if( $s_cmd_prefix === '' || $s_cmd_prefix === 'view' ) {  // load view
-				// $this->_render_view('board');
 				$o_view = \X2board\Includes\getModule('board');
-				$o_view->init(); 
+				$o_view->setModuleInfo($o_module_info, $o_grant);
 				unset($o_view);
 			}
 

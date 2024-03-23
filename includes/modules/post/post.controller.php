@@ -290,7 +290,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postController')) {
 				return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error);
 			} 
 			
-			$n_new_post_id = $wpdb->insert_id;
+			// $n_new_post_id = $wpdb->insert_id;
 			unset($a_insert_key);
 			unset($a_insert_data);
 
@@ -347,10 +347,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postController')) {
 
 			// return
 			if(!$manual_inserted) {
-				$this->addGrant($n_new_post_id);
+				$this->addGrant($a_new_post['post_id']);
 			}
 			$o_rst = new \X2board\Includes\Classes\BaseObject();
-			$o_rst->add('post_id',$n_new_wp_post_id);
+			$o_rst->add('post_id',$a_new_post['post_id']);
 			$o_rst->add('category_id',$obj->category_id);
 // var_dump('insert_post finished without redirection');
 // exit;

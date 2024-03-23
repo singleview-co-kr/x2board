@@ -8,17 +8,22 @@ if (!defined('ABSPATH')) {
 if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 
 	class ModuleObject extends BaseObject {
+		// private $_a_required_skinfile = array( '111confirm.php' => true, 'confirm_comment.php' => true, 'document.php' => true, 
+		// 									   'editor-fields.php' => true, 'editor.php' => true, 'editor_comment.php' => true, 
+		// 									   'latest.php' => true, 'list-category-tree-select.php' => true, 
+		// 									   'list-category-tree-tab.php' => true, 'list.php' => true, 'message.php' => true, 
+		// 									   'reply-template.php' => true);
 
 		// var $mid = NULL; ///< string to represent run-time instance of Module (XE Module)
 		var $module = NULL; ///< Class name of Xe Module that is identified by mid
 		// var $module_srl = NULL; ///< integer value to represent a run-time instance of Module (XE Module)
 		var $module_info = NULL; ///< an object containing the module information
-		var $origin_module_info = NULL;
+		// var $origin_module_info = NULL;
 		// var $xml_info = NULL; ///< an object containing the module description extracted from XML file
 		var $module_path = NULL; ///< a path to directory where module source code resides
 		var $act = NULL; ///< a string value to contain the action name
-		var $template_path = NULL; ///< a path of directory where template files reside
-		var $template_file = NULL; ///< name of template file
+		var $skin_path = NULL; ///< a path of directory where skin files reside
+		var $skin_file = NULL; ///< name of skin file
 		// var $layout_path = ''; ///< a path of directory where layout files reside
 		// var $layout_file = ''; ///< name of layout file
 		// var $edited_layout_file = ''; ///< name of temporary layout files that is modified in an admin mode
@@ -75,21 +80,23 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 
 		/**
 		 * sett to set module information
+		 * this is called by board.class.php::__construct();
 		 * @param object $module_info object containing module information
 		 * @param object $xml_info object containing module description
 		 * @return void
 		 * */
 		public function setModuleInfo($o_module_info, $o_grant) { // , $xml_info)
+// var_dump($o_module_info);
 			// The default variable settings
 			// $this->mid = $module_info->mid;
 			// $this->module_srl = $module_info->module_srl;
 			$this->module_info = $o_module_info;
 			// $this->origin_module_info = $module_info;
 			// $this->xml_info = $xml_info;
-			$this->skin_vars = $o_module_info->skin_vars;
+			// $this->skin_vars = $o_module_info->skin_vars;
 			// validate certificate info and permission settings necessary in Web-services
 			$is_logged = Context::get('is_logged');
-			$logged_info = Context::get('logged_info');
+			// $logged_info = Context::get('logged_info');
 			// module model create an object
 			// $oModuleModel = getModel('module');
 			// permission settings. access, manager(== is_admin) are fixed and privilege name in XE
@@ -114,7 +121,9 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 			// $grant = new \stdClass();
 			// $grant->access = true;
 			// display no permission if the current module doesn't have an access privilege
-			if(!$o_grant->access) return $this->stop("msg_not_permitted");
+			if(!$o_grant->access) {
+				return $this->stop("msg_not_permitted");
+			}
 
 			// checks permission and action if you don't have an admin privilege
 			if(!$o_grant->manager)
@@ -144,15 +153,13 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 			}
 			// permission variable settings
 			$this->grant = $o_grant;
-
 			Context::set('grant', $o_grant);
 
 			$this->module_config = null;// $oModuleModel->getModuleConfig($this->module, $module_info->site_srl);
 
-			// if(method_exists($this, 'init'))
-			// {
-			// 	$this->init();
-			// }
+			if(method_exists($this, 'init')) {
+				$this->init();
+			}
 		}
 
 		/**
@@ -188,40 +195,74 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 			return false;
 		}
 
-
 		/**
-		 * set the file name of the template file
-		 * @param string name of file
+		 * set the directory path of the skin directory
+		 * @param string path of skin directory.
 		 * @return void
 		 * */
-		function setTemplateFile($filename)
-		{
-			if(isset($filename) && substr_compare($filename, '.html', -5) !== 0)
-			{
-				$filename .= '.html';
+		// function setTemplatePath($path)
+		public function set_skin_path($path) {
+			if(!$path) return;
+
+			// if((strlen($path) >= 1 && substr_compare($path, '/', 0, 1) !== 0) && (strlen($path) >= 2 && substr_compare($path, './', 0, 2) !== 0)) {
+			// 	$path = './' . $path;
+			// }
+
+			if(substr_compare($path, '/', -1) !== 0) {
+				$path .= '/';
 			}
-			$this->template_file = $filename;
+			$this->skin_path = $path;
+			if( !is_dir($this->skin_path) ) {
+				wp_die( $this->skin_path . ' does not exist' );
+			}
+
+			// if( $h_dir = @opendir($this->skin_path) ) {
+				// $a_required_skinfile = $this->_a_required_skinfile;
+				// while(($filename = readdir($h_dir)) !== false){
+				// 	if(isset($filename) && substr_compare($filename, '.php', -4) == 0) {  // if php file found
+				// 		unset($a_required_skinfile[$filename]);
+				// 	}
+			// 		$skin = new \stdClass();
+			// 		$skin->name = $name;
+			// 		$skin->dir = $this->skin_path . $name;
+			// 		$skin->url = $s_url . $name;
+			// 		$this->list[$name] = $skin;   /////////////////////
+			// 	}
+			// 	if( count($a_required_skinfile) > 0 ) {
+			// 		wp_die( implode(', ', array_keys($a_required_skinfile) ) . ' are required but not exist in ' . $path );
+			// 	}
+			// }
+			// if( is_resource($h_dir) ) {
+			// 	closedir($h_dir);
+			// }
+			// $this->list = apply_filters('x2board_skin_list', $this->list);
+			// $this->latestview_list = apply_filters('x2board_skin_latestview_list', $this->list);
+			// $this->merged_list = array_merge($this->list, $this->latestview_list);
+			// ksort($this->list);
+			// ksort($this->latestview_list);
+			// ksort($this->merged_list);
 		}
 
 		/**
-		 * set the directory path of the template directory
-		 * @param string path of template directory.
+		 * render the named skin file
+		 * @param string name of file
 		 * @return void
 		 * */
-		function setTemplatePath($path)
-		{
-			if(!$path) return;
-
-			if((strlen($path) >= 1 && substr_compare($path, '/', 0, 1) !== 0) && (strlen($path) >= 2 && substr_compare($path, './', 0, 2) !== 0))
-			{
-				$path = './' . $path;
+		public function render_skin_file($filename) {
+			if(isset($filename) && substr_compare($filename, '.php', -4) !== 0) {
+				$filename .= '.php';
 			}
+			$this->skin_file = $filename;
 
-			if(substr_compare($path, '/', -1) !== 0)
-			{
-				$path .= '/';
+			$s_skin_file_abs_path = $this->skin_path . $this->skin_file;
+			if( !file_exists( $s_skin_file_abs_path ) ) {
+				echo sprintf(__('%s file does not exist.', 'x2board'), $s_skin_file_abs_path);
 			}
-			$this->template_path = $path;
+			ob_start();
+			extract(Context::getAll4Skin(), EXTR_SKIP);				
+			$s_skin_file_abs_path = apply_filters('kboard_skin_file_path', $s_skin_file_abs_path ); // , $skin_name, $file, $vars, $this);
+			include $s_skin_file_abs_path;
+			return ob_get_clean();
 		}
 
 		/**
@@ -244,8 +285,8 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 			// $oMessageObject->setMessage($msg_code);
 			// $oMessageObject->dispMessage();
 
-			// $this->setTemplatePath($oMessageObject->getTemplatePath());
-			// $this->setTemplateFile($oMessageObject->getTemplateFile());
+			// $this->set_skin_path($oMessageObject->getTemplatePath());
+			// $this->render_skin_file($oMessageObject->getTemplateFile());
 
 			// return $this;
 		}
@@ -255,8 +296,9 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 		 * @param string $module name of module
 		 * @return void
 		 * */
-		public function setModule($module) {
-			$this->module = $module;
+		public function setModule($s_module) {
+			$this->module = $s_module;
+// var_dump($this->module);
 		}
 
 		/**
@@ -277,7 +319,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 		 * */
 		// function getTemplateFile()
 		// {
-		// 	return $this->template_file;
+		// 	return $this->skin_file;
 		// }
 
 		/**
@@ -286,7 +328,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 		 * */
 		// function getTemplatePath()
 		// {
-		// 	return $this->template_path;
+		// 	return $this->skin_path;
 		// }
 
 		/**
@@ -297,8 +339,8 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 		 * */
 		// function setRefreshPage()
 		// {
-		// 	$this->setTemplatePath('./common/tpl');
-		// 	$this->setTemplateFile('refresh');
+		// 	$this->set_skin_path('./common/tpl');
+		// 	$this->render_skin_file('refresh');
 		// }
 
 		/**

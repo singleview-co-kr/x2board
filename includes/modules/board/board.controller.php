@@ -38,7 +38,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 		private function _proc_write_post() {
 // var_dump($this->module_info);
 			// check grant
-			if($this->module_info->module != "post") {
+			if($this->module_info->module != "board") {
 				return new \X2board\Includes\Classes\BaseObject(-1, "msg_invalid_request");
 			}
 			if(!$this->grant->write_post) {
@@ -215,7 +215,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 			if(!$output->toBool()) {
 				return $output;
 			}
-
+// var_dump($output);
+// exit;
 			// if s_wp_redirect_url is not added, automatically redirect to home_url
 			$this->add('s_wp_redirect_url', '?'.X2B_CMD_VIEW_POST.'/'.$output->get('post_id'));
 		}
