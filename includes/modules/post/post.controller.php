@@ -17,11 +17,24 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postController')) {
 
 	class postController extends post
 	{
+		function __construct() {
+var_dump('post controller __construct()');
+			if(!isset($_SESSION['banned_post'])) {
+				$_SESSION['banned_post'] = array();
+			}
+
+			if(!isset($_SESSION['readed_post'])) {
+				$_SESSION['readed_post'] = array();
+			}
+		}
+
 		/**
 		 * Initialization
 		 * @return void
 		 */
-		function init() { }
+		function init() { 
+var_dump('post controller init()');
+		}
 
 		/**
 		 * Insert new post
@@ -231,6 +244,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postController')) {
 			$a_new_post['post_status'] = sanitize_text_field($obj->status); //isset($data['status'])?sanitize_key($data['status']):'';
 			// add user agent
 			$a_new_post['ua'] = wp_is_mobile() ? 'M' : 'P';
+			$a_new_post['ipaddress'] = \X2board\Includes\get_remote_ip();
 
 			// 입력할 데이터 필터
 			// $data = apply_filters('x2board_insert_data', $a_new_post); //, $this->board_id);
@@ -390,6 +404,54 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postController')) {
 				return $result; // new WP post ID
 				// add_action('kboard_document_insert', array($this, '_setPostThumbnail'), 10, 4);
 			// }
+		}
+
+		/**
+		 * Update read counts of the post
+		 * @param postItem $post
+		 * @return bool|void
+		 */
+		public function update_readed_count(&$o_post) {  //   &$oDocument) {
+			// Pass if Crawler access
+			if(\X2board\Includes\is_crawler()) {
+				return false;
+			}
+			
+			$n_post_id = $o_post->post_id;
+			// Pass if read count is increaded on the session information
+			if(isset($_SESSION['readed_post'][$n_post_id])) {
+				return false;
+			}
+
+			// Pass if the author's IP address is as same as visitor's.
+			if($o_post->get('ipaddress') == \X2board\Includes\get_remote_ip() ) {  // $_SERVER['REMOTE_ADDR']) {
+				$_SESSION['readed_post'][$n_post_id] = true;
+				return false;
+			}
+			// Pass ater registering sesscion if the author is a member and has same information as the currently logged-in user.
+			$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
+			$n_post_author = $o_post->get('post_author');
+			if($n_post_author && $o_logged_info->ID == $n_post_author) {
+				$_SESSION['readed_post'][$n_post_id] = true;
+				return false;
+			}
+			unset($o_logged_info);
+
+			// Update read counts
+			// $args = new stdClass;
+			// $args->document_srl = $n_post_id;
+			// $output = executeQuery('document.updateReadedCount', $args);
+			global $wpdb;
+			$query = "UPDATE `{$wpdb->prefix}x2b_post` SET `readed_count`=`readed_count`+1 WHERE `post_id`='{$n_post_id}'";
+			if ($wpdb->query($query) === FALSE) {
+				return false;
+			} 
+
+			// Register session
+			if(!isset($_SESSION['banned_post'][$n_post_id])) {
+				$_SESSION['readed_post'][$n_post_id] = true;
+			}
+			return TRUE;
 		}
 
 		/**
@@ -1007,75 +1069,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postController')) {
 			}
 
 			return $output;
-		}
-
-		/**
-		 * Update read counts of the document
-		 * @param documentItem $oDocument
-		 * @return bool|void
-		 */
-		function updateReadedCount(&$oDocument)
-		{
-			// Pass if Crawler access
-			if(isCrawler()) return false;
-			
-			$document_srl = $oDocument->document_srl;
-			$member_srl = $oDocument->get('member_srl');
-			$logged_info = Context::get('logged_info');
-
-			// Call a trigger when the read count is updated (before)
-			$trigger_output = ModuleHandler::triggerCall('document.updateReadedCount', 'before', $oDocument);
-			if(!$trigger_output->toBool()) return $trigger_output;
-
-			// Pass if read count is increaded on the session information
-			if($_SESSION['readed_document'][$document_srl]) return false;
-
-			// Pass if the author's IP address is as same as visitor's.
-			if($oDocument->get('ipaddress') == $_SERVER['REMOTE_ADDR'])
-			{
-				$_SESSION['readed_document'][$document_srl] = true;
-				return false;
-			}
-			// Pass ater registering sesscion if the author is a member and has same information as the currently logged-in user.
-			if($member_srl && $logged_info->member_srl == $member_srl)
-			{
-				$_SESSION['readed_document'][$document_srl] = true;
-				return false;
-			}
-
-			$oDB = DB::getInstance();
-			$oDB->begin();
-
-			// Update read counts
-			$args = new stdClass;
-			$args->document_srl = $document_srl;
-			$output = executeQuery('document.updateReadedCount', $args);
-
-			// Call a trigger when the read count is updated (after)
-			$trigger_output = ModuleHandler::triggerCall('document.updateReadedCount', 'after', $oDocument);
-			if(!$trigger_output->toBool())
-			{
-				$oDB->rollback();
-				return $trigger_output;
-			}
-
-			$oDB->commit();
-
-			$oCacheHandler = CacheHandler::getInstance('object');
-			if($oCacheHandler->isSupport())
-			{
-				//remove document item from cache
-				$cache_key = 'document_item:'. getNumberingPath($document_srl) . $document_srl;
-				$oCacheHandler->delete($cache_key);
-			}
-
-			// Register session
-			if(!$_SESSION['banned_document'][$document_srl]) 
-			{
-				$_SESSION['readed_document'][$document_srl] = true;
-			}
-
-			return TRUE;
 		}
 
 		/**

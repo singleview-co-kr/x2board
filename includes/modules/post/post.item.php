@@ -61,7 +61,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			$this->_n_wp_post_id = $attribute->post_id;
 			// $this->lang_code = $attribute->lang_code;
 			$this->adds($attribute);
-
+// var_dump($this->get('post_status'));
 			// Tags
 			if($this->get('tags')) {
 				$tag_list = explode(',', $this->get('tags'));
@@ -84,9 +84,13 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 		
 		// 검색 URL 반영해야 함
 		public function get_pretty_url() {
-			$s_url = parse_url($_SERVER['REQUEST_URI'])['path'].'?post/'.$this->post_id; // for pretty post uri;
+			$s_url = parse_url($_SERVER['REQUEST_URI'])['path'].'?'.X2B_CMD_VIEW_POST.'/'.$this->post_id; // for pretty post uri;
 			return apply_filters('x2board_url_post_id', $s_url, $this->post_id);
 		}
+
+		// function getPermanentUrl() {
+		// 	return getFullUrl('','mid', $this->getDocumentMid('document_srl'), 'document_srl', $this->get('document_srl'));
+		// }
 
 		public function is_new() {
 // var_dump($this);
@@ -143,13 +147,12 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			// }
 			global $wpdb;
 			$o_post = $wpdb->get_row("SELECT * FROM `{$wpdb->prefix}x2b_post` WHERE `post_id`={$this->_n_wp_post_id}");
-// var_dump($o_post);
 			// $output = executeQuery('document.getDocument', $args, $columnList);
 
 			if($post_item === false) {
 				$post_item = $o_post;  //$output->data;
 
-					//insert in cache
+				//insert in cache
 				// if($document_item && $oCacheHandler->isSupport())
 				// {
 				// 	$oCacheHandler->put($cache_key, $document_item);
@@ -207,17 +210,61 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			return $o_post_model->get_extra_vars($this->get('board_id'), $this->_n_wp_post_id);
 		}
 
+		// function setGrant()
+		public function set_grant() {
+// var_dump($this->_n_wp_post_id);
+			$_SESSION['x2b_own_post'][$this->_n_wp_post_id] = true;
+			$this->grant_cache = true;
+		}
+
+		// function getStatus()
+		public function get_status() {
+			$s_cur_post_status = $this->get('post_status');
+			if(!$s_cur_post_status) {
+				$o_post_class = \X2board\Includes\getClass('post');
+				$s_default_status = $o_post_class->get_default_status();
+				unset($o_post_class);
+				return $s_default_status;
+			}
+			return $s_cur_post_status;
+		}
+
+		// function isNotice()
+		public function is_notice() {
+			return $this->get('is_notice') == 'Y' ? true : false;
+		}
+
+		// function isSecret()
+		public function is_secret() {
+			$o_post_model = \X2board\Includes\getModel('post');
+			$s_secret_tag = $o_post_model->getConfigStatus('secret');
+			unset($o_post_model);
+			return $this->get('post_status') == $s_secret_tag ? true : false;
+		}
+
+		/**
+		 * Update readed count
+		 * @return void
+		 */
+		function update_readed_count() {
+			$o_post_controller = \X2board\Includes\getController('post');
+			if($o_post_controller->update_readed_count($this)) {
+				$readed_count = $this->get('readed_count');
+				$this->add('readed_count', $readed_count+1);
+			}
+		}
+
+		
+
+
+
+
 
 
 
 
 ///////////////////
-		function setGrant()
-		{
-			$_SESSION['x2b_own_post'][$this->_n_wp_post_id] = true;
-			$this->grant_cache = true;
-		}
-
+		
 		function isAccessible()
 		{
 			return $_SESSION['accessible'][$this->_n_wp_post_id]==true?true:false;
@@ -279,17 +326,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 		{
 			if($this->isGranted() || !$this->get('member_srl')) return true;
 			return false;
-		}
-
-		function isSecret()
-		{
-			$oDocumentModel = getModel('document');
-			return $this->get('status') == $oDocumentModel->getConfigStatus('secret') ? true : false;
-		}
-
-		function isNotice()
-		{
-			return $this->get('is_notice') == 'Y' ? true : false;
 		}
 
 		function useNotify()
@@ -639,33 +675,14 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			return $this->getUpdate('Y-m-d').'T'.$this->getUpdate('H:i:s').substr($GLOBALS['_time_zone'],0,3).':'.substr($GLOBALS['_time_zone'],3,2);
 		}
 
-		function getPermanentUrl()
-		{
-			return getFullUrl('','mid', $this->getDocumentMid('document_srl'), 'document_srl', $this->get('document_srl'));
-		}
+		// function getTrackbackUrl()
+		// {
+		// 	if(!$this->_n_wp_post_id) return;
 
-		function getTrackbackUrl()
-		{
-			if(!$this->_n_wp_post_id) return;
-
-			// Generate a key to prevent spams
-			$oTrackbackModel = getModel('trackback');
-			if($oTrackbackModel) return $oTrackbackModel->getTrackbackUrl($this->_n_wp_post_id, $this->getDocumentMid());
-		}
-
-		/**
-		 * Update readed count
-		 * @return void
-		 */
-		function updateReadedCount()
-		{
-			$oDocumentController = getController('document');
-			if($oDocumentController->updateReadedCount($this))
-			{
-				$readed_count = $this->get('readed_count');
-				$this->add('readed_count', $readed_count+1);
-			}
-		}
+		// 	// Generate a key to prevent spams
+		// 	$oTrackbackModel = getModel('trackback');
+		// 	if($oTrackbackModel) return $oTrackbackModel->getTrackbackUrl($this->_n_wp_post_id, $this->getDocumentMid());
+		// }
 
 		function isExtraVarsExists()
 		{
@@ -979,15 +996,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			}
 
 			return $thumbnail_url . '?' . date('YmdHis', filemtime($thumbnail_file));
-		}
-
-		function getStatus()
-		{
-			if(!$this->get('status')) {
-				$oDocumentClass = getClass('document');
-				return $oDocumentClass->getDefaultStatus();
-			}
-			return $this->get('status');
 		}
 
 		function hasUploadedFiles()

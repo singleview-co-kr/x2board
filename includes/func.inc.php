@@ -201,6 +201,7 @@ function _launch_x2b($s_cmd_type='view') {
 	require_once X2B_PATH . 'includes/classes/DB.class.php';
 	require_once X2B_PATH . 'includes/classes/PageHandler.class.php';
 	require_once X2B_PATH . 'includes/classes/Password.class.php';
+	require_once X2B_PATH . 'includes/classes/IpFilter.class.php';
 	
 	// load modules
 	require_once X2B_PATH . 'includes/modules/board/board.class.php';
@@ -686,6 +687,52 @@ function checkXmpTag($content)
 	}
 
 	return $content;
+}
+
+/**
+ * 사용자 IP 주소를 반환한다.
+ * @return string
+ */
+function get_remote_ip() {
+	static $s_ip;
+	if($s_ip === null){
+		if(!empty($_SERVER['HTTP_CLIENT_IP'])){
+			$s_ip = $_SERVER['HTTP_CLIENT_IP'];
+		}
+		else if(!empty($_SERVER['HTTP_X_FORWARDED_FOR'])){
+			$s_ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+		}
+		else{
+			$s_ip = $_SERVER['REMOTE_ADDR'];
+		}
+	}
+	return apply_filters('x2board_remote_ip', $s_ip);
+}
+
+
+
+/**
+ * Get is current user crawler
+ *
+ * @param string $agent if set, use this value instead HTTP_USER_AGENT
+ * @return bool
+ */
+function is_crawler($agent = NULL) {
+	if(!$agent) {
+		$agent = $_SERVER['HTTP_USER_AGENT'];
+	}
+
+	$check_agent = array('bot', 'spider', 'spyder', 'crawl', 'http://', 'google', 'yahoo', 'slurp', 'yeti', 'daum', 'teoma', 'fish', 'hanrss', 'facebook', 'yandex', 'infoseek', 'askjeeves', 'stackrambler', 'python');
+	$check_ip = array(
+		/*'211.245.21.110-211.245.21.119' mixsh is closed */
+	);
+
+	foreach($check_agent as $str) {
+		if(stristr($agent, $str) != FALSE) {
+			return TRUE;
+		}
+	}
+	return \X2board\Includes\Classes\IpFilter::filter($check_ip);
 }
 
 
@@ -1799,35 +1846,6 @@ function checkXmpTag($content)
 // 		default:
 // 			return '""';
 // 	}
-// }
-
-/**
- * Get is current user crawler
- *
- * @param string $agent if set, use this value instead HTTP_USER_AGENT
- * @return bool
- */
-// function isCrawler($agent = NULL)
-// {
-// 	if(!$agent)
-// 	{
-// 		$agent = $_SERVER['HTTP_USER_AGENT'];
-// 	}
-
-// 	$check_agent = array('bot', 'spider', 'spyder', 'crawl', 'http://', 'google', 'yahoo', 'slurp', 'yeti', 'daum', 'teoma', 'fish', 'hanrss', 'facebook', 'yandex', 'infoseek', 'askjeeves', 'stackrambler', 'python');
-// 	$check_ip = array(
-// 		/*'211.245.21.110-211.245.21.119' mixsh is closed */
-// 	);
-
-// 	foreach($check_agent as $str)
-// 	{
-// 		if(stristr($agent, $str) != FALSE)
-// 		{
-// 			return TRUE;
-// 		}
-// 	}
-
-// 	return IpFilter::filter($check_ip);
 // }
 
 /**

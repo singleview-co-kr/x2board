@@ -128,15 +128,12 @@ class BaseObject
 	 * @return void
 	 */
 	public function adds($object) {
-		if(is_object($object))
-		{
+		if(is_object($object)) {
 			$object = get_object_vars($object);
 		}
 
-		if(is_array($object))
-		{
-			foreach($object as $key => $val)
-			{
+		if(is_array($object)) {
+			foreach($object as $key => $val) {
 				$this->variables[$key] = $val;
 			}
 		}

@@ -266,32 +266,6 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 		}
 
 		/**
-		 * set the stop_proc and approprate message for msg_code
-		 * @param string $msg_code an error code
-		 * @return ModuleObject $this
-		 * */
-		function stop($msg_code)
-		{
-			wp_die('ModuleObject::stop()');
-			// flag setting to stop the proc processing
-			// $this->stop_proc = TRUE;
-			// Error handling
-			// $this->setError(-1);
-			// $this->setMessage($msg_code);
-			// Error message display by message module
-			// $type = Mobile::isFromMobilePhone() ? 'mobile' : 'view';
-			// $oMessageObject = ModuleHandler::getModuleInstance('message', $type);
-			// $oMessageObject->setError(-1);
-			// $oMessageObject->setMessage($msg_code);
-			// $oMessageObject->dispMessage();
-
-			// $this->set_skin_path($oMessageObject->getTemplatePath());
-			// $this->render_skin_file($oMessageObject->getTemplateFile());
-
-			// return $this;
-		}
-
-		/**
 		 * setter to set the name of module
 		 * @param string $module name of module
 		 * @return void
@@ -312,6 +286,33 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 			}
 			$this->module_path = $path;
 		}
+////////////////////////////////////////
+
+		/**
+		 * set the stop_proc and approprate message for msg_code
+		 * @param string $msg_code an error code
+		 * @return ModuleObject $this
+		 * */
+		// function stop($msg_code)
+		// {
+		// 	wp_die('ModuleObject::stop()');
+			// flag setting to stop the proc processing
+			// $this->stop_proc = TRUE;
+			// Error handling
+			// $this->setError(-1);
+			// $this->setMessage($msg_code);
+			// Error message display by message module
+			// $type = Mobile::isFromMobilePhone() ? 'mobile' : 'view';
+			// $oMessageObject = ModuleHandler::getModuleInstance('message', $type);
+			// $oMessageObject->setError(-1);
+			// $oMessageObject->setMessage($msg_code);
+			// $oMessageObject->dispMessage();
+
+			// $this->set_skin_path($oMessageObject->getTemplatePath());
+			// $this->render_skin_file($oMessageObject->getTemplateFile());
+
+			// return $this;
+		// }
 
 		/**
 		 * retrieve the directory path of the template directory

@@ -57,10 +57,12 @@ var_dump('board view init');
 			switch( $s_cmd ) {
 				case X2B_CMD_VIEW_LIST:
 				case X2B_CMD_VIEW_WRITE_POST:
+				case X2B_CMD_VIEW_POST:
+					$s_cmd = '_'.$s_cmd;
 					$this->$s_cmd();
 					break;
 				default:
-					$this->view_list();
+					$this->_view_list();
 					break;
 			}
 
@@ -186,11 +188,10 @@ var_dump('board view init');
 			echo $this->render_skin_file('message');
 		}
 
-
 		/**
 		 * @brief display board contents
 		 **/
-		function view_list()  // dispBoardContent
+		private function _view_list()  // dispBoardContent
 		{
 var_dump(X2B_CMD_VIEW_LIST);
 			/**
@@ -278,8 +279,245 @@ var_dump(X2B_CMD_VIEW_LIST);
 			
 			// setup the skin file
 			echo $this->render_skin_file('list');
-			// $o_template = \X2board\Includes\Classes\Skin::getInstance();
-			// echo $o_template->render($this->s_skin, 'list.php');
+		}
+
+		/**
+		 * @brief display post write form
+		 **/
+		private function _view_write_post()
+		{
+var_dump(X2B_CMD_VIEW_WRITE_POST);
+			// check grant
+			if(!$this->grant->write_post) {
+				return $this->_disp_message('msg_not_permitted');
+			}
+
+			$o_post_model = \X2board\Includes\getModel('post');
+
+			/**
+			 * check if the category option is enabled not not
+			 **/
+			if($this->module_info->use_category=='Y') {
+				// get the user group information
+				if(\X2board\Includes\Classes\Context::get('is_logged')) {
+					$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
+					$a_group_srls = array(); // array_keys($o_logged_info->group_list);
+				}
+				else {
+					$a_group_srls = array();
+				}
+				// $group_srls_count = count($a_group_srls);
+
+				// check the grant after obtained the category list
+				$a_category_list = array();
+				$n_normal_category_list = $o_post_model->get_category_list();
+				if(count($n_normal_category_list)) {
+					foreach($n_normal_category_list as $category_srl => $category) {
+						$is_granted = TRUE;
+						if($category->group_srls) {
+							$category_group_srls = explode(',',$category->group_srls);
+							$is_granted = FALSE;
+							if(count(array_intersect($a_group_srls, $category_group_srls))) {
+								$is_granted = TRUE;
+							}
+						}
+						if($is_granted) {
+							$a_category_list[$category_srl] = $category;
+						}
+					}
+				}
+				\X2board\Includes\Classes\Context::set('category_list', $a_category_list);
+				unset($a_category_list);
+			}
+
+			// GET parameter post_id from request
+			$n_post_id = \X2board\Includes\Classes\Context::get('post_id');
+			$o_post = $o_post_model->get_post(0, $this->grant->manager);
+			$o_post->set_post($n_post_id);
+
+			// if($oDocument->get('module_srl') == $oDocument->get('member_srl')) {
+			if($o_post->get('board_id') == $o_post->get('post_author')) {
+				$savedDoc = TRUE;
+			}
+			// $oDocument->add('module_srl', $this->module_srl);
+// var_dump($this->grant->write_post);
+			$o_post->add('board_id', \X2board\Includes\Classes\Context::get('board_id') ); // $this->board_id);
+
+			if($o_post->is_exists() && $this->module_info->protect_content=="Y" && $o_post->get('comment_count')>0 && $this->grant->manager==false) {
+				return new BaseObject(-1, 'msg_protect_content');
+			}
+
+			// if the post is not granted, then back to the password input form
+			if($o_post->is_exists()&&!$o_post->is_granted()) {
+				return $this->setTemplateFile('input_password_form');
+			}
+// var_dump($o_post->is_granted());
+			if(!$o_post->is_exists()) {
+				// $oModuleModel = getModel('module');
+				// $point_config = $oModuleModel->getModulePartConfig('point',$this->module_srl);
+				// unset($oModuleModel);
+				// $logged_info = \X2board\Includes\Classes\Context::get('logged_info');
+				// $oPointModel = getModel('point');
+				// $pointForInsert = $point_config["insert_document"];
+				// if($pointForInsert < 0)
+				// {
+				// 	if( !$logged_info )
+				// 	{
+				// 		return $this->_disp_message('msg_not_permitted');
+				// 	}
+				// 	else if (($oPointModel->getPoint($logged_info->member_srl) + $pointForInsert )< 0 )
+				// 	{
+				// 		return $this->_disp_message('msg_not_enough_point');
+				// 	}
+				// }
+			}
+			if(!$o_post->get('status')) {
+				$o_post->add('status', $o_post_model->get_default_status());
+			}
+
+			$statusList = $this->_get_status_name_list($o_post_model);
+			if(count($statusList) > 0) {
+				\X2board\Includes\Classes\Context::set('status_list', $statusList);
+			}
+
+			// get Document status config value
+			// \X2board\Includes\Classes\Context::set('document_srl',$document_srl);
+			\X2board\Includes\Classes\Context::set('o_post', $o_post);
+
+			// apply xml_js_filter on header
+			// $oDocumentController = getController('document');
+			// $oDocumentController->addXmlJsFilter($this->module_info->module_srl);
+
+			// if the post exists, then setup extra variabels on context
+			if($o_post->is_exists() && !$savedDoc) {
+				\X2board\Includes\Classes\Context::set('extra_keys', $o_post->get_extra_vars());
+			}
+			
+			/**
+			 * add JS filters
+			 **/
+			// if(Context::get('logged_info')->is_admin=='Y') Context::addJsFilter($this->module_path.'tpl/filter', 'insert_admin.xml');
+			// else Context::addJsFilter($this->module_path.'tpl/filter', 'insert.xml');
+
+			// $oSecurity = new Security();
+			// $oSecurity->encodeHTML('category_list.text', 'category_list.title');
+
+			\X2board\Includes\Classes\Context::set('post', $o_post);
+			unset($o_post);
+
+			$o_post_model = \X2board\Includes\getModel('post');
+			$a_user_input_field = $o_post_model->get_user_input_fields();
+// var_dump($a_user_input_field);
+			unset($o_post_model);
+			\X2board\Includes\Classes\Context::set('field', $a_user_input_field);
+
+			wp_localize_script('x2board-script', 'kboard_current', array(
+				'board_id'          => \X2board\Includes\Classes\Context::get('board_id'), // $this->board_id,
+				'content_uid'       => \X2board\Includes\Classes\Context::get('post_id'),
+				'tree_category'     => '',//unserialize($this->meta->tree_category),
+				'mod'               => \X2board\Includes\Classes\Context::get('cmd'), //$this->mod,
+				'use_editor' => ''  //$this->board->use_editor,
+			));
+
+			// setup the skin file
+			echo $this->render_skin_file('editor');
+		}
+
+		/**
+		 * @brief display the post content view
+		 **/
+		// function dispBoardContentView(){
+		private function _view_post() {
+			// get the variable value
+			$n_post_id = \X2board\Includes\Classes\Context::get('post_id');
+			$n_page = \X2board\Includes\Classes\Context::get('page');
+
+// var_dump($n_post_id, $n_page);
+			// generate post model object
+			$o_post_model = \X2board\Includes\getModel('post'); // $oDocumentModel = getModel('document');
+
+			/**
+			 * if the post exists, then get the post information
+			 **/
+			if($n_post_id) {
+				$o_post = $o_post_model->get_post($n_post_id, false, true);  // $oDocument = $o_post_model->getDocument($document_srl, false, true);
+
+				// if the post is existed
+				if($o_post->is_exists()) { // if($o_post->isExists())
+// var_dump($o_post->get('board_id'));			
+// var_dump(get_the_ID());			
+					// if the board is not consistent with wp page ID
+					if(intval($o_post->get('board_id')) !== get_the_ID() )	{
+						return $this->_disp_message('msg_invalid_request'); // return $this->stop('msg_invalid_request');
+					}
+
+					// check the manage grant
+					if($this->grant->manager) {
+						$o_post->set_grant();
+// var_Dump($_SESSION);						
+					}
+// var_dump($o_post->get('post_author'));
+					// if the consultation function is enabled, and the document is not a notice
+					if($this->consultation && !$o_post->is_notice()) {
+						$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
+// var_dump($o_logged_info->ID);
+						if(abs($o_post->get('post_author')) != $o_logged_info->ID) {
+							$o_post = $o_post_model->get_post(0);
+						}
+						unset($o_logged_info);
+					}
+
+					// if the document is TEMP saved, check Grant
+					if($o_post->get_status() == 'TEMP') {
+						if(!$o_post->is_granted()) {
+							$o_post = $o_post_model->get_post(0);
+						}
+					}
+
+				}
+				else { // if the post is not existed, then alert a warning message					
+					\X2board\Includes\Classes\Context::set( 'post_id', '', true );
+					$this->alertMessage('msg_not_founded');
+				}
+			}
+			else {  // if the post is not existed, get an empty post
+				$o_post = $o_post_model->get_post(0);
+			}
+
+			if($o_post->is_exists()) {  // check the document view grant
+				if(!$this->grant->view && !$oDocument->is_granted()) {
+					$o_post = $o_post_model->get_post(0);
+					\X2board\Includes\Classes\Context::set('post_id','',true);
+					$this->alertMessage('msg_not_permitted');
+				}
+				else {
+					// add the document title to the browser
+					// Context::addBrowserTitle($oDocument->getTitleText());
+
+					// update the post view count (if the post is not secret)
+					if(!$o_post->is_secret() || $o_post->is_granted()) {
+						$o_post->update_readed_count();
+					}
+
+					// disappear the post if it is secret
+					if($o_post->is_secret() && !$oDo_postocument->is_granted()) {
+						$o_post->add( 'content', __('thisissecret', 'x2board') );
+					}
+				}
+			}
+			unset($o_post_model);
+
+			// setup the document oject on context
+			// $o_post->add('module_srl', $this->module_srl);
+			\X2board\Includes\Classes\Context::set('o_post', $o_post);
+
+			/**
+			 * add javascript filters
+			 **/
+			// Context::addJsFilter($this->module_path.'tpl/filter', 'insert_comment.xml');
+			// return new BaseObject();
+			// setup the skin file
+			echo $this->render_skin_file('document');
 		}
 
 		/**
@@ -464,150 +702,6 @@ var_dump(X2B_CMD_VIEW_LIST);
 			foreach($this->columnList as $no => $value)	{
 				$this->columnList[$no] = 'post.' . $value;
 			}
-		}
-
-		/**
-		 * @brief display post write form
-		 **/
-		function view_write_post()
-		{
-var_dump(X2B_CMD_VIEW_WRITE_POST);
-			// check grant
-			if(!$this->grant->write_post) {
-				return $this->_disp_message('msg_not_permitted');
-			}
-
-			$o_post_model = \X2board\Includes\getModel('post');
-
-			/**
-			 * check if the category option is enabled not not
-			 **/
-			if($this->module_info->use_category=='Y') {
-				// get the user group information
-				if(\X2board\Includes\Classes\Context::get('is_logged')) {
-					$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
-					$a_group_srls = array(); // array_keys($o_logged_info->group_list);
-				}
-				else {
-					$a_group_srls = array();
-				}
-				// $group_srls_count = count($a_group_srls);
-
-				// check the grant after obtained the category list
-				$a_category_list = array();
-				$n_normal_category_list = $o_post_model->get_category_list();
-				if(count($n_normal_category_list)) {
-					foreach($n_normal_category_list as $category_srl => $category) {
-						$is_granted = TRUE;
-						if($category->group_srls) {
-							$category_group_srls = explode(',',$category->group_srls);
-							$is_granted = FALSE;
-							if(count(array_intersect($a_group_srls, $category_group_srls))) {
-								$is_granted = TRUE;
-							}
-						}
-						if($is_granted) {
-							$a_category_list[$category_srl] = $category;
-						}
-					}
-				}
-				\X2board\Includes\Classes\Context::set('category_list', $a_category_list);
-				unset($a_category_list);
-			}
-
-			// GET parameter post_id from request
-			$n_post_id = \X2board\Includes\Classes\Context::get('post_id');
-			$o_post = $o_post_model->get_post(0, $this->grant->manager);
-			$o_post->set_post($n_post_id);
-
-			// if($oDocument->get('module_srl') == $oDocument->get('member_srl')) {
-			if($o_post->get('board_id') == $o_post->get('post_author')) {
-				$savedDoc = TRUE;
-			}
-			// $oDocument->add('module_srl', $this->module_srl);
-// var_dump($this->grant->write_post);
-			$o_post->add('board_id', \X2board\Includes\Classes\Context::get('board_id') ); // $this->board_id);
-
-			if($o_post->is_exists() && $this->module_info->protect_content=="Y" && $o_post->get('comment_count')>0 && $this->grant->manager==false) {
-				return new BaseObject(-1, 'msg_protect_content');
-			}
-
-			// if the post is not granted, then back to the password input form
-			if($o_post->is_exists()&&!$o_post->is_granted()) {
-				return $this->setTemplateFile('input_password_form');
-			}
-// var_dump($o_post->is_granted());
-			if(!$o_post->is_exists()) {
-				// $oModuleModel = getModel('module');
-				// $point_config = $oModuleModel->getModulePartConfig('point',$this->module_srl);
-				// unset($oModuleModel);
-				// $logged_info = \X2board\Includes\Classes\Context::get('logged_info');
-				// $oPointModel = getModel('point');
-				// $pointForInsert = $point_config["insert_document"];
-				// if($pointForInsert < 0)
-				// {
-				// 	if( !$logged_info )
-				// 	{
-				// 		return $this->_disp_message('msg_not_permitted');
-				// 	}
-				// 	else if (($oPointModel->getPoint($logged_info->member_srl) + $pointForInsert )< 0 )
-				// 	{
-				// 		return $this->_disp_message('msg_not_enough_point');
-				// 	}
-				// }
-			}
-			if(!$o_post->get('status')) {
-				$o_post->add('status', $o_post_model->get_default_status());
-			}
-
-			$statusList = $this->_get_status_name_list($o_post_model);
-			if(count($statusList) > 0) {
-				\X2board\Includes\Classes\Context::set('status_list', $statusList);
-			}
-
-			// get Document status config value
-			// \X2board\Includes\Classes\Context::set('document_srl',$document_srl);
-			\X2board\Includes\Classes\Context::set('o_post', $o_post);
-
-			// apply xml_js_filter on header
-			// $oDocumentController = getController('document');
-			// $oDocumentController->addXmlJsFilter($this->module_info->module_srl);
-
-			// if the post exists, then setup extra variabels on context
-			if($o_post->is_exists() && !$savedDoc) {
-				\X2board\Includes\Classes\Context::set('extra_keys', $o_post->get_extra_vars());
-			}
-			
-			/**
-			 * add JS filters
-			 **/
-			// if(Context::get('logged_info')->is_admin=='Y') Context::addJsFilter($this->module_path.'tpl/filter', 'insert_admin.xml');
-			// else Context::addJsFilter($this->module_path.'tpl/filter', 'insert.xml');
-
-			// $oSecurity = new Security();
-			// $oSecurity->encodeHTML('category_list.text', 'category_list.title');
-
-			\X2board\Includes\Classes\Context::set('post', $o_post);
-			unset($o_post);
-
-			$o_post_model = \X2board\Includes\getModel('post');
-			$a_user_input_field = $o_post_model->get_user_input_fields();
-// var_dump($a_user_input_field);
-			unset($o_post_model);
-			\X2board\Includes\Classes\Context::set('field', $a_user_input_field);
-
-			wp_localize_script('x2board-script', 'kboard_current', array(
-				'board_id'          => \X2board\Includes\Classes\Context::get('board_id'), // $this->board_id,
-				'content_uid'       => \X2board\Includes\Classes\Context::get('post_id'),
-				'tree_category'     => '',//unserialize($this->meta->tree_category),
-				'mod'               => \X2board\Includes\Classes\Context::get('cmd'), //$this->mod,
-				'use_editor' => ''  //$this->board->use_editor,
-			));
-
-			// setup the skin file
-			echo $this->render_skin_file('editor');
-			// $o_template = \X2board\Includes\Classes\Skin::getInstance();
-			// echo $o_template->render($this->s_skin, 'editor.php');
 		}
 
 		/**
@@ -825,25 +919,13 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			// 	echo sprintf(__('%s file does not exist.', 'x2board'), $file);
 			// }
 
+			// refer to the \Includes\Classes\ModuleObject::render_skin_file()
 			$s_skin_file_abs_path = $this->skin_path . 'editor-fields.php';
 			if( !file_exists( $s_skin_file_abs_path ) ) {
 				echo sprintf(__('%s file does not exist.', 'x2board'), $s_skin_file_abs_path);
 			}
-			// ob_start();
-			// extract(Context::getAll4Skin(), EXTR_SKIP);				
 			$s_skin_file_abs_path = apply_filters('kboard_skin_file_path', $s_skin_file_abs_path ); // , $skin_name, $file, $vars, $this);
 			include $s_skin_file_abs_path;
-
-
-			// echo $this->render_skin_file('editor-fields');
-			
-			// echo $field_html; //apply_filters('kboard_get_template_field_html', $field_html, $field, $content, $this->board);
-			
-			// do_action("kboard_skin_field_after_{$meta_key}", $field, $content, $this->board);
-			// do_action('kboard_skin_field_after', $field, $content, $this->board);
-			
-			// $template = ob_get_clean();
-			// return $template;
 		}
 
 		/**
@@ -946,113 +1028,6 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 		}
 	
 /////////////////////////////////////
-		/**
-		 * @brief display the board conent view
-		 **/
-		function dispBoardContentView(){
-			// get the variable value
-			$document_srl = Context::get('document_srl');
-			$page = Context::get('page');
-
-			// generate document model object
-			$oDocumentModel = getModel('document');
-
-			/**
-			 * if the document exists, then get the document information
-			 **/
-			if($document_srl)
-			{
-				$oDocument = $oDocumentModel->getDocument($document_srl, false, true);
-
-				// if the document is existed
-				if($oDocument->isExists())
-				{
-					// if the module srl is not consistent
-					if($oDocument->get('module_srl')!=$this->module_info->module_srl )
-					{
-						return $this->stop('msg_invalid_request');
-					}
-
-					// check the manage grant
-					if($this->grant->manager) $oDocument->setGrant();
-
-					// if the consultation function is enabled, and the document is not a notice
-					if($this->consultation && !$oDocument->isNotice())
-					{
-						$logged_info = Context::get('logged_info');
-						if(abs($oDocument->get('member_srl')) != $logged_info->member_srl)
-						{
-							$oDocument = $oDocumentModel->getDocument(0);
-						}
-					}
-
-					// if the document is TEMP saved, check Grant
-					if($oDocument->getStatus() == 'TEMP')
-					{
-						if(!$oDocument->isGranted())
-						{
-							$oDocument = $oDocumentModel->getDocument(0);
-						}
-					}
-
-				}
-				else
-				{
-					// if the document is not existed, then alert a warning message
-					Context::set('document_srl','',true);
-					$this->alertMessage('msg_not_founded');
-				}
-
-			/**
-			 * if the document is not existed, get an empty document
-			 **/
-			}
-			else
-			{
-				$oDocument = $oDocumentModel->getDocument(0);
-			}
-
-			/**
-			 *check the document view grant
-			**/
-			if($oDocument->isExists())
-			{
-				if(!$this->grant->view && !$oDocument->isGranted())
-				{
-					$oDocument = $oDocumentModel->getDocument(0);
-					Context::set('document_srl','',true);
-					$this->alertMessage('msg_not_permitted');
-				}
-				else
-				{
-					// add the document title to the browser
-					Context::addBrowserTitle($oDocument->getTitleText());
-
-					// update the document view count (if the document is not secret)
-					if(!$oDocument->isSecret() || $oDocument->isGranted())
-					{
-						$oDocument->updateReadedCount();
-					}
-
-					// disappear the document if it is secret
-					if($oDocument->isSecret() && !$oDocument->isGranted())
-					{
-						$oDocument->add('content',Context::getLang('thisissecret'));
-					}
-				}
-			}
-
-			// setup the document oject on context
-			$oDocument->add('module_srl', $this->module_srl);
-			Context::set('oDocument', $oDocument);
-
-			/**
-			 * add javascript filters
-			 **/
-			Context::addJsFilter($this->module_path.'tpl/filter', 'insert_comment.xml');
-
-	//            return new BaseObject();
-		}
 
 		/**
 		 * @brief  display the document file list (can be used by API)

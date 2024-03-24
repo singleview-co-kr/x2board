@@ -35,6 +35,7 @@ var_dump('board high class');
 			$this->a_order_target = array('list_order', 'update_order', 'regdate', 'voted_count', 'blamed_count', 'readed_count', 'comment_count', 'title', 'nick_name', 'user_name', 'user_id');
 			$this->n_list_count = 20;
 			$this->n_page_count = 10;
+			$this->consultation = false;
 			// $this->a_category_list = NULL;
 		}
 	}

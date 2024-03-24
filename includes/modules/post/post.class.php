@@ -47,6 +47,16 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\post')) {
 			return $this->statusList['public'];
 		}
 
+		/**
+		 * Return status by key
+		 * @return string
+		 */
+		function getConfigStatus($key)
+		{
+			if(array_key_exists(strtolower($key), $this->statusList)) return $this->statusList[$key];
+			else $this->get_default_status();
+		}
+
 
 		/**
 		 * Re-generate the cache file
@@ -69,15 +79,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\post')) {
 		// 	return $this->statusList;
 		// }
 
-		/**
-		 * Return status by key
-		 * @return string
-		 */
-		// function getConfigStatus($key)
-		// {
-		// 	if(array_key_exists(strtolower($key), $this->statusList)) return $this->statusList[$key];
-		// 	else $this->getDefaultStatus();
-		// }
 		}
 }
 /* End of file post.class.php */

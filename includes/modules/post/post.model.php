@@ -598,12 +598,12 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 		}
 
 		/**
-		 * Import Document
-		 * @param int $document_srl
+		 * Import post
+		 * @param int $post_id
 		 * @param bool $is_admin
 		 * @param bool $load_extra_vars
 		 * @param array $columnList
-		 * @return documentItem
+		 * @return postItem
 		 */
 		// function getDocument($document_srl=0, $is_admin = false, $load_extra_vars=true, $columnList = array())
 		public function get_post($n_post_id=0, $is_admin = false, $load_extra_vars=true, $columnList = array()) {
@@ -613,7 +613,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			global $G_X2B_CACHE;
 			// if(!$GLOBALS['XE_DOCUMENT_LIST'][$post_id])
 			if(!isset($G_X2B_CACHE['POST_LIST'][$n_post_id])) {
-				$o_post = new postItem($n_post_id, $load_extra_vars, $columnList);
+				$o_post = new postItem($n_post_id, $load_extra_vars, $columnList);				
 				if(!$o_post->is_exists()) {
 					return $o_post;
 				}
