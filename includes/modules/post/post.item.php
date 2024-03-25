@@ -82,11 +82,12 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			return $this->get('comment_count');
 		}
 		
-		// 검색 URL 반영해야 함
-		public function get_pretty_url() {
-			$s_url = parse_url($_SERVER['REQUEST_URI'])['path'].'?'.X2B_CMD_VIEW_POST.'/'.$this->post_id; // for pretty post uri;
-			return apply_filters('x2board_url_post_id', $s_url, $this->post_id);
-		}
+		// public function get_pretty_url() {
+		// 	// 검색 URL 반영해야 함
+		// 	// $s_url = \X2board\Includes\get_url('post_id', $this->post_id); //, 'listStyle',$listStyle,'cpage','')
+		// 	$s_url = get_the_permalink().'?'.X2B_CMD_VIEW_POST.'/'.$this->post_id; // for pretty post uri;
+		// 	return apply_filters('x2board_url_post_id', $s_url, $this->post_id);
+		// }
 
 		// function getPermanentUrl() {
 		// 	return getFullUrl('','mid', $this->getDocumentMid('document_srl'), 'document_srl', $this->get('document_srl'));
@@ -148,8 +149,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			global $wpdb;
 			$o_post = $wpdb->get_row("SELECT * FROM `{$wpdb->prefix}x2b_post` WHERE `post_id`={$this->_n_wp_post_id}");
 			// $output = executeQuery('document.getDocument', $args, $columnList);
-
-			if($post_item === false) {
+var_dump($o_post);
+			// if($post_item === false) {
 				$post_item = $o_post;  //$output->data;
 
 				//insert in cache
@@ -157,14 +158,14 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 				// {
 				// 	$oCacheHandler->put($cache_key, $document_item);
 				// }
-			}
-			else {
-				$post_item->readed_count = $output->data->readed_count;
-				$post_item->voted_count = $output->data->voted_count;
-				$post_item->blamed_count = $output->data->blamed_count;
-				$post_item->comment_count = $output->data->comment_count;
-				$post_item->trackback_count = $output->data->trackback_count;
-			}
+			// }
+			// else {
+			// 	$post_item->readed_count = $output->data->readed_count;
+			// 	$post_item->voted_count = $output->data->voted_count;
+			// 	$post_item->blamed_count = $output->data->blamed_count;
+			// 	$post_item->comment_count = $output->data->comment_count;
+			// 	$post_item->trackback_count = $output->data->trackback_count;
+			// }
 			$this->set_attr($post_item, $load_extra_vars);
 		}
 
@@ -246,13 +247,169 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 		 * Update readed count
 		 * @return void
 		 */
-		function update_readed_count() {
+		public function update_readed_count() {
 			$o_post_controller = \X2board\Includes\getController('post');
 			if($o_post_controller->update_readed_count($this)) {
 				$readed_count = $this->get('readed_count');
 				$this->add('readed_count', $readed_count+1);
 			}
 		}
+
+		public function get_title($cut_size = 0, $tail='...') {
+			if(!$this->_n_wp_post_id) return;
+
+			$title = $this->_get_title_text($cut_size, $tail);
+
+			$attrs = array();
+			$this->add('title_color', trim($this->get('title_color')));
+			if($this->get('title_bold')=='Y') $attrs[] = "font-weight:bold;";
+			if($this->get('title_color') && $this->get('title_color') != 'N') $attrs[] = "color:#".$this->get('title_color');
+
+			if(count($attrs)) return sprintf("<span style=\"%s\">%s</span>", implode(';',$attrs), htmlspecialchars($title, ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
+			else return htmlspecialchars($title, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
+		}
+
+		private function _get_title_text($cut_size = 0, $tail='...')
+		{
+			if(!$this->_n_wp_post_id) return;
+			if($cut_size) $title = cut_str($this->get('title'), $cut_size, $tail);
+			else $title = $this->get('title');
+			return $title;
+		}
+
+		public function get_ip_addr()	{
+			if($this->is_granted()) {
+				return $this->get('ipaddress');
+			}
+			return '*' . strstr($this->get('ipaddress'), '.');
+		}
+
+		/**
+		 * 게시글에 표시할 첨부파일을 반환한다.
+		 * @return object
+		 */
+		// public function getAttachmentList(){
+		public function get_attachments(){
+			$attachment_list = [];
+			return $attachment_list;
+			if($this->uid){
+				$board = $this->getBoard();
+				if( $board->fields()->isFileAttachmentActive() ){
+					$attachment_list = (array)$this->attach;
+				}
+			}
+			return apply_filters('kboard_content_get_attachment_list', $attachment_list);
+		}
+
+		public function getDocumentOptionsHTML() {
+			return;
+		}
+
+		public function get_content($add_popup_menu = false, $add_content_info = false, $resource_realpath = false, $add_xe_content_class = false, $stripEmbedTagException = false)
+		{
+			if(!$this->_n_wp_post_id) {
+				return;
+			}
+
+			if($this->is_secret() && !$this->is_granted() && !$this->is_accessible()) {
+				return __('Msg is secret', 'x2board');  //Context::getLang('msg_is_secret');
+			}
+
+			$result = $this->_check_accessible_from_status();
+			if($result) {
+				$_SESSION['accessible'][$this->_n_wp_post_id] = true;
+			}
+
+			$s_content = $this->get('content');
+			if(!$stripEmbedTagException) {
+				\X2board\Includes\stripEmbedTagForAdmin($s_content, $this->get('post_author'));
+			}
+
+			// Define a link if using a rewrite module
+			// $oContext = &Context::getInstance();
+			// if($oContext->allow_rewrite)
+			// {
+			// 	$content = preg_replace('/<a([ \t]+)href=("|\')\.\/\?/i',"<a href=\\2". Context::getRequestUri() ."?", $content);
+			// }
+			// To display a pop-up menu
+			// if($add_popup_menu)
+			// {
+			// 	$content = sprintf(
+			// 		'%s<div class="document_popup_menu"><a href="#popup_menu_area" class="document_%d" onclick="return false">%s</a></div>',
+			// 		$content,
+			// 		$this->_n_wp_post_id, Context::getLang('cmd_document_do')
+			// 	);
+			// }
+			// If additional content information is set
+			// if($add_content_info)
+			// {
+			// 	$memberSrl = $this->get('member_srl');
+			// 	if($memberSrl < 0)
+			// 	{
+			// 		$memberSrl = 0;
+			// 	}
+			// 	$content = sprintf(
+			// 		'<!--BeforeDocument(%d,%d)--><div class="document_%d_%d xe_content">%s</div><!--AfterDocument(%d,%d)-->',
+			// 		$this->_n_wp_post_id, $memberSrl,
+			// 		$this->_n_wp_post_id, $memberSrl,
+			// 		$content,
+			// 		$this->_n_wp_post_id, $memberSrl,
+			// 		$this->_n_wp_post_id, $memberSrl
+			// 	);
+			// 	// Add xe_content class although accessing content is not required
+			// }
+			// else
+			// {
+			// 	if($add_xe_content_class) $content = sprintf('<div class="xe_content">%s</div>', $content);
+			// }
+			// Change the image path to a valid absolute path if resource_realpath is true
+			if($resource_realpath) {
+				$s_content = preg_replace_callback('/<img([^>]+)>/i',array($this,'replaceResourceRealPath'), $s_content);
+			}
+			return $s_content;
+		}
+
+		// function isAccessible() {
+		public function is_accessible() {
+			return $_SESSION['accessible'][$this->_n_wp_post_id]==true?true:false;
+		}
+
+		/**
+		 * Check accessible by document status
+		 * @param array $matches
+		 * @return mixed
+		 */
+		// private function _checkAccessibleFromStatus() {
+		private function _check_accessible_from_status() {
+			$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
+			if($o_logged_info->is_admin == 'Y') {
+				return true;
+			}
+
+			$status = $this->get('status');
+			if(empty($status)) {
+				return false;
+			}
+
+			$o_post_model = \X2board\Includes\getModel('post');
+			$configStatusList = $o_post_model->getStatusList();
+			if($status == $configStatusList['public'] || $status == $configStatusList['publish']) {
+				return true;
+			}
+			else if($status == $configStatusList['private'] || $status == $configStatusList['secret']) {
+				if($this->get('post_author') == $o_logged_info->ID)
+					return true;
+			}
+			return false;
+		}
+
+		public function is_allow_reply() {
+			return false;
+		}
+		
+
+
+
 
 		
 
@@ -265,54 +422,13 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 
 ///////////////////
 		
-		function isAccessible()
-		{
-			return $_SESSION['accessible'][$this->_n_wp_post_id]==true?true:false;
-		}
-
+		
 		function allowComment()
 		{
 			// init write, document is not exists. so allow comment status is true
 			if(!$this->isExists()) return true;
 
 			return $this->get('comment_status') == 'ALLOW' ? true : false;
-		}
-
-		function allowTrackback()
-		{
-			static $allow_trackback_status = null;
-			if(is_null($allow_trackback_status))
-			{
-				
-				// Check the tarckback module exist
-				if(!getClass('trackback'))
-				{
-					$allow_trackback_status = false;
-				}
-				else
-				{
-					// If the trackback module is configured to be disabled, do not allow. Otherwise, check the setting of each module.
-					$oModuleModel = getModel('module');
-					$trackback_config = $oModuleModel->getModuleConfig('trackback');
-					
-					if(!$trackback_config)
-					{
-						$trackback_config = new stdClass();
-					}
-					
-					if(!isset($trackback_config->enable_trackback)) $trackback_config->enable_trackback = 'Y';
-					if($trackback_config->enable_trackback != 'Y') $allow_trackback_status = false;
-					else
-					{
-						$module_srl = $this->get('module_srl');
-						// Check settings of each module
-						$module_config = $oModuleModel->getModulePartConfig('trackback', $module_srl);
-						if($module_config->enable_trackback == 'N') $allow_trackback_status = false;
-						else if($this->get('allow_trackback')=='Y' || !$this->isExists()) $allow_trackback_status = true;
-					}
-				}
-			}
-			return $allow_trackback_status;
 		}
 
 		function isLocked()
@@ -382,42 +498,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			$oCommunicationController->sendMessage($sender_member_srl, $receiver_srl, $title, $content, false);
 		}
 
-		function getLangCode()
-		{
-			return $this->get('lang_code');
-		}
-
-		function getIpAddress()
-		{
-			if($this->isGranted())
-			{
-				return $this->get('ipaddress');
-			}
-
-			return '*' . strstr($this->get('ipaddress'), '.');
-		}
-
-		function isExistsHomepage()
-		{
-			if(trim($this->get('homepage'))) return true;
-			return false;
-		}
-
-		function getHomepageUrl()
-		{
-			$url = trim($this->get('homepage'));
-			if(!$url) return;
-
-			if(strncasecmp('http://', $url, 7) !== 0 && strncasecmp('https://', $url, 8) !== 0)  $url = 'http://' . $url;
-
-			return escape($url, false);
-		}
-
-		function getMemberSrl()
-		{
-			return $this->get('member_srl');
-		}
-
 		function getUserID()
 		{
 			return htmlspecialchars($this->get('user_id'), ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
@@ -428,36 +508,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			return htmlspecialchars($this->get('user_name'), ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
 		}
 
-		
-
 		function getLastUpdater()
 		{
 			return htmlspecialchars($this->get('last_updater'), ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
-		}
-
-		function getTitleText($cut_size = 0, $tail='...')
-		{
-			if(!$this->_n_wp_post_id) return;
-
-			if($cut_size) $title = cut_str($this->get('title'), $cut_size, $tail);
-			else $title = $this->get('title');
-
-			return $title;
-		}
-
-		function getTitle($cut_size = 0, $tail='...')
-		{
-			if(!$this->_n_wp_post_id) return;
-
-			$title = $this->getTitleText($cut_size, $tail);
-
-			$attrs = array();
-			$this->add('title_color', trim($this->get('title_color')));
-			if($this->get('title_bold')=='Y') $attrs[] = "font-weight:bold;";
-			if($this->get('title_color') && $this->get('title_color') != 'N') $attrs[] = "color:#".$this->get('title_color');
-
-			if(count($attrs)) return sprintf("<span style=\"%s\">%s</span>", implode(';',$attrs), htmlspecialchars($title, ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
-			else return htmlspecialchars($title, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
 		}
 
 		function getContentText($strlen = 0)
@@ -466,7 +519,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 
 			if($this->isSecret() && !$this->isGranted() && !$this->isAccessible()) return Context::getLang('msg_is_secret');
 
-			$result = $this->_checkAccessibleFromStatus();
+			$result = $this->_check_accessible_from_status();
 			if($result) $_SESSION['accessible'][$this->_n_wp_post_id] = true;
 
 			$content = $this->get('content');
@@ -476,107 +529,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			if($strlen) return cut_str(strip_tags($content),$strlen,'...');
 
 			return htmlspecialchars($content);
-		}
-
-		function _addAllowScriptAccess($m)
-		{
-			if($this->allowscriptaccessList[$this->allowscriptaccessKey] == 1)
-			{
-				$m[0] = $m[0].'<param name="allowscriptaccess" value="never"></param>';
-			}
-			$this->allowscriptaccessKey++;
-			return $m[0];
-		}
-
-		function _checkAllowScriptAccess($m)
-		{
-			if($m[1] == 'object')
-			{
-				$this->allowscriptaccessList[] = 1;
-			}
-
-			if($m[1] == 'param')
-			{
-				if(stripos($m[0], 'allowscriptaccess'))
-				{
-					$m[0] = '<param name="allowscriptaccess" value="never"';
-					if(substr($m[0], -1) == '/')
-					{
-						$m[0] .= '/';
-					}
-					$this->allowscriptaccessList[count($this->allowscriptaccessList)-1]--;
-				}
-			}
-			else if($m[1] == 'embed')
-			{
-				if(stripos($m[0], 'allowscriptaccess'))
-				{
-					$m[0] = preg_replace('/always|samedomain/i', 'never', $m[0]);
-				}
-				else
-				{
-					$m[0] = preg_replace('/\<embed/i', '<embed allowscriptaccess="never"', $m[0]);
-				}
-			}
-			return $m[0];
-		}
-
-		function getContent($add_popup_menu = true, $add_content_info = true, $resource_realpath = false, $add_xe_content_class = true, $stripEmbedTagException = false)
-		{
-			if(!$this->_n_wp_post_id) return;
-
-			if($this->isSecret() && !$this->isGranted() && !$this->isAccessible()) return Context::getLang('msg_is_secret');
-
-			$result = $this->_checkAccessibleFromStatus();
-			if($result) $_SESSION['accessible'][$this->_n_wp_post_id] = true;
-
-			$content = $this->get('content');
-			if(!$stripEmbedTagException) stripEmbedTagForAdmin($content, $this->get('member_srl'));
-
-			// Define a link if using a rewrite module
-			$oContext = &Context::getInstance();
-			if($oContext->allow_rewrite)
-			{
-				$content = preg_replace('/<a([ \t]+)href=("|\')\.\/\?/i',"<a href=\\2". Context::getRequestUri() ."?", $content);
-			}
-			// To display a pop-up menu
-			if($add_popup_menu)
-			{
-				$content = sprintf(
-					'%s<div class="document_popup_menu"><a href="#popup_menu_area" class="document_%d" onclick="return false">%s</a></div>',
-					$content,
-					$this->_n_wp_post_id, Context::getLang('cmd_document_do')
-				);
-			}
-			// If additional content information is set
-			if($add_content_info)
-			{
-				$memberSrl = $this->get('member_srl');
-				if($memberSrl < 0)
-				{
-					$memberSrl = 0;
-				}
-				$content = sprintf(
-					'<!--BeforeDocument(%d,%d)--><div class="document_%d_%d xe_content">%s</div><!--AfterDocument(%d,%d)-->',
-					$this->_n_wp_post_id, $memberSrl,
-					$this->_n_wp_post_id, $memberSrl,
-					$content,
-					$this->_n_wp_post_id, $memberSrl,
-					$this->_n_wp_post_id, $memberSrl
-				);
-				// Add xe_content class although accessing content is not required
-			}
-			else
-			{
-				if($add_xe_content_class) $content = sprintf('<div class="xe_content">%s</div>', $content);
-			}
-			// Change the image path to a valid absolute path if resource_realpath is true
-			if($resource_realpath)
-			{
-				$content = preg_replace_callback('/<img([^>]+)>/i',array($this,'replaceResourceRealPath'), $content);
-			}
-
-			return $content;
 		}
 
 		/**
@@ -675,15 +627,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			return $this->getUpdate('Y-m-d').'T'.$this->getUpdate('H:i:s').substr($GLOBALS['_time_zone'],0,3).':'.substr($GLOBALS['_time_zone'],3,2);
 		}
 
-		// function getTrackbackUrl()
-		// {
-		// 	if(!$this->_n_wp_post_id) return;
-
-		// 	// Generate a key to prevent spams
-		// 	$oTrackbackModel = getModel('trackback');
-		// 	if($oTrackbackModel) return $oTrackbackModel->getTrackbackUrl($this->_n_wp_post_id, $this->getDocumentMid());
-		// }
-
 		function isExtraVarsExists()
 		{
 			if(!$this->get('module_srl')) return false;
@@ -767,8 +710,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			return $val;
 		}
 
-		
-
 		function getComments()
 		{
 			if(!$this->getCommentCount()) return;
@@ -812,21 +753,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			$output = ModuleHandler::triggerCall('document.getComments', 'after', $comment_list);
 
 			return $comment_list;
-		}
-
-		function getTrackbackCount()
-		{
-			return $this->get('trackback_count');
-		}
-
-		function getTrackbacks()
-		{
-			if(!$this->_n_wp_post_id) return;
-
-			if(!$this->allowTrackback() || !$this->get('trackback_count')) return;
-
-			$oTrackbackModel = getModel('trackback');
-			return $oTrackbackModel->getTrackbackList($this->_n_wp_post_id, $is_admin);
 		}
 
 		function thumbnailExists($width = 80, $height = 0, $type = '')
@@ -1076,33 +1002,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 		}
 
 		/**
-		 * Return author's signiture
-		 * @return string
-		 */
-		function getSignature()
-		{
-			// Pass if a document doesn't exist
-			if(!$this->isExists() || !$this->get('member_srl')) return;
-			// Get signature information
-			$oMemberModel = getModel('member');
-			$signature = $oMemberModel->getSignature($this->get('member_srl'));
-			// Check if a maximum height of signiture is set in the member module
-			if(!isset($GLOBALS['__member_signature_max_height']))
-			{
-				$oModuleModel = getModel('module');
-				$member_config = $oModuleModel->getModuleConfig('member');
-				$GLOBALS['__member_signature_max_height'] = $member_config->signature_max_height;
-			}
-			if($signature)
-			{
-				$max_signature_height = $GLOBALS['__member_signature_max_height'];
-				if($max_signature_height) $signature = sprintf('<div style="max-height:%dpx;overflow:auto;overflow-x:hidden;height:expression(this.scrollHeight > %d ? \'%dpx\': \'auto\')">%s</div>', $max_signature_height, $max_signature_height, $max_signature_height, $signature);
-			}
-
-			return $signature;
-		}
-
-		/**
 		 * Change an image path in the content to absolute path
 		 * @param array $matches
 		 * @return mixed
@@ -1112,100 +1011,267 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			return preg_replace('/src=(["\']?)files/i','src=$1'.Context::getRequestUri().'files', $matches[0]);
 		}
 
+		// function _addAllowScriptAccess($m)
+		// {
+		// 	if($this->allowscriptaccessList[$this->allowscriptaccessKey] == 1)
+		// 	{
+		// 		$m[0] = $m[0].'<param name="allowscriptaccess" value="never"></param>';
+		// 	}
+		// 	$this->allowscriptaccessKey++;
+		// 	return $m[0];
+		// }
+
+		// function _checkAllowScriptAccess($m)
+		// {
+		// 	if($m[1] == 'object')
+		// 	{
+		// 		$this->allowscriptaccessList[] = 1;
+		// 	}
+
+		// 	if($m[1] == 'param')
+		// 	{
+		// 		if(stripos($m[0], 'allowscriptaccess'))
+		// 		{
+		// 			$m[0] = '<param name="allowscriptaccess" value="never"';
+		// 			if(substr($m[0], -1) == '/')
+		// 			{
+		// 				$m[0] .= '/';
+		// 			}
+		// 			$this->allowscriptaccessList[count($this->allowscriptaccessList)-1]--;
+		// 		}
+		// 	}
+		// 	else if($m[1] == 'embed')
+		// 	{
+		// 		if(stripos($m[0], 'allowscriptaccess'))
+		// 		{
+		// 			$m[0] = preg_replace('/always|samedomain/i', 'never', $m[0]);
+		// 		}
+		// 		else
+		// 		{
+		// 			$m[0] = preg_replace('/\<embed/i', '<embed allowscriptaccess="never"', $m[0]);
+		// 		}
+		// 	}
+		// 	return $m[0];
+		// }
+
+		// function allowTrackback()
+		// {
+		// 	static $allow_trackback_status = null;
+		// 	if(is_null($allow_trackback_status))
+		// 	{
+				
+		// 		// Check the tarckback module exist
+		// 		if(!getClass('trackback'))
+		// 		{
+		// 			$allow_trackback_status = false;
+		// 		}
+		// 		else
+		// 		{
+		// 			// If the trackback module is configured to be disabled, do not allow. Otherwise, check the setting of each module.
+		// 			$oModuleModel = getModel('module');
+		// 			$trackback_config = $oModuleModel->getModuleConfig('trackback');
+					
+		// 			if(!$trackback_config)
+		// 			{
+		// 				$trackback_config = new stdClass();
+		// 			}
+					
+		// 			if(!isset($trackback_config->enable_trackback)) $trackback_config->enable_trackback = 'Y';
+		// 			if($trackback_config->enable_trackback != 'Y') $allow_trackback_status = false;
+		// 			else
+		// 			{
+		// 				$module_srl = $this->get('module_srl');
+		// 				// Check settings of each module
+		// 				$module_config = $oModuleModel->getModulePartConfig('trackback', $module_srl);
+		// 				if($module_config->enable_trackback == 'N') $allow_trackback_status = false;
+		// 				else if($this->get('allow_trackback')=='Y' || !$this->isExists()) $allow_trackback_status = true;
+		// 			}
+		// 		}
+		// 	}
+		// 	return $allow_trackback_status;
+		// }
+
+		// function getLangCode()
+		// {
+		// 	return $this->get('lang_code');
+		// }
+
+		// function isExistsHomepage()
+		// {
+		// 	if(trim($this->get('homepage'))) return true;
+		// 	return false;
+		// }
+
+		// function getHomepageUrl()
+		// {
+		// 	$url = trim($this->get('homepage'));
+		// 	if(!$url) return;
+
+		// 	if(strncasecmp('http://', $url, 7) !== 0 && strncasecmp('https://', $url, 8) !== 0)  $url = 'http://' . $url;
+
+		// 	return escape($url, false);
+		// }
+
+		// function getMemberSrl()
+		// {
+		// 	return $this->get('member_srl');
+		// }
+
+		// function getTrackbackUrl()
+		// {
+		// 	if(!$this->_n_wp_post_id) return;
+
+		// 	// Generate a key to prevent spams
+		// 	$oTrackbackModel = getModel('trackback');
+		// 	if($oTrackbackModel) return $oTrackbackModel->getTrackbackUrl($this->_n_wp_post_id, $this->getDocumentMid());
+		// }
+
+		// function allowTrackback()
+		// {
+		// 	static $allow_trackback_status = null;
+		// 	if(is_null($allow_trackback_status))
+		// 	{
+				
+		// 		// Check the tarckback module exist
+		// 		if(!getClass('trackback'))
+		// 		{
+		// 			$allow_trackback_status = false;
+		// 		}
+		// 		else
+		// 		{
+		// 			// If the trackback module is configured to be disabled, do not allow. Otherwise, check the setting of each module.
+		// 			$oModuleModel = getModel('module');
+		// 			$trackback_config = $oModuleModel->getModuleConfig('trackback');
+					
+		// 			if(!$trackback_config)
+		// 			{
+		// 				$trackback_config = new stdClass();
+		// 			}
+					
+		// 			if(!isset($trackback_config->enable_trackback)) $trackback_config->enable_trackback = 'Y';
+		// 			if($trackback_config->enable_trackback != 'Y') $allow_trackback_status = false;
+		// 			else
+		// 			{
+		// 				$module_srl = $this->get('module_srl');
+		// 				// Check settings of each module
+		// 				$module_config = $oModuleModel->getModulePartConfig('trackback', $module_srl);
+		// 				if($module_config->enable_trackback == 'N') $allow_trackback_status = false;
+		// 				else if($this->get('allow_trackback')=='Y' || !$this->isExists()) $allow_trackback_status = true;
+		// 			}
+		// 		}
+		// 	}
+		// 	return $allow_trackback_status;
+		// }
+
+		// function getTrackbackCount()
+		// {
+		// 	return $this->get('trackback_count');
+		// }
+
+		// function getTrackbacks()
+		// {
+		// 	if(!$this->_n_wp_post_id) return;
+
+		// 	if(!$this->allowTrackback() || !$this->get('trackback_count')) return;
+
+		// 	$oTrackbackModel = getModel('trackback');
+		// 	return $oTrackbackModel->getTrackbackList($this->_n_wp_post_id, $is_admin);
+		// }
+
 		/**
-		 * Check accessible by document status
-		 * @param array $matches
-		 * @return mixed
+		 * Return author's signiture
+		 * @return string
 		 */
-		function _checkAccessibleFromStatus()
-		{
-			$logged_info = Context::get('logged_info');
-			if($logged_info->is_admin == 'Y') return true;
+		// function getSignature()
+		// {
+		// 	// Pass if a document doesn't exist
+		// 	if(!$this->isExists() || !$this->get('member_srl')) return;
+		// 	// Get signature information
+		// 	$oMemberModel = getModel('member');
+		// 	$signature = $oMemberModel->getSignature($this->get('member_srl'));
+		// 	// Check if a maximum height of signiture is set in the member module
+		// 	if(!isset($GLOBALS['__member_signature_max_height']))
+		// 	{
+		// 		$oModuleModel = getModel('module');
+		// 		$member_config = $oModuleModel->getModuleConfig('member');
+		// 		$GLOBALS['__member_signature_max_height'] = $member_config->signature_max_height;
+		// 	}
+		// 	if($signature)
+		// 	{
+		// 		$max_signature_height = $GLOBALS['__member_signature_max_height'];
+		// 		if($max_signature_height) $signature = sprintf('<div style="max-height:%dpx;overflow:auto;overflow-x:hidden;height:expression(this.scrollHeight > %d ? \'%dpx\': \'auto\')">%s</div>', $max_signature_height, $max_signature_height, $max_signature_height, $signature);
+		// 	}
 
-			$status = $this->get('status');
-			if(empty($status)) return false;
+		// 	return $signature;
+		// }
 
-			$oDocumentModel = getModel('document');
-			$configStatusList = $oDocumentModel->getStatusList();
+		// function getTranslationLangCodes()
+		// {
+		// 	$obj = new stdClass;
+		// 	$obj->document_srl = $this->_n_wp_post_id;
+		// 	// -2 is an index for content. We are interested if content has other translations.
+		// 	$obj->var_idx = -2;
+		// 	$output = executeQueryArray('document.getDocumentTranslationLangCodes', $obj);
 
-			if($status == $configStatusList['public'] || $status == $configStatusList['publish'])
-				return true;
-			else if($status == $configStatusList['private'] || $status == $configStatusList['secret'])
-			{
-				if($this->get('member_srl') == $logged_info->member_srl)
-					return true;
-			}
-			return false;
-		}
+		// 	if (!$output->data)
+		// 	{
+		// 		$output->data = array();
+		// 	}
+		// 	// add original page's lang code as well
+		// 	$origLangCode = new stdClass;
+		// 	$origLangCode->lang_code = $this->getLangCode();
+		// 	$output->data[] = $origLangCode;
 
-		function getTranslationLangCodes()
-		{
-			$obj = new stdClass;
-			$obj->document_srl = $this->_n_wp_post_id;
-			// -2 is an index for content. We are interested if content has other translations.
-			$obj->var_idx = -2;
-			$output = executeQueryArray('document.getDocumentTranslationLangCodes', $obj);
-
-			if (!$output->data)
-			{
-				$output->data = array();
-			}
-			// add original page's lang code as well
-			$origLangCode = new stdClass;
-			$origLangCode->lang_code = $this->getLangCode();
-			$output->data[] = $origLangCode;
-
-			return $output->data;
-		}
-
+		// 	return $output->data;
+		// }
 
 		/**
 		 * Returns the document's mid in order to construct SEO friendly URLs
 		 * @return string
 		 */
-		function getDocumentMid()
-		{
-			$model = getModel('module');
-			$module = $model->getModuleInfoByModuleSrl($this->get('module_srl'));
-			return $module->mid;
-		}
+		// function getDocumentMid()
+		// {
+		// 	$model = getModel('module');
+		// 	$module = $model->getModuleInfoByModuleSrl($this->get('module_srl'));
+		// 	return $module->mid;
+		// }
 
 		/**
 		 * Returns the document's type (document/page/wiki/board/etc)
 		 * @return string
 		 */
-		function getDocumentType()
-		{
-			$model = getModel('module');
-			$module = $model->getModuleInfoByModuleSrl($this->get('module_srl'));
-			return $module->module;
-		}
+		// function getDocumentType()
+		// {
+		// 	$model = getModel('module');
+		// 	$module = $model->getModuleInfoByModuleSrl($this->get('module_srl'));
+		// 	return $module->module;
+		// }
 
 		/**
 		 * Returns the document's alias
 		 * @return string
 		 */
-		function getDocumentAlias()
-		{
-			$oDocumentModel = getModel('document');
-			return $oDocumentModel->getAlias($this->_n_wp_post_id);
-		}
+		// function getDocumentAlias()
+		// {
+		// 	$oDocumentModel = getModel('document');
+		// 	return $oDocumentModel->getAlias($this->_n_wp_post_id);
+		// }
 
 		/**
 		 * Returns the document's actual title (browser_title)
 		 * @return string
 		 */
-		function getModuleName()
-		{
-			$model = getModel('module');
-			$module = $model->getModuleInfoByModuleSrl($this->get('module_srl'));
-			return $module->browser_title;
-		}
+		// function getModuleName()
+		// {
+		// 	$model = getModel('module');
+		// 	$module = $model->getModuleInfoByModuleSrl($this->get('module_srl'));
+		// 	return $module->browser_title;
+		// }
 
-		function getBrowserTitle()
-		{
-			return $this->getModuleName();
-		}
+		// function getBrowserTitle()
+		// {
+		// 	return $this->getModuleName();
+		// }
 
 		/**
 		 * Return the value obtained from getExtraImages with image tag

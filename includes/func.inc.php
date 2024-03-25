@@ -202,6 +202,7 @@ function _launch_x2b($s_cmd_type='view') {
 	require_once X2B_PATH . 'includes/classes/PageHandler.class.php';
 	require_once X2B_PATH . 'includes/classes/Password.class.php';
 	require_once X2B_PATH . 'includes/classes/IpFilter.class.php';
+	require_once X2B_PATH . 'includes/no_namespace.helper.php';  // shorten command for skin usage
 	
 	// load modules
 	require_once X2B_PATH . 'includes/modules/board/board.class.php';
@@ -735,6 +736,77 @@ function is_crawler($agent = NULL) {
 	return \X2board\Includes\Classes\IpFilter::filter($check_ip);
 }
 
+/**
+ * Get a encoded url. Define a function to use Context::getUrl()
+ *
+ * getUrl() returns the URL transformed from given arguments of RequestURI
+ * <ol>
+ *  <li>argument format follows as (key, value).
+ * ex) getUrl('key1', 'val1', 'key2',''): transform key1 and key2 to val1 and '' respectively</li>
+ * <li>returns URL without the argument if no argument is given.</li>
+ * <li>URL made of args_list added to RequestUri if the first argument value is ''.</li>
+ * </ol>
+ *
+ * @return string
+ */
+// function getUrl() {
+// function get_url() {
+// 	$n_num_args = func_num_args();
+// 	$a_args_list = func_get_args();
+// 	if($n_num_args) {
+// 		$s_url = \X2board\Includes\Classes\Context::get_url($n_num_args, $a_args_list);
+// 	}	
+// 	else{ 
+// 		$s_url = \X2board\Includes\Classes\Context::getRequestUri();
+// 	}
+// 	return preg_replace('@\berror_return_url=[^&]*|\w+=(?:&|$)@', '', $s_url);
+// }
+
+/**
+ * Return the requested script path
+ *
+ * @return string
+ */
+// function getScriptPath() {
+function get_script_path() {
+	static $s_url = NULL;
+	if($s_url == NULL) {
+		$script_path = filter_var($_SERVER['SCRIPT_NAME'], FILTER_SANITIZE_STRING);
+		$s_url = str_ireplace('/tools/', '/', preg_replace('/index.php.*/i', '', str_replace('\\', '/', $script_path)));
+	}
+	return $s_url;
+}
+
+/**
+ * Remove embed media for admin
+ *
+ * @param string $content
+ * @param int $writer_member_srl
+ * @return void
+ */
+function stripEmbedTagForAdmin(&$s_content, $writer_member_id) {
+	if(!\X2board\Includes\Classes\Context::get('is_logged')) {
+		return;
+	}
+	// $oModuleModel = getModel('module');
+	$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
+	if($writer_member_id != $o_logged_info->ID && ($o_logged_info->is_admin == "Y" ) ) { //  || $oModuleModel->isSiteAdmin($logged_info)))
+		if($writer_member_id) {
+			// $oMemberModel = getModel('member');
+			// $member_info = $oMemberModel->getMemberInfoByMemberSrl($writer_member_srl);
+			$member_info = get_userdata($writer_member_id);
+			if($member_info->roles[0] == "administrator") {
+				return;
+			}
+		}
+		$security_msg = "<div style='border: 1px solid #DDD; background: #FAFAFA; text-align:center; margin: 1em 0;'><p style='margin: 1em;'>" . __('security_warning_embed', 'x2board') . "</p></div>";
+		$s_content = preg_replace('/<object[^>]+>(.*?<\/object>)?/is', $security_msg, $s_content);
+		$s_content = preg_replace('/<embed[^>]+>(\s*<\/embed>)?/is', $security_msg, $s_content);
+		// $content = preg_replace('/<img[^>]+editor_component="multimedia_link"[^>]*>(\s*<\/img>)?/is', $security_msg, $content);
+	}
+	return;
+}
+
 
 ///////////////////////////////
 // define an empty function to avoid errors when iconv function doesn't exist
@@ -860,33 +932,6 @@ function is_crawler($agent = NULL) {
 
 // 	return true;
 // }
-
-/**
- * Get a encoded url. Define a function to use Context::getUrl()
- *
- * getUrl() returns the URL transformed from given arguments of RequestURI
- * <ol>
- *  <li>argument format follows as (key, value).
- * ex) getUrl('key1', 'val1', 'key2',''): transform key1 and key2 to val1 and '' respectively</li>
- * <li>returns URL without the argument if no argument is given.</li>
- * <li>URL made of args_list added to RequestUri if the first argument value is ''.</li>
- * </ol>
- *
- * @return string
- */
-// function getUrl()
-// {
-// 	$num_args = func_num_args();
-// 	$args_list = func_get_args();
-
-// 	if($num_args)
-// 		$url = Context::getUrl($num_args, $args_list);
-// 	else
-// 		$url = Context::getRequestUri();
-
-// 	return preg_replace('@\berror_return_url=[^&]*|\w+=(?:&|$)@', '', $url);
-// }
-
 /**
  * Get a not encoded(html entity) url
  *
@@ -1680,22 +1725,6 @@ function is_crawler($agent = NULL) {
  *
  * @return string
  */
-// function getScriptPath()
-// {
-// 	static $url = NULL;
-// 	if($url == NULL)
-// 	{
-// 		$script_path = filter_var($_SERVER['SCRIPT_NAME'], FILTER_SANITIZE_STRING);
-// 		$url = str_ireplace('/tools/', '/', preg_replace('/index.php.*/i', '', str_replace('\\', '/', $script_path)));
-// 	}
-// 	return $url;
-// }
-
-/**
- * Return the requested script path
- *
- * @return string
- */
 // function getRequestUriByServerEnviroment()
 // {
 // 	return str_replace('<', '&lt;', preg_replace('/[<>"]/', '', $_SERVER['REQUEST_URI']));
@@ -1846,43 +1875,6 @@ function is_crawler($agent = NULL) {
 // 		default:
 // 			return '""';
 // 	}
-// }
-
-/**
- * Remove embed media for admin
- *
- * @param string $content
- * @param int $writer_member_srl
- * @return void
- */
-// function stripEmbedTagForAdmin(&$content, $writer_member_srl)
-// {
-// 	if(!Context::get('is_logged'))
-// 	{
-// 		return;
-// 	}
-
-// 	$oModuleModel = getModel('module');
-// 	$logged_info = Context::get('logged_info');
-
-// 	if($writer_member_srl != $logged_info->member_srl && ($logged_info->is_admin == "Y" || $oModuleModel->isSiteAdmin($logged_info)))
-// 	{
-// 		if($writer_member_srl)
-// 		{
-// 			$oMemberModel = getModel('member');
-// 			$member_info = $oMemberModel->getMemberInfoByMemberSrl($writer_member_srl);
-// 			if($member_info->is_admin == "Y")
-// 			{
-// 				return;
-// 			}
-// 		}
-// 		$security_msg = "<div style='border: 1px solid #DDD; background: #FAFAFA; text-align:center; margin: 1em 0;'><p style='margin: 1em;'>" . Context::getLang('security_warning_embed') . "</p></div>";
-// 		$content = preg_replace('/<object[^>]+>(.*?<\/object>)?/is', $security_msg, $content);
-// 		$content = preg_replace('/<embed[^>]+>(\s*<\/embed>)?/is', $security_msg, $content);
-// 		$content = preg_replace('/<img[^>]+editor_component="multimedia_link"[^>]*>(\s*<\/img>)?/is', $security_msg, $content);
-// 	}
-
-// 	return;
 // }
 
 /**

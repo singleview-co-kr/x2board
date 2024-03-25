@@ -1,3 +1,7 @@
+<?php if($post->is_exists()) {
+	x2b_include_skin('document');
+}?>
+
 <div class="bd hover_effect" >
 	<!-- 카테고리 시작 -->
 	<?php
@@ -30,8 +34,8 @@
 					<td class="no"><strong>공지</strong></td>
 					<td class="cate" style="color:"></td>
 					<td class="title">
-						<a href="<?php echo esc_url($post->get_pretty_url())?>"><strong><?php echo $post->title?></strong></a>
-						<a href="<?php echo esc_url($post->get_pretty_url())?>#289220_comment" class="replyNum" title="댓글"><?php echo $post->get_comment_count()?></a>
+						<a href="<?php echo esc_url(x2b_get_url('cmd', X2B_CMD_VIEW_POST, 'post_id', $post->post_id))?>"><strong><?php echo $post->title?></strong></a>
+						<a href="<?php echo esc_url(x2b_get_url('cmd', X2B_CMD_VIEW_POST, 'post_id', $post->post_id))?>#289220_comment" class="replyNum" title="댓글"><?php echo $post->get_comment_count()?></a>
 						<span class="extraimages">
 							<?php if($post->is_new()):?><span class="kboard-default-new-notify">N</span><?php endif?>
 							<?php if($post->is_secret == 'Y'):?><img src="<?php echo $skin_path?>/img/icon-lock.png" alt="<?php echo __('Secret', 'x2board')?>"><?php endif?>
@@ -51,9 +55,9 @@
 					<td class="no"><?php echo $list->index()?></td>
 					<td class="cate"><span style="color:"><?=esc_html($content->category_name)?></span></td>
 					<td class="title">
-						<a href="<?php echo esc_url($url->getDocumentURLWithUID($content->uid))?>" class="hx">
+						<a href="<?php echo esc_url(x2b_get_url('cmd', X2B_CMD_VIEW_POST, 'post_id', $post->post_id))?>" class="hx">
 						<?php echo $content->title?></a>
-						<a href="<?php echo esc_url($url->getDocumentURLWithUID($content->uid))?>#289220_comment" class="replyNum" title="댓글"><?php echo $content->getCommentsCount()?></a>
+						<a href="<?php echo esc_url(x2b_get_url('cmd', X2B_CMD_VIEW_POST, 'post_id', $post->post_id))?>#289220_comment" class="replyNum" title="댓글"><?php echo $content->getCommentsCount()?></a>
 						<span class="extraimages">
 							<?php if($content->isNew()):?><span class="kboard-default-new-notify">N</span><?php endif?>
 							<?php if($content->secret):?><img src="<?php echo $skin_path?>/img/icon-lock.png" alt="<?php echo __('Secret', 'x2board')?>"><?php endif?>
@@ -73,9 +77,9 @@
 					<td class="no"><?php echo $no?></td>
 					<td class="cate"><span style="color:"><?=esc_html($post->category_id)?></span></td>
 					<td class="title">
-						<a href="<?php echo esc_url($post->get_pretty_url())?>" class="hx">
+						<a href="<?php echo esc_url(x2b_get_url('cmd', X2B_CMD_VIEW_POST, 'post_id', $post->post_id))?>" class="hx">
 						<?php echo $post->title?></a>
-						<a href="<?php echo esc_url($post->get_pretty_url())?>#289220_comment" class="replyNum" title="댓글"><?php echo $post->get_comment_count()?></a>
+						<a href="<?php echo esc_url(x2b_get_url('cmd', X2B_CMD_VIEW_POST, 'post_id', $post->post_id))?>#289220_comment" class="replyNum" title="댓글"><?php echo $post->get_comment_count()?></a>
 						<span class="extraimages">
 							<?php if($post->is_new()):?><span class="kboard-default-new-notify">N</span><?php endif?>
 							<?php if($post->is_secret == 'Y'):?><img src="<?php echo $skin_path?>/img/icon-lock.png" alt="<?php echo __('Secret', 'x2board')?>"><?php endif?>
@@ -105,7 +109,7 @@
 		<div class="fr">
 			<?php if($grant->write_post):?>
 				<!-- 게스트 버튼 시작 -->
-				<a class="btn_img" href="<?php echo esc_url($url_write_post)?>"><i class="ico_16px write"></i> <?php echo __('New', 'x2board')?></a>
+				<a class="btn_img" href="<?php echo esc_url(x2b_get_url('cmd', X2B_CMD_VIEW_WRITE_POST, 'post_id', ''))?>"><i class="ico_16px write"></i> <?php echo __('New', 'x2board')?></a>
 				<!-- 게스트 버튼 끝 -->
 			<?php endif?>
 		</div>
@@ -123,8 +127,8 @@
 	
 	<!-- 검색폼 시작 -->
 	<div class="kboard-search">
-		<form id="kboard-search-form-<?php echo $board_id?>" method="get" action="<?php echo esc_url($url->toString())?>">
-			<?php echo $url->set('pageid', '1')->set('target', '')->set('keyword', '')->set('mod', 'list')->toInput()?>
+		<form id="kboard-search-form-<?php echo $board_id?>" method="get" action="<?php echo x2b_get_url('cmd', '')?>">
+			<?php //echo $url->set('pageid', '1')->set('target', '')->set('keyword', '')->set('mod', 'list')->toInput()?>
 			
 			<select name="target">
 				<option value=""><?php echo __('All', 'x2board')?></option>
@@ -139,17 +143,18 @@
 	<!-- 검색폼 끝 -->
 </div>
 
-<?php if($board->isAdmin() && $board->isTreeCategoryActive()):?>
+<?php if($grant->manager ):
+	//&& $board->isTreeCategoryActive()):?>
 <!-- 게시판 관리 기능 시작 -->
 <div clas1s="kboard-control" id='panel_control' style="margin-top:12px; display:none;">
-	<button type="button" id='btn_move_category' data-board-id='<?=$board->id?>' class="kboard-default-button-small"><?php echo __('Move Category to', 'x2board')?></button>
+	<button type="button" id='btn_move_category' data-board-id='<?=$board_id?>' class="kboard-default-button-small"><?php echo __('Move Category to', 'x2board')?></button>
 	<select name="target_category">
 		<option value=""><?php echo __('Category select', 'x2board')?></option>
-		<?php foreach($board->getCategoryList() as $cat_id=>$option_val):?>
-			<option value="<?=$cat_id?>">
-			<?=str_repeat("&nbsp;&nbsp;",$option_val->depth)?> <?=$option_val->category_name?> (<?=$option_val->document_count?>)
+		<?//php foreach($board->getCategoryList() as $cat_id=>$option_val):?>
+			<option value="<? // echo $cat_id?>">
+			<?// echo str_repeat("&nbsp;&nbsp;",$option_val->depth)?> <?// echo $option_val->category_name?> (<? // echo $option_val->document_count?>)
 			</option>
-		<?php endforeach?>
+		<?//php endforeach?>
 	</select>
 </div>
 <!-- 게시판 관리 기능 끝 -->
@@ -168,8 +173,8 @@ jQuery('#btn_control_panel').click(function() {
 </script>
 <?php endif?>
 
-<?php if($board->contribution()):?>
+<?php //if($board->contribution()):?>
 <div class="kboard-default-poweredby">
 	<a href="#" title="">Powered by x2board</a>
 </div>
-<?php endif?>
+<?php //endif?>

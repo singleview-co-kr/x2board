@@ -433,7 +433,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 					$o_query = new \stdClass();
 					$o_query->s_query_type = 'select';
 					$o_query->s_table_name = 'x2b_post';
-					$o_query->s_columns = "`title`, `nick_name`, `regdate`, `readed_count`, `is_notice`, `is_secret`, `post_id`, `board_id`, `category_id`, `post_author`, `last_update`, `comment_count`, `vote_count`, `uploaded_count`, `post_status`, `title_bold`, `title_color`, `tags`";
+					// $o_query->s_columns = "`title`, `nick_name`, `regdate`, `readed_count`, `is_notice`, `is_secret`, `post_id`, `board_id`, `category_id`, `post_author`, `content`, `last_update`, `comment_count`, `vote_count`, `uploaded_count`, `post_status`, `title_bold`, `title_color`, `tags`";
+					$o_query->s_columns = "*";
 					$o_query->s_where = "WHERE `board_id`=".$obj->wp_page_id." AND `post_status` in ('SECRET', 'PUBLIC')"; // and `list_order` <= 2100000000";
 					$o_query->s_orderby = "ORDER BY `list_order` asc";
 					$o_query->page = 0; //"LIMIT 0, 20";
@@ -512,7 +513,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			$o_query = new \stdClass();
 			$o_query->s_query_type = 'select';
 			$o_query->s_table_name = 'x2b_post';
-			$o_query->s_columns = "`title`, `nick_name`, `regdate`, `readed_count`, `is_notice`, `is_secret`, `post_id`, `board_id`, `category_id`, `post_author`, `last_update`, `comment_count`, `vote_count`, `uploaded_count`, `post_status`, `title_bold`, `title_color`, `tags`";
+			// $o_query->s_columns = "`title`, `nick_name`, `regdate`, `readed_count`, `is_notice`, `is_secret`, `post_id`, `board_id`, `category_id`, `post_author`, `content`, `last_update`, `comment_count`, `vote_count`, `uploaded_count`, `post_status`, `title_bold`, `title_color`, `tags`";
+			$o_query->s_columns = "*";
 			$o_query->s_where = "WHERE `board_id`=".$obj->wp_page_id." AND `is_notice`='Y' AND `post_status` in ('SECRET', 'PUBLIC')"; // and `list_order` <= 2100000000";
 			$o_query->s_orderby = "ORDER BY `post_id` desc";
 			// $o_query->page = 0; //"LIMIT 0, 20";
@@ -614,6 +616,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			// if(!$GLOBALS['XE_DOCUMENT_LIST'][$post_id])
 			if(!isset($G_X2B_CACHE['POST_LIST'][$n_post_id])) {
 				$o_post = new postItem($n_post_id, $load_extra_vars, $columnList);				
+
 				if(!$o_post->is_exists()) {
 					return $o_post;
 				}
@@ -623,7 +626,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 				}
 			}
 			if($is_admin) {
-				$G_X2B_CACHE['POST_LIST'][$n_post_id]->setGrant();
+				$G_X2B_CACHE['POST_LIST'][$n_post_id]->set_grant();
 			} 
 			return $G_X2B_CACHE['POST_LIST'][$n_post_id];
 		}
@@ -801,20 +804,30 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			$document_category[$list_order[count($list_order)-1]]->last = true;
 		}
 
+		/**
+		 * skin/../list.php에서 카테고리 표시 판단
+		 * @return string
+		 */
+		public function get_category_header_type() {
+			if( $this->_is_category_active() )	{
+				return apply_filters('kboard_category_type', $this->meta->tree_category_header_type, $this);
+			}
+			return '';
+		}
+
+		/**
+		 * skin/default/list.php에서 카테고리 입력란 표시 판단
+		 * @return string
+		 */
+		private function _is_category_active(){
+			return false;
+			return isset($this->fields->getSkinFields()['tree_category']) ? true : false;
+		}
+
 
 
 
 //////////////////////////////
-
-		/**
-		 * document checked the permissions on the session values
-		 * @param int $document_srl
-		 * @return void
-		 */
-		function isGranted($n_post_id) {
-			return $_SESSION['own_post'][$n_post_id];
-		}
-
 		/**
 		 * Return document extra information from database
 		 * @param array $documentSrls
@@ -985,97 +998,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 		}
 
 		/**
-		 * Show pop-up menu of the selected posts
-		 * Printing, scrap, recommendations and negative, reported the Add Features
-		 * @return void
-		 */
-		function getDocumentMenu()
-		{
-			// Post number and the current login information requested Wanted
-			$document_srl = Context::get('target_srl');
-			$mid = Context::get('cur_mid');
-			$logged_info = Context::get('logged_info');
-			$act = Context::get('cur_act');
-			// to menu_list "pyosihalgeul, target, url" put into an array
-			$menu_list = array();
-			// call trigger
-			ModuleHandler::triggerCall('document.getDocumentMenu', 'before', $menu_list);
-
-			$oDocumentController = getController('document');
-			// Members must be a possible feature
-			if($logged_info->member_srl)
-			{
-				$oDocumentModel = getModel('document');
-				$columnList = array('document_srl', 'module_srl', 'member_srl', 'ipaddress');
-				$oDocument = $oDocumentModel->getDocument($document_srl, false, false, $columnList);
-				$module_srl = $oDocument->get('module_srl');
-				$member_srl = $oDocument->get('member_srl');
-				if(!$module_srl) return new BaseObject(-1, 'msg_invalid_request');
-
-				$oModuleModel = getModel('module');
-				$document_config = $oModuleModel->getModulePartConfig('document',$module_srl);
-				if($document_config->use_vote_up!='N' && $member_srl!=$logged_info->member_srl)
-				{
-					// Add a Referral Button
-					$url = sprintf("doCallModuleAction('document','procDocumentVoteUp','%s')", $document_srl);
-					$oDocumentController->addDocumentPopupMenu($url,'cmd_vote','','javascript');
-				}
-
-				if($document_config->use_vote_down!='N' && $member_srl!=$logged_info->member_srl)
-				{
-					// Add button to negative
-					$url= sprintf("doCallModuleAction('document','procDocumentVoteDown','%s')", $document_srl);
-					$oDocumentController->addDocumentPopupMenu($url,'cmd_vote_down','','javascript');
-				}
-
-				// Adding Report
-				$url = sprintf("doCallModuleAction('document','procDocumentDeclare','%s')", $document_srl);
-				$oDocumentController->addDocumentPopupMenu($url,'cmd_declare','','javascript');
-
-				// Add Bookmark button
-				$url = sprintf("doCallModuleAction('member','procMemberScrapDocument','%s')", $document_srl);
-				$oDocumentController->addDocumentPopupMenu($url,'cmd_scrap','','javascript');
-			}
-			// Add print button
-			$url = getUrl('','module','document','act','dispDocumentPrint','document_srl',$document_srl);
-			$oDocumentController->addDocumentPopupMenu($url,'cmd_print','','printDocument');
-			// Call a trigger (after)
-			ModuleHandler::triggerCall('document.getDocumentMenu', 'after', $menu_list);
-			if($this->grant->manager)
-			{
-				$str_confirm = Context::getLang('confirm_move');
-				$url = sprintf("if(!confirm('%s')) return; var params = new Array(); params['document_srl']='%s'; params['mid']=current_mid;params['cur_url']=current_url; exec_xml('document', 'procDocumentAdminMoveToTrash', params)", $str_confirm, $document_srl);
-				$oDocumentController->addDocumentPopupMenu($url,'cmd_trash','','javascript');
-			}
-
-			// If you are managing to find posts by ip
-			if($logged_info->is_admin == 'Y')
-			{
-				$oDocumentModel = getModel('document');
-				$oDocument = $oDocumentModel->getDocument($document_srl);	//before setting document recycle
-
-				if($oDocument->isExists())
-				{
-					// Find a post equivalent to ip address
-					$url = getUrl('','module','admin','act','dispDocumentAdminList','search_target','ipaddress','search_keyword',$oDocument->getIpAddress());
-					$oDocumentController->addDocumentPopupMenu($url,'cmd_search_by_ipaddress',$icon_path,'TraceByIpaddress');
-
-					$url = sprintf("var params = new Array(); params['ipaddress_list']='%s'; exec_xml('spamfilter', 'procSpamfilterAdminInsertDeniedIP', params, completeCallModuleAction)", $oDocument->getIpAddress());
-					$oDocumentController->addDocumentPopupMenu($url,'cmd_add_ip_to_spamfilter','','javascript');
-				}
-			}
-			// Changing the language of pop-up menu
-			$menus = Context::get('document_popup_menu_list');
-			$menus_count = count($menus);
-			for($i=0;$i<$menus_count;$i++)
-			{
-				$menus[$i]->str = Context::getLang($menus[$i]->str);
-			}
-			// Wanted to finally clean pop-up menu list
-			$this->add('menus', $menus);
-		}
-
-		/**
 		 * The total number of documents that are bringing
 		 * @param int $module_srl
 		 * @param object $search_obj
@@ -1223,26 +1145,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 		}
 
 		/**
-		 * skin/../list.php에서 카테고리 표시 판단
-		 * @return string
-		 */
-		public function get_category_header_type() {
-			if( $this->_is_category_active() )	{
-				return apply_filters('kboard_category_type', $this->meta->tree_category_header_type, $this);
-			}
-			return '';
-		}
-
-		/**
-		 * skin/default/list.php에서 카테고리 입력란 표시 판단
-		 * @return string
-		 */
-		private function _is_category_active(){
-			return false;
-			return isset($this->fields->getSkinFields()['tree_category']) ? true : false;
-		}
-
-		/**
 		 * Wanted number of documents belonging to category
 		 * @param int $module_srl
 		 * @param int $category_srl
@@ -1255,22 +1157,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			$args->category_srl = $category_srl;
 			$output = executeQuery('document.getCategoryDocumentCount', $args);
 			return (int)$output->data->count;
-		}
-
-		/**
-		 * Xml cache file of the document category return information
-		 * @param int $module_srl
-		 * @return string
-		 */
-		function getCategoryXmlFile($module_srl)
-		{
-			$xml_file = sprintf('files/cache/document_category/%s.xml.php',$module_srl);
-			if(!file_exists($xml_file))
-			{
-				$oDocumentController = getController('document');
-				$oDocumentController->makeCategoryFile($module_srl);
-			}
-			return $xml_file;
 		}
 
 		/**
@@ -1430,51 +1316,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 		}
 
 		/**
-		 * Certain categories of information, return the template guhanhu
-		 * Manager on the page to add information about a particular menu from the server after compiling tpl compiled a direct return html
-		 * @return void|BaseObject
-		 */
-		function getDocumentCategoryTplInfo()
-		{
-			$oModuleModel = getModel('module');
-			$oMemberModel = getModel('member');
-			// Get information on the menu for the parameter settings
-			$module_srl = Context::get('module_srl');
-			$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
-			// Check permissions
-			$grant = $oModuleModel->getGrant($module_info, Context::get('logged_info'));
-			if(!$grant->manager) return new BaseObject(-1,'msg_not_permitted');
-
-			$category_srl = Context::get('category_srl');
-			$category_info = $this->getCategory($category_srl);
-			if(!$category_info)
-			{
-				return new BaseObject(-1, 'msg_invalid_request');
-			}
-
-			$this->add('category_info', $category_info);
-		}
-
-		/**
-		 * Return docuent data by alias
-		 * @param string $mid
-		 * @param string $alias
-		 * @return int|void
-		 */
-		function getDocumentSrlByAlias($mid, $alias)
-		{
-			if(!$mid || !$alias) return null;
-			$site_module_info = Context::get('site_module_info');
-			$args = new stdClass;
-			$args->mid = $mid;
-			$args->alias_title = $alias;
-			$args->site_srl = $site_module_info->site_srl;
-			$output = executeQuery('document.getDocumentSrlByAlias', $args);
-			if(!$output->data) return null;
-			else return $output->data->document_srl;
-		}
-
-		/**
 		 * Return docuent number by document title
 		 * @param int $module_srl
 		 * @param string $title
@@ -1493,22 +1334,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 				if(is_array($output->data)) return $output->data[0]->document_srl;
 				return $output->data->document_srl;
 			}
-		}
-
-		/**
-		 * Return docuent's alias
-		 * @param int $document_srl
-		 * @return string|void
-		 */
-		function getAlias($document_srl)
-		{
-			if(!$document_srl) return null;
-			$args = new stdClass;
-			$args->document_srl = $document_srl;
-			$output = executeQueryArray('document.getAliases', $args);
-
-			if(!$output->data) return null;
-			else return $output->data[0]->alias_title;
 		}
 
 		/**
@@ -2049,5 +1874,182 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 
 			return $path;
 		}
+
+		/**
+		 * document checked the permissions on the session values
+		 * @param int $document_srl
+		 * @return void
+		 */
+		// function isGranted($n_post_id) {
+		// 	return $_SESSION['own_post'][$n_post_id];
+		// }
+
+		/**
+		 * Show pop-up menu of the selected posts
+		 * Printing, scrap, recommendations and negative, reported the Add Features
+		 * @return void
+		 */
+		// function getDocumentMenu()
+		// {
+		// 	// Post number and the current login information requested Wanted
+		// 	$document_srl = Context::get('target_srl');
+		// 	$mid = Context::get('cur_mid');
+		// 	$logged_info = Context::get('logged_info');
+		// 	$act = Context::get('cur_act');
+		// 	// to menu_list "pyosihalgeul, target, url" put into an array
+		// 	$menu_list = array();
+		// 	// call trigger
+		// 	ModuleHandler::triggerCall('document.getDocumentMenu', 'before', $menu_list);
+
+		// 	$oDocumentController = getController('document');
+		// 	// Members must be a possible feature
+		// 	if($logged_info->member_srl)
+		// 	{
+		// 		$oDocumentModel = getModel('document');
+		// 		$columnList = array('document_srl', 'module_srl', 'member_srl', 'ipaddress');
+		// 		$oDocument = $oDocumentModel->getDocument($document_srl, false, false, $columnList);
+		// 		$module_srl = $oDocument->get('module_srl');
+		// 		$member_srl = $oDocument->get('member_srl');
+		// 		if(!$module_srl) return new BaseObject(-1, 'msg_invalid_request');
+
+		// 		$oModuleModel = getModel('module');
+		// 		$document_config = $oModuleModel->getModulePartConfig('document',$module_srl);
+		// 		if($document_config->use_vote_up!='N' && $member_srl!=$logged_info->member_srl)
+		// 		{
+		// 			// Add a Referral Button
+		// 			$url = sprintf("doCallModuleAction('document','procDocumentVoteUp','%s')", $document_srl);
+		// 			$oDocumentController->addDocumentPopupMenu($url,'cmd_vote','','javascript');
+		// 		}
+
+		// 		if($document_config->use_vote_down!='N' && $member_srl!=$logged_info->member_srl)
+		// 		{
+		// 			// Add button to negative
+		// 			$url= sprintf("doCallModuleAction('document','procDocumentVoteDown','%s')", $document_srl);
+		// 			$oDocumentController->addDocumentPopupMenu($url,'cmd_vote_down','','javascript');
+		// 		}
+
+		// 		// Adding Report
+		// 		$url = sprintf("doCallModuleAction('document','procDocumentDeclare','%s')", $document_srl);
+		// 		$oDocumentController->addDocumentPopupMenu($url,'cmd_declare','','javascript');
+
+		// 		// Add Bookmark button
+		// 		$url = sprintf("doCallModuleAction('member','procMemberScrapDocument','%s')", $document_srl);
+		// 		$oDocumentController->addDocumentPopupMenu($url,'cmd_scrap','','javascript');
+		// 	}
+		// 	// Add print button
+		// 	$url = getUrl('','module','document','act','dispDocumentPrint','document_srl',$document_srl);
+		// 	$oDocumentController->addDocumentPopupMenu($url,'cmd_print','','printDocument');
+		// 	// Call a trigger (after)
+		// 	ModuleHandler::triggerCall('document.getDocumentMenu', 'after', $menu_list);
+		// 	if($this->grant->manager)
+		// 	{
+		// 		$str_confirm = Context::getLang('confirm_move');
+		// 		$url = sprintf("if(!confirm('%s')) return; var params = new Array(); params['document_srl']='%s'; params['mid']=current_mid;params['cur_url']=current_url; exec_xml('document', 'procDocumentAdminMoveToTrash', params)", $str_confirm, $document_srl);
+		// 		$oDocumentController->addDocumentPopupMenu($url,'cmd_trash','','javascript');
+		// 	}
+
+		// 	// If you are managing to find posts by ip
+		// 	if($logged_info->is_admin == 'Y')
+		// 	{
+		// 		$oDocumentModel = getModel('document');
+		// 		$oDocument = $oDocumentModel->getDocument($document_srl);	//before setting document recycle
+
+		// 		if($oDocument->isExists())
+		// 		{
+		// 			// Find a post equivalent to ip address
+		// 			$url = getUrl('','module','admin','act','dispDocumentAdminList','search_target','ipaddress','search_keyword',$oDocument->getIpAddress());
+		// 			$oDocumentController->addDocumentPopupMenu($url,'cmd_search_by_ipaddress',$icon_path,'TraceByIpaddress');
+
+		// 			$url = sprintf("var params = new Array(); params['ipaddress_list']='%s'; exec_xml('spamfilter', 'procSpamfilterAdminInsertDeniedIP', params, completeCallModuleAction)", $oDocument->getIpAddress());
+		// 			$oDocumentController->addDocumentPopupMenu($url,'cmd_add_ip_to_spamfilter','','javascript');
+		// 		}
+		// 	}
+		// 	// Changing the language of pop-up menu
+		// 	$menus = Context::get('document_popup_menu_list');
+		// 	$menus_count = count($menus);
+		// 	for($i=0;$i<$menus_count;$i++)
+		// 	{
+		// 		$menus[$i]->str = Context::getLang($menus[$i]->str);
+		// 	}
+		// 	// Wanted to finally clean pop-up menu list
+		// 	$this->add('menus', $menus);
+		// }
+
+		/**
+		 * Xml cache file of the document category return information
+		 * @param int $module_srl
+		 * @return string
+		 */
+		// function getCategoryXmlFile($module_srl)
+		// {
+		// 	$xml_file = sprintf('files/cache/document_category/%s.xml.php',$module_srl);
+		// 	if(!file_exists($xml_file))
+		// 	{
+		// 		$oDocumentController = getController('document');
+		// 		$oDocumentController->makeCategoryFile($module_srl);
+		// 	}
+		// 	return $xml_file;
+		// }
+
+		/**
+		 * Certain categories of information, return the template guhanhu
+		 * Manager on the page to add information about a particular menu from the server after compiling tpl compiled a direct return html
+		 * @return void|BaseObject
+		 */
+		// function getDocumentCategoryTplInfo()
+		// {
+		// 	$oModuleModel = getModel('module');
+		// 	$oMemberModel = getModel('member');
+		// 	// Get information on the menu for the parameter settings
+		// 	$module_srl = Context::get('module_srl');
+		// 	$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
+		// 	// Check permissions
+		// 	$grant = $oModuleModel->getGrant($module_info, Context::get('logged_info'));
+		// 	if(!$grant->manager) return new BaseObject(-1,'msg_not_permitted');
+
+		// 	$category_srl = Context::get('category_srl');
+		// 	$category_info = $this->getCategory($category_srl);
+		// 	if(!$category_info)
+		// 	{
+		// 		return new BaseObject(-1, 'msg_invalid_request');
+		// 	}
+
+		// 	$this->add('category_info', $category_info);
+		// }
+
+		/**
+		 * Return docuent data by alias
+		 * @param string $mid
+		 * @param string $alias
+		 * @return int|void
+		 */
+		// function getDocumentSrlByAlias($mid, $alias)
+		// {
+		// 	if(!$mid || !$alias) return null;
+		// 	$site_module_info = Context::get('site_module_info');
+		// 	$args = new stdClass;
+		// 	$args->mid = $mid;
+		// 	$args->alias_title = $alias;
+		// 	$args->site_srl = $site_module_info->site_srl;
+		// 	$output = executeQuery('document.getDocumentSrlByAlias', $args);
+		// 	if(!$output->data) return null;
+		// 	else return $output->data->document_srl;
+		// }
+
+		/**
+		 * Return docuent's alias
+		 * @param int $document_srl
+		 * @return string|void
+		 */
+		// function getAlias($document_srl)
+		// {
+		// 	if(!$document_srl) return null;
+		// 	$args = new stdClass;
+		// 	$args->document_srl = $document_srl;
+		// 	$output = executeQueryArray('document.getAliases', $args);
+
+		// 	if(!$output->data) return null;
+		// 	else return $output->data[0]->alias_title;
+		// }
 	}
 }

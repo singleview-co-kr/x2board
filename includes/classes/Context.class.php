@@ -566,11 +566,11 @@ var_dump('detected view cmd:'. $s_cmd);
 		 */
 		private function _convert_pretty_command_uri() {
 			$a_cascaded_search_cmd = array('p' => 'page', 'cat' => 'category', 'tag' => 'tag', 
-										   'search' => 'search_field', 'q' => 'search_value', 
+										   'search' => 'search_target', 'q' => 'search_keyword', 
 										   'sort' => 'sort_field', 't' => 'sort_type');
 			$a_query_param = array( 'cmd'=>null, 'page'=>1,
 									'post_id'=>null, 'comment_id'=>null, 
-									'search_field'=>null, 'search_value'=>null, 
+									'search_target'=>null, 'search_keyword'=>null, 
 									'sort_field'=>null, 'sort_type'=>null, 
 									'tag'=>null, 'category'=>null
 								);
@@ -639,11 +639,11 @@ var_dump($request_uri['query']);
 					$s_cmd = trim($a_uri[0]);
 					$s_query = trim($a_uri[2]);
 					if( $s_cmd == 'search' && $s_query == 'q' ) {  // q means query
-						$a_query_param['search_field'] = trim($a_uri[1]);
-						$a_query_param['search_value'] = trim($a_uri[3]);
+						$a_query_param['search_target'] = trim($a_uri[1]);
+						$a_query_param['search_keyword'] = trim($a_uri[3]);
 					}
 					elseif( $s_cmd == 'sort' && $s_query == 't' ) {  // t means type
-						$a_query_param['sort_field'] = trim($a_uri[1]);
+						$a_query_param['search_target'] = trim($a_uri[1]);
 						$a_query_param['sort_type'] = trim($a_uri[3]);
 					}
 					unset($a_uri);
@@ -842,6 +842,352 @@ var_dump($request_uri['query']);
 			// ($GLOBALS['HTTP_RAW_POST_DATA'] && $self->request_method = 'XMLRPC') or ($self->js_callback_func && $self->request_method = 'JS_CALLBACK') or ($self->request_method = $_SERVER['REQUEST_METHOD']);
 			(isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'json') && $self->request_method = 'JSON') or	($self->request_method = $_SERVER['REQUEST_METHOD']);
 		}
+
+		/**
+		 * Make URL with args_list upon request URL
+		 *
+		 * @param int $num_args Arguments nums
+		 * @param array $args_list Argument list for set url
+		 * @param string $domain Domain
+		 * @param bool $encode If TRUE, use url encode.
+		 * @param bool $autoEncode If TRUE, url encode automatically, detailed. Use this option, $encode value should be TRUE
+		 * @return string URL
+		 */
+		// public static function getUrl($num_args = 0, $args_list = array(), $domain = null, $encode = TRUE, $autoEncode = FALSE) {
+		public static function get_url($num_args = 0, $args_list = array(), $domain = null, $encode = TRUE, $autoEncode = FALSE) {
+			// static $site_module_info = null;
+			static $current_info = null;
+
+			$self = self::getInstance();
+			// // retrieve virtual site information
+			// if(is_null($site_module_info)) {
+			// 	$site_module_info = self::get('site_module_info');
+			// }
+
+			// // If $domain is set, handle it (if $domain is vid type, remove $domain and handle with $vid)
+			// if($domain && isSiteID($domain)) {
+			// 	$vid = $domain;
+			// 	$domain = '';
+			// }
+
+			// // If $domain, $vid are not set, use current site information
+			// if(!$domain && !$vid) {
+			// 	if($site_module_info->domain && isSiteID($site_module_info->domain)) {
+			// 		$vid = $site_module_info->domain;
+			// 	}
+			// 	else {
+			// 		$domain = $site_module_info->domain;
+			// 	}
+			// }
+			$domain = get_site_url().'/';
+// error_log(print_r($domain, true));				
+			// if $domain is set, compare current URL. If they are same, remove the domain, otherwise link to the domain.
+			if($domain)	{
+				$domain_info = parse_url($domain);
+				if(is_null($current_info)) {
+					if( !isset($_SERVER['HTTPS']) ) {
+						$_SERVER['HTTPS'] = null;
+					}
+					$current_info = parse_url(($_SERVER['HTTPS'] == 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . \X2board\Includes\get_script_path());
+				}
+// error_log(print_r($current_info, true));									
+				if($domain_info['host'] . $domain_info['path'] == $current_info['host'] . $current_info['path']) {
+					$domain = null;// unset($domain);
+				}
+				else {
+					$domain = preg_replace('/^(http|https):\/\//i', '', trim($domain));
+					if(substr_compare($domain, '/', -1) !== 0) {
+						$domain .= '/';
+					}
+				}
+			}
+			
+			$get_vars = array();
+
+			// If there is no GET variables or first argument is '' to reset variables
+			if(!$self->get_vars || $args_list[0] == '') {
+				// rearrange args_list
+				if(is_array($args_list) && $args_list[0] == '') {
+					array_shift($args_list);
+				}
+			}
+			elseif($_SERVER['REQUEST_METHOD'] == 'GET') {
+				// Otherwise, make GET variables into array
+				// $get_vars = get_object_vars($self->get_vars);
+				$get_vars = get_object_vars($self->gets('cmd', 'post_id', 'page'));  // , 'board_id'
+				if( isset( $get_vars['cmd'] ) && $get_vars['cmd'] == 'view_post' &&
+					isset( $get_vars['post_id'] ) && intval($get_vars['post_id']) > 0 ) {  // regarding view_post/10 as /10; view_post cmd malfunctions on title link of the view post UX 
+						$get_vars['cmd'] = null;
+						// unset($get_vars['post_id']);
+					}
+// error_log(print_r($get_vars, true));					
+			}
+			else {
+				// if(!!$self->get_vars->module) $get_vars['module'] = $self->get_vars->module;
+				// if(!!$self->get_vars->mid) $get_vars['mid'] = $self->get_vars->mid;
+				// if(!!$self->get_vars->act) $get_vars['act'] = $self->get_vars->act;
+				if(!!$self->get_vars->cmd) $get_vars['cmd'] = $self->get_vars->cmd;
+				if(!!$self->get_vars->page) $get_vars['page'] = $self->get_vars->page;
+				if(!!$self->get_vars->search_target) $get_vars['search_target'] = $self->get_vars->search_target;
+				if(!!$self->get_vars->search_keyword) $get_vars['search_keyword'] = $self->get_vars->search_keyword;
+				// if($get_vars['act'] == 'IS') {
+				// 	if(!!$self->get_vars->is_keyword) $get_vars['is_keyword'] = $self->get_vars->is_keyword;
+				// }
+			}
+
+			// arrange args_list
+			for($i = 0, $c = count($args_list); $i < $c; $i += 2) {
+				$key = $args_list[$i];
+				$val = trim($args_list[$i + 1]);
+// error_log(print_r($key, true));	
+// error_log(print_r($val, true));	
+				// If value is not set, remove the key
+				if( $key != 'cmd') {  // keep cmd set always
+					if(!isset($val) || !strlen($val)) {
+						unset($get_vars[$key]);
+						continue;
+					}
+				}
+				// set new variables
+				$get_vars[$key] = $val;
+			}
+
+			// remove vid, rnd
+			// unset($get_vars['rnd']);
+			// if($vid)
+			// {
+			// 	$get_vars['vid'] = $vid;
+			// }
+			// else
+			// {
+			// 	unset($get_vars['vid']);
+			// }
+
+			// for compatibility to lower versions
+			// $cmd = $get_vars['cmd'];
+			// $cmd_alias = array(
+			// 	'dispMemberFriend' => 'dispCommunicationFriend',
+			// 	'dispMemberMessages' => 'dispCommunicationMessages',
+			// 	'dispDocumentAdminManageDocument' => 'dispDocumentManageDocument',
+			// 	'dispModuleAdminSelectList' => 'dispModuleSelectList'
+			// );
+			// if($cmd_alias[$cmd]) {
+			// 	$get_vars['cmd'] = $cmd_alias[$cmd];
+			// }
+
+			// organize URL
+			$query = '';
+// error_log(print_r($get_vars, true));				
+			if(count($get_vars) > 0) {
+				// if using rewrite mod
+				// if($self->allow_rewrite)
+				{
+// error_log(print_r($get_vars, true));
+					$cmd = $get_vars['cmd'];
+					$page = $get_vars['page'];
+					$post_id = isset( $get_vars['post_id'] ) ? $get_vars['post_id'] : '';
+					// $post_id = $get_vars['post_id']; // $srl = $get_vars['document_srl'];
+
+					// $tmpArray = array('rss' => 1, 'atom' => 1, 'api' => 1);
+					// $is_feed = isset($tmpArray[$act]);
+// error_log(print_r($get_vars, true));					
+					$target_map = array(
+						// 'vid' => $vid,
+						// 'mid' => $mid,
+						// 'mid.vid' => "$vid/$mid",
+						// 'entry.mid' => "$mid/entry/" . $get_vars['entry'],
+						// 'entry.mid.vid' => "$vid/$mid/entry/" . $get_vars['entry'],
+						'cmd' => get_the_permalink().( strlen($cmd) > 0 ? '?'.$cmd : '' ),  // X2B_CMD_VIEW_LIST equals with blank cmd
+						'post_id' => get_the_permalink().'?'.X2B_CMD_VIEW_POST.'/'.$post_id,
+						'cmd.post_id' => get_the_permalink().'?'.$cmd.'/'.$post_id,
+						// 'document_srl' => $srl,
+						// 'document_srl.mid' => "$mid/$srl",
+						// 'document_srl.vid' => "$vid/$srl",
+						// 'document_srl.mid.vid' => "$vid/$mid/$srl",
+						// 'act' => ($is_feed && $act !== 'api') ? $act : '',
+						// 'act.mid' => $is_feed ? "$mid/$act" : '',
+						// 'act.mid.vid' => $is_feed ? "$vid/$mid/$act" : '',
+						// 'act.document_srl.key' => ($act == 'trackback') ? "$srl/$key/$act" : '',
+						// 'act.document_srl.key.mid' => ($act == 'trackback') ? "$mid/$srl/$key/$act" : '',
+						// 'act.document_srl.key.vid' => ($act == 'trackback') ? "$vid/$srl/$key/$act" : '',
+						// 'act.document_srl.key.mid.vid' => ($act == 'trackback') ? "$vid/$mid/$srl/$key/$act" : ''
+					);
+
+					$a_check_query = array( 'cmd', 'post_id' );
+					foreach( $a_check_query as $key_name ) {
+						if( isset($get_vars[$key_name]) && is_null($get_vars[$key_name]) ) {
+							unset($get_vars[$key_name]);
+						}
+					}
+					if( is_null($get_vars['page']) || $get_vars['page'] == 1 ) {
+						unset($get_vars['page']);
+					}
+					
+					$var_keys = array_keys($get_vars);
+					sort($var_keys);
+					$target = join('.', $var_keys);
+// error_log(print_r($get_vars['post_id'], true));	
+// error_log(print_r($target, true));	
+					$query = isset( $target_map[$target] ) ? $target_map[$target] : null;
+				}
+// error_log(print_r($query, true));
+				if(!$query)	{
+					$queries = array();
+// error_log(print_r($get_vars, true));					
+					foreach($get_vars as $key => $val) {
+						if(is_array($val) && count($val) > 0) {
+							foreach($val as $k => $v) {
+								$queries[] = $key . '[' . $k . ']=' . urlencode($v);
+							}
+						}
+						elseif(!is_array($val))	{
+							$queries[] = $key . '=' . urlencode($val);
+						}
+					}
+// error_log(print_r($queries, true));		
+					$query = get_the_permalink();
+					$n_cnt_queires = count($queries);
+					if($n_cnt_queires > 0) {
+						$query .= '?' . join('&', $queries);
+					}
+				}
+			}
+
+			// If using SSL always
+			// $_use_ssl = $self->get('_use_ssl');
+			// if($_use_ssl == 'always')
+			// {
+			// 	$query = $self->getRequestUri(ENFORCE_SSL, $domain) . $query;
+			// 	// optional SSL use
+			// }
+			// elseif($_use_ssl == 'optional')
+			// {
+			// 	$ssl_mode = (($self->get('module') === 'admin') || ($get_vars['module'] === 'admin') || (isset($get_vars['act']) && $self->isExistsSSLAction($get_vars['act']))) ? ENFORCE_SSL : RELEASE_SSL;
+			// 	$query = $self->getRequestUri($ssl_mode, $domain) . $query;
+			// 	// no SSL
+			// }
+			// else
+			{
+				// currently on SSL but target is not based on SSL
+				if($_SERVER['HTTPS'] == 'on') {
+					$query = $self->_get_request_uri(ENFORCE_SSL, $domain) . $query;
+				}
+				else if($domain) {  // if $domain is set
+					$query = $self->_get_request_uri(FOLLOW_REQUEST_SSL, $domain) . $query;
+				}
+				// else {
+				// 	$query = \X2board\Includes\get_script_path() . $query;
+				// }
+			}
+
+			if(!$encode) {
+				return $query;
+			}
+
+			if(!$autoEncode) {
+				return htmlspecialchars($query, ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE);
+			}
+
+			$output = array();
+			$encode_queries = array();
+			$parsedUrl = parse_url($query);
+			parse_str($parsedUrl['query'], $output);
+			foreach($output as $key => $value) {
+				if(preg_match('/&([a-z]{2,}|#\d+);/', urldecode($value))) {
+					$value = urlencode(htmlspecialchars_decode(urldecode($value)));
+				}
+				$encode_queries[] = $key . '=' . $value;
+			}
+
+			return htmlspecialchars($parsedUrl['path'] . '?' . join('&', $encode_queries), ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE);
+		}
+
+		/**
+		 * Return after removing an argument on the requested URL
+		 *
+		 * @param string $ssl_mode SSL mode
+		 * @param string $domain Domain
+		 * @retrun string converted URL
+		 */
+		// public static function getRequestUri($ssl_mode = FOLLOW_REQUEST_SSL, $domain = null)
+		private static function _get_request_uri($ssl_mode = FOLLOW_REQUEST_SSL, $domain = null) {
+			static $url = array();
+
+			// Check HTTP Request
+			if(!isset($_SERVER['SERVER_PROTOCOL'])) {
+				return;
+			}
+
+			// if(self::get('_use_ssl') == 'always') {
+			// 	$ssl_mode = ENFORCE_SSL;
+			// }
+error_log(print_r($domain, true));
+			if($domain) {
+				$domain_key = md5($domain);
+			}
+			else {
+				$domain_key = 'default';
+			}
+
+			if(isset($url[$ssl_mode][$domain_key])) {
+				return $url[$ssl_mode][$domain_key];
+			}
+
+			$current_use_ssl = ($_SERVER['HTTPS'] == 'on');
+
+			switch($ssl_mode) {
+				case FOLLOW_REQUEST_SSL: $use_ssl = $current_use_ssl;
+					break;
+				case ENFORCE_SSL: $use_ssl = TRUE;
+					break;
+				case RELEASE_SSL: $use_ssl = FALSE;
+					break;
+			}
+
+			if($domain) {
+				$target_url = trim($domain);
+				if(substr_compare($target_url, '/', -1) !== 0) {
+					$target_url.= '/';
+				}
+			}
+			else {
+				$target_url = $_SERVER['HTTP_HOST'] . getScriptPath();
+			}
+
+			$url_info = parse_url('http://' . $target_url);
+
+			if($current_use_ssl != $use_ssl) {
+				unset($url_info['port']);
+			}
+
+			// if($use_ssl)
+			// {
+			// 	$port = self::get('_https_port');
+			// 	if($port && $port != 443)
+			// 	{
+			// 		$url_info['port'] = $port;
+			// 	}
+			// 	elseif($url_info['port'] == 443)
+			// 	{
+			// 		unset($url_info['port']);
+			// 	}
+			// }
+			// else
+			{
+				$port = self::get('_http_port');
+				if($port && $port != 80) {
+					$url_info['port'] = $port;
+				}
+				elseif($url_info['port'] == 80) {
+					unset($url_info['port']);
+				}
+			}
+
+			$url[$ssl_mode][$domain_key] = sprintf('%s://%s%s%s', $use_ssl ? 'https' : $url_info['scheme'], $url_info['host'], $url_info['port'] && $url_info['port'] != 80 ? ':' . $url_info['port'] : '', $url_info['path']);
+
+			return $url[$ssl_mode][$domain_key];
+		}
+
 
 		/**
 		 * Load the database information
@@ -1912,362 +2258,6 @@ var_dump($request_uri['query']);
 		// 	}
 
 		// 	return $js_callback_func;
-		// }
-
-		/**
-		 * Make URL with args_list upon request URL
-		 *
-		 * @param int $num_args Arguments nums
-		 * @param array $args_list Argument list for set url
-		 * @param string $domain Domain
-		 * @param bool $encode If TRUE, use url encode.
-		 * @param bool $autoEncode If TRUE, url encode automatically, detailed. Use this option, $encode value should be TRUE
-		 * @return string URL
-		 */
-		// public static function getUrl($num_args = 0, $args_list = array(), $domain = null, $encode = TRUE, $autoEncode = FALSE)
-		// {
-		// 	static $site_module_info = null;
-		// 	static $current_info = null;
-
-		// 	$self = self::getInstance();
-
-		// 	// retrieve virtual site information
-		// 	if(is_null($site_module_info))
-		// 	{
-		// 		$site_module_info = self::get('site_module_info');
-		// 	}
-
-		// 	// If $domain is set, handle it (if $domain is vid type, remove $domain and handle with $vid)
-		// 	if($domain && isSiteID($domain))
-		// 	{
-		// 		$vid = $domain;
-		// 		$domain = '';
-		// 	}
-
-		// 	// If $domain, $vid are not set, use current site information
-		// 	if(!$domain && !$vid)
-		// 	{
-		// 		if($site_module_info->domain && isSiteID($site_module_info->domain))
-		// 		{
-		// 			$vid = $site_module_info->domain;
-		// 		}
-		// 		else
-		// 		{
-		// 			$domain = $site_module_info->domain;
-		// 		}
-		// 	}
-
-		// 	// if $domain is set, compare current URL. If they are same, remove the domain, otherwise link to the domain.
-		// 	if($domain)
-		// 	{
-		// 		$domain_info = parse_url($domain);
-		// 		if(is_null($current_info))
-		// 		{
-		// 			$current_info = parse_url(($_SERVER['HTTPS'] == 'on' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . getScriptPath());
-		// 		}
-		// 		if($domain_info['host'] . $domain_info['path'] == $current_info['host'] . $current_info['path'])
-		// 		{
-		// 			unset($domain);
-		// 		}
-		// 		else
-		// 		{
-		// 			$domain = preg_replace('/^(http|https):\/\//i', '', trim($domain));
-		// 			if(substr_compare($domain, '/', -1) !== 0)
-		// 			{
-		// 				$domain .= '/';
-		// 			}
-		// 		}
-		// 	}
-
-		// 	$get_vars = array();
-
-		// 	// If there is no GET variables or first argument is '' to reset variables
-		// 	if(!$self->get_vars || $args_list[0] == '')
-		// 	{
-		// 		// rearrange args_list
-		// 		if(is_array($args_list) && $args_list[0] == '')
-		// 		{
-		// 			array_shift($args_list);
-		// 		}
-		// 	}
-		// 	elseif($_SERVER['REQUEST_METHOD'] == 'GET')
-		// 	{
-		// 		// Otherwise, make GET variables into array
-		// 		$get_vars = get_object_vars($self->get_vars);
-		// 	}
-		// 	else
-		// 	{
-		// 		if(!!$self->get_vars->module) $get_vars['module'] = $self->get_vars->module;
-		// 		if(!!$self->get_vars->mid) $get_vars['mid'] = $self->get_vars->mid;
-		// 		if(!!$self->get_vars->act) $get_vars['act'] = $self->get_vars->act;
-		// 		if(!!$self->get_vars->page) $get_vars['page'] = $self->get_vars->page;
-		// 		if(!!$self->get_vars->search_target) $get_vars['search_target'] = $self->get_vars->search_target;
-		// 		if(!!$self->get_vars->search_keyword) $get_vars['search_keyword'] = $self->get_vars->search_keyword;
-		// 		if($get_vars['act'] == 'IS')
-		// 		{
-		// 			if(!!$self->get_vars->is_keyword) $get_vars['is_keyword'] = $self->get_vars->is_keyword;
-		// 		}
-		// 	}
-
-		// 	// arrange args_list
-		// 	for($i = 0, $c = count($args_list); $i < $c; $i += 2)
-		// 	{
-		// 		$key = $args_list[$i];
-		// 		$val = trim($args_list[$i + 1]);
-
-		// 		// If value is not set, remove the key
-		// 		if(!isset($val) || !strlen($val))
-		// 		{
-		// 			unset($get_vars[$key]);
-		// 			continue;
-		// 		}
-		// 		// set new variables
-		// 		$get_vars[$key] = $val;
-		// 	}
-
-		// 	// remove vid, rnd
-		// 	unset($get_vars['rnd']);
-		// 	if($vid)
-		// 	{
-		// 		$get_vars['vid'] = $vid;
-		// 	}
-		// 	else
-		// 	{
-		// 		unset($get_vars['vid']);
-		// 	}
-
-		// 	// for compatibility to lower versions
-		// 	$act = $get_vars['act'];
-		// 	$act_alias = array(
-		// 		'dispMemberFriend' => 'dispCommunicationFriend',
-		// 		'dispMemberMessages' => 'dispCommunicationMessages',
-		// 		'dispDocumentAdminManageDocument' => 'dispDocumentManageDocument',
-		// 		'dispModuleAdminSelectList' => 'dispModuleSelectList'
-		// 	);
-		// 	if($act_alias[$act])
-		// 	{
-		// 		$get_vars['act'] = $act_alias[$act];
-		// 	}
-
-		// 	// organize URL
-		// 	$query = '';
-		// 	if(count($get_vars) > 0)
-		// 	{
-		// 		// if using rewrite mod
-		// 		if($self->allow_rewrite)
-		// 		{
-		// 			$var_keys = array_keys($get_vars);
-		// 			sort($var_keys);
-
-		// 			$target = join('.', $var_keys);
-
-		// 			$act = $get_vars['act'];
-		// 			$vid = $get_vars['vid'];
-		// 			$mid = $get_vars['mid'];
-		// 			$key = $get_vars['key'];
-		// 			$srl = $get_vars['document_srl'];
-
-		// 			$tmpArray = array('rss' => 1, 'atom' => 1, 'api' => 1);
-		// 			$is_feed = isset($tmpArray[$act]);
-
-		// 			$target_map = array(
-		// 				'vid' => $vid,
-		// 				'mid' => $mid,
-		// 				'mid.vid' => "$vid/$mid",
-		// 				'entry.mid' => "$mid/entry/" . $get_vars['entry'],
-		// 				'entry.mid.vid' => "$vid/$mid/entry/" . $get_vars['entry'],
-		// 				'document_srl' => $srl,
-		// 				'document_srl.mid' => "$mid/$srl",
-		// 				'document_srl.vid' => "$vid/$srl",
-		// 				'document_srl.mid.vid' => "$vid/$mid/$srl",
-		// 				'act' => ($is_feed && $act !== 'api') ? $act : '',
-		// 				'act.mid' => $is_feed ? "$mid/$act" : '',
-		// 				'act.mid.vid' => $is_feed ? "$vid/$mid/$act" : '',
-		// 				'act.document_srl.key' => ($act == 'trackback') ? "$srl/$key/$act" : '',
-		// 				'act.document_srl.key.mid' => ($act == 'trackback') ? "$mid/$srl/$key/$act" : '',
-		// 				'act.document_srl.key.vid' => ($act == 'trackback') ? "$vid/$srl/$key/$act" : '',
-		// 				'act.document_srl.key.mid.vid' => ($act == 'trackback') ? "$vid/$mid/$srl/$key/$act" : ''
-		// 			);
-
-		// 			$query = $target_map[$target];
-		// 		}
-
-		// 		if(!$query)
-		// 		{
-		// 			$queries = array();
-		// 			foreach($get_vars as $key => $val)
-		// 			{
-		// 				if(is_array($val) && count($val) > 0)
-		// 				{
-		// 					foreach($val as $k => $v)
-		// 					{
-		// 						$queries[] = $key . '[' . $k . ']=' . urlencode($v);
-		// 					}
-		// 				}
-		// 				elseif(!is_array($val))
-		// 				{
-		// 					$queries[] = $key . '=' . urlencode($val);
-		// 				}
-		// 			}
-		// 			if(count($queries) > 0)
-		// 			{
-		// 				$query = 'index.php?' . join('&', $queries);
-		// 			}
-		// 		}
-		// 	}
-
-		// 	// If using SSL always
-		// 	$_use_ssl = $self->get('_use_ssl');
-		// 	if($_use_ssl == 'always')
-		// 	{
-		// 		$query = $self->getRequestUri(ENFORCE_SSL, $domain) . $query;
-		// 		// optional SSL use
-		// 	}
-		// 	elseif($_use_ssl == 'optional')
-		// 	{
-		// 		$ssl_mode = (($self->get('module') === 'admin') || ($get_vars['module'] === 'admin') || (isset($get_vars['act']) && $self->isExistsSSLAction($get_vars['act']))) ? ENFORCE_SSL : RELEASE_SSL;
-		// 		$query = $self->getRequestUri($ssl_mode, $domain) . $query;
-		// 		// no SSL
-		// 	}
-		// 	else
-		// 	{
-		// 		// currently on SSL but target is not based on SSL
-		// 		if($_SERVER['HTTPS'] == 'on')
-		// 		{
-		// 			$query = $self->getRequestUri(ENFORCE_SSL, $domain) . $query;
-		// 		}
-		// 		else if($domain) // if $domain is set
-		// 		{
-		// 			$query = $self->getRequestUri(FOLLOW_REQUEST_SSL, $domain) . $query;
-		// 		}
-		// 		else
-		// 		{
-		// 			$query = getScriptPath() . $query;
-		// 		}
-		// 	}
-
-		// 	if(!$encode)
-		// 	{
-		// 		return $query;
-		// 	}
-
-		// 	if(!$autoEncode)
-		// 	{
-		// 		return htmlspecialchars($query, ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE);
-		// 	}
-
-		// 	$output = array();
-		// 	$encode_queries = array();
-		// 	$parsedUrl = parse_url($query);
-		// 	parse_str($parsedUrl['query'], $output);
-		// 	foreach($output as $key => $value)
-		// 	{
-		// 		if(preg_match('/&([a-z]{2,}|#\d+);/', urldecode($value)))
-		// 		{
-		// 			$value = urlencode(htmlspecialchars_decode(urldecode($value)));
-		// 		}
-		// 		$encode_queries[] = $key . '=' . $value;
-		// 	}
-
-		// 	return htmlspecialchars($parsedUrl['path'] . '?' . join('&', $encode_queries), ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE);
-		// }
-
-		/**
-		 * Return after removing an argument on the requested URL
-		 *
-		 * @param string $ssl_mode SSL mode
-		 * @param string $domain Domain
-		 * @retrun string converted URL
-		 */
-		// public static function getRequestUri($ssl_mode = FOLLOW_REQUEST_SSL, $domain = null)
-		// {
-		// 	static $url = array();
-
-		// 	// Check HTTP Request
-		// 	if(!isset($_SERVER['SERVER_PROTOCOL']))
-		// 	{
-		// 		return;
-		// 	}
-
-		// 	if(self::get('_use_ssl') == 'always')
-		// 	{
-		// 		$ssl_mode = ENFORCE_SSL;
-		// 	}
-
-		// 	if($domain)
-		// 	{
-		// 		$domain_key = md5($domain);
-		// 	}
-		// 	else
-		// 	{
-		// 		$domain_key = 'default';
-		// 	}
-
-		// 	if(isset($url[$ssl_mode][$domain_key]))
-		// 	{
-		// 		return $url[$ssl_mode][$domain_key];
-		// 	}
-
-		// 	$current_use_ssl = ($_SERVER['HTTPS'] == 'on');
-
-		// 	switch($ssl_mode)
-		// 	{
-		// 		case FOLLOW_REQUEST_SSL: $use_ssl = $current_use_ssl;
-		// 			break;
-		// 		case ENFORCE_SSL: $use_ssl = TRUE;
-		// 			break;
-		// 		case RELEASE_SSL: $use_ssl = FALSE;
-		// 			break;
-		// 	}
-
-		// 	if($domain)
-		// 	{
-		// 		$target_url = trim($domain);
-		// 		if(substr_compare($target_url, '/', -1) !== 0)
-		// 		{
-		// 			$target_url.= '/';
-		// 		}
-		// 	}
-		// 	else
-		// 	{
-		// 		$target_url = $_SERVER['HTTP_HOST'] . getScriptPath();
-		// 	}
-
-		// 	$url_info = parse_url('http://' . $target_url);
-
-		// 	if($current_use_ssl != $use_ssl)
-		// 	{
-		// 		unset($url_info['port']);
-		// 	}
-
-		// 	if($use_ssl)
-		// 	{
-		// 		$port = self::get('_https_port');
-		// 		if($port && $port != 443)
-		// 		{
-		// 			$url_info['port'] = $port;
-		// 		}
-		// 		elseif($url_info['port'] == 443)
-		// 		{
-		// 			unset($url_info['port']);
-		// 		}
-		// 	}
-		// 	else
-		// 	{
-		// 		$port = self::get('_http_port');
-		// 		if($port && $port != 80)
-		// 		{
-		// 			$url_info['port'] = $port;
-		// 		}
-		// 		elseif($url_info['port'] == 80)
-		// 		{
-		// 			unset($url_info['port']);
-		// 		}
-		// 	}
-
-		// 	$url[$ssl_mode][$domain_key] = sprintf('%s://%s%s%s', $use_ssl ? 'https' : $url_info['scheme'], $url_info['host'], $url_info['port'] && $url_info['port'] != 80 ? ':' . $url_info['port'] : '', $url_info['path']);
-
-		// 	return $url[$ssl_mode][$domain_key];
 		// }
 
 		/**

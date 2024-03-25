@@ -229,7 +229,7 @@ var_dump('post controller init()');
 			$a_new_post['readed_count'] = 0; //isset($data['view'])?intval($data['view']):0;
 			$a_new_post['comment_count'] = 0;//isset($data['comment'])?intval($data['comment']):0;
 			$a_new_post['like'] = 0; // isset($data['like'])?intval($data['like']):0;
-			$a_new_post['unlike'] = 0; //isset($data['unlike'])?intval($data['unlike']):0;
+			$a_new_post['dislike'] = 0; //isset($data['unlike'])?intval($data['unlike']):0;
 			$a_new_post['vote_count'] = 0; //isset($data['vote'])?intval($data['vote']):0;
 			$a_new_post['category_id'] = intval($obj->category_id); //isset($data['category_id'])?intval($data['category_id']):0;
 			$a_new_post['is_notice'] = sanitize_text_field($obj->is_notice); //isset($data['notice'])?sanitize_key($data['notice']):'';
@@ -273,7 +273,7 @@ var_dump('post controller init()');
 
 			// 불필요한 데이터 필터링
 			// $data = kboard_array_filter($data, array('board_id', 'parent_uid', 'member_uid', 'member_display', 'title', 
-			// 									'content', 'date', 'update', 'view', 'comment', 'like', 'unlike', 'vote', 
+			// 									'content', 'date', 'update', 'view', 'comment', 'like', 'dislike', 'vote', 
 			// 									'category_id', 'secret', 'notice', 'allow_comment', 'search', 
 			// 									'status', 'password', 'ipaddress', 'ua'));
 // var_dump($a_new_post_param);
@@ -422,7 +422,7 @@ var_dump('post controller init()');
 			if(isset($_SESSION['readed_post'][$n_post_id])) {
 				return false;
 			}
-
+			
 			// Pass if the author's IP address is as same as visitor's.
 			if($o_post->get('ipaddress') == \X2board\Includes\get_remote_ip() ) {  // $_SERVER['REMOTE_ADDR']) {
 				$_SESSION['readed_post'][$n_post_id] = true;

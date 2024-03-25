@@ -52,7 +52,7 @@ function activate() {
 	`comment_count` int(10) unsigned NOT NULL,
 	`readed_count` int(10) unsigned NOT NULL,
 	`like` int(10) unsigned NOT NULL,
-	`unlike` int(10) unsigned NOT NULL,
+	`dislike` int(10) unsigned NOT NULL,
 	`is_notice` char(1) NOT NULL DEFAULT 'N',
 	`is_secret` char(1) NOT NULL DEFAULT 'N',
 	`allow_search` char(1) NOT NULL DEFAULT '1',

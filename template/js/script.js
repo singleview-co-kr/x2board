@@ -174,10 +174,10 @@ function kboard_document_like(button, callback){
 	return false;
 }
 
-function kboard_document_unlike(button, callback){
+function kboard_document_dislike(button, callback){
 	if(!kboard_ajax_lock){
 		kboard_ajax_lock = true;
-		jQuery.post(kboard_settings.ajax_url, {'action':'kboard_document_unlike', 'document_uid':jQuery(button).data('uid'), 'security':kboard_settings.ajax_security}, function(res){
+		jQuery.post(kboard_settings.ajax_url, {'action':'kboard_document_dislike', 'document_uid':jQuery(button).data('uid'), 'security':kboard_settings.ajax_security}, function(res){
 			kboard_ajax_lock = false;
 			if(typeof callback === 'function'){
 				callback(res);
@@ -187,7 +187,7 @@ function kboard_document_unlike(button, callback){
 					alert(res.message);
 				}
 				else{
-					jQuery('.kboard-document-unlike-count', button).text(res.data.unlike);
+					jQuery('.kboard-document-dislike-count', button).text(res.data.dislike);
 				}
 			}
 		});
@@ -222,10 +222,10 @@ function kboard_comment_like(button, callback){
 	return false;
 }
 
-function kboard_comment_unlike(button, callback){
+function kboard_comment_dislike(button, callback){
 	if(!kboard_ajax_lock){
 		kboard_ajax_lock = true;
-		jQuery.post(kboard_settings.ajax_url, {'action':'kboard_comment_unlike', 'comment_uid':jQuery(button).data('uid'), 'security':kboard_settings.ajax_security}, function(res){
+		jQuery.post(kboard_settings.ajax_url, {'action':'kboard_comment_dislike', 'comment_uid':jQuery(button).data('uid'), 'security':kboard_settings.ajax_security}, function(res){
 			kboard_ajax_lock = false;
 			if(typeof callback === 'function'){
 				callback(res);
@@ -235,7 +235,7 @@ function kboard_comment_unlike(button, callback){
 					alert(res.message);
 				}
 				else{
-					jQuery('.kboard-comment-unlike-count', button).text(res.data.unlike);
+					jQuery('.kboard-comment-dislike-count', button).text(res.data.dislike);
 				}
 			}
 		});

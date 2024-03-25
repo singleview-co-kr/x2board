@@ -51,18 +51,19 @@ var_dump('board view init');
 
 			$this->set_skin_path($template_path);
 
-			// \X2board\Includes\Classes\Context::set('skin_path', X2B_URL.'includes/modules/board/skins/'.$this->s_skin);
+			\X2board\Includes\Classes\Context::set('skin_path', X2B_URL.'includes/modules/board/skins/'.$this->s_skin);
 
 			$s_cmd = \X2board\Includes\Classes\Context::get('cmd');
 			switch( $s_cmd ) {
 				case X2B_CMD_VIEW_LIST:
-				case X2B_CMD_VIEW_WRITE_POST:
 				case X2B_CMD_VIEW_POST:
+					$this->_disp_content();
+				case X2B_CMD_VIEW_WRITE_POST:
 					$s_cmd = '_'.$s_cmd;
 					$this->$s_cmd();
 					break;
 				default:
-					$this->_view_list();
+					$this->_disp_content();
 					break;
 			}
 
@@ -191,8 +192,7 @@ var_dump('board view init');
 		/**
 		 * @brief display board contents
 		 **/
-		private function _view_list()  // dispBoardContent
-		{
+		private function _disp_content() { //_view_list()  // dispBoardContent
 var_dump(X2B_CMD_VIEW_LIST);
 			/**
 			 * check the access grant (all the grant has been set by the module object)
@@ -240,9 +240,6 @@ var_dump(X2B_CMD_VIEW_LIST);
 			// 	Context::set('status_list', $statusNameList);
 			// }
 
-			// display the board content
-			// $this->dispBoardContentView();
-
 			// list config, columnList setting
 			// $oBoardModel = getModel('board');
 			// $this->listConfig = $oBoardModel->getListConfig($this->module_info->module_srl);
@@ -271,11 +268,13 @@ var_dump(X2B_CMD_VIEW_LIST);
 				return $this->_disp_message($output->getMessage());
 			}
 
+			// display the requested post
+			$this->_view_post();  // $this->dispBoardContentView();
+
 			/**
 			 * add javascript filters
 			 **/
 			// Context::addJsFilter($this->module_path.'tpl/filter', 'search.xml');
-			\X2board\Includes\Classes\Context::set('url_write_post', get_the_permalink().'?'.X2B_CMD_VIEW_WRITE_POST);
 			
 			// setup the skin file
 			echo $this->render_skin_file('list');
@@ -289,7 +288,7 @@ var_dump(X2B_CMD_VIEW_LIST);
 var_dump(X2B_CMD_VIEW_WRITE_POST);
 			// check grant
 			if(!$this->grant->write_post) {
-				return $this->_disp_message('msg_not_permitted');
+				return $this->_disp_message( __('msg_not_permitted', 'x2board') );
 			}
 
 			$o_post_model = \X2board\Includes\getModel('post');
@@ -344,7 +343,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			$o_post->add('board_id', \X2board\Includes\Classes\Context::get('board_id') ); // $this->board_id);
 
 			if($o_post->is_exists() && $this->module_info->protect_content=="Y" && $o_post->get('comment_count')>0 && $this->grant->manager==false) {
-				return new BaseObject(-1, 'msg_protect_content');
+				return new BaseObject(-1, __('msg_protect_content', 'x2board') );
 			}
 
 			// if the post is not granted, then back to the password input form
@@ -382,7 +381,6 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 
 			// get Document status config value
 			// \X2board\Includes\Classes\Context::set('document_srl',$document_srl);
-			\X2board\Includes\Classes\Context::set('o_post', $o_post);
 
 			// apply xml_js_filter on header
 			// $oDocumentController = getController('document');
@@ -428,6 +426,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 		 **/
 		// function dispBoardContentView(){
 		private function _view_post() {
+var_dump(X2B_CMD_VIEW_POST);
 			// get the variable value
 			$n_post_id = \X2board\Includes\Classes\Context::get('post_id');
 			$n_page = \X2board\Includes\Classes\Context::get('page');
@@ -447,8 +446,8 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 // var_dump($o_post->get('board_id'));			
 // var_dump(get_the_ID());			
 					// if the board is not consistent with wp page ID
-					if(intval($o_post->get('board_id')) !== get_the_ID() )	{
-						return $this->_disp_message('msg_invalid_request'); // return $this->stop('msg_invalid_request');
+					if(intval($o_post->get('board_id')) !== get_the_ID() )	{  // board_id is WP page ID
+						return $this->_disp_message( __('msg_invalid_request', 'x2board') ); // return $this->stop('msg_invalid_request');
 					}
 
 					// check the manage grant
@@ -477,7 +476,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 				}
 				else { // if the post is not existed, then alert a warning message					
 					\X2board\Includes\Classes\Context::set( 'post_id', '', true );
-					$this->alertMessage('msg_not_founded');
+					$this->alertMessage( __('msg_not_founded', 'x2board') );
 				}
 			}
 			else {  // if the post is not existed, get an empty post
@@ -499,6 +498,13 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 						$o_post->update_readed_count();
 					}
 
+					$a_post_list = \X2board\Includes\Classes\Context::get('post_list');
+					foreach( $a_post_list as $no => $o_post ) {
+						if( $n_post_id == $o_post->post_id ) {
+							\X2board\Includes\Classes\Context::set('cur_post_pos_in_list', $no);
+							break;
+						}
+					} 
 					// disappear the post if it is secret
 					if($o_post->is_secret() && !$oDo_postocument->is_granted()) {
 						$o_post->add( 'content', __('thisissecret', 'x2board') );
@@ -509,7 +515,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 
 			// setup the document oject on context
 			// $o_post->add('module_srl', $this->module_srl);
-			\X2board\Includes\Classes\Context::set('o_post', $o_post);
+			\X2board\Includes\Classes\Context::set('post', $o_post);
 
 			/**
 			 * add javascript filters
@@ -517,7 +523,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			// Context::addJsFilter($this->module_path.'tpl/filter', 'insert_comment.xml');
 			// return new BaseObject();
 			// setup the skin file
-			echo $this->render_skin_file('document');
+			// echo $this->render_skin_file('document');
 		}
 
 		/**
@@ -705,7 +711,8 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 		}
 
 		/**
-		 * editor 스킨의 hidden field 출력
+		 * /includes/no_namespace.helper.php::x2b_write_post_hidden_fields()를 통해서
+		 * editor스킨의 hidden field 출력
 		 */
 		public function write_post_hidden_fields() { 
 			wp_nonce_field('x2b_'.X2B_CMD_PROC_WRITE_POST, 'x2b_'.X2B_CMD_PROC_WRITE_POST.'_nonce');
@@ -742,6 +749,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 		}
 
 		/**
+		 * /includes/no_namespace.helper.php::x2b_write_post_prepare_single_user_field()를 통해서
 		 * editor 스킨의 사용자 입력 field 출력
 		 */
 		public function write_post_prepare_single_user_field() { 
@@ -752,13 +760,12 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 		}
 
 		/**
+		 * /includes/no_namespace.helper.php::x2b_write_post_single_user_field()를 통해서
 		 * editor 스킨의 사용자 입력 field 출력
 		 */
 		// public function getTemplate($field, $content='', $boardBuilder=''){
 		public function write_post_single_user_field($a_field_info) { 
 			$field = $a_field_info;
-	
-// var_Dump($field);
 			$template = '';
 			$permission = (isset($field['permission']) && $field['permission']) ? $field['permission'] : '';
 			$roles = (isset($field['roles']) && $field['roles']) ? $field['roles'] : '';
