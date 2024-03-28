@@ -247,7 +247,7 @@ function filter_the_content( $content ) {
 	if(isset($post->post_content) && is_page($post->ID) ){
 		if( $post->post_content === X2B_PAGE_IDENTIFIER ) {
 			_launch_x2b('view');
-			//return $content . kboard_builder(array('id'=>$board_id));
+			$content = str_replace(X2B_PAGE_IDENTIFIER,'', $content); //return $content . board_builder(array('id'=>$board_id));
 		} 
 	}
 	return $content;
