@@ -209,31 +209,31 @@ if (!class_exists('\\X2board\\Includes\\Classes\\IpFilter')) {
 			// $this->cache_file = _XE_PATH_ . $this->cache_file;
 		}
 
-		public function getNextSequence()
-		{
-			global $wpdb;
-			$this->query = "INSERT INTO `{$wpdb->prefix}x2b_sequence` (seq) values ('0')";
-			if ($wpdb->query($this->query) === FALSE) {
-				wp_die($wpdb->last_error);
-			} 		
-			$sequence = $wpdb->insert_id;
-			if($sequence % 10000 == 0)
-			{
-				$this->query = "delete from  `{$wpdb->prefix}x2b_sequence` where seq < ".$sequence;
-				if ($wpdb->query($this->query) === FALSE) {
-					wp_die($wpdb->last_error);
-				} 
-			}
-			// $query = sprintf("insert into `%ssequence` (seq) values ('0')", $this->prefix);
-			// $this->_query($query);
-			// $sequence = $this->db_insert_id();
-			// if($sequence % 10000 == 0)
-			// {
-			// 	$query = sprintf("delete from  `%ssequence` where seq < %d", $this->prefix, $sequence);
-			// 	$this->_query($query);
-			// }
-			return $sequence;
-		}
+		// public function getNextSequence()
+		// {
+		// 	global $wpdb;
+		// 	$this->query = "INSERT INTO `{$wpdb->prefix}x2b_sequence` (seq) values ('0')";
+		// 	if ($wpdb->query($this->query) === FALSE) {
+		// 		wp_die($wpdb->last_error);
+		// 	} 		
+		// 	$sequence = $wpdb->insert_id;
+		// 	if($sequence % 10000 == 0)
+		// 	{
+		// 		$this->query = "delete from  `{$wpdb->prefix}x2b_sequence` where seq < ".$sequence;
+		// 		if ($wpdb->query($this->query) === FALSE) {
+		// 			wp_die($wpdb->last_error);
+		// 		} 
+		// 	}
+		// 	// $query = sprintf("insert into `%ssequence` (seq) values ('0')", $this->prefix);
+		// 	// $this->_query($query);
+		// 	// $sequence = $this->db_insert_id();
+		// 	// if($sequence % 10000 == 0)
+		// 	// {
+		// 	// 	$query = sprintf("delete from  `%ssequence` where seq < %d", $this->prefix, $sequence);
+		// 	// 	$this->_query($query);
+		// 	// }
+		// 	return $sequence;
+		// }
 
 		/**
 		 * Execute Query that result of the query xml file
@@ -256,7 +256,11 @@ if (!class_exists('\\X2board\\Includes\\Classes\\IpFilter')) {
 			// 	return;
 			// }
 
-			$o_query->s_query_type = strtoupper($o_query->s_query_type);
+			// this class handles pagination select query only
+			$o_query->s_query_type = 'SELECT';
+			if( isset( $o_query->s_query_type ) ){
+				$o_query->s_query_type = strtoupper($o_query->s_query_type);
+			}
 
 			$this->_actDBClassStart();
 
@@ -346,7 +350,8 @@ if (!class_exists('\\X2board\\Includes\\Classes\\IpFilter')) {
 					// case 'DELETE' :
 					// 	$output = $this->_executeDeleteAct($o_query);
 					// 	break;
-					case 'SELECT' :
+					case 'SELECT' :  // this class handles pagination select query only
+					default:
 						// $arg_columns = is_array($arg_columns) ? $arg_columns : array();
 						// $output->setColumnList($arg_columns);
 						// $connection = $this->_getConnection($type);
@@ -403,7 +408,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\IpFilter')) {
 			}
 			else {  // list query without pagination
 				global $wpdb;
-				$query = "SELECT {$queryObject->s_columns} FROM `{$wpdb->prefix}{$queryObject->s_table_name}` {$queryObject->s_where} {$queryObject->s_orderby}"; // {$s_limit}"; 
+				$query = "SELECT {$queryObject->s_columns} FROM {$queryObject->s_tables} {$queryObject->s_where} {$queryObject->s_orderby}"; // {$s_limit}"; 
 				//$query = $this->getSelectSql($queryObject, $with_values);
 				// if(is_a($query, 'BaseObject'))
 				// {
@@ -469,16 +474,17 @@ if (!class_exists('\\X2board\\Includes\\Classes\\IpFilter')) {
 			// $count_output = $this->_fetch($result_count);
 			// $total_count = (int) (isset($count_output->count) ? $count_output->count : NULL);
 			global $wpdb;
-			$this->query = "SELECT COUNT(*) as `post_cnt` FROM `{$wpdb->prefix}{$queryObject->s_table_name}` {$queryObject->s_where}";
-			$o_post_cnt = $wpdb->get_row($this->query);
-			if ($o_post_cnt === null) {
+			$this->query = "SELECT COUNT(*) as `rec_cnt` FROM {$queryObject->s_tables} {$queryObject->s_where}";
+			$o_rec_cnt = $wpdb->get_row($this->query);
+			if ($o_rec_cnt === null) {
 					return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error);
 			} 
 			else {
 				$wpdb->flush();
 			}
-			$n_post_cnt = intval($o_post_cnt->post_cnt);
-			$total_count = intval(isset($o_post_cnt->post_cnt) ? $o_post_cnt->post_cnt : NULL);
+			$n_rec_cnt = intval($o_rec_cnt->rec_cnt);
+			$total_count = intval(isset($o_rec_cnt->rec_cnt) ? $o_rec_cnt->rec_cnt : NULL);
+			unset($o_rec_cnt);
 
 			$list_count = $queryObject->list_count; // $limit->list_count->getValue();
 			if(!$list_count) {
@@ -518,7 +524,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\IpFilter')) {
 			// $query .= (__DEBUG_QUERY__ & 1 && $queryObject->query_id) ? sprintf(' ' . $this->comment_syntax, $this->query_id) : '';
 			// $result = $this->_query($query, $connection);
 		
-			$this->query = "SELECT {$queryObject->s_columns} FROM `{$wpdb->prefix}{$queryObject->s_table_name}` {$queryObject->s_where} {$queryObject->s_orderby} {$s_limit}";
+			$this->query = "SELECT {$queryObject->s_columns} FROM {$queryObject->s_tables} {$queryObject->s_where} {$queryObject->s_orderby} {$s_limit}";
 			if ($wpdb->query($this->query) === FALSE) {
 				return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error);
 			} 
@@ -529,13 +535,13 @@ if (!class_exists('\\X2board\\Includes\\Classes\\IpFilter')) {
 
 			$virtual_no = $total_count - ($page - 1) * $list_count;
 			$data = $this->_fetch($a_result, $virtual_no);
-			$buff = new BaseObject();
-			$buff->total_count = $total_count;
-			$buff->total_page = $total_page;
-			$buff->page = $page;
-			$buff->data = $data;
-			$buff->page_navigation = new PageHandler($total_count, $total_page, $page, $page_count);
-			return $buff;
+			$o_buff = new BaseObject();
+			$o_buff->total_count = $total_count;
+			$o_buff->total_page = $total_page;
+			$o_buff->page = $page;
+			$o_buff->data = $data;
+			$o_buff->page_navigation = new PageHandler($total_count, $total_page, $page, $page_count);
+			return $o_buff;
 		}
 
 		/**

@@ -13,17 +13,16 @@ function x2b_include_skin($s_skin_filename) {
 	$o_board_view = \X2board\Includes\getView('board');
 	echo $o_board_view->render_skin_file($s_skin_filename);
 	unset($o_board_view);
-	// $this->render_skin_file('document');
 }
 
-function x2b_get_url() {
+function x2b_get_url() {  // this function is same with func.inc.php::get_url()
     $n_num_args = func_num_args();
 	$a_args_list = func_get_args();
 	if($n_num_args) {
 		$s_url = \X2board\Includes\Classes\Context::get_url($n_num_args, $a_args_list);
 	}	
 	else{ 
-		$s_url = \X2board\Includes\Classes\Context::getRequestUri();
+		$s_url = \X2board\Includes\Classes\Context::get_request_uri();
 	}
 	return preg_replace('@\berror_return_url=[^&]*|\w+=(?:&|$)@', '', $s_url);
 }

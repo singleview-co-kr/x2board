@@ -81,17 +81,66 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 		public function get_comment_count() {
 			return $this->get('comment_count');
 		}
-		
-		// public function get_pretty_url() {
-		// 	// 검색 URL 반영해야 함
-		// 	// $s_url = \X2board\Includes\get_url('post_id', $this->post_id); //, 'listStyle',$listStyle,'cpage','')
-		// 	$s_url = get_the_permalink().'?'.X2B_CMD_VIEW_POST.'/'.$this->post_id; // for pretty post uri;
-		// 	return apply_filters('x2board_url_post_id', $s_url, $this->post_id);
-		// }
 
-		// function getPermanentUrl() {
-		// 	return getFullUrl('','mid', $this->getDocumentMid('document_srl'), 'document_srl', $this->get('document_srl'));
-		// }
+		// function getComments() {
+		public function get_comments() {
+			if(!$this->get_comment_count()) {
+				return;
+			}
+			if( !$this->is_granted() && $this->is_secret() ) {
+				return;
+			}
+			// cpage is a number of comment pages
+			/////////////////////////////////////////////////////
+			// caution URI key name is [cpage], internally cloned into [%%post_id%%_cpage]
+			// [%%post_id%%_cpage] should be moved to Context.class.php:_convert_pretty_command_uri()
+			/////////////////////////////////////////////////////
+			$cpageStr = sprintf('%d_cpage', $this->_n_wp_post_id);  // 17_cpage
+			$cpage = \X2board\Includes\Classes\Context::get($cpageStr);
+
+			if(!$cpage) {
+				$cpage = \X2board\Includes\Classes\Context::get('cpage');
+			}
+
+			// Get a list of comments
+			$o_comment_model = \X2board\Includes\getModel('comment');
+			$output = $o_comment_model->get_comment_list($this->_n_wp_post_id, $cpage); //, $is_admin);
+			if(!$output->toBool() || !count($output->data)) {
+				return;
+			}
+			// Create commentItem object from a comment list
+			// If admin priviledge is granted on parent posts, you can read its child posts.
+			$accessible = array();
+			$comment_list = array();
+			foreach($output->data as $key => $val) {
+				$oCommentItem = new \X2board\Includes\Modules\Comment\commentItem();
+				$oCommentItem->set_attr($val);
+				// If permission is granted to the post, you can access it temporarily
+				if($oCommentItem->is_granted()) {
+					$accessible[$val->comment_id] = true;
+				}
+				// If the comment is set to private and it belongs child post, it is allowable to read the comment for who has a admin privilege on its parent post
+				if($val->parent_comment_id>0 && $val->is_secret == 'Y' && !$oCommentItem->isAccessible() && $accessible[$val->parent_comment_id]===true) {
+					$oCommentItem->setAccessible();
+				}
+				$comment_list[$val->comment_id] = $oCommentItem;
+			}
+			// Variable setting to be displayed on the skin
+			/////////////////////////////////////////////////////
+			// caution URI key name is [cpage], internally cloned into [%%post_id%%_cpage]
+			// [%%post_id%%_cpage] should be moved to Context.class.php:_convert_pretty_command_uri()
+			/////////////////////////////////////////////////////
+			\X2board\Includes\Classes\Context::set($cpageStr, $output->page_navigation->n_cur_page);
+			\X2board\Includes\Classes\Context::set('cpage', $output->page_navigation->n_cur_page);
+var_dump($output->total_page);
+			if($output->total_page > 1) {
+				$this->comment_page_navigation = $output->page_navigation;
+			}
+
+			// Call trigger (after)
+			// $output = ModuleHandler::triggerCall('document.getComments', 'after', $comment_list);
+			return $comment_list;
+		}
 
 		public function is_new() {
 // var_dump($this);
@@ -149,7 +198,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			global $wpdb;
 			$o_post = $wpdb->get_row("SELECT * FROM `{$wpdb->prefix}x2b_post` WHERE `post_id`={$this->_n_wp_post_id}");
 			// $output = executeQuery('document.getDocument', $args, $columnList);
-var_dump($o_post);
+// var_dump($o_post);
 			// if($post_item === false) {
 				$post_item = $o_post;  //$output->data;
 
@@ -406,6 +455,37 @@ var_dump($o_post);
 		public function is_allow_reply() {
 			return false;
 		}
+
+		// function isLocked()
+		public function is_locked() {
+			if(!$this->is_exists()) return false;
+			// return $this->get('comment_status') == 'ALLOW' ? false : true;
+			return $this->get('allow_comment') == 'Y' ? false : true;
+		}
+
+		// function allowComment()
+		public function allow_comment()	{
+			// init write, document is not exists. so allow comment status is true ??? 뭔소리?
+			if(!$this->is_exists()) return true;
+			if($this->is_exists()) return true;
+			// return $this->get('comment_status') == 'ALLOW' ? true : false;
+			return $this->get('allow_comment') == 'Y' ? false : true;
+		}
+
+		/**
+		 * Check whether to have a permission to write comment
+		 * Authority to write a comment and to write a document is separated
+		 * @return bool
+		 */
+		function is_enable_comment()
+		{
+			// Return false if not authorized, if a secret document, if the document is set not to allow any comment
+			if (!$this->allow_comment()) return false;
+			if(!$this->is_granted() && $this->is_secret()) return false;
+
+			return true;
+		}
+
 		
 
 
@@ -423,20 +503,7 @@ var_dump($o_post);
 ///////////////////
 		
 		
-		function allowComment()
-		{
-			// init write, document is not exists. so allow comment status is true
-			if(!$this->isExists()) return true;
-
-			return $this->get('comment_status') == 'ALLOW' ? true : false;
-		}
-
-		function isLocked()
-		{
-			if(!$this->isExists()) return false;
-
-			return $this->get('comment_status') == 'ALLOW' ? false : true;
-		}
+		
 
 		function isEditable()
 		{
@@ -469,33 +536,6 @@ var_dump($o_post);
 		function isCarted()
 		{
 			return $_SESSION['document_management'][$this->_n_wp_post_id];
-		}
-
-		/**
-		 * Send notify message to document owner
-		 * @param string $type
-		 * @param string $content
-		 * @return void
-		 */
-		function notify($type, $content)
-		{
-			if(!$this->_n_wp_post_id) return;
-			// return if it is not useNotify
-			if(!$this->useNotify()) return;
-			// Pass if an author is not a logged-in user
-			if(!$this->get('member_srl')) return;
-			// Return if the currently logged-in user is an author
-			$logged_info = Context::get('logged_info');
-			if($logged_info->member_srl == $this->get('member_srl')) return;
-			// List variables
-			if($type) $title = "[".$type."] ";
-			$title .= cut_str(strip_tags($content), 10, '...');
-			$content = sprintf('%s<br /><br />from : <a href="%s" target="_blank">%s</a>',$content, getFullUrl('','document_srl',$this->_n_wp_post_id), getFullUrl('','document_srl',$this->_n_wp_post_id));
-			$receiver_srl = $this->get('member_srl');
-			$sender_member_srl = $logged_info->member_srl;
-			// Send a message
-			$oCommunicationController = getController('communication');
-			$oCommunicationController->sendMessage($sender_member_srl, $receiver_srl, $title, $content, false);
 		}
 
 		function getUserID()
@@ -710,51 +750,6 @@ var_dump($o_post);
 			return $val;
 		}
 
-		function getComments()
-		{
-			if(!$this->getCommentCount()) return;
-			if(!$this->isGranted() && $this->isSecret()) return;
-			// cpage is a number of comment pages
-			$cpageStr = sprintf('%d_cpage', $this->_n_wp_post_id);
-			$cpage = Context::get($cpageStr);
-
-			if(!$cpage)
-			{
-				$cpage = Context::get('cpage');
-			}
-
-			// Get a list of comments
-			$oCommentModel = getModel('comment');
-			$output = $oCommentModel->getCommentList($this->_n_wp_post_id, $cpage, $is_admin);
-			if(!$output->toBool() || !count($output->data)) return;
-			// Create commentItem object from a comment list
-			// If admin priviledge is granted on parent posts, you can read its child posts.
-			$accessible = array();
-			$comment_list = array();
-			foreach($output->data as $key => $val)
-			{
-				$oCommentItem = new commentItem();
-				$oCommentItem->setAttribute($val);
-				// If permission is granted to the post, you can access it temporarily
-				if($oCommentItem->isGranted()) $accessible[$val->comment_srl] = true;
-				// If the comment is set to private and it belongs child post, it is allowable to read the comment for who has a admin privilege on its parent post
-				if($val->parent_srl>0 && $val->is_secret == 'Y' && !$oCommentItem->isAccessible() && $accessible[$val->parent_srl]===true)
-				{
-					$oCommentItem->setAccessible();
-				}
-				$comment_list[$val->comment_srl] = $oCommentItem;
-			}
-			// Variable setting to be displayed on the skin
-			Context::set($cpageStr, $output->page_navigation->cur_page);
-			Context::set('cpage', $output->page_navigation->cur_page);
-			if($output->total_page>1) $this->comment_page_navigation = $output->page_navigation;
-
-			// Call trigger (after)
-			$output = ModuleHandler::triggerCall('document.getComments', 'after', $comment_list);
-
-			return $comment_list;
-		}
-
 		function thumbnailExists($width = 80, $height = 0, $type = '')
 		{
 			if(!$this->_n_wp_post_id) return false;
@@ -962,20 +957,6 @@ var_dump($o_post);
 		}
 
 		/**
-		 * Check whether to have a permission to write comment
-		 * Authority to write a comment and to write a document is separated
-		 * @return bool
-		 */
-		function isEnableComment()
-		{
-			// Return false if not authorized, if a secret document, if the document is set not to allow any comment
-			if (!$this->allowComment()) return false;
-			if(!$this->isGranted() && $this->isSecret()) return false;
-
-			return true;
-		}
-
-		/**
 		 * Return comment editor's html
 		 * @return string
 		 */
@@ -1010,6 +991,34 @@ var_dump($o_post);
 		{
 			return preg_replace('/src=(["\']?)files/i','src=$1'.Context::getRequestUri().'files', $matches[0]);
 		}
+
+		/**
+		 * Send notify message to document owner
+		 * insert_comment()가 실행되면 부모 post 작성자에게 통지하는 기능
+		 * @param string $type
+		 * @param string $content
+		 * @return void
+		 */
+		// function notify($type, $content)
+		// {
+		// 	if(!$this->_n_wp_post_id) return;
+		// 	// return if it is not useNotify
+		// 	if(!$this->useNotify()) return;
+		// 	// Pass if an author is not a logged-in user
+		// 	if(!$this->get('member_srl')) return;
+		// 	// Return if the currently logged-in user is an author
+		// 	$logged_info = Context::get('logged_info');
+		// 	if($logged_info->member_srl == $this->get('member_srl')) return;
+		// 	// List variables
+		// 	if($type) $title = "[".$type."] ";
+		// 	$title .= cut_str(strip_tags($content), 10, '...');
+		// 	$content = sprintf('%s<br /><br />from : <a href="%s" target="_blank">%s</a>',$content, getFullUrl('','document_srl',$this->_n_wp_post_id), getFullUrl('','document_srl',$this->_n_wp_post_id));
+		// 	$receiver_srl = $this->get('member_srl');
+		// 	$sender_member_srl = $logged_info->member_srl;
+		// 	// Send a message
+		// 	$oCommunicationController = getController('communication');
+		// 	$oCommunicationController->sendMessage($sender_member_srl, $receiver_srl, $title, $content, false);
+		// }
 
 		// function _addAllowScriptAccess($m)
 		// {

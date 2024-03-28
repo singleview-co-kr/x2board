@@ -36,12 +36,12 @@ function plugin_loaded(){
 }
 
 function init_proc_cmd() {
-	// $s_cmd = \X2board\Includes\Classes\Context::get('cmd');
 	$s_cmd = isset($_REQUEST['cmd']) ? $_REQUEST['cmd'] : '';
 
 	switch($s_cmd){
-		case X2B_CMD_PROC_WRITE_POST: 
-		case X2B_CMD_PROC_MODIFY_POST: 
+		case X2B_CMD_PROC_WRITE_POST:
+		case X2B_CMD_PROC_MODIFY_POST:
+		case X2B_CMD_PROC_WRITE_COMMENT:
 		case 'x2board_file_download': 	
 			_launch_x2b('proc');
 			break;
@@ -214,6 +214,11 @@ function _launch_x2b($s_cmd_type='view') {
 	require_once X2B_PATH . 'includes/modules/post/post.controller.php';
 	require_once X2B_PATH . 'includes/modules/member/member.class.php';
 	require_once X2B_PATH . 'includes/modules/member/member.model.php';
+	require_once X2B_PATH . 'includes/modules/comment/comment.class.php';
+	// require_once X2B_PATH . 'includes/modules/comment/comment.item.php';
+	require_once X2B_PATH . 'includes/modules/comment/comment.model.php';
+	require_once X2B_PATH . 'includes/modules/comment/comment.view.php';
+	require_once X2B_PATH . 'includes/modules/comment/comment.controller.php';
 
 	$o_context = \X2board\Includes\Classes\Context::getInstance();
 	$o_context->init($s_cmd_type);
@@ -398,7 +403,7 @@ function getClass($module_name) {
  * @return object Query result data
  */
 function executeQueryArray($o_query, $arg_columns = NULL) {  // $query_id, $args = NULL, $arg_columns = NULL)
-
+	// getPaginationSelect로 명칭 변경 예정
 	$o_db = \X2board\Includes\Classes\DB::getInstance();
 	$output = $o_db->executeQuery($o_query, $arg_columns);  // $args,
 	// if(!is_array($output->data) && count((array)$output->data) > 0)
@@ -415,8 +420,23 @@ function executeQueryArray($o_query, $arg_columns = NULL) {  // $query_id, $args
  * @return int
  */
 function getNextSequence() {
-	$o_db = \X2board\Includes\Classes\DB::getInstance();
-	$seq = $o_db->getNextSequence();
+	// $o_db = \X2board\Includes\Classes\DB::getInstance();
+	// $seq = $o_db->getNextSequence();
+	// setUserSequence($seq);
+	// return $seq;
+	global $wpdb;
+	$s_query = "INSERT INTO `{$wpdb->prefix}x2b_sequence` (seq) values ('0')";
+	if ($wpdb->query($s_query) === FALSE) {
+		wp_die($wpdb->last_error);
+	} 		
+	$seq = $wpdb->insert_id;
+	if($seq % 10000 == 0)
+	{
+		$s_query = "delete from  `{$wpdb->prefix}x2b_sequence` where seq < ".$seq;
+		if ($wpdb->query($s_query) === FALSE) {
+			wp_die($wpdb->last_error);
+		} 
+	}
 	setUserSequence($seq);
 	return $seq;
 }
@@ -437,6 +457,22 @@ function setUserSequence($seq) {
 	}
 	$arr_seq[] = $seq;
 	$_SESSION['seq'] = $arr_seq;
+}
+
+/**
+ * Check Sequence number grant
+ *
+ * @param int $seq sequence number
+ * @return boolean
+ */
+function checkUserSequence($seq) {
+	if(!isset($_SESSION['seq'])) {
+		return false;
+	}
+	if(!in_array($seq, $_SESSION['seq'])) {
+		return false;
+	}
+	return true;
 }
 
 /**
@@ -750,14 +786,14 @@ function is_crawler($agent = NULL) {
  * @return string
  */
 // function getUrl() {
-// function get_url() {
+// function get_url() {  // this function is same with no_namespace.helper.php::x2b_get_url
 // 	$n_num_args = func_num_args();
 // 	$a_args_list = func_get_args();
 // 	if($n_num_args) {
 // 		$s_url = \X2board\Includes\Classes\Context::get_url($n_num_args, $a_args_list);
 // 	}	
 // 	else{ 
-// 		$s_url = \X2board\Includes\Classes\Context::getRequestUri();
+// 		$s_url = \X2board\Includes\Classes\Context::get_request_uri();
 // 	}
 // 	return preg_replace('@\berror_return_url=[^&]*|\w+=(?:&|$)@', '', $s_url);
 // }
@@ -913,25 +949,6 @@ function stripEmbedTagForAdmin(&$s_content, $writer_member_id) {
 // 	return $oDB->executeQuery($query_id, $args, $arg_columns);
 // }
 
-/**
- * Check Sequence number grant
- *
- * @param int $seq sequence number
- * @return boolean
- */
-// function checkUserSequence($seq)
-// {
-// 	if(!isset($_SESSION['seq']))
-// 	{
-// 		return false;
-// 	}
-// 	if(!in_array($seq, $_SESSION['seq']))
-// 	{
-// 		return false;
-// 	}
-
-// 	return true;
-// }
 /**
  * Get a not encoded(html entity) url
  *

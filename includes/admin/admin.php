@@ -40,7 +40,6 @@ function activate() {
 	`board_id` bigint(20) unsigned NOT NULL,
 	`parent_post_id` bigint(20) unsigned NOT NULL DEFAULT 0,
 	`category_id` bigint(20) unsigned DEFAULT 0,
-	`ua` char(1) NOT NULL,
 	`post_author` bigint(20) unsigned NOT NULL DEFAULT 0,
 	`nick_name` varchar(127) NOT NULL,
 	`title` varchar(127) NOT NULL,
@@ -64,6 +63,7 @@ function activate() {
 	`list_order` bigint(20) NOT NULL,
 	`update_order` bigint(20) NOT NULL,
 	`tags` varchar(256),
+	`ua` char(1) NOT NULL,
 	`regdate` datetime NOT NULL,
 	`last_update` datetime NOT NULL,
 	PRIMARY KEY (`post_id`),
@@ -80,6 +80,51 @@ function activate() {
 	KEY `idx_regdate` (`regdate`),
 	KEY `idx_last_update` (`last_update`)
 	) {$charset_collate};");
+
+	dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_comments` (
+	`comment_id` bigint(11) NOT NULL,
+	`board_id` bigint(11) NOT NULL DEFAULT 0,
+	`parent_post_id` bigint(11) NOT NULL DEFAULT 0,
+	`parent_comment_id` bigint(11) NOT NULL DEFAULT 0,
+	`is_secret` char(1) NOT NULL DEFAULT 'N',
+	`content` longtext NOT NULL,
+	`password` varchar(60) DEFAULT NULL,
+	`nick_name` varchar(80) NOT NULL,
+	`comment_author` bigint(11) NOT NULL,
+	`email_address` varchar(250) NOT NULL,
+	`uploaded_count` bigint(11) NOT NULL DEFAULT 0,
+	`regdate` datetime DEFAULT NULL,
+	`last_update` datetime DEFAULT NULL,
+	`ipaddress` varchar(128) NOT NULL,
+	`list_order` bigint(11) NOT NULL,
+	`ua` char(1) NOT NULL,
+	`status` char(1) NOT NULL DEFAULT 1,  -- 없어도 되나?
+	PRIMARY KEY (`comment_id`),
+	UNIQUE KEY `idx_board_list_order` (`board_id`,`list_order`),
+	KEY `idx_board_id` (`board_id`),
+	KEY `idx_parent_post_id` (`parent_post_id`),
+	KEY `idx_parent_comment_id` (`parent_comment_id`),
+	KEY `idx_comment_author` (`comment_author`),
+	KEY `idx_uploaded_count` (`uploaded_count`),
+	KEY `idx_regdate` (`regdate`),
+	KEY `idx_last_update` (`last_update`),
+	KEY `idx_ipaddress` (`ipaddress`),
+	KEY `idx_list_order` (`list_order`),
+	KEY `idx_status` (`status`)
+	) {$charset_collate};");
+
+	dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_comments_list` (
+	`comment_id` bigint(11) NOT NULL,
+	`parent_post_id` bigint(11) NOT NULL DEFAULT 0,
+	`head` bigint(11) NOT NULL DEFAULT 0,
+	`arrange` bigint(11) NOT NULL DEFAULT 0,
+	`board_id` bigint(11) NOT NULL DEFAULT 0,
+	`regdate` datetime DEFAULT NULL,
+	`depth` bigint(11) NOT NULL DEFAULT 0,
+	PRIMARY KEY (`comment_id`),
+	KEY `idx_list` (`parent_post_id`,`head`,`arrange`),
+	KEY `idx_date` (`board_id`,`regdate`)
+	) {$charset_collate};");		
 
 	dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_category` (
 	`category_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,

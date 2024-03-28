@@ -45,13 +45,13 @@ var_dump('post controller init()');
 		 */
 		// function insertDocument($obj, $manual_inserted = false, $isRestore = false, $isLatest = true)
 		public function insert_post($obj, $manual_inserted = false, $isRestore = false, $isLatest = true) {
-			if($manual_inserted) {  // check WP nonce if a guest inserts a new post
+			if(!$manual_inserted) {  // check WP nonce if a guest inserts a new post
 				$wp_verify_nonce = \X2board\Includes\Classes\Context::get('x2b_'.X2B_CMD_PROC_WRITE_POST.'_nonce');
 // var_dump($wp_verify_nonce);
 				if( is_null( $wp_verify_nonce ) ){
 					return new \X2board\Includes\Classes\BaseObject(-1, 'msg_invalid_request1');
 				}
-				if( !wp_verify_nonce($wp_verify_nonce, 'x2b_proc_write_post') ){
+				if( !wp_verify_nonce($wp_verify_nonce, 'x2b_'.X2B_CMD_PROC_WRITE_POST) ){
 					return new \X2board\Includes\Classes\BaseObject(-1, 'msg_invalid_request2');
 				}
 			}
@@ -283,12 +283,12 @@ var_dump('post controller init()');
 			$a_insert_key = array();
 			$a_insert_val = array();
 			foreach($a_new_post as $key=>$value){
-				$this->{$key} = $value;
+				// $this->{$key} = $value;
 				$value = esc_sql($value);
 				$a_insert_key[] = "`$key`";
 				$a_insert_val[] = "'$value'";
 			}
-			unset($a_new_post_param);
+			unset($a_new_post);
 			// $board = $this->getBoard();
 			// $board_total = $board->getTotal();
 			// $board_list_total = $board->getListTotal();
@@ -1574,27 +1574,54 @@ var_dump('post controller init()');
 		 * @param bool $comment_inserted
 		 * @return object
 		 */
-		function updateCommentCount($document_srl, $comment_count, $last_updater, $comment_inserted = false)
-		{
-			$args = new stdClass();
-			$args->document_srl = $document_srl;
-			$args->comment_count = $comment_count;
-
+		// function updateCommentCount($document_srl, $comment_count, $last_updater, $comment_inserted = false)
+		public function update_comment_count($n_post_id, $comment_count, $last_updater, $comment_inserted = false) {
+			// $args = new stdClass();
+			// $args->document_srl = $document_srl;
+			// $args->comment_count = $comment_count;
+			$a_param = array();
 			if($comment_inserted)
 			{
-				$args->update_order = -1*getNextSequence();
-				$args->last_updater = $last_updater;
+				$a_param['update_order'] = -1*\X2board\Includes\getNextSequence();
+				// $a_param['last_updater'] = $last_updater;
 
-				$oCacheHandler = CacheHandler::getInstance('object');
-				if($oCacheHandler->isSupport())
-				{
-					//remove document item from cache
-					$cache_key = 'document_item:'. getNumberingPath($document_srl) . $document_srl;
-					$oCacheHandler->delete($cache_key);
-				}
+				// $oCacheHandler = CacheHandler::getInstance('object');
+				// if($oCacheHandler->isSupport())
+				// {
+				// 	//remove document item from cache
+				// 	$cache_key = 'document_item:'. getNumberingPath($document_srl) . $document_srl;
+				// 	$oCacheHandler->delete($cache_key);
+				// }
 			}
+var_dump($comment_count);
+			$a_param['comment_count'] = $comment_count + 1;
+			$a_param['last_update'] = date('Y-m-d H:i:s', current_time('timestamp'));
 
-			return executeQuery('document.updateCommentCount', $args);
+			// $a_update_key = array();
+			// $a_update_val = array();
+			// foreach($a_param as $key=>$value){
+			// 	$value = esc_sql($value);
+			// 	$a_update_key[] = "`$key`";
+			// 	$a_update_val[] = "'$value'";
+			// }
+			// unset($a_param);
+			$a_set = array();
+			foreach($a_param as $key=>$value) {
+				$a_set[] = "`$key` = '$value'";
+			}
+// var_dump(implode(',', $a_set));
+// exit;
+			// download_count 증가
+			global $wpdb;
+			$query = "UPDATE `{$wpdb->prefix}x2b_post` SET ".implode(',', $a_set)." WHERE `post_id` = $n_post_id";
+			// $query = "INSERT INTO `{$wpdb->prefix}x2b_comments` (".implode(',', $a_insert_key).") VALUES (".implode(',', $a_insert_val).")";
+			if ($wpdb->query($query) === FALSE) {
+				return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error);
+			} 
+// var_dump('update com cont');
+			// $wpdb->query("UPDATE `{$wpdb->prefix}kboard_board_attached` SET `download_count`=`download_count`+1 WHERE `uid`='{$file_info->uid}'");
+			// return executeQuery('document.updateCommentCount', $args);
+			return new \X2board\Includes\Classes\BaseObject();
 		}
 
 		/**

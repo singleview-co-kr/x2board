@@ -257,11 +257,15 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 			$o_module_info = new \stdClass();
 			$o_module_info->module = 'board';
 			$o_module_info->skin = 'sketchbook5';
-			$o_module_info->skin_vars = new \stdClass();
+			$o_module_info->admin_mail = '';
 			$o_module_info->use_category = 'Y';
 			$o_module_info->use_anonymous = 'Y';
 			$o_module_info->use_status = '';
+			$o_module_info->mobile_use_editor = '';
+			$o_module_info->use_comment_validation = '';
+			
 			$o_module_info->list = true;
+			$o_module_info->skin_vars = new \stdClass();
 			
 			if( $s_cmd_type == 'proc' ) {  // load controller priority
 				$s_cmd = isset( $_REQUEST['cmd'])?$_REQUEST['cmd'] : '';
@@ -845,7 +849,7 @@ var_dump($request_uri['query']);
 
 		/**
 		 * Make URL with args_list upon request URL
-		 *
+		 * warning: this method is for GET request only as this requires $this->_convert_pretty_command_uri() executed, if POST not work
 		 * @param int $num_args Arguments nums
 		 * @param array $args_list Argument list for set url
 		 * @param string $domain Domain
@@ -915,14 +919,14 @@ var_dump($request_uri['query']);
 				// Otherwise, make GET variables into array
 				// $get_vars = get_object_vars($self->get_vars);
 				$get_vars = get_object_vars($self->gets('cmd', 'post_id', 'page'));  // , 'board_id'
+// error_log(print_r($get_vars, true));
 				if( isset( $get_vars['cmd'] ) && $get_vars['cmd'] == 'view_post' &&
 					isset( $get_vars['post_id'] ) && intval($get_vars['post_id']) > 0 ) {  // regarding view_post/10 as /10; view_post cmd malfunctions on title link of the view post UX 
 						$get_vars['cmd'] = null;
 						// unset($get_vars['post_id']);
 					}
-// error_log(print_r($get_vars, true));					
 			}
-			else {
+			else { // POST method
 				// if(!!$self->get_vars->module) $get_vars['module'] = $self->get_vars->module;
 				// if(!!$self->get_vars->mid) $get_vars['mid'] = $self->get_vars->mid;
 				// if(!!$self->get_vars->act) $get_vars['act'] = $self->get_vars->act;
@@ -1000,6 +1004,8 @@ var_dump($request_uri['query']);
 						'cmd' => get_the_permalink().( strlen($cmd) > 0 ? '?'.$cmd : '' ),  // X2B_CMD_VIEW_LIST equals with blank cmd
 						'post_id' => get_the_permalink().'?'.X2B_CMD_VIEW_POST.'/'.$post_id,
 						'cmd.post_id' => get_the_permalink().'?'.$cmd.'/'.$post_id,
+						// 'cmd.comment_id.post_id' => get_the_permalink().'?'.$cmd.'/'.$post_id.'/'.$comment_id,
+						
 						// 'document_srl' => $srl,
 						// 'document_srl.mid' => "$mid/$srl",
 						// 'document_srl.vid' => "$vid/$srl",
@@ -1070,10 +1076,10 @@ var_dump($request_uri['query']);
 			{
 				// currently on SSL but target is not based on SSL
 				if($_SERVER['HTTPS'] == 'on') {
-					$query = $self->_get_request_uri(ENFORCE_SSL, $domain) . $query;
+					$query = $self->get_request_uri(ENFORCE_SSL, $domain) . $query;
 				}
 				else if($domain) {  // if $domain is set
-					$query = $self->_get_request_uri(FOLLOW_REQUEST_SSL, $domain) . $query;
+					$query = $self->get_request_uri(FOLLOW_REQUEST_SSL, $domain) . $query;
 				}
 				// else {
 				// 	$query = \X2board\Includes\get_script_path() . $query;
@@ -1110,7 +1116,7 @@ var_dump($request_uri['query']);
 		 * @retrun string converted URL
 		 */
 		// public static function getRequestUri($ssl_mode = FOLLOW_REQUEST_SSL, $domain = null)
-		private static function _get_request_uri($ssl_mode = FOLLOW_REQUEST_SSL, $domain = null) {
+		public static function get_request_uri($ssl_mode = FOLLOW_REQUEST_SSL, $domain = null) {
 			static $url = array();
 
 			// Check HTTP Request

@@ -30,6 +30,8 @@ if ( !defined( 'X2B_DISP_LIST' ) ) {
     // define controller cmd
     define('X2B_CMD_PROC_WRITE_POST', 'proc_write_post');
     define('X2B_CMD_PROC_MODIFY_POST', 'proc_modify_post');
+    define('X2B_CMD_PROC_WRITE_COMMENT', 'proc_write_comment');
+    define('X2B_CMD_PROC_MODIFY_COMMENT', 'proc_modify_comment');
 }
 
 global $G_X2B_CACHE;

@@ -46,14 +46,14 @@
 					<td class="m_no"><?php echo $post->vote_count?></td>
 					<td class="m_no"><?php echo $post->readed_count?></td>
 					<?php if($grant->manager):?>
-						<td class="check m_no"><input type="checkbox" value="<?=$post->post_id?>" name='doc_chk' title="Check This Post"/></td>
+						<td class="check m_no"><input type="checkbox" value="<?php echo $post->post_id?>" name='doc_chk' title="Check This Post"/></td>
 					<?php endif?>
 				</tr>
 			<?php endforeach //endwhile?>
 			<?php if(false): // while($content = $list->hasNextPopular()):?>
 				<tr <?php if($content->uid == kboard_uid()):?>class='select'<?php endif?> >
 					<td class="no"><?php echo $list->index()?></td>
-					<td class="cate"><span style="color:"><?=esc_html($content->category_name)?></span></td>
+					<td class="cate"><span style="color:"><?php echo esc_html($content->category_name)?></span></td>
 					<td class="title">
 						<a href="<?php echo esc_url(x2b_get_url('cmd', X2B_CMD_VIEW_POST, 'post_id', $post->post_id))?>" class="hx">
 						<?php echo $content->title?></a>
@@ -68,14 +68,14 @@
 					<td class="m_no"><?php echo $content->vote?></td>
 					<td class="m_no"><?php echo $content->view?></td>
 					<?php if($board->isAdmin()):?>
-						<td class="check m_no"><input type="checkbox" value="<?=$content->uid?>" name='doc_chk' title="Check This Post"/></td>
+						<td class="check m_no"><input type="checkbox" value="<?php echo $content->uid?>" name='doc_chk' title="Check This Post"/></td>
 					<?php endif?>
 				</tr>
 			<?php endif //endwhile?>
 			<?php foreach( $post_list as $no => $post ): //while($content = $list->hasNext()):?>
 				<tr <?php if($post->post_id == $post_id):?>class='select'<?php endif?> >
 					<td class="no"><?php echo $no?></td>
-					<td class="cate"><span style="color:"><?=esc_html($post->category_id)?></span></td>
+					<td class="cate"><span style="color:"><?php echo esc_html($post->category_id)?></span></td>
 					<td class="title">
 						<a href="<?php echo esc_url(x2b_get_url('cmd', X2B_CMD_VIEW_POST, 'post_id', $post->post_id))?>" class="hx">
 						<?php echo $post->title?></a>
@@ -90,7 +90,7 @@
 					<td class="m_no"><?php echo $post->vote_count?></td>
 					<td class="m_no"><?php echo $post->readed_count?></td>
 					<?php if($grant->manager):?>
-						<td class="check m_no"><input type="checkbox" value="<?=$post->post_id?>" name='doc_chk' title="Check This Post"/></td>
+						<td class="check m_no"><input type="checkbox" value="<?php echo $post->post_id?>" name='doc_chk' title="Check This Post"/></td>
 					<?php endif?>
 				</tr>
 				<?php // $boardBuilder->builderReply($content->uid)?>
@@ -101,7 +101,7 @@
 		<div class="fl">
 			<?php if($grant->manager):?>
 				<!-- 게시판 관리 기능 시작 -->
-				<a class="btn_img" href="<?=admin_url('admin.php?page=x2b_disp_board_update&board_id='.$board_id);?>" target='_blank'><i class="ico_16px setup"></i> 설정</a>
+				<a class="btn_img" href="<?php echo admin_url('admin.php?page=x2b_disp_board_update&board_id='.$board_id);?>" target='_blank'><i class="ico_16px setup"></i> 설정</a>
 				<a class="btn_img" id='btn_control_panel'><i class="tx_ico_chk">✔</i> 게시글 관리</a>
 				<!-- 게시판 관리 기능 끝 -->
 			<?php endif?>
@@ -147,7 +147,7 @@
 	//&& $board->isTreeCategoryActive()):?>
 <!-- 게시판 관리 기능 시작 -->
 <div clas1s="kboard-control" id='panel_control' style="margin-top:12px; display:none;">
-	<button type="button" id='btn_move_category' data-board-id='<?=$board_id?>' class="kboard-default-button-small"><?php echo __('Move Category to', 'x2board')?></button>
+	<button type="button" id='btn_move_category' data-board-id='<?php echo $board_id?>' class="kboard-default-button-small"><?php echo __('Move Category to', 'x2board')?></button>
 	<select name="target_category">
 		<option value=""><?php echo __('Category select', 'x2board')?></option>
 		<?//php foreach($board->getCategoryList() as $cat_id=>$option_val):?>

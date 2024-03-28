@@ -195,6 +195,27 @@
 				</div>
 			</div>
 		</div>
-		<div class="fdb_lst_wrp"><?php //echo $board->buildComment($content->uid)?></div>
+		<!-- <div class="fdb_lst_wrp"><?php //echo $board->buildComment($content->uid)?></div> -->
+		<div class="fdb_lst_wrp">
+			<div id="kboard-comments-<?php echo $post->post_id?>" class="fdb_lst clear">
+				
+<!--------------------------------------------------->
+				<?php x2b_include_skin('_comment_write');?>
+<!--------------------------------------------------->
+				
+			</div>
+			<?php if($post->get_comment_count() > 0):?>
+				<!-- <div id="cmtPosition" aria-live="polite">
+					<div class="fdb_tag">
+						<a class="ui_font bubble" href="#" onclick="jQuery(this).parent().nextAll('ul,.bd_pg').slideToggle();return false">Comments <b>'<?=$post->get_comment_count()?>'</b>
+						<span class="wrp" style="margin-left: -27.5px; bottom: 100%; display: none;"><span class="speech">댓글 보기</span><i class="edge"></i></span></a>
+					</div> -->
+					<!-- 댓글 리스트 시작 -->
+					<?php x2b_include_skin('_comment_list');
+					//$commentBuilder->buildTreeList('list-template.php')?>
+					<!-- 댓글 리스트 끝 -->
+				<!-- </div> -->
+			<?php endif?>
+		</div>
 	</div>
 </div>

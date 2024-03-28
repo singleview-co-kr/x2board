@@ -4,8 +4,8 @@
 		
 		<div class="kboard-control">
 			<div class="center">
-				<button type="button" class="kboard-default-button-medium white" onClick="history.back()"><?=__('Back', 'x2board')?></button>
-				<button type="submit" class="kboard-default-button-medium blue"><?=__('Save', 'kboard')?></button>
+				<button type="button" class="kboard-default-button-medium white" onClick="history.back()"><?php echo __('Back', 'x2board')?></button>
+				<button type="submit" class="kboard-default-button-medium blue"><?php echo __('Save', 'kboard')?></button>
 			</div>
 		</div>
 	</form>

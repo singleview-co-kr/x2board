@@ -44,12 +44,12 @@
 		<div class="attr-value">
 			<div class="kboard-tree-category-wrap">
 				<select id="kboard-tree-category" name="kboard-tree-category" class="kboard-tree-category">
-					<option value=""><?=__('Category select', 'kboard')?></option>
+					<option value=""><?php echo __('Category select', 'kboard')?></option>
 					<!-- disabled="disabled"|cond="!$val->grant"  -->
 					<!-- selected="selected"|cond="$val->grant&&$val->selected||$val->category_srl==$oDocument->get('category_srl')" -->
 					<?php foreach($content->getCategoryList as $cat_id=>$option_val):?>
-						<option value="<?=$cat_id?>" <?php if($content->category_id == $cat_id):?> selected<?php endif?>>
-						<?=str_repeat("&nbsp;&nbsp;",$option_val->depth)?> <?=$option_val->category_name?> (<?=$option_val->document_count?>)
+						<option value="<?php echo $cat_id?>" <?php if($content->category_id == $cat_id):?> selected<?php endif?>>
+							<?php echo str_repeat("&nbsp;&nbsp;",$option_val->depth)?> <?php echo $option_val->category_name?> (<?php echo $option_val->document_count?>)
 						</option>
 					<?php endforeach?>
 				</select>

@@ -430,9 +430,11 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 					$output->page = $page_navigation->cur_page;
 				}
 				else { // basic document list query
+					global $wpdb;
 					$o_query = new \stdClass();
-					$o_query->s_query_type = 'select';
-					$o_query->s_table_name = 'x2b_post';
+					// $o_query->s_query_type = 'select';
+					// $o_query->s_table_name = 'x2b_post';
+					$o_query->s_tables = '`'.$wpdb->prefix.'x2b_post`';
 					// $o_query->s_columns = "`title`, `nick_name`, `regdate`, `readed_count`, `is_notice`, `is_secret`, `post_id`, `board_id`, `category_id`, `post_author`, `content`, `last_update`, `comment_count`, `vote_count`, `uploaded_count`, `post_status`, `title_bold`, `title_color`, `tags`";
 					$o_query->s_columns = "*";
 					$o_query->s_where = "WHERE `board_id`=".$obj->wp_page_id." AND `post_status` in ('SECRET', 'PUBLIC')"; // and `list_order` <= 2100000000";
@@ -510,9 +512,11 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			// $args->category_srl= $obj->category_srl;
 			// $output = executeQueryArray('document.getNoticeList', $args, $columnList);
 
+			global $wpdb;
 			$o_query = new \stdClass();
 			$o_query->s_query_type = 'select';
-			$o_query->s_table_name = 'x2b_post';
+			// $o_query->s_table_name = 'x2b_post';
+			$o_query->s_tables = '`'.$wpdb->prefix.'x2b_post`';
 			// $o_query->s_columns = "`title`, `nick_name`, `regdate`, `readed_count`, `is_notice`, `is_secret`, `post_id`, `board_id`, `category_id`, `post_author`, `content`, `last_update`, `comment_count`, `vote_count`, `uploaded_count`, `post_status`, `title_bold`, `title_color`, `tags`";
 			$o_query->s_columns = "*";
 			$o_query->s_where = "WHERE `board_id`=".$obj->wp_page_id." AND `is_notice`='Y' AND `post_status` in ('SECRET', 'PUBLIC')"; // and `list_order` <= 2100000000";

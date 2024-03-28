@@ -22,11 +22,12 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 			switch( $s_cmd ) {
 				case X2B_CMD_PROC_WRITE_POST:
 				case X2B_CMD_PROC_MODIFY_POST:
+				case X2B_CMD_PROC_WRITE_COMMENT:
 					$s_cmd = '_'.$s_cmd;
 					$this->$s_cmd();
 					break;
 				default:
-					return new BaseObject(-1,'msg_invalid_approach');
+					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_approach', 'x2board') );
 					break;
 			}
 		 }
@@ -39,17 +40,17 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 // var_dump($this->module_info);
 			// check grant
 			if($this->module_info->module != "board") {
-				return new \X2board\Includes\Classes\BaseObject(-1, "msg_invalid_request");
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', 'x2board') );
 			}
 			if(!$this->grant->write_post) {
-				return new \X2board\Includes\Classes\BaseObject(-1, 'msg_not_permitted');
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', 'x2board') );
 			}
 			// $logged_info = Context::get('logged_info');
 
 			// setup variables
 			$obj = \X2board\Includes\Classes\Context::gets('board_id', 'title', 'content', 'password', 'nick_name', 'wordpress_search');
 			if(is_null($obj->board_id) || intval($obj->board_id) <= 0) {
-				return new \X2board\Includes\Classes\BaseObject(-1,'msg_invalid_request');
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', 'x2board') );
 			}
 // var_dump($_REQUEST); 
 // var_dump($obj);
@@ -152,7 +153,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 			// update the document if it is existed
 			if($is_update) {
 				if(!$o_post->isGranted()) {
-					return new \X2board\Includes\Classes\BaseObject(-1,'msg_not_permitted');
+					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', 'x2board') );
 				}
 
 				if($this->module_info->use_anonymous == 'Y') {
@@ -161,7 +162,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 				}
 
 				if($this->module_info->protect_content=="Y" && $o_post->get('comment_count')>0 && $this->grant->manager==false) {
-					return new \X2board\Includes\Classes\BaseObject(-1,'msg_protect_content');
+					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_protect_content', 'x2board') );
 				}
 
 				if(!$this->grant->manager) {
@@ -219,6 +220,133 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 // exit;
 			// if s_wp_redirect_url is not added, automatically redirect to home_url
 			$this->add('s_wp_redirect_url', '?'.X2B_CMD_VIEW_POST.'/'.$output->get('post_id'));
+			// $this->add('s_wp_redirect_url', \X2board\Includes\get_url('cmd', X2B_CMD_VIEW_POST, 'post_id', $output->get('post_id') ));
+		}
+
+		/**
+		 * @brief insert comments
+		 **/
+		// function procBoardInsertComment()
+		private function _proc_write_comment() {
+var_dump(X2B_CMD_PROC_WRITE_COMMENT);
+
+// var_dump($this->grant->write_comment);
+			// check grant
+			if(!$this->grant->write_comment) {
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', 'x2board') );
+			}
+			$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
+
+			// get the relevant data for inserting comment
+			// $obj = Context::getRequestVars();
+			// $obj->module_srl = $this->module_srl;
+			$obj = \X2board\Includes\Classes\Context::gets( 'board_id', 'parent_post_id', 'comment_content', 
+															'parent_comment_id', 'comment_id', 'is_secret',
+															'use_editor', 'use_html', 'password' );
+
+			if(!$this->module_info->use_status) {
+				$this->module_info->use_status = 'PUBLIC';
+			}
+			if(!is_array($this->module_info->use_status)) {
+				$this->module_info->use_status = explode('|@|', $this->module_info->use_status);
+			}
+
+			if(in_array('SECRET', $this->module_info->use_status)) {
+				$this->module_info->secret = 'Y';
+			}
+			else {
+				unset($obj->is_secret);
+				$this->module_info->secret = 'N';
+			}
+
+			// $oModuleModel = getModel('module');
+			// $module_config = $oModuleModel->getModuleInfoByModuleSrl($obj->module_srl);
+			// if($module_config->mobile_use_editor === 'Y') {
+			if($this->module_info->mobile_use_editor === 'Y') {
+				if(!isset($obj->use_editor)) $obj->use_editor = 'Y';
+				if(!isset($obj->use_html)) $obj->use_html = 'Y';
+			}
+			else {
+				if(!isset($obj->use_editor)) $obj->use_editor = 'N';
+				if(!isset($obj->use_html)) $obj->use_html = 'N';
+			}
+// var_dump($this->module_info);
+
+			// check if the doument is existed
+			$o_post_model = \X2board\Includes\getModel('post');
+			$o_post = $o_post_model->get_post($obj->parent_post_id);
+			if(!$o_post->is_exists()) {
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_founded', 'x2board') );
+			}
+			unset($o_post_model);
+
+			// For anonymous use, remove writer's information and notifying information
+			if($this->module_info->use_anonymous == 'Y') {
+				$this->module_info->admin_mail = '';
+				// $obj->notify_message = 'N';
+				$obj->comment_author = -1*$o_logged_info->ID;
+				$obj->email_address = ''; // $obj->homepage = $obj->user_id = '';
+				// $obj->user_name = $obj->nick_name = 'anonymous';
+				$obj->nick_name = 'anonymous';
+				$bAnonymous = true;
+			}
+			else {
+				$bAnonymous = false;
+			}
+
+			// generate comment  module model object
+			$o_comment_model = \X2board\Includes\getModel('comment');
+
+			// generate comment module controller object
+			$o_comment_controller = \X2board\Includes\getController('comment');
+
+			// check the comment is existed
+			// if the comment is not existed, then generate a new sequence
+			if(!$obj->comment_id) {
+				$obj->comment_id = \X2board\Includes\getNextSequence();
+			} else {
+				$o_comment = $o_comment_model->get_comment($obj->comment_id, $this->grant->manager);
+			}
+// var_dump($bAnonymous);		
+			// if comment_id is not existed, then insert the comment
+			if( isset( $o_comment->comment_id ) != $obj->comment_id ) {
+				if( $obj->parent_comment_id ) {  // parent_comment_id is existed
+					$o_parent_comment = $o_comment_model->get_comment($obj->parent_comment_id);
+					if(!$o_parent_comment->comment_id) {
+						return new \X2board\Includes\Classes\BaseObject( -1, __('msg_invalid_request', 'x2board') );
+					}
+					$output = $o_comment_controller->insert_comment($obj, $bAnonymous);
+				} 
+				else {  // parent_comment_id is not existed
+					$output = $o_comment_controller->insert_comment($obj, $bAnonymous);
+// var_dump($output);
+// exit;							
+				}
+			// update the comment if it is not existed
+			} else {
+				// check the grant
+				if(!$o_comment->is_granted()) {
+					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', 'x2board') );
+				}
+				$obj->parent_srl = $o_comment->parent_srl;
+				$output = $o_comment_controller->updateComment($obj, $this->grant->manager);
+				$comment_id = $obj->comment_id;
+			}
+
+			if(!$output->toBool()) {
+				return $output;
+			}
+
+			// if(Context::get('xeVirtualRequestMethod') !== 'xml')
+			// {
+			// 	$this->setMessage('success_registed');
+			// }
+			// $this->add('mid', Context::get('mid'));
+			// $this->add('post_id', $obj->post_id);
+			// $this->add('comment_id', $obj->comment_id);
+			
+			// if s_wp_redirect_url is not added, automatically redirect to home_url
+			$this->add('s_wp_redirect_url', '?'.X2B_CMD_VIEW_POST.'/'.$obj->parent_post_id.'#comment_id-'.$output->get('comment_id'));
 		}
 
 		/**
@@ -273,135 +401,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 
 			$document_srl = Context::get('document_srl');
 			return $oDocumentController->updateVotedCount($document_srl);
-		}
-
-		/**
-		 * @brief insert comments
-		 **/
-		function procBoardInsertComment()
-		{
-			// check grant
-			if(!$this->grant->write_comment)
-			{
-				return new BaseObject(-1, 'msg_not_permitted');
-			}
-			$logged_info = Context::get('logged_info');
-
-			// get the relevant data for inserting comment
-			$obj = Context::getRequestVars();
-			$obj->module_srl = $this->module_srl;
-
-			if(!$this->module_info->use_status) $this->module_info->use_status = 'PUBLIC';
-			if(!is_array($this->module_info->use_status))
-			{
-				$this->module_info->use_status = explode('|@|', $this->module_info->use_status);
-			}
-
-			if(in_array('SECRET', $this->module_info->use_status))
-			{
-				$this->module_info->secret = 'Y';
-			}
-			else
-			{
-				unset($obj->is_secret);
-				$this->module_info->secret = 'N';
-			}
-
-			$oModuleModel = getModel('module');
-			$module_config = $oModuleModel->getModuleInfoByModuleSrl($obj->module_srl);
-			if($module_config->mobile_use_editor === 'Y')
-			{
-				if(!isset($obj->use_editor)) $obj->use_editor = 'Y';
-				if(!isset($obj->use_html)) $obj->use_html = 'Y';
-			}
-			else
-			{
-				if(!isset($obj->use_editor)) $obj->use_editor = 'N';
-				if(!isset($obj->use_html)) $obj->use_html = 'N';
-			}
-
-			// check if the doument is existed
-			$oDocumentModel = getModel('document');
-			$oDocument = $oDocumentModel->getDocument($obj->document_srl);
-			if(!$oDocument->isExists())
-			{
-				return new BaseObject(-1,'msg_not_founded');
-			}
-
-			// For anonymous use, remove writer's information and notifying information
-			if($this->module_info->use_anonymous == 'Y')
-			{
-				$this->module_info->admin_mail = '';
-				$obj->notify_message = 'N';
-				$obj->member_srl = -1*$logged_info->member_srl;
-				$obj->email_address = $obj->homepage = $obj->user_id = '';
-				$obj->user_name = $obj->nick_name = 'anonymous';
-				$bAnonymous = true;
-			}
-			else
-			{
-				$bAnonymous = false;
-			}
-
-			// generate comment  module model object
-			$oCommentModel = getModel('comment');
-
-			// generate comment module controller object
-			$oCommentController = getController('comment');
-
-			// check the comment is existed
-			// if the comment is not existed, then generate a new sequence
-			if(!$obj->comment_srl)
-			{
-				$obj->comment_srl = getNextSequence();
-			} else {
-				$comment = $oCommentModel->getComment($obj->comment_srl, $this->grant->manager);
-			}
-
-			// if comment_srl is not existed, then insert the comment
-			if($comment->comment_srl != $obj->comment_srl)
-			{
-
-				// parent_srl is existed
-				if($obj->parent_srl)
-				{
-					$parent_comment = $oCommentModel->getComment($obj->parent_srl);
-					if(!$parent_comment->comment_srl)
-					{
-						return new BaseObject(-1, 'msg_invalid_request');
-					}
-
-					$output = $oCommentController->insertComment($obj, $bAnonymous);
-
-				// parent_srl is not existed
-				} else {
-					$output = $oCommentController->insertComment($obj, $bAnonymous);
-				}
-			// update the comment if it is not existed
-			} else {
-				// check the grant
-				if(!$comment->isGranted())
-				{
-					return new BaseObject(-1,'msg_not_permitted');
-				}
-
-				$obj->parent_srl = $comment->parent_srl;
-				$output = $oCommentController->updateComment($obj, $this->grant->manager);
-				$comment_srl = $obj->comment_srl;
-			}
-
-			if(!$output->toBool())
-			{
-				return $output;
-			}
-
-			if(Context::get('xeVirtualRequestMethod') !== 'xml')
-			{
-				$this->setMessage('success_registed');
-			}
-			$this->add('mid', Context::get('mid'));
-			$this->add('document_srl', $obj->document_srl);
-			$this->add('comment_srl', $obj->comment_srl);
 		}
 
 		/**

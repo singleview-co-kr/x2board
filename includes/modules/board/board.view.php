@@ -497,16 +497,19 @@ var_dump(X2B_CMD_VIEW_POST);
 					if(!$o_post->is_secret() || $o_post->is_granted()) {
 						$o_post->update_readed_count();
 					}
-
+					
+					// begin - set index position of current post to find prev and next post
 					$a_post_list = \X2board\Includes\Classes\Context::get('post_list');
 					foreach( $a_post_list as $no => $o_post ) {
 						if( $n_post_id == $o_post->post_id ) {
 							\X2board\Includes\Classes\Context::set('cur_post_pos_in_list', $no);
 							break;
 						}
-					} 
+					}
+					// end - set index position of current post to find prev and next post
+
 					// disappear the post if it is secret
-					if($o_post->is_secret() && !$oDo_postocument->is_granted()) {
+					if($o_post->is_secret() && !$o_post->is_granted()) {
 						$o_post->add( 'content', __('thisissecret', 'x2board') );
 					}
 				}
@@ -516,6 +519,24 @@ var_dump(X2B_CMD_VIEW_POST);
 			// setup the document oject on context
 			// $o_post->add('module_srl', $this->module_srl);
 			\X2board\Includes\Classes\Context::set('post', $o_post);
+
+			if($o_post->is_exists()) {  // check comment list; which depends on \X2board\Includes\Classes\Context::get('post');
+				$o_comment_view = \X2board\Includes\getView('comment');
+				$s_comment_editor_html = $o_comment_view->ob_get_editor(array(
+					'input_id' => 'comment_content',
+					'board' => null, //$board,
+					'editor_uid' => 'comment_content_'.$o_post->post_id,
+					'content' => null, //$temporary->content,
+					'editor_height' => '200',
+					'textarea_rows' => '4'
+				));
+				\X2board\Includes\Classes\Context::set('comment_editor_html', $s_comment_editor_html);
+
+				$s_comment_hidden_field_html = $o_comment_view->ob_get_hidden_fields();
+				\X2board\Includes\Classes\Context::set('comment_hidden_field_html', $s_comment_hidden_field_html);
+				unset($o_comment_view);
+			}
+
 
 			/**
 			 * add javascript filters
@@ -723,7 +744,7 @@ var_dump(X2B_CMD_VIEW_POST);
 			// do_action('x2b_skin_editor_header_before', $content, $board);
 			$o_post = \X2board\Includes\Classes\Context::get('post');
 			$header = array();
-			$a_header['cmd'] = "proc_write_post"; // '<input type="hidden" name="action" value="x2b_write_post">';
+			$a_header['cmd'] = X2B_CMD_PROC_WRITE_POST; // '<input type="hidden" name="action" value="x2b_write_post">';
 			$a_header['board_id'] = get_the_ID(); // sprintf('<input type="hidden" name="board_id" value="%d">', $o_post->board_id);
 			// $a_header['mod'] = "editor"; // '<input type="hidden" name="mod" value="editor">';
 			if($o_post->post_id) {
@@ -745,6 +766,7 @@ var_dump(X2B_CMD_VIEW_POST);
 			foreach( $a_header as $s_field_name => $s_field_value ) {
 				echo '<input type="hidden" name="'.$s_field_name.'" value="'.$s_field_value.'">' . "\n";
 			}
+			unset($a_header);
 			// do_action('x2b_skin_editor_header_after', $content, $board);
 		}
 
@@ -802,7 +824,7 @@ var_dump(X2B_CMD_VIEW_POST);
 			$board->use_editor = '';
 			
 			if($field['field_type'] == 'content'){
-				$board->editor_html = $this->get_editor_html(array(
+				$board->editor_html = $this->ob_get_editor_html(array(
 										'board' => $board,
 										'content' => $content,
 										'required' => $required,
@@ -941,7 +963,7 @@ var_dump(X2B_CMD_VIEW_POST);
 		 * @return string
 		 */
 		// kboard_content_editor()
-		public function get_editor_html($vars=array()){
+		public function ob_get_editor_html($vars=array()){
 			$vars = array_merge(array(
 				'required' => '',
 				'placeholder' => '',
@@ -1101,33 +1123,6 @@ var_dump(X2B_CMD_VIEW_POST);
 
 			$oSecurity = new Security();
 			$oSecurity->encodeHTML('file_list..source_filename');
-		}
-
-		/**
-		 * @brief display the document comment list (can be used by API)
-		 **/
-		function dispBoardContentCommentList(){
-			// check document view grant
-			$this->dispBoardContentView();
-
-			$oDocumentModel = getModel('document');
-			$document_srl = Context::get('document_srl');
-			$oDocument = $oDocumentModel->getDocument($document_srl);
-			$comment_list = $oDocument->getComments();
-
-			// setup the comment list
-			if(is_array($comment_list))
-			{
-				foreach($comment_list as $key => $val)
-				{
-					if(!$val->isAccessible())
-					{
-						$val->add('content',Context::getLang('thisissecret'));
-					}
-				}
-			}
-			Context::set('comment_list',$comment_list);
-
 		}
 
 		/**
@@ -1417,6 +1412,33 @@ var_dump(X2B_CMD_VIEW_POST);
 
 			$this->setTemplateFile('delete_comment_form');
 		}
+
+		/**
+		 * @brief display the document comment list (can be used by API)
+		 **/
+		// function dispBoardContentCommentList(){
+		// 	// check document view grant
+		// 	$this->dispBoardContentView();
+
+		// 	$oDocumentModel = getModel('document');
+		// 	$document_srl = Context::get('document_srl');
+		// 	$oDocument = $oDocumentModel->getDocument($document_srl);
+		// 	$comment_list = $oDocument->getComments();
+
+		// 	// setup the comment list
+		// 	if(is_array($comment_list))
+		// 	{
+		// 		foreach($comment_list as $key => $val)
+		// 		{
+		// 			if(!$val->isAccessible())
+		// 			{
+		// 				$val->add('content',Context::getLang('thisissecret'));
+		// 			}
+		// 		}
+		// 	}
+		// 	Context::set('comment_list',$comment_list);
+
+		// }
 
 		/**
 		 * @brief display the delete trackback form
