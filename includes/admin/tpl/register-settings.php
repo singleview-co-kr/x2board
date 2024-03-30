@@ -17,7 +17,6 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
-
 /**
  * Get an option
  *
@@ -94,7 +93,7 @@ function x2b_update_option( $key = '', $value = null ) {
 	}
 
 	// First let's grab the current settings.
-	$options = get_option( 'x2b_settings' );
+	$options = get_option( 'x2board_settings' );
 
 	/**
 	 * Filters the value before it is updated
@@ -108,7 +107,7 @@ function x2b_update_option( $key = '', $value = null ) {
 
 	// Next let's try to update the value.
 	$options[ $key ] = $value;
-	$did_update      = update_option( 'x2b_settings', $options );
+	$did_update      = update_option( 'x2board_settings', $options );
 
 	// If it updated, let's update the global variable.
 	if ( $did_update ) {
@@ -137,14 +136,14 @@ function x2b_delete_option( $key = '' ) {
 	}
 
 	// First let's grab the current settings.
-	$options = get_option( 'x2b_settings' );
+	$options = get_option( 'x2board_settings' );
 
 	// Next let's try to update the value.
 	if ( isset( $options[ $key ] ) ) {
 		unset( $options[ $key ] );
 	}
 
-	$did_update = update_option( 'x2b_settings', $options );
+	$did_update = update_option( 'x2board_settings', $options );
 
 	// If it updated, let's update the global variable.
 	if ( $did_update ) {
@@ -154,6 +153,107 @@ function x2b_delete_option( $key = '' ) {
 	return $did_update;
 }
 
+/**
+ * Validate board id function
+ *
+ * @since 2.6.0
+ *
+ * @return void
+ */
+// function x2b_validate_board_id( $board_id ) {
+// 	$o_rst = new \stdClass();
+// 	$o_rst->b_ok = false;
+// 	$o_rst->s_x2b_setting_title = null;
+// 	$o_rst->s_wp_page_title = null;
+
+// 	$n_board_id = intval( sanitize_text_field($board_id));
+// 	if( intval( $board_id ) == 0 ) {
+// 		return $o_rst;
+// 	}
+// 	$o_wp_page = get_post( $n_board_id );
+// // var_dump($o_wp_page->post_title);
+// 	if( $o_wp_page->post_content != X2B_PAGE_IDENTIFIER ) {
+// 		unset($o_wp_page);
+// 		return $o_rst;
+// 	}
+// 	$o_rst->b_ok = true;
+// 	$o_rst->s_x2b_setting_title = 'x2board_settings_'.$board_id;
+// 	$o_rst->s_wp_page_title = $o_wp_page->post_title;
+// 	unset($o_wp_page);
+// 	return $o_rst;
+// }
+
+/**
+ * load settings function
+ *
+ * @since 2.6.0
+ *
+ * @return $a_board_settings
+ * return setting title together
+ */
+function x2b_load_settings( $board_id ) { // $o_board_info ) {
+	$o_rst = new \stdClass();
+	$o_rst->b_ok = false;
+	$o_rst->a_board_settings = null;
+	$o_rst->s_x2b_setting_title = 'x2board_settings_'.$board_id;
+
+	$n_board_id = intval( sanitize_text_field($board_id));
+// var_dump($n_board_id)	;
+	if( intval( $n_board_id ) == 0 ) {
+		return $o_rst;
+	}
+
+	// check if the requested WP page is x2board tagged
+	$o_wp_page = get_post( $n_board_id );
+	if( $o_wp_page->post_content != X2B_PAGE_IDENTIFIER ) {
+		unset($o_wp_page);
+		return $o_rst;
+	}
+
+	// $s_x2b_setting_title = 'x2board_settings_'.$board_id;
+	$s_wp_page_title = $o_wp_page->post_title;
+	unset($o_wp_page);
+
+	$a_board_settings = get_option( $o_rst->s_x2b_setting_title );
+	if( $a_board_settings === false ) {
+		$o_rst->a_board_settings = array();
+	}
+	
+	global $wpdb;
+	$board_id = esc_sql( $n_board_id );
+	$board_title = $wpdb->get_var("SELECT `board_title` FROM `{$wpdb->prefix}x2b_mapper` WHERE `board_id`='$board_id'");
+	$a_board_settings['board_title'] = $board_title;
+	$a_board_settings['wp_page_title'] = $s_wp_page_title;
+
+	foreach ( \X2board\Includes\Admin\Tpl\x2b_get_registered_settings() as $tab => $settings ) {
+// var_Dump($tab);
+		foreach ( $settings as $option ) {
+// var_Dump($option);
+			// no change if a value comes from get_option()
+			if( isset( $a_board_settings[$option['id']] )) {
+				continue;
+			}
+			// When checkbox is set to true, set this to 1.
+			if ( 'checkbox' === $option['type'] && ! empty( $option['options'] ) ) {
+				$a_board_settings[ $option['id'] ] = 1;
+			} else {
+				$a_board_settings[ $option['id'] ] = 0;
+			}
+			// If an option is set.
+			if ( in_array( $option['type'], array( 'textarea', 'text', 'csv', 'numbercsv', 'posttypes', 'number', 'css' ), true ) && isset( $option['options'] ) ) {
+				$a_board_settings[ $option['id'] ] = $option['options'];
+			}
+			if ( in_array( $option['type'], array( 'multicheck', 'radio', 'select', 'radiodesc', 'thumbsizes' ), true ) && isset( $option['default'] ) ) {
+				$a_board_settings[ $option['id'] ] = $option['default'];
+			}
+		}
+	}
+	$o_rst->b_ok = true;
+	$o_rst->a_board_settings = $a_board_settings;
+	// $a_board_settings['s_x2b_setting_title'] = $s_x2b_setting_title; // return setting title together, for admin usage only
+// var_Dump($o_rst);	
+	return $o_rst;
+}
 
 /**
  * Register settings function
@@ -163,20 +263,30 @@ function x2b_delete_option( $key = '' ) {
  * @return void
  */
 function x2b_register_settings() {
-	if ( false === get_option( 'x2b_settings' ) ) {
-		add_option( 'x2b_settings', x2b_settings_defaults() );
+	
+	// First, we write the options collection.
+	global $A_X2B_ADMIN_BOARD_SETTINGS;
+
+	$o_rst = x2b_load_settings( $_GET['board_id'] ); //$o_board_info );
+	if ( false === $o_rst->b_ok ) { // for creating a new board
+		// add_option( 'x2board_settings', x2b_settings_defaults() );
+		$A_X2B_ADMIN_BOARD_SETTINGS = x2b_settings_defaults();
 	}
+	else {  // for updating a old board
+		$A_X2B_ADMIN_BOARD_SETTINGS = $o_rst->a_board_settings;
+	}
+// var_dump($o_rst->a_board_settings);
+	unset($o_rst);
 
 	foreach ( x2b_get_registered_settings() as $section => $settings ) {
 		add_settings_section(
-			'x2b_settings_' . $section, // ID used to identify this section and with which to register options, e.g. x2b_settings_general.
+			'x2board_settings_' . $section, // ID used to identify this section and with which to register options, e.g. x2b_settings_general.
 			__return_empty_string(), // No title, we will handle this via a separate function.
 			'__return_false', // No callback function needed. We'll process this separately.
-			'x2b_settings_' . $section  // Page on which these options will be added.
+			'x2board_settings_' . $section  // Page on which these options will be added.
 		);
 
 		foreach ( $settings as $setting ) {
-
 			$args = wp_parse_args(
 				$setting,
 				array(
@@ -195,15 +305,15 @@ function x2b_register_settings() {
 					'placeholder'      => '',
 				)
 			);
-
+// var_Dump($args);
 			add_settings_field(
-				'x2b_settings[' . $args['id'] . ']', // ID of the settings field. We save it within the x2b_settings array.
+				'x2board_settings[' . $args['id'] . ']', // ID of the settings field. We save it within the x2b_settings array.
 				$args['name'],     // Label of the setting.
 				function_exists( '\X2board\Includes\Admin\Tpl\x2b_' . $args['type'] . '_callback' ) ?
 								 '\X2board\Includes\Admin\Tpl\x2b_' . $args['type'] . '_callback' : 
 								 'X2board\Includes\Admin\Tpl\x2b_missing_callback', // Function to handle the setting.
-				'x2b_settings_' . $section,    // Page to display the setting. In our case it is the section as defined above.
-				'x2b_settings_' . $section,    // Name of the section.
+				'x2board_settings_' . $section,    // Page to display the setting. In our case it is the section as defined above.
+				'x2board_settings_' . $section,    // Name of the section.
 				$args
 			);
 		}
@@ -211,15 +321,13 @@ function x2b_register_settings() {
 
 	// Register the settings into the options table.
 	register_setting(
-		'x2b_settings',
-		'x2b_settings',
+		'x2board_settings',
+		'x2board_settings',
 		array(
-			'sanitize_callback' => 'x2b_settings_sanitize',
+			'sanitize_callback' => 'x2board_settings_sanitize',
 		)
 	);
 }
-// add_action( 'admin_init', 'x2b_register_settings' );
-
 
 /**
  * Flattens x2b_get_registered_settings() into $setting[id] => $setting[type] format.
@@ -280,11 +388,10 @@ function x2b_settings_defaults() {
 		}
 	}
 
-	$upgraded_settings = x2b_upgrade_settings();
-
-	if ( false !== $upgraded_settings ) {
-		$options = array_merge( $options, $upgraded_settings );
-	}
+	// $upgraded_settings = x2b_upgrade_settings();
+	// if ( false !== $upgraded_settings ) {
+	// 	$options = array_merge( $options, $upgraded_settings );
+	// }
 
 	/**
 	 * Filters the default settings array.
@@ -324,6 +431,6 @@ function x2b_get_default_option( $key = '' ) {
  *
  * @return void
  */
-function x2b_settings_reset() {
-	delete_option( 'x2b_settings' );
-}
+// function x2b_settings_reset() {
+// 	delete_option( 'x2board_settings' );
+// }

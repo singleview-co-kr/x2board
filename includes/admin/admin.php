@@ -11,139 +11,25 @@
 
 namespace X2board\Includes\Admin;
 
- if ( !defined( 'ABSPATH' ) ) {
+if ( !defined( 'ABSPATH' ) ) {
     exit;  // Exit if accessed directly.
+}
+
+if ( !defined( 'X2B_CMD_ADMIN_VIEW_IDX' ) ) {
+    // define admin view cmd
+    define('X2B_CMD_ADMIN_VIEW_IDX', 'x2b_disp_idx');
+	define('X2B_CMD_ADMIN_VIEW_BOARD_LIST', 'x2b_disp_board_list');
+	define('X2B_CMD_ADMIN_VIEW_BOARD_INSERT', 'x2b_disp_board_insert');
+	define('X2B_CMD_ADMIN_VIEW_BOARD_UPDATE', 'x2b_disp_board_update');
+	
+    // define admin controller cmd
+    define('X2B_CMD_ADMIN_PROC_INSERT_BOARD', 'x2b_proc_insert_board');
+	define('X2B_CMD_ADMIN_PROC_UPDATE_BOARD', 'x2b_proc_update_board');
 }
 
 /*  Plugins Activation Hook */
 function activate() {
-	global $wpdb;
-	
-	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-	$charset_collate = $wpdb->get_charset_collate();
-	
-	dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_sequence` (
-	`seq` bigint(64) unsigned NOT NULL AUTO_INCREMENT,
-	PRIMARY KEY (`seq`)
-	) {$charset_collate};");
-	
-	dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_mapper` (
-	`board_id` bigint(20) unsigned NOT NULL,
-	`wp_page_id` bigint(20) unsigned NOT NULL,
-	`board_name` varchar(127) NOT NULL,
-	`create_date` datetime NOT NULL,
-	PRIMARY KEY (`board_id`)
-	) {$charset_collate};");
-
-	dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_post` (
-	`post_id` bigint(20) unsigned NOT NULL,
-	`board_id` bigint(20) unsigned NOT NULL,
-	`parent_post_id` bigint(20) unsigned NOT NULL DEFAULT 0,
-	`category_id` bigint(20) unsigned DEFAULT 0,
-	`post_author` bigint(20) unsigned NOT NULL DEFAULT 0,
-	`nick_name` varchar(127) NOT NULL,
-	`title` varchar(127) NOT NULL,
-	`title_bold` char(1) NOT NULL DEFAULT 'N',
-	`title_color` varchar(7),
-	`content` longtext NOT NULL,
-	`email_address` varchar(25),
-	`password` varchar(60) NOT NULL,
-	`comment_count` int(10) unsigned NOT NULL,
-	`readed_count` int(10) unsigned NOT NULL,
-	`like` int(10) unsigned NOT NULL,
-	`dislike` int(10) unsigned NOT NULL,
-	`is_notice` char(1) NOT NULL DEFAULT 'N',
-	`is_secret` char(1) NOT NULL DEFAULT 'N',
-	`allow_search` char(1) NOT NULL DEFAULT '1',
-	`allow_comment` char(1) NOT NULL DEFAULT 'Y',
-	`post_status` varchar(10),
-	`vote_count` int(11) NOT NULL,
-	`uploaded_count` smallint(2) NOT NULL,
-	`ipaddress` varchar(128) NOT NULL,
-	`list_order` bigint(20) NOT NULL,
-	`update_order` bigint(20) NOT NULL,
-	`tags` varchar(256),
-	`ua` char(1) NOT NULL,
-	`regdate` datetime NOT NULL,
-	`last_update` datetime NOT NULL,
-	PRIMARY KEY (`post_id`),
-	KEY `idx_board_id` (`board_id`),
-	KEY `idx_parent_post_id` (`parent_post_id`),
-	KEY `idx_category_id` (`category_id`),
-	KEY `idx_is_notice` (`is_notice`),
-	KEY `idx_post_author` (`post_author`),
-	KEY `idx_readed_count` (`readed_count`),
-	KEY `idx_post_status` (`post_status`),
-	KEY `idx_vote_count` (`vote_count`),
-	KEY `idx_list_order` (`list_order`),
-	KEY `idx_update_order` (`update_order`),
-	KEY `idx_regdate` (`regdate`),
-	KEY `idx_last_update` (`last_update`)
-	) {$charset_collate};");
-
-	dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_comments` (
-	`comment_id` bigint(11) NOT NULL,
-	`board_id` bigint(11) NOT NULL DEFAULT 0,
-	`parent_post_id` bigint(11) NOT NULL DEFAULT 0,
-	`parent_comment_id` bigint(11) NOT NULL DEFAULT 0,
-	`is_secret` char(1) NOT NULL DEFAULT 'N',
-	`content` longtext NOT NULL,
-	`password` varchar(60) DEFAULT NULL,
-	`nick_name` varchar(80) NOT NULL,
-	`comment_author` bigint(11) NOT NULL,
-	`email_address` varchar(250) NOT NULL,
-	`uploaded_count` bigint(11) NOT NULL DEFAULT 0,
-	`regdate` datetime DEFAULT NULL,
-	`last_update` datetime DEFAULT NULL,
-	`ipaddress` varchar(128) NOT NULL,
-	`list_order` bigint(11) NOT NULL,
-	`ua` char(1) NOT NULL,
-	`status` char(1) NOT NULL DEFAULT 1,  -- 없어도 되나?
-	PRIMARY KEY (`comment_id`),
-	UNIQUE KEY `idx_board_list_order` (`board_id`,`list_order`),
-	KEY `idx_board_id` (`board_id`),
-	KEY `idx_parent_post_id` (`parent_post_id`),
-	KEY `idx_parent_comment_id` (`parent_comment_id`),
-	KEY `idx_comment_author` (`comment_author`),
-	KEY `idx_uploaded_count` (`uploaded_count`),
-	KEY `idx_regdate` (`regdate`),
-	KEY `idx_last_update` (`last_update`),
-	KEY `idx_ipaddress` (`ipaddress`),
-	KEY `idx_list_order` (`list_order`),
-	KEY `idx_status` (`status`)
-	) {$charset_collate};");
-
-	dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_comments_list` (
-	`comment_id` bigint(11) NOT NULL,
-	`parent_post_id` bigint(11) NOT NULL DEFAULT 0,
-	`head` bigint(11) NOT NULL DEFAULT 0,
-	`arrange` bigint(11) NOT NULL DEFAULT 0,
-	`board_id` bigint(11) NOT NULL DEFAULT 0,
-	`regdate` datetime DEFAULT NULL,
-	`depth` bigint(11) NOT NULL DEFAULT 0,
-	PRIMARY KEY (`comment_id`),
-	KEY `idx_list` (`parent_post_id`,`head`,`arrange`),
-	KEY `idx_date` (`board_id`,`regdate`)
-	) {$charset_collate};");		
-
-	dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_category` (
-	`category_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-	`board_id` bigint(20) unsigned NOT NULL,
-	`parent_id` bigint(20) NOT NULL DEFAULT 0,
-	`category_name` varchar(250) DEFAULT NULL,
-	`expand` char(1) DEFAULT 'N',
-	`post_count` mediumint(9) unsigned NOT NULL DEFAULT 0,
-	`list_order` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '표시 순서',
-	`group_srls` text DEFAULT NULL COMMENT '수정 권한 회원 그룹 번호',
-	`color` varchar(11) DEFAULT NULL,
-	`is_default` char(1) DEFAULT NULL COMMENT '새글 작성 시 기본 선택',
-	`deleted` char(1) NOT NULL DEFAULT 'N',
-	`regdate` varchar(14) DEFAULT NULL,
-	`last_update` varchar(14) DEFAULT NULL,
-	PRIMARY KEY (`category_id`),
-	KEY `board_id` (`board_id`),
-	KEY `deleted_by_board` (`board_id`,`deleted`)
-	) {$charset_collate};");
+	require_once X2B_PATH . 'includes/admin/schemas/schemas.php';
 }
 
 register_activation_hook( X2B__FILE__, 'X2board\Includes\Admin\activate' );
@@ -151,10 +37,12 @@ register_activation_hook( X2B__FILE__, 'X2board\Includes\Admin\activate' );
 /* Plugins Loaded Hook */
 function plugin_loaded() {
 // error_log(print_r('x2b_plugin_loaded', true));
-	add_option('x2b_version', X2B_VERSION, null, 'no');
+	// add_option('x2board_version', X2B_VERSION, null, 'no');
 }
 
 add_action( 'plugins_loaded', 'X2board\Includes\Admin\plugin_loaded' );
+
+global $A_X2B_ADMIN_SETTINGS_PAGE;
 
 /**
  * Creates the admin submenu pages under the Downloads menu and assigns their
@@ -162,11 +50,13 @@ add_action( 'plugins_loaded', 'X2board\Includes\Admin\plugin_loaded' );
  *
  * @since 2.6.0
  *
- * @global $x2b_settings_page, $x2b_settings_tools
+ * @global 
  * @return void
  */
 function add_admin_pages_links() {
-
+	global $A_X2B_ADMIN_SETTINGS_PAGE;
+	$A_X2B_ADMIN_SETTINGS_PAGE = array();
+	
 	// $crp_settings_page = add_options_page(
 	// 	esc_html__( 'Contextual Related Posts', 'contextual-related-posts' ),
 	// 	esc_html__( 'Related Posts', 'contextual-related-posts' ),
@@ -187,12 +77,21 @@ function add_admin_pages_links() {
 	global $_wp_last_object_menu;
 	$_wp_last_object_menu++;
 	// visible admin page
-	add_menu_page(X2B_PAGE_TITLE, 'X2Board', 'manage_x2board', 'x2b_disp_idx', 'X2board\Includes\Admin\disp_admin_board', 'dashicons-admin-post', $_wp_last_object_menu);
-	add_submenu_page('x2b_disp_idx', X2B_PAGE_TITLE, __('대시보드', 'x2board'), 'manage_x2board', 'x2b_disp_idx', 'X2board\Includes\Admin\disp_admin_board' );
-	add_submenu_page('x2b_disp_idx', X2B_PAGE_TITLE, __('게시판 목록', 'x2board'), 'manage_x2board', 'x2b_disp_board_list', 'X2board\Includes\Admin\disp_admin_board' );
-	add_submenu_page('x2b_disp_idx', X2B_PAGE_TITLE, __('게시판 생성', 'x2board'), 'manage_x2board', 'x2b_disp_board_insert', 'X2board\Includes\Admin\disp_admin_board' );
+	add_menu_page(X2B_PAGE_TITLE, 'X2Board', 'manage_x2board', X2B_CMD_ADMIN_VIEW_IDX, 'X2board\Includes\Admin\disp_admin_board', 'dashicons-admin-post', $_wp_last_object_menu);
+	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(X2B_CMD_ADMIN_VIEW_IDX, X2B_PAGE_TITLE, __('Dashboard', 'x2board'), 'manage_x2board', X2B_CMD_ADMIN_VIEW_IDX, 'X2board\Includes\Admin\disp_admin_board' );
+	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(X2B_CMD_ADMIN_VIEW_IDX, X2B_PAGE_TITLE, __('Board list', 'x2board'), 'manage_x2board', X2B_CMD_ADMIN_VIEW_BOARD_LIST, 'X2board\Includes\Admin\disp_admin_board' );
+	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(X2B_CMD_ADMIN_VIEW_IDX, X2B_PAGE_TITLE, __('Create board', 'x2board'), 'manage_x2board', X2B_CMD_ADMIN_VIEW_BOARD_INSERT, 'X2board\Includes\Admin\disp_admin_board' );
 	// hidden admin page
-	add_submenu_page(null, X2B_PAGE_TITLE, __('게시판 관리', 'x2board'), 'manage_x2board', 'x2b_disp_board_update', 'X2board\Includes\Admin\disp_admin_board' );
+	// $A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(null, X2B_PAGE_TITLE, __('Configure the board', 'x2board'), 'manage_x2board', X2B_CMD_ADMIN_VIEW_BOARD_UPDATE, 'X2board\Includes\Admin\disp_admin_board' );
+	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_options_page(
+		esc_html__( 'X2Board', 'x2board' ),
+		esc_html__( 'quick board', 'x2board' ),
+		'manage_x2board',
+		X2B_CMD_ADMIN_VIEW_BOARD_UPDATE,
+		'X2board\Includes\Admin\disp_admin_board'
+	);
+// var_dump($A_X2B_ADMIN_SETTINGS_PAGE)	;
+// exit;
 }
 add_action( 'admin_menu', 'X2board\Includes\Admin\add_admin_pages_links', 99 );
 
@@ -205,7 +104,8 @@ function admin_init() {
 	if(!$admin_role->has_cap('manage_x2board')){
 		$admin_role->add_cap('manage_x2board', true);
 	}
-	add_action('admin_post_x2b_proc_insert_board', 'X2board\Includes\Admin\proc_admin_board' );
+	add_action('admin_post_'.X2B_CMD_ADMIN_PROC_INSERT_BOARD, 'X2board\Includes\Admin\proc_admin_board' );
+	add_action('admin_post_'.X2B_CMD_ADMIN_PROC_UPDATE_BOARD, 'X2board\Includes\Admin\proc_admin_board' );
 }
 	
 add_action( 'admin_init', 'X2board\Includes\Admin\admin_init' );
@@ -220,7 +120,7 @@ function disp_admin_board() {
 	$o_module = new \X2board\Includes\Modules\Board\boardAdminView();
 	$calling_method = isset($_REQUEST['page']) ? str_replace( 'x2b_', '', sanitize_text_field($_REQUEST['page']) ) : '';
 	if(!method_exists( $o_module, $calling_method )) {
-		wp_die(__('requested module does not have '.$calling_method.'()', 'x2board'));
+		wp_die(__('requested view does not have '.$calling_method.'()', 'x2board'));
 	}
 	$o_module->$calling_method();
 	unset($o_module);
@@ -233,11 +133,17 @@ function disp_admin_board() {
 function proc_admin_board(){
 	$o_module = new \X2board\Includes\Modules\Board\boardAdminController();
 	$calling_method = isset($_REQUEST['action']) ? str_replace( 'x2b_', '', sanitize_text_field($_REQUEST['action']) ) : '';
+
+	if( $calling_method == 'proc_update_board' && isset($_REQUEST['delete_board']))	{
+		$calling_method = 'proc_delete_board';
+	}
+
 	if(!method_exists( $o_module, $calling_method )) {
-		wp_die(__('requested module does not have '.$calling_method.'()', 'x2board'));
+		wp_die(__('requested controller does not have '.$calling_method.'()', 'x2board'));
 	}
 	$o_module->$calling_method();
 	unset($o_module);
+	exit; // to execute wp_redirect(admin_url());
 }
 
 
@@ -250,12 +156,13 @@ function proc_admin_board(){
  * @return string Updated Footer text
  */
 function footer( $footer_text ) {
+	global $A_X2B_ADMIN_SETTINGS_PAGE;
 	$current_screen = get_current_screen();
-	
-	if ( substr( $current_screen->id, 0, 12 ) === "x2board_page" ) {
+// var_dump($current_screen->id);
+// var_dump($A_X2B_ADMIN_SETTINGS_PAGE);
+	if ( in_array( $current_screen->id, $A_X2B_ADMIN_SETTINGS_PAGE, true ) ) {
 
 		$text = sprintf(
-			/* translators: 1: Contextual Related Posts website, 2: Plugin reviews link. */
 			__( 'Thank you for using <a href="%1$s" target="_blank">X2 Board</a>! Please <a href="%2$s" target="_blank">rate us</a> on <a href="%2$s" target="_blank">WordPress.org</a>', 'x2board' ),
 			'https://singleview.co.kr/x2board',
 			'https://wordpress.org/support/plugin/x2board/reviews/#new-post'
@@ -280,6 +187,7 @@ add_filter( 'admin_footer_text', 'X2board\Includes\Admin\footer' );
  * @param string $hook The current admin page.
  */
 function load_scripts( $hook ) {
+	global $A_X2B_ADMIN_SETTINGS_PAGE;
 
 	wp_register_script(
 		X2B_DOMAIN . '-admin-scripts',
@@ -295,8 +203,8 @@ function load_scripts( $hook ) {
 		X2B_VERSION
 	);
 
-	// if ( in_array( $hook, array( $crp_settings_page, $crp_settings_tools ), true ) ) {
-	if ( substr( $hook, 0, 12 ) === "x2board_page" ) {
+// var_dump($hook);
+	if ( in_array( $hook, $A_X2B_ADMIN_SETTINGS_PAGE, true ) ) {
 		wp_enqueue_script( X2B_DOMAIN . '-admin-scripts' );
 		// wp_enqueue_script( 'crp-suggest-js' );
 		// wp_enqueue_script( 'plugin-install' );
