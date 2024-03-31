@@ -364,7 +364,6 @@ function x2b_checkbox_callback( $args ) {
 function x2b_multicheck_callback( $args ) {
 	global $A_X2B_ADMIN_BOARD_SETTINGS;
 	$html = '';
-
 	if ( ! empty( $args['options'] ) ) {
 		$html .= sprintf( '<input type="hidden" name="%1$s" value="-1" />', sanitize_key( $args['id'] ) );
 
@@ -375,8 +374,12 @@ function x2b_multicheck_callback( $args ) {
 				$enabled = null;
 			}
 
-			$html .= sprintf( '<input name="%1$s[%2$s]" id="%1$s[%2$s]" type="checkbox" value="%3$s" %4$s /> ', sanitize_key( $args['id'] ), sanitize_key( $key ), esc_attr( $key ), checked( $key, $enabled, false ) );
-			$html .= sprintf( '<label for="%1$s[%2$s]">%3$s</label> <br />', sanitize_key( $args['id'] ), sanitize_key( $key ), $option );
+			if( isset( $args['mandatory'] ) ) { // mandatory field
+				$s_disabled = isset( $args['mandatory'][ $key ] ) && $args['mandatory'][ $key ] == 'mandatory' ? ' checked="checked" onclick="alert(\''.$key.' is mandatory\'); return false;"' : '';
+			}
+
+			$html .= sprintf( '<input name="%1$s[%2$s]" id="%1$s[%2$s]" type="checkbox" value="%3$s" %4$s %5$s /> ', sanitize_key( $args['id'] ), esc_attr( $key ), esc_attr( $key ), checked( $key, $enabled, false ), $s_disabled );
+			$html .= sprintf( '<label for="%1$s[%2$s]">%3$s</label> <br />', sanitize_key( $args['id'] ), esc_attr( $key ), $option );
 		}
 
 		$html .= '<p class="description">' . wp_kses_post( $args['desc'] ) . '</p>';

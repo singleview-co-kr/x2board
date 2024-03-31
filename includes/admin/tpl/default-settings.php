@@ -123,6 +123,20 @@ function x2b_settings_general() {
 			'type'    => 'textarea',
 			'options' => false,
 		),
+		'board_use_status'                       => array(
+			'id'      => 'board_use_status',
+			'name'    => esc_html__( 'Post status', 'x2board' ),
+			/* translators: 1: Code. */
+			'desc'    => esc_html__( 'Available post status', 'x2board' ),
+			'type'    => 'multicheck',
+			'options' => array(
+				'PUBLIC'            => esc_html__( 'PUBLIC', 'x2board' ),
+				'SECRET'            => esc_html__( 'SECRET', 'x2board' ),
+			),
+			'mandatory' => array(
+				'PUBLIC'            => 'mandatory',
+			),
+		),
 		'board_except_notice'  => array(
 			'id'      => 'board_except_notice',
 			'name'    => esc_html__( 'Exclude notices', 'x2board' ),
