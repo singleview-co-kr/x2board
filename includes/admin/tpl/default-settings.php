@@ -123,6 +123,81 @@ function x2b_settings_general() {
 			'type'    => 'textarea',
 			'options' => false,
 		),
+		'board_order_target'					=> array(
+			'id'      => 'board_order_target',
+			'name'    => esc_html__( 'Order field', 'x2board' ),
+			'desc'    => esc_html__( 'Select a field to sort.', 'x2board' ),
+			'type'    => 'select',
+			'default' => 'list_order',
+			'options' => array(
+				'list_order'            => esc_html__( 'Latest Post', 'x2board' ),  // 문서번호
+				'update_order'        => esc_html__( 'Latest updated', 'x2board' ),  // 최근 수정일
+				'regdate'            => esc_html__( 'Post date', 'x2board' ), // 등록일
+				'voted_count'        => esc_html__( 'Recommended', 'x2board' ),  // 추천 수
+				'blamed_count'            => esc_html__( 'Blamed', 'x2board' ),  // 비추천 수
+				'readed_count'        => esc_html__( 'Readed', 'x2board' ),  // 조회 수
+				'comment_count'            => esc_html__( 'Comment', 'x2board' ),  // 댓글 수
+				'title'        => esc_html__( 'Title', 'x2board' ),  // 제목
+				'nick_name'            => esc_html__( 'Nickname', 'x2board' ),  // 닉네임
+				'user_name'        => esc_html__( 'User name', 'x2board' ),  // 이름
+				'user_id'            => esc_html__( 'User ID', 'x2board' )  // 아이디
+			),
+		),
+		'board_order_type'					=> array(
+			'id'      => 'board_order_type',
+			'name'    => esc_html__( 'Order type', 'x2board' ),
+			'desc'    => esc_html__( 'Select a sort type.', 'x2board' ),
+			'type'    => 'select',
+			'default' => 'asc',
+			'options' => array(
+				'asc'            => esc_html__( 'Ascending', 'x2board' ),  // 오름차순
+				'desc'        => esc_html__( 'Descending', 'x2board' ),  // 내림차순
+			),
+		),
+		'board_except_notice'  => array(
+			'id'      => 'board_except_notice',
+			'name'    => esc_html__( 'Exclude notices', 'x2board' ),
+			'desc'    => esc_html__( 'No duplicate notice post in a post list', 'x2board' ),
+			'type'    => 'checkbox',
+			'options' => false,
+			'checked_value' => array(
+				'checked' => 'Y',
+				'unchecked'   => 'N',
+			),
+		),
+		'board_use_anonymous'  => array(
+			'id'      => 'board_use_anonymous',
+			'name'    => esc_html__( 'Use Anonymous', 'x2board' ),
+			'desc'    => esc_html__( 'Hide author personality of a board', 'x2board' ),
+			'type'    => 'checkbox',
+			'options' => false,
+			'checked_value' => array(
+				'checked' => 'Y',
+				'unchecked'   => 'N',
+			),
+		),
+		'board_consultation'  => array(
+			'id'      => 'board_consultation',
+			'name'    => esc_html__( 'Use consultation', 'x2board' ),
+			'desc'    => esc_html__( '1 on 1 consultation for a registered member only', 'x2board' ),
+			'type'    => 'checkbox',
+			'options' => false,
+			'checked_value' => array(
+				'checked' => 'Y',
+				'unchecked'   => 'N',
+			),
+		),
+		'board_protect_content'  => array(
+			'id'      => 'board_protect_content',
+			'name'    => esc_html__( 'Protect post', 'x2board' ),
+			'desc'    => esc_html__( 'A guest author cant update delete post if commented', 'x2board' ),
+			'type'    => 'checkbox',
+			'options' => false,
+			'checked_value' => array(
+				'checked' => 'Y',
+				'unchecked'   => 'N',
+			),
+		),
 		'board_use_status'                       => array(
 			'id'      => 'board_use_status',
 			'name'    => esc_html__( 'Post status', 'x2board' ),
@@ -137,45 +212,13 @@ function x2b_settings_general() {
 				'PUBLIC'            => 'mandatory',
 			),
 		),
-		'board_except_notice'  => array(
-			'id'      => 'board_except_notice',
-			'name'    => esc_html__( 'Exclude notices', 'x2board' ),
-			'desc'    => esc_html__( 'No duplicate notice post in a post list', 'x2board' ),
-			'type'    => 'checkbox',
+		'board_admin_mail'					=> array(
+			'id'      => 'board_admin_mail',
+			'name'    => esc_html__( 'Admin mail address', 'x2board' ),
+			'desc'    => esc_html__( 'Notify new post and comment via comma separted list ', 'x2board' ),
+			'type'    => 'text',
 			'options' => false,
-			'checked_value' => array(
-				'checked' => 'Y',
-				'unchecked'   => 'N',
-			),
 		),
-
-		// 'cache'                        => array(
-		// 	'id'      => 'cache',
-		// 	'name'    => esc_html__( 'Cache HTML output', 'x2board' ),
-		// 	'desc'    => esc_html__( 'Only works if the previous option is disabled. Enabling this will cache the entire HTML generated when the post is visited the first time. The cache is cleaned when you save this page. Highly recommended particularly on busy sites. Default is true.', 'x2board' ),
-		// 	'type'    => 'checkbox',
-		// 	'options' => true,
-		// ),
-		// 'add_to'                       => array(
-		// 	'id'      => 'add_to',
-		// 	'name'    => esc_html__( 'Automatically add related posts to', 'x2board' ),
-		// 	/* translators: 1: Code. */
-		// 	'desc'    => sprintf( esc_html__( 'If you choose to disable this, please add %1$s to your template file where you want it displayed', 'x2board' ), "<code>&lt;?php if ( function_exists( 'echo_crp' ) ) { echo_crp(); } ?&gt;</code>" ),
-		// 	'type'    => 'multicheck',
-		// 	'default' => array(
-		// 		'single' => 'single',
-		// 		'page'   => 'page',
-		// 	),
-		// 	'options' => array(
-		// 		'single'            => esc_html__( 'Posts', 'x2board' ),
-		// 		'page'              => esc_html__( 'Pages', 'x2board' ),
-		// 		'home'              => esc_html__( 'Home page', 'x2board' ),
-		// 		'feed'              => esc_html__( 'Feeds', 'x2board' ),
-		// 		'category_archives' => esc_html__( 'Category archives', 'x2board' ),
-		// 		'tag_archives'      => esc_html__( 'Tag archives', 'x2board' ),
-		// 		'other_archives'    => esc_html__( 'Other archives', 'x2board' ),
-		// 	),
-		// ),
 	);
 
 	/**
@@ -229,6 +272,21 @@ function x2b_settings_category() {
 			'desc'    => esc_html__( 'Select to activate board category', 'x2board' ),
 			'type'    => 'checkbox',
 			'options' => false,
+			'checked_value' => array(
+				'checked' => 'Y',
+				'unchecked'   => 'N',
+			),
+		),
+		'board_hide_category'  => array(
+			'id'      => 'board_hide_category',
+			'name'    => esc_html__( 'Hide category', 'x2board' ),
+			'desc'    => esc_html__( 'Select to hide board category', 'x2board' ),
+			'type'    => 'checkbox',
+			'options' => false,
+			'checked_value' => array(
+				'checked' => 'Y',
+				'unchecked'   => 'N',
+			),
 		),
 		// 'limit'                  => array(
 		// 	'id'      => 'limit',
