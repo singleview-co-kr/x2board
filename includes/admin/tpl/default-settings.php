@@ -123,6 +123,17 @@ function x2b_settings_general() {
 			'type'    => 'textarea',
 			'options' => false,
 		),
+		'board_except_notice'  => array(
+			'id'      => 'board_except_notice',
+			'name'    => esc_html__( 'Exclude notices', 'x2board' ),
+			'desc'    => esc_html__( 'No duplicate notice post in a post list', 'x2board' ),
+			'type'    => 'checkbox',
+			'options' => false,
+			'checked_value' => array(
+				'checked' => 'Y',
+				'unchecked'   => 'N',
+			),
+		),
 
 		// 'cache'                        => array(
 		// 	'id'      => 'cache',

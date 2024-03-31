@@ -320,13 +320,29 @@ function x2b_checkbox_callback( $args ) {
 
 	// First, we read the options collection.
 	global $A_X2B_ADMIN_BOARD_SETTINGS;
-
 	$default = isset( $args['options'] ) ? $args['options'] : '';
 	$set     = isset( $A_X2B_ADMIN_BOARD_SETTINGS[ $args['id'] ] ) ? $A_X2B_ADMIN_BOARD_SETTINGS[ $args['id'] ] : crp_get_default_option( $args['id'] );
-	$checked = ! empty( $set ) ? checked( 1, (int) $set, false ) : '';
+	
+	if( isset( $args['checked_value'] ) ) {
+		$s_checked_value = isset( $args['checked_value']['checked'] ) ? $args['checked_value']['checked'] : '1';
+		$s_unchecked_value = isset( $args['checked_value']['unchecked'] ) ? $args['checked_value']['unchecked'] : '-1';
+	}
+	else {
+		$s_checked_value = '1';
+		$s_unchecked_value = '-1';
+	}
 
-	$html  = sprintf( '<input type="hidden" name="%1$s" value="-1" />', sanitize_key( $args['id'] ) );
-	$html .= sprintf( '<input type="checkbox" id="%1$s" name="%1$s" value="1" %2$s />', sanitize_key( $args['id'] ), $checked );
+	if( $set !== '-1'){
+		if( $s_checked_value == '1' ){
+			$checked = ! empty( $set ) ? checked( 1, intval($set), false ) : '';
+		}
+		else {
+			$checked = ! empty( $set ) ? checked( $s_checked_value, $set, false ) : '';
+		}
+	}
+
+	$html  = sprintf( '<input type="hidden" name="%1$s" value="%2$s" />', sanitize_key( $args['id'] ), $s_unchecked_value );
+	$html .= sprintf( '<input type="checkbox" id="%1$s" name="%1$s" value="%2$s" %3$s />', sanitize_key( $args['id'] ), $s_checked_value, $checked );
 	$html .= ( (bool) $set !== (bool) $default ) ? '<em style="color:orange"> ' . esc_html__( 'Modified from default setting', 'x2board' ) . '</em>' : ''; // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 	$html .= '<p class="description">' . wp_kses_post( $args['desc'] ) . '</p>';
 
