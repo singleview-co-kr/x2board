@@ -93,7 +93,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			// cpage is a number of comment pages
 			/////////////////////////////////////////////////////
 			// caution URI key name is [cpage], internally cloned into [%%post_id%%_cpage]
-			// [%%post_id%%_cpage] should be moved to Context.class.php:_convert_pretty_command_uri()
 			/////////////////////////////////////////////////////
 			$cpageStr = sprintf('%d_cpage', $this->_n_wp_post_id);  // 17_cpage
 			$cpage = \X2board\Includes\Classes\Context::get($cpageStr);
@@ -105,6 +104,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			// Get a list of comments
 			$o_comment_model = \X2board\Includes\getModel('comment');
 			$output = $o_comment_model->get_comment_list($this->_n_wp_post_id, $cpage); //, $is_admin);
+// var_dump($output->page_navigation);			
 			if(!$output->toBool() || !count($output->data)) {
 				return;
 			}
@@ -128,11 +128,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			// Variable setting to be displayed on the skin
 			/////////////////////////////////////////////////////
 			// caution URI key name is [cpage], internally cloned into [%%post_id%%_cpage]
-			// [%%post_id%%_cpage] should be moved to Context.class.php:_convert_pretty_command_uri()
 			/////////////////////////////////////////////////////
 			\X2board\Includes\Classes\Context::set($cpageStr, $output->page_navigation->n_cur_page);
 			\X2board\Includes\Classes\Context::set('cpage', $output->page_navigation->n_cur_page);
-var_dump($output->total_page);
+// var_dump($output->page_navigation->n_cur_page);
 			if($output->total_page > 1) {
 				$this->comment_page_navigation = $output->page_navigation;
 			}

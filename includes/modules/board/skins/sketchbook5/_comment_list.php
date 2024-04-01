@@ -69,7 +69,6 @@
 						<a class="re_comment kboard-reply" href="<?php echo x2b_get_url('cmd', X2B_CMD_VIEW_REPLY_COMMENT,'comment_id',$comment->comment_id) ?>" onclick="<?php echo $s_onclick?> return false;" title="<?=__('Reply', 'x2board')?>"><i class="fa fa-comment"></i> <?=__('Reply', 'x2board')?></a>
 					<?php endif?>
 
-					
 					<span class="vote ui_font">
 						<a class="bd_login" href="#" onclick="kboard_comment_like(this);return false;" data-uid="<?=$comment->uid?>" title="cmd_vote"><em><i class="fa fa-thumbs-up"></i> <?=intval($comment->like)?></em></a>
 						<a class="bd_login" href="#" onclick="kboard_comment_unlike(this);return false;" data-uid="<?=$comment->uid?>" title="cmd_vote_down"><i class="fa fa-thumbs-down"></i> <?=intval($comment->unlike)?></a>
@@ -78,7 +77,7 @@
 			</li>
 			<!-- 답글 리스트 시작 -->
 			<?php //$commentBuilder->buildTreeList('list-template.php', $comment->uid, $depth+1)?>
-			<!-- 답글 리스트 끝 -->
+			<!-- 답글 리스트 끝 --> 
 
 			<!-- 댓글 입력 폼 시작 -->
 			<form id="kboard-comment-reply-form-<?=$comment->comment_id?>" method="post" action="<?php //echo $commentURL->getInsertURL()?>" class="comments-reply-form" enctype="multipart/form-data" onsubmit="return kboard_comments_execute(this);">
@@ -92,16 +91,25 @@
 
 	<!--// 댓글 페이지네이션 -->
 	<!-- <block cond="$post->comment_page_navigation"> -->
-	<?php if($post->comment_page_navigation):?>
+	<?php 
+	$cpage = \X2board\Includes\Classes\Context::get('cpage');  // cpage is set wafter \includes\classes\ModuleObject.class.php::render_skin_file() has been executed
+	if($post->comment_page_navigation):?>
 	<div class="bd_pg clear {$mi->fdb_hide}">
-		<a href="{getUrl('cpage',1)}#{$oDocument->get('document_srl')}_comment" class="direction" title="<?=__('first_page', 'x2board')?>"><i class="fa fa-angle-double-left"></i> <span><?=__('First', 'x2board')?></span></a>
-		<block loop="$page_no=$oDocument->comment_page_navigation->getNextPage()">
-			<strong cond="$cpage==$page_no" class="this">{$page_no}</strong> 
-			<a cond="$cpage!=$page_no" href="{getUrl('cpage',$page_no)}#{$oDocument->get('document_srl')}_comment">{$page_no}</a>
-		</block>
-		<a href="{getUrl('cpage',$oDocument->comment_page_navigation->last_page)}#{$oDocument->get('document_srl')}_comment" class="direction" title="<?=__('last_page', 'x2board')?>"><span><?=__('Last', 'x2board')?></span> <i class="fa fa-angle-double-right"></i></a>
+		<a href="<?php echo x2b_get_url('cpage', 1)?>#<?php echo $post->get('post_id') ?>_comment" class="direction" title="<?=__('first_page', 'x2board')?>"><i class="fa fa-angle-double-left"></i> <span><?=__('First', 'x2board')?></span></a>
+		<!-- <block loop="$page_no=$oDocument->comment_page_navigation->getNextPage()"> -->
+		<?php while($page_no = $post->comment_page_navigation->getNextPage()): ?>
+			<?php if( $cpage == $page_no ):?>	<!-- <strong cond="$cpage==$page_no" class="this"><?php //echo $page_no?></strong>  -->
+				<strong class="this"><?php echo $page_no?></strong> 
+			<?php endif?>
+			<?php if( $cpage != $page_no ):?>	 <!-- <a cond="$cpage!=$page_no" href="{getUrl('cpage',$page_no)}#{$oDocument->get('document_srl')}_comment"><?php //echo $page_no?></a> -->
+				<a href="<?php echo x2b_get_url('cpage', $page_no) ?>#<?php echo $post->get('post_id')?>_comment"><?php echo $page_no?></a>
+			<?php endif?>
+			
+		<?php endwhile?>
+		<!-- </block> -->
+		<a href="<?php echo x2b_get_url('cpage', $post->comment_page_navigation->n_last_page)?>#<?php echo $post->get('post_id') ?>_comment" class="direction" title="<?=__('last_page', 'x2board')?>"><span><?=__('Last', 'x2board')?></span> <i class="fa fa-angle-double-right"></i></a>
 	</div>
 	<?php endif?>
 	<!-- </block> -->
 </div>
-<?php wp_enqueue_script('x2board-comments-script', "{$skin_path}/script.js", array(), X2B_VERSION, true)?>
+<?php //wp_enqueue_script('x2board-comments-script', "{$skin_path}/script.js", array(), X2B_VERSION, true)?>

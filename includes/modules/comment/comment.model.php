@@ -116,18 +116,19 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 
 			// get a list of comments
 			// $module_srl = $oDocument->get('module_srl');
+
 			$board_id = $o_post->get('board_id');
 			if(!$count) {
-				// $comment_config = $this->getCommentConfig($module_srl);
-				$comment_count = null; //$comment_config->comment_count;
-				if(!$comment_count) {
-					$comment_count = 50;
-				}
+				$o_comment_config = $this->_get_comment_config();
+				$comment_count = $o_comment_config->comment_count;
+				// if(!$comment_count) {
+				// 	$comment_count = 50;
+				// }
 			}
 			else {
 				$comment_count = $count;
 			}
-
+// var_dump($comment_count);
 			// get a very last page if no page exists
 			if(!$page) {
 				$page = (int) ( ($o_post->get_comment_count() - 1) / $comment_count) + 1;
@@ -161,12 +162,11 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 			
 			global $wpdb;
 			$o_query = new \stdClass();
-			// $o_query->s_query_type = 'select';
 			$o_query->s_tables = '`'.$wpdb->prefix.'x2b_comments` as `comments` , `'.$wpdb->prefix.'x2b_comments_list` as `comments_list`';
 			$o_query->s_columns = "`comments`.*, `comments_list`.`depth` as `depth` ";
 			$o_query->s_where = "WHERE `comments_list`.`parent_post_id` = ".$n_parent_post_id." and `comments_list`.`comment_id` = `comments`.`comment_id` and `comments_list`.`head` >= 0 and `comments_list`.`arrange` >= 0 ";
 			$o_query->s_orderby = "ORDER BY `comments`.`status` desc, `comments_list`.`head` asc, `comments_list`.`arrange` asc";
-			$o_query->page = $page; //"LIMIT 0, 20";
+			$o_query->page = $page;
 			$o_query->list_count = $comment_count;
 			$o_query->page_count = $comment_count;
 			$output = \X2board\Includes\executeQueryArray($o_query);
@@ -194,6 +194,41 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 
 			return $output;
 		}
+
+		/**
+		 * Return a configuration of comments for each module
+		 * @param int $module_srl
+		 * @return object
+		 */
+		// function getCommentConfig($module_srl)
+		private function _get_comment_config() {
+			$o_board_model = \X2board\Includes\getView('board');
+			$o_board_config = $o_board_model->get_config();
+			unset($o_board_model);
+
+			$o_comment_config = new \stdClass();
+			if(is_object($o_board_config)) {
+				$o_comment_config->comment_count = $o_board_config->comment_count;
+				$o_comment_config->comment_use_vote_up = $o_board_config->comment_use_vote_up;
+				$o_comment_config->comment_use_vote_down = $o_board_config->comment_use_vote_down;
+				$o_comment_config->comment_use_validation = $o_board_config->comment_use_validation;
+			}
+			unset($o_board_config);
+
+			if(!isset($o_comment_config->comment_count)) {
+				$o_comment_config->comment_count = 50;
+			}
+			// $oModuleModel = getModel('module');
+			// $comment_config = $oModuleModel->getModulePartConfig('comment', $module_srl);
+			// if(!is_object($comment_config)) {
+			// 	$comment_config = new stdClass();
+			// }
+			// if(!isset($comment_config->comment_count)) {
+			// 	$comment_config->comment_count = 50;
+			// }
+			return $o_comment_config;
+		}
+
 
 
 //////////////////////////
@@ -858,28 +893,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 			}
 
 			return $output->data;
-		}
-
-		/**
-		 * Return a configuration of comments for each module
-		 * @param int $module_srl
-		 * @return object
-		 */
-		function getCommentConfig($module_srl)
-		{
-			$oModuleModel = getModel('module');
-			$comment_config = $oModuleModel->getModulePartConfig('comment', $module_srl);
-			if(!is_object($comment_config))
-			{
-				$comment_config = new stdClass();
-			}
-
-			if(!isset($comment_config->comment_count))
-			{
-				$comment_config->comment_count = 50;
-			}
-
-			return $comment_config;
 		}
 
 		/**

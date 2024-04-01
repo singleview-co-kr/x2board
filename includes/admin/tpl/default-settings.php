@@ -123,6 +123,13 @@ function x2b_settings_general() {
 			'type'    => 'textarea',
 			'options' => false,
 		),
+		'advanced_setup_header'					=> array(
+			'id'      => 'advanced_setup_header',
+			// 'name'    => esc_html__( 'Advanced setup', 'x2board' ),
+			'desc'    => esc_html__( 'Configuration advanced setup', 'x2board' ),
+			'type'    => 'header',
+			'options' => false,
+		),
 		'board_order_target'					=> array(
 			'id'      => 'board_order_target',
 			'name'    => esc_html__( 'Order field', 'x2board' ),
@@ -548,6 +555,58 @@ function x2b_settings_permission() {
 function x2b_settings_extra() {
 
 	$settings = array(
+		'comment_setup_header'					=> array(
+			'id'      => 'comment_setup_header',
+			// 'name'    => esc_html__( 'Advanced setup', 'x2board' ),
+			'desc'    => esc_html__( 'Configure comment', 'x2board' ),
+			'type'    => 'header',
+			'options' => false,
+		),
+		'comment_count'		      => array(
+			'id'      => 'comment_count',
+			'name'    => esc_html__( 'Number of comments', 'x2board' ),
+			'desc'    => esc_html__( 'Set number of comments on a single list', 'x2board' ),
+			'default' => '20',
+			'type'    => 'number',
+			'options' => '20',
+		),
+
+		'comment_use_vote_up'					=> array(
+			'id'      => 'comment_use_vote_up',
+			'name'    => esc_html__( 'Comment vote up', 'x2board' ),
+			'desc'    => esc_html__( 'Activate vote up for a comment', 'x2board' ),
+			'type'    => 'select',
+			'default' => 'N',
+			'options' => array(
+				'Y'            => esc_html__( 'Activate', 'x2board' ),  // 사용
+				'S'        => esc_html__( 'Activate + display', 'x2board' ),  // 사용+노출
+				'N'            => esc_html__( 'Dectivate', 'x2board' ),  // 미사용
+			),
+		),
+		'comment_use_vote_down'					=> array(
+			'id'      => 'comment_use_vote_down',
+			'name'    => esc_html__( 'Comment vote down', 'x2board' ),
+			'desc'    => esc_html__( 'Activate vote down for a comment', 'x2board' ),
+			'type'    => 'select',
+			'default' => 'N',
+			'options' => array(
+				'Y'            => esc_html__( 'Activate', 'x2board' ),  // 사용
+				'S'        => esc_html__( 'Activate + display', 'x2board' ),  // 사용+노출
+				'N'            => esc_html__( 'Dectivate', 'x2board' ),  // 미사용
+			),
+		),
+		'comment_use_validation'					=> array(
+			'id'      => 'comment_use_validation',
+			'name'    => esc_html__( 'Use comment approval', 'x2board' ),
+			'desc'    => esc_html__( 'Hide unapproved comment', 'x2board' ),
+			'type'    => 'select',
+			'default' => 'N',
+			'options' => array(
+				'N'            => esc_html__( 'Dectivate', 'x2board' ),  // 미사용
+				'Y'            => esc_html__( 'Activate', 'x2board' ),  // 사용
+			),
+		),
+
 		// 'crp_styles' => array(
 		// 	'id'      => 'crp_styles',
 		// 	'name'    => esc_html__( 'Related Posts style', 'x2board' ),

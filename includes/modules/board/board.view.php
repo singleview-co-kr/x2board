@@ -39,6 +39,17 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 
 			$this->except_notice = $this->module_info->except_notice == 'N' ? FALSE : TRUE;
 
+			// remove [post_id]_cpage from get_vars
+			$o_args = \X2board\Includes\Classes\Context::getRequestVars();
+// var_dump($o_args);
+			foreach($o_args as $name => $value) {
+				if(preg_match('/[0-9]+_cpage/', $name)) {
+					Context::set($name, '', TRUE);
+					Context::set($name, $value);
+				}
+			}
+			unset($o_args);
+
 			/**
 			 * setup the template path based on the skin
 			 * the default skin is default
@@ -551,6 +562,14 @@ var_dump(X2B_CMD_VIEW_POST);
 			// return new BaseObject();
 			// setup the skin file
 			// echo $this->render_skin_file('document');
+		}
+
+		/**
+		 * @brief get the board configuration
+		 **/
+		public function get_config() {
+			
+			return $this->module_info;
 		}
 
 		/**

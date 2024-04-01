@@ -254,7 +254,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 			$o_grant->write_comment = true;
 			// $o_grant->consultation_read = true;
 
-			$o_module_info = new \stdClass();
+			// $o_module_info = new \stdClass();
 			// $o_module_info->module = 'board';
 			// $o_module_info->skin = 'sketchb2ook5';
 			// $o_module_info->admin_mail = '';
@@ -884,11 +884,11 @@ var_dump($request_uri['query']);
 				// $get_vars = get_object_vars($self->get_vars);
 				$get_vars = get_object_vars($self->gets('cmd', 'post_id', 'page'));
 // error_log(print_r($get_vars, true));
-				if( isset( $get_vars['cmd'] ) && $get_vars['cmd'] == 'view_post' &&
-					isset( $get_vars['post_id'] ) && intval($get_vars['post_id']) > 0 ) {  // regarding view_post/10 as /10; view_post cmd malfunctions on title link of the view post UX 
-						$get_vars['cmd'] = null;
-						// unset($get_vars['post_id']);
-					}
+				// 이 조건문 작동하면 ?cmd=view_post&post_id=17&cpage=2#17_comment 와 같은 댓글 페이지 처리가 안됨
+				// if( isset( $get_vars['cmd'] ) && $get_vars['cmd'] == X2B_CMD_VIEW_POST &&
+				// 	isset( $get_vars['post_id'] ) && intval($get_vars['post_id']) > 0 ) {  // regarding view_post/10 as /10; view_post cmd malfunctions on title link of the view post UX 
+						// $get_vars['cmd'] = null;
+					// }
 			}
 			else { // POST method
 				// if(!!$self->get_vars->module) $get_vars['module'] = $self->get_vars->module;
@@ -986,6 +986,10 @@ var_dump($request_uri['query']);
 
 					$a_check_query = array( 'cmd', 'post_id' );
 					foreach( $a_check_query as $key_name ) {
+if( $key_name == 'cmd'){
+	error_log(print_r($get_vars[$key_name], true));
+}
+
 						if( isset($get_vars[$key_name]) && is_null($get_vars[$key_name]) ) {
 							unset($get_vars[$key_name]);
 						}
@@ -1017,7 +1021,10 @@ var_dump($request_uri['query']);
 							$queries[] = $key . '=' . urlencode($val);
 						}
 					}
-// error_log(print_r($queries, true));		
+if( $target == 'cmd.cpage.post_id'){
+	error_log(print_r($queries, true));		
+}
+
 					$query = get_the_permalink();
 					$n_cnt_queires = count($queries);
 					if($n_cnt_queires > 0) {

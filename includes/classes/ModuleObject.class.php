@@ -142,13 +142,12 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 			// $grant = new \stdClass();
 			// $grant->access = true;
 			// display no permission if the current module doesn't have an access privilege
-			if(!$o_grant->access) {
-				return $this->stop("msg_not_permitted");
+			if(!isset($o_grant->access)) {
+				wp_die(__('msg_not_permitted', 'x2board'));
 			}
 
 			// checks permission and action if you don't have an admin privilege
-			if(!$o_grant->manager)
-			{
+			if(!isset($o_grant->manager)) {
 				// get permission types(guest, member, manager, root) of the currently requested action
 				$permission_target = null;//$xml_info->permission->{$this->act};
 				// check manager if a permission in module.xml otherwise action if no permission
@@ -157,8 +156,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 				// 	$permission_target = 'manager';
 				// }
 				// Check permissions
-				switch($permission_target)
-				{
+				switch($permission_target) {
 					case 'root' :
 					case 'manager' :
 						$this->stop('msg_is_not_administrator');
@@ -280,7 +278,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 				echo sprintf(__('%s file does not exist.', 'x2board'), $s_skin_file_abs_path);
 			}
 			ob_start();
-			extract(Context::getAll4Skin(), EXTR_SKIP);				
+			extract(Context::getAll4Skin(), EXTR_SKIP);
 			$s_skin_file_abs_path = apply_filters('kboard_skin_file_path', $s_skin_file_abs_path ); // , $skin_name, $file, $vars, $this);
 			include $s_skin_file_abs_path;
 			return ob_get_clean();
