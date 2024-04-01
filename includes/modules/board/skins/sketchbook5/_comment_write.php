@@ -5,6 +5,9 @@ $mi_use_status='PUBLIC';
 if( $mi_cmt_wrt_position=='cmt_wrt_btm' && $post->get_comment_count() ){
 	$s_style = 'margin-top:30px';
 }
+else {
+	$s_style = null;
+}
 ?>
 <div class="cmt_editor" style="<?php echo $s_style?>">
 

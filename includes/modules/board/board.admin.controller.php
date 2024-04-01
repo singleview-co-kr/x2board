@@ -18,22 +18,106 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 		 * @brief constructor
 		 **/
 		public function __construct(){
-// error_log(print_r('boardAdminController', true));
+// var_dump('boardAdminController');
+			$o_current_user = wp_get_current_user();
+			if( !user_can( $o_current_user, 'administrator' ) || !current_user_can('manage_x2board') ) {
+				unset($o_current_user);
+				wp_die(__('You do not have permission.', 'x2board'));
+			}
+			unset($o_current_user);
 		}
 
 		/**
-		 * @brief insert borad module
+		 * @brief delete board
+		 **/
+		public function proc_delete_board($args = null) {
+			check_admin_referer( X2B_CMD_ADMIN_PROC_UPDATE_BOARD );  // check nounce
+			if( isset($_POST['delete_board']) ) {
+				// delete all post related
+				
+				// delete x2board mapper info
+				global $wpdb;
+				$wpdb->delete(
+					"{$wpdb->prefix}x2b_mapper",
+					array(
+						'board_id'   => $_POST['board_id'],
+					),
+					array('%d')
+				);
+
+				// delete WP page
+				wp_delete_post(intval($_POST['board_id']));
+			}
+			wp_redirect(admin_url('admin.php?page=x2b_disp_board_list'));
+		}
+
+		/**
+		 * @brief update board
+		 * https://wpguide.usefulparadigm.com/posts/245
+		 **/
+		public function proc_update_board($args = null) {
+			check_admin_referer( X2B_CMD_ADMIN_PROC_UPDATE_BOARD );  // check nounce
+
+			// require_once X2B_PATH . 'includes\admin\tpl\settings-page.php';
+			require_once X2B_PATH . 'includes\admin\tpl\default-settings.php';
+			require_once X2B_PATH . 'includes\admin\tpl\register-settings.php';
+
+			$_POST = stripslashes_deep($_POST);
+// var_dump($_POST);
+			$n_board_id = intval(sanitize_text_field($_POST['board_id'] ));
+			$o_rst = \X2board\Includes\Admin\Tpl\x2b_load_settings( $n_board_id );
+
+// var_dump($o_rst->s_x2b_setting_title);
+			if( $o_rst->b_ok === false ) {
+				return false;
+			}
+			
+			// handle [board_title] specially
+			if( $_POST['board_title'] != $o_rst->a_board_settings['board_title'] ) {
+				$update = array(
+					'data' => array ( 'board_title' => esc_sql(sanitize_text_field($_POST['board_title'] )) ),
+					'where' => array ( 'board_id' => esc_sql(intval($n_board_id )) ),
+				);
+				global $wpdb;
+				$wpdb->update ( "{$wpdb->prefix}x2b_mapper", $update['data'], $update['where'] );
+			}
+
+			// handle [wp_page_title] specially
+			if( $_POST['wp_page_title'] != $o_rst->a_board_settings['wp_page_title'] ) {
+				$a_update_page = array(
+					'ID'         => intval(sanitize_text_field($n_board_id )),
+					'post_title' => sanitize_text_field($_POST['wp_page_title'] ),
+				);
+				wp_update_post( $a_update_page );
+				unset( $a_update_page );
+			}
+			unset( $_POST['_wpnonce']);
+			unset( $_POST['_wp_http_referer']);
+			unset( $_POST['action']);
+			unset( $_POST['board_id']);
+			unset( $_POST['board_title']);
+			unset( $_POST['wp_page_title']);
+			unset( $_POST['submit']);
+
+// var_dump($_POST);
+			update_option( $o_rst->s_x2b_setting_title, $_POST );
+// exit;
+			wp_redirect(admin_url('admin.php?page=x2b_disp_board_update&board_id=' . $n_board_id ));
+		}
+
+		/**
+		 * @brief insert board
 		 * https://wpguide.usefulparadigm.com/posts/245
 		 **/
 		public function proc_insert_board($args = null) {
-			check_admin_referer( 'x2b_proc_admin_insert_board' );  // check nounce
-			if( !current_user_can('manage_x2board') ) {
-				wp_die(__('You do not have permission.', 'x2board'));
-			}
+			check_admin_referer( X2B_CMD_ADMIN_PROC_INSERT_BOARD );  // check nounce
+			// if( !current_user_can('manage_x2board') ) {
+			// 	wp_die(__('You do not have permission.', 'x2board'));
+			// }
 			
 			$_POST = stripslashes_deep($_POST);
-// var_dump($_POST);			
-// exit;
+var_dump($_POST);			
+exit;
 			// insert wp page
 			$a_x2b_settings = $_POST['x2b_settings'];
 			$s_wp_page_title = isset($a_x2b_settings['wp_page_title']) ? esc_sql(sanitize_text_field($a_x2b_settings['wp_page_title'])) : '';
@@ -56,13 +140,13 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 			
 			// insert x2board
 			$s_x2board_title = isset($a_x2b_settings['x2board_title']) ? esc_sql(sanitize_text_field($a_x2b_settings['x2board_title'])) : '';
-			$this->_insertNewBoard($n_page_id, $a_x2b_settings['x2board_title']);
+			$this->_insert_new_board($n_page_id, $a_x2b_settings['x2board_title']);
 // var_dump($n_page_id);			
 			unset($a_x2b_settings);
 			
 exit();			
-			if ( $page_id ) {
-				wp_redirect(admin_url('admin.php?page=x2b_disp_admin_update_board&board_id='.$n_page_id));
+			if ( $n_page_id ) {
+				wp_redirect(admin_url('admin.php?page='.X2B_CMD_ADMIN_VIEW_BOARD_UPDATE.'&board_id='.$n_page_id));
 				exit;    
 			}    
 			
@@ -147,108 +231,18 @@ exit();
 		 * Insert new Board
 		 * @return void 
 		 */
-		private function _insertNewBoard( $n_page_id, $s_x2board_title ) {
+		private function _insert_new_board( $n_page_id, $s_x2board_title ) {
 			global $wpdb;
 			$wpdb->insert(
 				"{$wpdb->prefix}x2b_mapper",
 				array(
 					'board_id'   => $n_page_id,
 					'wp_page_id'   => $n_page_id,
-					'board_name'   => $s_x2board_title,
+					'board_title'   => $s_x2board_title,
 					'create_date'  => current_time('mysql')
 				),
 				array('%d', '%d', '%s', '%s')
 			);
-		}
-		
-		/**
-		 * Board info update in basic setup page
-		 * @return void
-		 */
-		public function procBoardAdminUpdateBoardFroBasic()
-		{
-			$args = Context::getRequestVars();
-
-			// for board info
-			$args->module = 'board';
-			$args->mid = $args->board_name;
-			if(is_array($args->use_status))
-			{
-				$args->use_status = implode('|@|', $args->use_status);
-			}
-			unset($args->board_name);
-
-			if(!in_array($args->order_target, $this->order_target))
-			{
-				$args->order_target = 'list_order';
-			}
-			if(!in_array($args->order_type, array('asc', 'desc')))
-			{
-				$args->order_type = 'asc';
-			}
-
-			$oModuleController = getController('module');
-			$output = $oModuleController->updateModule($args);
-
-			// for grant info, Register Admin ID
-			$oModuleController->deleteAdminId($args->module_srl);
-			if($args->admin_member)
-			{
-				$admin_members = explode(',',$args->admin_member);
-				for($i=0;$i<count($admin_members);$i++)
-				{
-					$admin_id = trim($admin_members[$i]);
-					if(!$admin_id) continue;
-					$oModuleController->insertAdminId($args->module_srl, $admin_id);
-				}
-			}
-		}
-
-		/**
-		 * @brief delete the board module
-		 **/
-		public function procBoardAdminDeleteBoard() {
-			$module_srl = Context::get('module_srl');
-
-			// get the current module
-			$oModuleController = getController('module');
-			$output = $oModuleController->deleteModule($module_srl);
-			if(!$output->toBool()) return $output;
-
-			$this->add('module','board');
-			$this->add('page',Context::get('page'));
-			$this->setMessage('success_deleted');
-		}
-
-		public function procBoardAdminSaveCategorySettings()
-		{
-			$module_srl = Context::get('module_srl');
-			$mid = Context::get('mid');
-
-			$oModuleModel = getModel('module');
-			$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
-			if($module_info->mid != $mid)
-			{
-				return new BaseObject(-1, 'msg_invalid_request');
-			}
-
-			$module_info->hide_category = Context::get('hide_category') == 'Y' ? 'Y' : 'N';
-			$oModuleController = getController('module'); /* @var $oModuleController moduleController */
-			$output = $oModuleController->updateModule($module_info);
-			if(!$output->toBool())
-			{
-				return $output;
-			}
-
-			$this->setMessage('success_updated');
-			if (Context::get('success_return_url'))
-			{
-				$this->setRedirectUrl(Context::get('success_return_url'));
-			}
-			else
-			{
-				$this->setRedirectUrl(getNotEncodedUrl('', 'module', 'admin', 'act', 'dispBoardAdminCategoryInfo', 'module_srl', $output->get('module_srl')));
-			}
 		}
 	}
 }

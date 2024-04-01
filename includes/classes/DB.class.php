@@ -378,9 +378,12 @@ if (!class_exists('\\X2board\\Includes\\Classes\\IpFilter')) {
 		 * @return BaseObject
 		 */
 		function _executeSelectAct($queryObject) { // , $connection = null, $with_values = true)
-			// $o_query = $queryObject;
+// var_dump($queryObject);
 			if( !isset( $queryObject->s_columns ) ) {
 				wp_die('invalid columns');
+			}
+			if( !isset( $queryObject->page ) ) {
+				$queryObject->page = 1;
 			}
 			if( !isset( $queryObject->s_where ) ) {
 				$queryObject->s_where = null;
@@ -390,6 +393,12 @@ if (!class_exists('\\X2board\\Includes\\Classes\\IpFilter')) {
 			}
 			if( !isset( $queryObject->s_groupby ) ) {
 				$queryObject->s_groupby = null;
+			}
+			if( !isset( $queryObject->list_count ) ) {
+				$queryObject->list_count = null;
+			}
+			if( !isset( $queryObject->page_count ) ) {
+				$queryObject->page_count = null;
 			}
 
 			// if( isset( $queryObject->page ) ) {
@@ -498,10 +507,14 @@ if (!class_exists('\\X2board\\Includes\\Classes\\IpFilter')) {
 			if(!$page || $page < 1) {
 				$page = 1;
 			}
-
+// var_dump($total_count);
+// var_dump($list_count);
+// var_dump($page_count);
+// var_dump($page);
 			// total pages
 			if($total_count) {
 				$total_page = (int) (($total_count - 1) / $list_count) + 1;
+// var_dump($total_page);
 			}
 			else {
 				$total_page = 1;
@@ -518,7 +531,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\IpFilter')) {
 				return $buff;
 			}
 			$start_count = ($page - 1) * $list_count;
-			$s_limit = "LIMIT ".$start_count.", ".$page_count;
+			$s_limit = "LIMIT ".$start_count.", ".$list_count;
 
 			// $query = $this->getSelectPageSql($queryObject, $with_values, $start_count, $list_count);
 			// $query .= (__DEBUG_QUERY__ & 1 && $queryObject->query_id) ? sprintf(' ' . $this->comment_syntax, $this->query_id) : '';

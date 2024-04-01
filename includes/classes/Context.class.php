@@ -255,17 +255,16 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 			// $o_grant->consultation_read = true;
 
 			$o_module_info = new \stdClass();
-			$o_module_info->module = 'board';
-			$o_module_info->skin = 'sketchbook5';
-			$o_module_info->admin_mail = '';
-			$o_module_info->use_category = 'Y';
-			$o_module_info->use_anonymous = 'Y';
-			$o_module_info->use_status = '';
-			$o_module_info->mobile_use_editor = '';
-			$o_module_info->use_comment_validation = '';
-			
-			$o_module_info->list = true;
-			$o_module_info->skin_vars = new \stdClass();
+			// $o_module_info->module = 'board';
+			// $o_module_info->skin = 'sketchb2ook5';
+			// $o_module_info->admin_mail = '';
+			// $o_module_info->use_category = 'Y';
+			// $o_module_info->use_anonymous = 'Y';
+			// $o_module_info->use_status = '';
+			// $o_module_info->mobile_use_editor = '';
+			// $o_module_info->use_comment_validation = '';
+			// $o_module_info->list = true;
+			// $o_module_info->skin_vars = new \stdClass();
 			
 			if( $s_cmd_type == 'proc' ) {  // load controller priority
 				$s_cmd = isset( $_REQUEST['cmd'])?$_REQUEST['cmd'] : '';
@@ -273,7 +272,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 var_dump('detected proc cmd:'. $s_cmd);
 				if( $s_cmd_prefix === 'proc' ) {  
 					$o_controller = \X2board\Includes\getController('board');
-					$o_controller->setModuleInfo($o_module_info, $o_grant);
+					$o_controller->setModuleInfo(0, $o_grant);
 					$next_page_url = $o_controller->get('s_wp_redirect_url');
 					if ( wp_redirect( $next_page_url ) ) {
 						unset($o_controller);
@@ -297,7 +296,8 @@ var_dump('detected proc cmd:'. $s_cmd);
 var_dump('detected view cmd:'. $s_cmd);
 			if( $s_cmd_prefix === '' || $s_cmd_prefix === 'view' ) {  // load view
 				$o_view = \X2board\Includes\getModule('board');
-				$o_view->setModuleInfo($o_module_info, $o_grant);
+// var_dump(get_the_ID());
+				$o_view->setModuleInfo(get_the_ID(), $o_grant);
 				unset($o_view);
 			}
 
@@ -572,7 +572,7 @@ var_dump('detected view cmd:'. $s_cmd);
 			$a_cascaded_search_cmd = array('p' => 'page', 'cat' => 'category', 'tag' => 'tag', 
 										   'search' => 'search_target', 'q' => 'search_keyword', 
 										   'sort' => 'sort_field', 't' => 'sort_type');
-			$a_query_param = array( 'cmd'=>null, 'page'=>1,
+			$a_query_param = array( 'cmd'=>null, 'page'=>null,
 									'post_id'=>null, 'comment_id'=>null, 
 									'search_target'=>null, 'search_keyword'=>null, 
 									'sort_field'=>null, 'sort_type'=>null, 
@@ -669,52 +669,16 @@ var_dump($request_uri['query']);
 // var_dump($a_query_param);
 			// all command should be set to avoid error on skin rendering
 			foreach($a_query_param as $s_qry_name => $s_qry_val ) {
-				self::set( $s_qry_name, $s_qry_val );
+				// var_dump($s_qry_name,self::get( $s_qry_name) );
+				if( is_null(self::get( $s_qry_name) ) ){  // 기존 값이 없으면 쓰기, do not unset any value from conventional URI
+					self::set( $s_qry_name, $s_qry_val );
+				}
 			}
 			unset($a_cascaded_search_cmd);
 			unset($a_query_param);
 			unset($request_uri);
+// var_dump(self::getAll4Skin());
 		}
-
-		/**
-		 * ?post_id=xxx 값을 반환한다.
-		 * @return string
-		 */
-		// private function _get_post_id(){
-		// 	static $post_id;
-		// 	$a_rst = pretty_uri();
-		// 	if( isset($a_rst['post_id']))
-		// 		$_GET['post_id'] = $a_rst['post_id'];
-		// 	elseif( isset($a_rst['category_id']))
-		// 		$_GET['category_id'] = $a_rst['category_id'];
-		// 	if($post_id === null){
-		// 		$_GET['post_id'] = isset($_GET['post_id'])?intval($_GET['post_id']):'';
-		// 		// $_POST['post_id'] = isset($_POST['post_id'])?intval($_POST['post_id']):'';
-		// 		$post_id = $_GET['post_id']?$_GET['post_id']:$_POST['post_id'];
-		// 	}
-		// 	return apply_filters('get_post_id', $post_id);
-		// }
-
-		/**
-		 * ?mod=xxx 값을 반환한다.
-		 * @param string $default
-		 * @return string
-		 */
-		// private function _get_mod($default=''){
-		// 	static $mod;
-		// 	$a_rst = pretty_uri();
-		// 	if( isset($a_rst['mod']))
-		// 		$_GET['mod'] = $a_rst['mod'];
-		// 	if($mod === null){
-		// 		$_GET['mod'] = isset($_GET['mod'])?sanitize_key($_GET['mod']):'';
-		// 		$_POST['mod'] = isset($_POST['mod'])?sanitize_key($_POST['mod']):'';
-		// 		$mod = $_GET['mod']?$_GET['mod']:$_POST['mod'];
-		// 	}
-		// 	if(!in_array($mod, array('list', 'post', 'write_post', 'update_post', 'delete_doc'))){
-		// 		return $default;
-		// 	}
-		// 	return apply_filters('get_mod', $mod);
-		// }
 
 		private function _recursiveCheckVar($val) {
 			if(is_string($val)) {
@@ -918,7 +882,7 @@ var_dump($request_uri['query']);
 			elseif($_SERVER['REQUEST_METHOD'] == 'GET') {
 				// Otherwise, make GET variables into array
 				// $get_vars = get_object_vars($self->get_vars);
-				$get_vars = get_object_vars($self->gets('cmd', 'post_id', 'page'));  // , 'board_id'
+				$get_vars = get_object_vars($self->gets('cmd', 'post_id', 'page'));
 // error_log(print_r($get_vars, true));
 				if( isset( $get_vars['cmd'] ) && $get_vars['cmd'] == 'view_post' &&
 					isset( $get_vars['post_id'] ) && intval($get_vars['post_id']) > 0 ) {  // regarding view_post/10 as /10; view_post cmd malfunctions on title link of the view post UX 
@@ -988,7 +952,7 @@ var_dump($request_uri['query']);
 				{
 // error_log(print_r($get_vars, true));
 					$cmd = $get_vars['cmd'];
-					$page = $get_vars['page'];
+					$page = isset( $get_vars['page'] ) ? $get_vars['page'] : ''; // $get_vars['page'];
 					$post_id = isset( $get_vars['post_id'] ) ? $get_vars['post_id'] : '';
 					// $post_id = $get_vars['post_id']; // $srl = $get_vars['document_srl'];
 
@@ -1004,6 +968,7 @@ var_dump($request_uri['query']);
 						'cmd' => get_the_permalink().( strlen($cmd) > 0 ? '?'.$cmd : '' ),  // X2B_CMD_VIEW_LIST equals with blank cmd
 						'post_id' => get_the_permalink().'?'.X2B_CMD_VIEW_POST.'/'.$post_id,
 						'cmd.post_id' => get_the_permalink().'?'.$cmd.'/'.$post_id,
+						'cmd.page' => get_the_permalink().'?p/'.$page,
 						// 'cmd.comment_id.post_id' => get_the_permalink().'?'.$cmd.'/'.$post_id.'/'.$comment_id,
 						
 						// 'document_srl' => $srl,
@@ -1025,14 +990,16 @@ var_dump($request_uri['query']);
 							unset($get_vars[$key_name]);
 						}
 					}
-					if( is_null($get_vars['page']) || $get_vars['page'] == 1 ) {
-						unset($get_vars['page']);
+// error_log(print_r($get_vars['page'], true));						
+					if( isset( $get_vars['page'] ) ) {
+						if( is_null($get_vars['page']) || $get_vars['page'] == 1 ) {
+							unset($get_vars['page']);
+						}
 					}
 					
 					$var_keys = array_keys($get_vars);
 					sort($var_keys);
 					$target = join('.', $var_keys);
-// error_log(print_r($get_vars['post_id'], true));	
 // error_log(print_r($target, true));	
 					$query = isset( $target_map[$target] ) ? $target_map[$target] : null;
 				}

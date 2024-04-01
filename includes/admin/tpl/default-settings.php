@@ -81,8 +81,8 @@ function x2b_settings_general() {
 				'sketchbook5'        => esc_html__( 'sketchbook5', 'x2board' ),
 			),
 		),
-		'board_list_per_page'		      => array(
-			'id'      => 'board_list_per_page',
+		'board_list_count'		      => array(
+			'id'      => 'board_list_count',
 			'name'    => esc_html__( 'List per page', 'x2board' ),
 			'desc'    => esc_html__( '한 페이지에 표시될 글 수를 지정할 수 있습니다. (기본 20개)', 'x2board' ),
 			'type'    => 'number',

@@ -18,6 +18,13 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 
 		public function __construct(){
 			parent::__construct();
+// var_dump('boardAdminView');
+			$o_current_user = wp_get_current_user();
+			if( !user_can( $o_current_user, 'administrator' ) || !current_user_can('manage_x2board') ) {
+				unset($o_current_user);
+				wp_die(__('You do not have permission.', 'x2board'));
+			}
+			unset($o_current_user);
 		}
 		
 		/**
@@ -125,13 +132,13 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 			return array(
 					'cb' => '<input type="checkbox">',
 					// 'thumbnail' => __('썸네일', 'x2board'),
-					'wp_page_id' => __('설치된 페이지', 'x2board'),
-					'board_name' => __('게시판 이름', 'x2board'),
+					'wp_page_id' => __('Installed WP page', 'x2board'),
+					'board_name' => __('Board name', 'x2board'),
 					// 'skin' => __('스킨', 'x2board'),
 					// 'permission_read' => __('읽기권한', 'x2board'),
 					// 'permission_write' => __('쓰기권한', 'x2board'),
 					// 'permission_comments_write' => __('댓글쓰기권한', 'x2board'),
-					'create_date' => __('생성일', 'x2board'),
+					'create_date' => __('Create date', 'x2board'),
 					// 'created' => __('생성일', 'x2board'),
 			);
 		}
@@ -140,10 +147,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 			switch( $column_name ) {
 				case 'wp_page_id':
 					$o_post = get_post(intval($item->wp_page_id)); 
-					return '<A HREF='.$o_post->guid.' target="_blank">'.$o_post->post_title.' 보러 가기</A>';
+					return '<A HREF='.$o_post->guid.' target="_blank">'.$o_post->post_title.' '.__('Visit the page', 'x2board').'</A>';
 				case 'board_name':
 					$o_post = get_post(intval($item->wp_page_id)); 
-					return '<A HREF='.admin_url( 'admin.php?page=x2b_disp_board_update&board_id='.$o_post->ID ).'>'.$item->$column_name.' 관리하기</A>';
+					return '<A HREF='.admin_url( 'admin.php?page='.X2B_CMD_ADMIN_VIEW_BOARD_UPDATE.'&board_id='.$o_post->ID ).'>'.$item->$column_name.' '.__('Configure the board', 'x2board').'</A>';
 				case 'create_date':
 					return $item->$column_name;
 				default:
@@ -152,14 +159,14 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 		}
 
 		/**
-		 * @brief display the selected board module admin information
+		 * @brief display the selected board configuration
 		 **/
-		// public function disp_board_info() {
-		// 	$this->disp_insert_board();
-		// }
+		public function disp_board_update() {
+			$this->disp_board_insert();
+		}
 
 		/**
-		 * @brief display the module insert form
+		 * @brief display the board insert form
 		 **/
 		public function disp_board_insert() {
 			require_once X2B_PATH . 'includes\admin\tpl\settings-page.php';

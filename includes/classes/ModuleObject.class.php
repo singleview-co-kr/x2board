@@ -17,11 +17,11 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 		// var $mid = NULL; ///< string to represent run-time instance of Module (XE Module)
 		var $module = NULL; ///< Class name of Xe Module that is identified by mid
 		// var $module_srl = NULL; ///< integer value to represent a run-time instance of Module (XE Module)
-		var $module_info = NULL; ///< an object containing the module information
+		public $module_info = NULL; ///< an object containing the module information
 		// var $origin_module_info = NULL;
 		// var $xml_info = NULL; ///< an object containing the module description extracted from XML file
 		var $module_path = NULL; ///< a path to directory where module source code resides
-		var $act = NULL; ///< a string value to contain the action name
+		// var $act = NULL; ///< a string value to contain the action name
 		var $skin_path = NULL; ///< a path of directory where skin files reside
 		var $skin_file = NULL; ///< name of skin file
 		// var $layout_path = ''; ///< a path of directory where layout files reside
@@ -85,15 +85,36 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 		 * @param object $xml_info object containing module description
 		 * @return void
 		 * */
-		public function setModuleInfo($o_module_info, $o_grant) { // , $xml_info)
-// var_dump($o_module_info);
+		public function setModuleInfo($n_board_id, $o_grant) { // , $o_module_info, $xml_info)
 			// The default variable settings
 			// $this->mid = $module_info->mid;
 			// $this->module_srl = $module_info->module_srl;
-			$this->module_info = $o_module_info;
+
+			require_once X2B_PATH . 'includes\admin\tpl\default-settings.php';
+			require_once X2B_PATH . 'includes\admin\tpl\register-settings.php';
+			$o_rst = \X2board\Includes\Admin\Tpl\x2b_load_settings($n_board_id);
+			if( $o_rst->b_ok === false ) {
+				unset($o_rst);
+				wp_die(__('Invalid module configuration.', 'x2board'));
+			}
+
+			// unset unnecessary variables;
+			unset($o_rst->a_board_settings['board_title']);
+			unset($o_rst->a_board_settings['wp_page_title']);
+			$this->module_info = new \stdClass();
+			foreach( $o_rst->a_board_settings as $s_key => $o_val ) {
+				$s_key = str_replace('board_','',$s_key);
+				$this->module_info->$s_key = $o_val;
+			}
+			unset($o_rst);
+			// $this->module_info = (object)$o_rst->a_board_settings;
+// var_dump($this->module_info);
+// exit;
+			// $this->skin_vars = $o_module_info->skin_vars;
+
 			// $this->origin_module_info = $module_info;
 			// $this->xml_info = $xml_info;
-			// $this->skin_vars = $o_module_info->skin_vars;
+			
 			// validate certificate info and permission settings necessary in Web-services
 			$is_logged = Context::get('is_logged');
 			// $logged_info = Context::get('logged_info');

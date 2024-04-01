@@ -5,7 +5,7 @@
 <div class="bd hover_effect" >
 	<!-- 카테고리 시작 -->
 	<?php
-	if( $category_type != '' ){
+	if( false) { //$category_type != '' ){
 		$category_type = 'tree-'.$category_type;
 		$category_type = apply_filters('kboard_skin_category_type', $category_type, $board, $boardBuilder);
 		echo $skin->render($board->skin, "list-category-{$category_type}.php", $vars);
@@ -116,18 +116,91 @@
 	</div>
 </div>
 
+<?php
+$prev_page = max($page-1, 1);
+$next_page = min($page+1, $page_navigation->n_last_page);
+$mi_page_count = $this->n_page_count;
+// var_dump($prev_page);
+// var_dump($next_page);
+// var_dump($this->n_page_count);
+// var_dump($page_navigation->n_last_page);
+// var_dump($page);
+?>
+
 <div id="kboard-default-list">
-	<!-- 페이징 시작 -->
-	<div class="kboard-pagination">
-		<ul class="kboard-pagination-pages">
-			<?php // echo kboard_pagination($list->page, $list->total, $list->rpp)?>
-		</ul>
-	</div>
-	<!-- 페이징 끝 -->
-	
+	<!-- <div class="kboard-pagination">
+		<ul class="kboard-pagination-pages"> -->
+		<?php // echo kboard_pagination($list->page, $list->total, $list->rpp)?>
+		<!-- </ul>
+	</div> -->
 	<!-- 검색폼 시작 -->
 	<div class="kboard-search">
-		<form id="kboard-search-form-<?php echo $board_id?>" method="get" action="<?php echo x2b_get_url('cmd', '')?>">
+		<!-- 페이징 시작 -->
+		<!--// 페이지네이션 -->
+		<form action="./" method="get" class="bd_pg clear">
+			<fieldset>
+			<legend class="blind">Board Pagination</legend>
+			<input type="hidden" name="vid" value="{$vid}" />
+			<input type="hidden" name="mid" value="{$mid}" />
+			<input type="hidden" name="category" value="{$category}" />
+			<input type="hidden" name="search_keyword" value="{htmlspecialchars($search_keyword)}" />
+			<input type="hidden" name="search_target" value="{$search_target}" />
+			<input type="hidden" name="listStyle" value="{$mi->default_style}" />
+			
+			<?php if( $page!=$prev_page ):?>
+				<a href="<?php echo x2b_get_url('page',$prev_page,'post_id','')?>" class="direction"><i class="fa fa-angle-left"></i> Prev</a>
+			<?php endif?>
+			<?php if( $page==$prev_page ):?>
+				<strong class="direction"><i class="fa fa-angle-left"></i> Prev</strong>
+			<?php endif?>
+			<a class="frst_last bubble <?php if( $page==1 ):?> this<?php endif?>" href="<?php echo x2b_get_url('page','','post_id','')?>" title="<?php echo __('first_page', 'x2board')?>">1</a>
+			<?php if( $page>($mi_page_count)/2+2 ):?>
+				<span class="bubble"><a href="#" class="tg_btn2" data-href=".bd_go_page" title="<?php echo __('go_page', 'x2board')?>">...</a></span>
+			<?php endif?>
+
+			<!-- <block loop="$page_no=$page_navigation->getNextPage()" cond="$page_no!=1 && $page_no!=$page_navigation->last_page"> -->
+			<?php while($page_no = $page_navigation->getNextPage()) {
+				if( $page_no==1 || $page_no==$page_navigation->last_page ){
+					break;
+				}
+			?>
+				<?php if( $page==$page_no ):?>
+					<!-- <strong class="this" cond="$page==$page_no">{$page_no}</strong>  -->
+					<strong class="this"><?php echo $page_no?></strong> 
+				<?php else:?>
+					<!-- <a cond="$page!=$page_no" href="{getUrl('page',$page_no,'document_srl','')}">{$page_no}</a> -->
+					<a href="<?php echo x2b_get_url('page',$page_no,'post_id','')?>"><?php echo $page_no?></a>
+				<?php endif?>	
+			<?php }?>
+			<!-- </block> -->
+
+			<?php if( ($page+($mi_page_count+1)/2<$page_navigation->n_last_page) && ($mi_page_count+1<$page_navigation->n_last_page) ):?>
+				<!-- <span cond="($page+($mi->page_count+1)/2<$page_navigation->last_page) && ($mi->page_count+1<$page_navigation->last_page)" class="bubble"><a href="#" class="tg_btn2" data-href=".bd_go_page" title="{$lang->cmd_go_to_page}">...</a></span> -->
+				<span class="bubble"><a href="#" class="tg_btn2" data-href=".bd_go_page" title="<?php echo __('cmd_go_to_page', 'x2board')?>">...</a></span>
+			<?php endif?>
+			<?php if( $page_navigation->n_last_page!=1 ):?>
+				<a class="frst_last bubble  <?php if( $page==$page_navigation->n_last_page ):?> this <?php endif?>" href="<?php echo x2b_get_url('page', $page_navigation->n_last_page, 'post_id','')?>" title="<?php echo __('last_page', 'x2board')?>"><?php echo $page_navigation->n_last_page?></a>
+			<?php endif?>
+			<?php if( $page!=$next_page ):?>
+				<!-- <a cond="$page!=$next_page" href="{getUrl('page',$next_page,'document_srl','')}" class="direction">Next <i class="fa fa-angle-right"></i></a> -->
+				<a href="<?php echo x2b_get_url('page',$next_page,'post_id','')?>" class="direction">Next <i class="fa fa-angle-right"></i></a>
+			<?php endif?>
+			<?php if( $page==$next_page ):?>
+				<!-- <strong cond="$page==$next_page" class="direction">Next <i class="fa fa-angle-right"></i></strong> -->
+				<strong class="direction">Next <i class="fa fa-angle-right"></i></strong>
+			<?php endif?>
+			<div class="bd_go_page tg_cnt2 wrp">
+				<button type="button" class="tg_blur2"></button>
+				<input type="text" name="page" class="itx" />/ <?php echo $page_navigation->n_last_page?> <button type="submit" class="bd_btn">GO</button>
+				<span class="edge"></span>
+				<!--// ie8; --><i class="ie8_only bl"></i><i class="ie8_only br"></i>
+				<button type="button" class="tg_blur2"></button>
+			</div>
+			</fieldset>
+		<!-- </form> -->
+		<!-- 페이징 끝 -->
+		
+		<!-- <form id="kboard-search-form-<?php echo $board_id?>" method="get" action="<?php echo x2b_get_url('cmd', '')?>"> -->
 			<?php //echo $url->set('pageid', '1')->set('target', '')->set('keyword', '')->set('mod', 'list')->toInput()?>
 			
 			<select name="target">

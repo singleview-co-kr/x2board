@@ -15,7 +15,7 @@ if ( !defined( 'ABSPATH' ) ) {
     exit;  // Exit if accessed directly.
 }
 
-if ( !defined( 'X2B_DISP_LIST' ) ) {
+if ( !defined( 'X2B_CMD_VIEW_LIST' ) ) {
     // define view cmd
     define('X2B_CMD_VIEW_LIST', 'view_list');
     define('X2B_CMD_VIEW_POST', 'view_post');

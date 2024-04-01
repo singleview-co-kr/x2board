@@ -22,34 +22,33 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 		 * board module can be used in guest mode
 		 **/
 		public function init() {
-var_dump('board view init');			
+// var_dump('board view init');	
+// var_dump($this->module_info);
 			/**
 			 * setup the module general information
 			 **/
-			// 	if($this->module_info->list_count) {
-					$this->list_count = 20; //$this->module_info->list_count;
-			// 	}
-			// 	if($this->module_info->search_list_count) {
-					$this->search_list_count = 20; //$this->module_info->search_list_count;
-			// 	}
-			// 	if($this->module_info->page_count) {
-					$this->page_count = 10; //$this->module_info->page_count;
-			// 	}
+			if($this->module_info->list_count) {
+				$this->list_count = $this->module_info->list_count;
+			}
+			if($this->module_info->search_list_count) {
+				$this->search_list_count = $this->module_info->search_list_count;
+			}
+			if($this->module_info->page_count) {
+				$this->page_count = $this->module_info->page_count;
+			}
 
-			$this->except_notice = false; // $this->module_info->except_notice == 'N' ? FALSE : TRUE;
+			$this->except_notice = $this->module_info->except_notice == 'N' ? FALSE : TRUE;
 
 			/**
 			 * setup the template path based on the skin
 			 * the default skin is default
 			 **/
-			$template_path = sprintf("%sskins/%s/",$this->module_path, $this->module_info->skin);
-// var_dump($this->module_path);
-			if(!is_dir($template_path)||!$this->module_info->skin) {
-				$this->module_info->skin = 'sketchbook5';
-				$template_path = sprintf("%sskins/%s/",$this->module_path, $this->module_info->skin);
+			$s_template_path = sprintf("%sskins/%s/",$this->module_path, $this->module_info->skin);
+			if(!is_dir($s_template_path)||!$this->module_info->skin) {
+				$this->module_info->skin = 'default';
+				$s_template_path = sprintf("%sskins/%s/",$this->module_path, $this->module_info->skin);
 			}
-
-			$this->set_skin_path($template_path);
+			$this->set_skin_path($s_template_path);
 
 			\X2board\Includes\Classes\Context::set('skin_path', X2B_URL.'includes/modules/board/skins/'.$this->s_skin);
 
@@ -192,7 +191,7 @@ var_dump('board view init');
 		/**
 		 * @brief display board contents
 		 **/
-		private function _disp_content() { //_view_list()  // dispBoardContent
+		private function _disp_content() { // dispBoardContent
 var_dump(X2B_CMD_VIEW_LIST);
 			/**
 			 * check the access grant (all the grant has been set by the module object)
@@ -211,8 +210,15 @@ var_dump(X2B_CMD_VIEW_LIST);
 			 * display the search options on the screen
 			 * add extra vaiables to the search options
 			 **/
+			$a_search_option_lang_ko = array( "title_content" => "제목+내용", "title" => "제목",
+										   "content" => "내용", "comment" => "댓글", "user_name" => "이름",
+										   "user_id" => "아이디", "nick_name" => "닉네임", "tag" => "태그" ); 
 			// use search options on the template (the search options key has been declared, based on the language selected)
-			// foreach($this->search_option as $opt) $search_option[$opt] = Context::getLang($opt);
+			foreach($this->a_search_option as $opt) {
+				$search_option[$opt] = $a_search_option_lang_ko[$opt];//Context::getLang($opt);
+			}
+			unset($a_search_option_lang_ko);
+// var_dump($search_option);	
 			// $extra_keys = Context::get('extra_keys');
 			// if($extra_keys)
 			// {
@@ -231,7 +237,7 @@ var_dump(X2B_CMD_VIEW_LIST);
 			// 			unset($search_option[$signupFormElement->name]);
 			// 	}
 			// }
-			// Context::set('search_option', $search_option);
+			\X2board\Includes\Classes\Context::set('search_option', $search_option);
 
 			// $oDocumentModel = getModel('document');
 			// $statusNameList = $this->_getStatusNameList($oDocumentModel);
@@ -239,6 +245,9 @@ var_dump(X2B_CMD_VIEW_LIST);
 			// {
 			// 	Context::set('status_list', $statusNameList);
 			// }
+
+			// display the requested post
+			$this->_view_post();  // $this->dispBoardContentView();
 
 			// list config, columnList setting
 			// $oBoardModel = getModel('board');
@@ -267,9 +276,6 @@ var_dump(X2B_CMD_VIEW_LIST);
 			if(!$output->toBool()) {
 				return $this->_disp_message($output->getMessage());
 			}
-
-			// display the requested post
-			$this->_view_post();  // $this->dispBoardContentView();
 
 			/**
 			 * add javascript filters
@@ -499,18 +505,18 @@ var_dump(X2B_CMD_VIEW_POST);
 					}
 					
 					// begin - set index position of current post to find prev and next post
-					$a_post_list = \X2board\Includes\Classes\Context::get('post_list');
-					foreach( $a_post_list as $no => $o_post ) {
-						if( $n_post_id == $o_post->post_id ) {
-							\X2board\Includes\Classes\Context::set('cur_post_pos_in_list', $no);
-							break;
-						}
-					}
+					// $a_post_list = \X2board\Includes\Classes\Context::get('post_list');
+					// foreach( $a_post_list as $no => $o_post ) {
+					// 	if( $n_post_id == $o_post->post_id ) {
+					// 		\X2board\Includes\Classes\Context::set('cur_post_pos_in_list', $no);
+					// 		break;
+					// 	}
+					// }
 					// end - set index position of current post to find prev and next post
 
 					// disappear the post if it is secret
 					if($o_post->is_secret() && !$o_post->is_granted()) {
-						$o_post->add( 'content', __('thisissecret', 'x2board') );
+						$o_post->add( 'content', __('this_is_secret', 'x2board') );
 					}
 				}
 			}
@@ -552,17 +558,16 @@ var_dump(X2B_CMD_VIEW_POST);
 		 **/
 		private function _disp_post_list() {  // dispBoardContentList(){  
 			// check the grant
-			// if(!$this->grant->list)
-			// {
-			// 	Context::set('document_list', array());
-			// 	Context::set('total_count', 0);
-			// 	Context::set('total_page', 1);
-			// 	Context::set('page', 1);
-			// 	Context::set('page_navigation', new PageHandler(0,0,1,10));
-			// 	return;
-			// }
+			if(!$this->grant->list) {
+				\X2board\Includes\Classes\Context::set('post_list', array());
+				\X2board\Includes\Classes\Context::set('total_count', 0);
+				\X2board\Includes\Classes\Context::set('total_page', 1);
+				\X2board\Includes\Classes\Context::set('page', 1);
+				\X2board\Includes\Classes\Context::set('page_navigation', new PageHandler(0,0,1,10));
+				return;
+			}
 			
-			$o_post_model = \X2board\Includes\getModel('post');
+			// $o_post_model = \X2board\Includes\getModel('post');
 // var_dump($this->grant );
 
 			// setup module_srl/page number/ list number/ page count
@@ -570,63 +575,62 @@ var_dump(X2B_CMD_VIEW_POST);
 			// $o_args->module_srl = $this->module_srl;
 			$o_args->wp_page_id = \X2board\Includes\Classes\Context::get('board_id'); //$this->board_id;
 			$o_args->page = \X2board\Includes\Classes\Context::get('page');
-
-			// $o_args->list_count = $this->list_count;
-			// $o_args->page_count = $this->page_count;
-
+			$o_args->list_count = $this->module_info->list_count;
+			$o_args->page_count = $this->module_info->page_count;
+			
 			// get the search target and keyword
-			// if($this->grant->view) {
-			// 	$args->search_target = Context::get('search_target');
-			// 	$args->search_keyword = Context::get('search_keyword');
-			// }
+			if($this->grant->view) {
+				$o_args->search_target = \X2board\Includes\Classes\Context::get('search_target');
+				$o_args->search_keyword = \X2board\Includes\Classes\Context::get('search_keyword');
+			}
 
-			// $search_option = Context::get('search_option');
-			// if($search_option==FALSE)
-			// {
-			// 	$search_option = $this->search_option;
-			// }
-			// if(isset($search_option[$args->search_target])==FALSE)
-			// {
-			// 	$args->search_target = '';
-			// }
+			$a_search_option = \X2board\Includes\Classes\Context::get('search_option');
+// var_dump($this->module_info);
+			if($a_search_option==FALSE) {
+				$a_search_option = $this->a_search_option;  
+			}
+			if(isset($a_search_option[$o_args->search_target])==FALSE) {
+				$o_args->search_target = '';
+			}
 
 			// if the category is enabled, then get the category
-			// if($this->module_info->use_category=='Y')
-			// {
-			// 	$args->category_srl = Context::get('category');
-			// }
+			if($this->module_info->use_category=='Y') {
+				$o_args->category_id = \X2board\Includes\Classes\Context::get('category');
+			}
+			else {
+				$o_args->category_id = null;
+			}
 
 			// setup the sort index and order index
-			// $args->sort_index = Context::get('sort_index');
-			// $args->order_type = Context::get('order_type');
-			// if(!in_array($args->sort_index, $this->order_target))
-			// {
-			// 	$args->sort_index = $this->module_info->order_target?$this->module_info->order_target:'list_order';
-			// }
-			// if(!in_array($args->order_type, array('asc','desc')))
-			// {
-			// 	$args->order_type = $this->module_info->order_type?$this->module_info->order_type:'asc';
-			// }
-
+			$o_args->sort_index = \X2board\Includes\Classes\Context::get('sort_index');
+			$o_args->order_type = \X2board\Includes\Classes\Context::get('order_type');
+			if(!in_array($o_args->sort_index, $this->a_order_target)) {
+				$o_args->sort_index = $this->module_info->order_target ? $this->module_info->order_target : 'list_order';
+			}
+			if(!in_array($o_args->order_type, array('asc','desc'))) {
+				$o_args->order_type = $this->module_info->order_type ? $this->module_info->order_type : 'asc';
+			}
+// var_dump($o_args);
+			$o_post_model = \X2board\Includes\getModel('post');
 			// set the current page of documents
 			// $document_srl = Context::get('document_srl');
 			$post_id = \X2board\Includes\Classes\Context::get('post_id');  //$g_a_x2b_query_param['post_id'];
 			if(!$o_args->page && $post_id)
 			{
+// var_dump($o_args->page);
 				$o_post = $o_post_model->get_post($post_id);
-				if($o_post->isExists() && !$o_post->isNotice())
-				{
-					$page = $o_post_model->getDocumentPage($o_post, $o_args);
+				if($o_post->is_exists() && !$o_post->is_notice()) {
+// var_dump($o_post);					
+					$page = $o_post_model->get_post_page($o_post, $o_args);
 					\X2board\Includes\Classes\Context::set('page', $page);
 					$o_args->page = $page;
 				}
 			}
 
 			// setup the list count to be serach list count, if the category or search keyword has been set
-			// if($args->category_srl || $args->search_keyword)
-			// {
-			// 	$args->list_count = $this->search_list_count;
-			// }
+			if($o_args->category_id || $o_args->search_keyword) {
+				$o_args->list_count = $this->search_list_count;
+			}
 
 			// if the consultation function is enabled,  the get the logged user information
 			// if($this->consultation)
@@ -643,8 +647,10 @@ var_dump(X2B_CMD_VIEW_POST);
 
 			// setup the list config variable on context
 			// Context::set('list_config', $this->listConfig);
+// var_dump($o_args);			
 			// setup document list variables on context
 			$output = $o_post_model->get_post_list($o_args, $this->except_notice);  //, TRUE, $this->columnList);
+			unset($o_post_model);
 			\X2board\Includes\Classes\Context::set('post_list', $output->data);
 			\X2board\Includes\Classes\Context::set('total_count', $output->total_count);
 			\X2board\Includes\Classes\Context::set('total_page', $output->total_page);
@@ -659,7 +665,7 @@ var_dump(X2B_CMD_VIEW_POST);
 		// function dispBoardCategoryList(){
 		private function _disp_category_list() {
 // var_dump($this->module_info);	
-			if($this->module_info->use_category=='Y')  // check if the use_category option is enabled
+			if($this->module_info->use_category=='Y')  // check if the use_category option is enabled;  -1 deactivated
 			{
 				if(!$this->grant->list) { // check the grant
 					\X2board\Includes\Classes\Context::set('category_list', array());

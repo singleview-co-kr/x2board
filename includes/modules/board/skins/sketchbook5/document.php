@@ -9,7 +9,7 @@
 					<div class="fr">
 					<span class="date m_no"><?php echo $post->get_regdate('Y.m.d H:i')?></span>				
 					</div>
-					<h1 class="np_18px" itemprop="name"><a href="<?php echo esc_url(x2b_get_url('cmd', X2B_CMD_VIEW_POST, 'post_id', $post->post_id))?>"><?php echo $post->get_title()?></a></h1>
+					<h1 class="np_18px" itemprop="name"><a href="<?php echo esc_url(x2b_get_url('cmd', X2B_CMD_VIEW_POST, 'post_id', $post->post_id, 'page', ''))?>"><?php echo $post->get_title()?></a></h1>
 				</div>
 				<div class="btm_area clear">
 					<div class="side" itemprop="author">
@@ -104,6 +104,14 @@
 				</div>
 			</article>
 		</div>
+<?php		
+foreach( $post_list as $no => $o_post ) {
+	if( $post_id == $o_post->post_id ) {
+		$cur_post_pos_in_list = $no;
+		break;
+	}
+}
+?>
 		<div class="rd_ft">
 			<div class="bd_prev_next clear">
 				<div>
