@@ -17,171 +17,6 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
-/**
- * Get an option
- *
- * Looks to see if the specified setting exists, returns default if not
- *
- * @since 2.6.0
- *
- * @param string $key           Key of the option to fetch.
- * @param mixed  $default_value Default value to fetch if option is missing.
- * @return mixed
- */
-function x2b_get_option( $key = '', $default_value = null ) {
-
-	global $x2b_settings;
-
-	if ( empty( $x2b_settings ) ) {
-		$x2b_settings = x2b_get_settings();
-	}
-
-	if ( is_null( $default_value ) ) {
-		$default_value = x2b_get_default_option( $key );
-	}
-
-	$value = isset( $x2b_settings[ $key ] ) ? $x2b_settings[ $key ] : $default_value;
-
-	/**
-	 * Filter the value for the option being fetched.
-	 *
-	 * @since 2.6.0
-	 *
-	 * @param mixed   $value   Value of the option
-	 * @param mixed   $key     Name of the option
-	 * @param mixed   $default_value Default value
-	 */
-	$value = apply_filters( 'x2b_get_option', $value, $key, $default_value );
-
-	/**
-	 * Key specific filter for the value of the option being fetched.
-	 *
-	 * @since 2.6.0
-	 *
-	 * @param mixed   $value   Value of the option
-	 * @param mixed   $key     Name of the option
-	 * @param mixed   $default_value Default value
-	 */
-	return apply_filters( 'x2b_get_option_' . $key, $value, $key, $default_value );
-}
-
-
-/**
- * Update an option
- *
- * Updates an x2b setting value in both the db and the global variable.
- * Warning: Passing in a null value will remove
- *          the key from the x2b_options array.
- *
- * @since 2.6.0
- *
- * @param string          $key   The Key to update.
- * @param string|bool|int $value The value to set the key to.
- * @return boolean   True if updated, false if not.
- */
-function x2b_update_option( $key = '', $value = null ) {
-
-	// If no key, exit.
-	if ( empty( $key ) ) {
-		return false;
-	}
-
-	// If null value, delete.
-	if ( is_null( $value ) ) {
-		$remove_option = x2b_delete_option( $key );
-		return $remove_option;
-	}
-
-	// First let's grab the current settings.
-	$options = get_option( 'x2board_settings' );
-
-	/**
-	 * Filters the value before it is updated
-	 *
-	 * @since 2.6.0
-	 *
-	 * @param string|bool|int $value The value to set the key to
-	 * @param string  $key   The Key to update
-	 */
-	$value = apply_filters( 'x2b_update_option', $value, $key );
-
-	// Next let's try to update the value.
-	$options[ $key ] = $value;
-	$did_update      = update_option( 'x2board_settings', $options );
-
-	// If it updated, let's update the global variable.
-	if ( $did_update ) {
-		global $x2b_settings;
-		$x2b_settings[ $key ] = $value;
-	}
-	return $did_update;
-}
-
-
-/**
- * Remove an option
- *
- * Removes an x2b setting value in both the db and the global variable.
- *
- * @since 2.6.0
- *
- * @param string $key The Key to update.
- * @return boolean   True if updated, false if not.
- */
-function x2b_delete_option( $key = '' ) {
-
-	// If no key, exit.
-	if ( empty( $key ) ) {
-		return false;
-	}
-
-	// First let's grab the current settings.
-	$options = get_option( 'x2board_settings' );
-
-	// Next let's try to update the value.
-	if ( isset( $options[ $key ] ) ) {
-		unset( $options[ $key ] );
-	}
-
-	$did_update = update_option( 'x2board_settings', $options );
-
-	// If it updated, let's update the global variable.
-	if ( $did_update ) {
-		global $x2b_settings;
-		$x2b_settings = $options;
-	}
-	return $did_update;
-}
-
-/**
- * Validate board id function
- *
- * @since 2.6.0
- *
- * @return void
- */
-// function x2b_validate_board_id( $board_id ) {
-// 	$o_rst = new \stdClass();
-// 	$o_rst->b_ok = false;
-// 	$o_rst->s_x2b_setting_title = null;
-// 	$o_rst->s_wp_page_title = null;
-
-// 	$n_board_id = intval( sanitize_text_field($board_id));
-// 	if( intval( $board_id ) == 0 ) {
-// 		return $o_rst;
-// 	}
-// 	$o_wp_page = get_post( $n_board_id );
-// // var_dump($o_wp_page->post_title);
-// 	if( $o_wp_page->post_content != X2B_PAGE_IDENTIFIER ) {
-// 		unset($o_wp_page);
-// 		return $o_rst;
-// 	}
-// 	$o_rst->b_ok = true;
-// 	$o_rst->s_x2b_setting_title = 'x2board_settings_'.$board_id;
-// 	$o_rst->s_wp_page_title = $o_wp_page->post_title;
-// 	unset($o_wp_page);
-// 	return $o_rst;
-// }
 
 /**
  * load settings function
@@ -229,6 +64,10 @@ function x2b_load_settings( $board_id ) { // $o_board_info ) {
 // var_Dump($tab);
 		foreach ( $settings as $option ) {
 // var_Dump($option);
+			// ignore header type field
+			if ( 'header' === $option['type'] ) {
+				continue;
+			}
 			// no change if a value comes from get_option()
 			if( isset( $a_board_settings[$option['id']] )) {
 				continue;
@@ -239,11 +78,12 @@ function x2b_load_settings( $board_id ) { // $o_board_info ) {
 			} else {
 				$a_board_settings[ $option['id'] ] = 0;
 			}
-			// If an option is set.
-			if ( in_array( $option['type'], array( 'textarea', 'text', 'csv', 'numbercsv', 'posttypes', 'number', 'css' ), true ) && isset( $option['options'] ) ) {
+			// If an option is set.   'csv', 'numbercsv', 'posttypes', 'css' 
+			if ( in_array( $option['type'], array( 'textarea', 'text', 'number' ), true ) && isset( $option['options'] ) ) {
 				$a_board_settings[ $option['id'] ] = $option['options'];
 			}
-			if ( in_array( $option['type'], array( 'multicheck', 'radio', 'select', 'radiodesc', 'thumbsizes' ), true ) && isset( $option['default'] ) ) {
+			// , 'radiodesc', 'thumbsizes'
+			if ( in_array( $option['type'], array( 'multicheck', 'radio', 'select' ), true ) && isset( $option['default'] ) ) {
 				$a_board_settings[ $option['id'] ] = $option['default'];
 			}
 		}
@@ -329,34 +169,6 @@ function x2b_register_settings() {
 	);
 }
 
-/**
- * Flattens x2b_get_registered_settings() into $setting[id] => $setting[type] format.
- *
- * @since 2.6.0
- *
- * @return array Default settings
- */
-function x2b_get_registered_settings_types() {
-
-	$options = array();
-
-	// Populate some default values.
-	foreach ( x2b_get_registered_settings() as $tab => $settings ) {
-		foreach ( $settings as $option ) {
-			$options[ $option['id'] ] = $option['type'];
-		}
-	}
-
-	/**
-	 * Filters the settings array.
-	 *
-	 * @since 2.6.0
-	 *
-	 * @param array   $options Default settings.
-	 */
-	return apply_filters( 'x2b_get_settings_types', $options );
-}
-
 
 /**
  * Default settings.
@@ -422,6 +234,172 @@ function x2b_get_default_option( $key = '' ) {
 		return false;
 	}
 }
+
+
+/**
+ * Get an option
+ *
+ * Looks to see if the specified setting exists, returns default if not
+ *
+ * @since 2.6.0
+ *
+ * @param string $key           Key of the option to fetch.
+ * @param mixed  $default_value Default value to fetch if option is missing.
+ * @return mixed
+ */
+// function x2b_get_option( $key = '', $default_value = null ) {
+
+// 	global $x2b_settings;
+
+// 	if ( empty( $x2b_settings ) ) {
+// 		$x2b_settings = x2b_get_settings();
+// 	}
+
+// 	if ( is_null( $default_value ) ) {
+// 		$default_value = x2b_get_default_option( $key );
+// 	}
+
+// 	$value = isset( $x2b_settings[ $key ] ) ? $x2b_settings[ $key ] : $default_value;
+
+// 	/**
+// 	 * Filter the value for the option being fetched.
+// 	 *
+// 	 * @since 2.6.0
+// 	 *
+// 	 * @param mixed   $value   Value of the option
+// 	 * @param mixed   $key     Name of the option
+// 	 * @param mixed   $default_value Default value
+// 	 */
+// 	$value = apply_filters( 'x2b_get_option', $value, $key, $default_value );
+
+// 	/**
+// 	 * Key specific filter for the value of the option being fetched.
+// 	 *
+// 	 * @since 2.6.0
+// 	 *
+// 	 * @param mixed   $value   Value of the option
+// 	 * @param mixed   $key     Name of the option
+// 	 * @param mixed   $default_value Default value
+// 	 */
+// 	return apply_filters( 'x2b_get_option_' . $key, $value, $key, $default_value );
+// }
+
+
+/**
+ * Update an option
+ *
+ * Updates an x2b setting value in both the db and the global variable.
+ * Warning: Passing in a null value will remove
+ *          the key from the x2b_options array.
+ *
+ * @since 2.6.0
+ *
+ * @param string          $key   The Key to update.
+ * @param string|bool|int $value The value to set the key to.
+ * @return boolean   True if updated, false if not.
+ */
+// function x2b_update_option( $key = '', $value = null ) {
+
+// 	// If no key, exit.
+// 	if ( empty( $key ) ) {
+// 		return false;
+// 	}
+
+// 	// If null value, delete.
+// 	if ( is_null( $value ) ) {
+// 		$remove_option = x2b_delete_option( $key );
+// 		return $remove_option;
+// 	}
+
+// 	// First let's grab the current settings.
+// 	$options = get_option( 'x2board_settings' );
+
+// 	/**
+// 	 * Filters the value before it is updated
+// 	 *
+// 	 * @since 2.6.0
+// 	 *
+// 	 * @param string|bool|int $value The value to set the key to
+// 	 * @param string  $key   The Key to update
+// 	 */
+// 	$value = apply_filters( 'x2b_update_option', $value, $key );
+
+// 	// Next let's try to update the value.
+// 	$options[ $key ] = $value;
+// 	$did_update      = update_option( 'x2board_settings', $options );
+
+// 	// If it updated, let's update the global variable.
+// 	if ( $did_update ) {
+// 		global $x2b_settings;
+// 		$x2b_settings[ $key ] = $value;
+// 	}
+// 	return $did_update;
+// }
+
+
+/**
+ * Remove an option
+ *
+ * Removes an x2b setting value in both the db and the global variable.
+ *
+ * @since 2.6.0
+ *
+ * @param string $key The Key to update.
+ * @return boolean   True if updated, false if not.
+ */
+// function x2b_delete_option( $key = '' ) {
+
+// 	// If no key, exit.
+// 	if ( empty( $key ) ) {
+// 		return false;
+// 	}
+
+// 	// First let's grab the current settings.
+// 	$options = get_option( 'x2board_settings' );
+
+// 	// Next let's try to update the value.
+// 	if ( isset( $options[ $key ] ) ) {
+// 		unset( $options[ $key ] );
+// 	}
+
+// 	$did_update = update_option( 'x2board_settings', $options );
+
+// 	// If it updated, let's update the global variable.
+// 	if ( $did_update ) {
+// 		global $x2b_settings;
+// 		$x2b_settings = $options;
+// 	}
+// 	return $did_update;
+// }
+
+
+/**
+ * Flattens x2b_get_registered_settings() into $setting[id] => $setting[type] format.
+ *
+ * @since 2.6.0
+ *
+ * @return array Default settings
+ */
+// function x2b_get_registered_settings_types() {
+
+// 	$options = array();
+
+// 	// Populate some default values.
+// 	foreach ( x2b_get_registered_settings() as $tab => $settings ) {
+// 		foreach ( $settings as $option ) {
+// 			$options[ $option['id'] ] = $option['type'];
+// 		}
+// 	}
+
+// 	/**
+// 	 * Filters the settings array.
+// 	 *
+// 	 * @since 2.6.0
+// 	 *
+// 	 * @param array   $options Default settings.
+// 	 */
+// 	return apply_filters( 'x2b_get_settings_types', $options );
+// }
 
 
 /**
