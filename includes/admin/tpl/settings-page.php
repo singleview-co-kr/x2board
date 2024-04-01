@@ -183,7 +183,7 @@ function x2b_missing_callback( $args ) {
  */
 function x2b_header_callback( $args ) {
 
-	$html = '<p class="description">' . wp_kses_post( $args['desc'] ) . '</p>';
+	$html = '<hr><FONT SIZE="5"><B>' . wp_kses_post( $args['desc'] ) . '</FONT></B></hr>';
 
 	/**
 	 * After Settings Output filter
@@ -571,10 +571,10 @@ function x2b_select_callback( $args ) {
 		$chosen = '';
 	}
 
-	$html = sprintf( '<select id="%1$s" name="%1$s" %2$s />', sanitize_key( $args['id'] ), $chosen );
+	$html = sprintf( '<select id="%1$s" name="%1$s" %2$s />', esc_attr( $args['id'] ), $chosen );
 
 	foreach ( $args['options'] as $option => $name ) {
-		$html .= sprintf( '<option value="%1$s" %2$s>%3$s</option>', sanitize_key( $option ), selected( $option, $value, false ), $name );
+		$html .= sprintf( '<option value="%1$s" %2$s>%3$s</option>', esc_attr( $option ), selected( $option, $value, false ), $name );
 	}
 
 	$html .= '</select>';
