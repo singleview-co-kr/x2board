@@ -272,7 +272,8 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 var_dump('detected proc cmd:'. $s_cmd);
 				if( $s_cmd_prefix === 'proc' ) {  
 					$o_controller = \X2board\Includes\getController('board');
-					$o_controller->setModuleInfo(0, $o_grant);
+					$n_board_id = sanitize_text_field(intval($_REQUEST['board_id']));
+					$o_controller->setModuleInfo($n_board_id, $o_grant);
 					$next_page_url = $o_controller->get('s_wp_redirect_url');
 					if ( wp_redirect( $next_page_url ) ) {
 						unset($o_controller);
@@ -986,9 +987,9 @@ var_dump($request_uri['query']);
 
 					$a_check_query = array( 'cmd', 'post_id' );
 					foreach( $a_check_query as $key_name ) {
-if( $key_name == 'cmd'){
-	error_log(print_r($get_vars[$key_name], true));
-}
+// if( $key_name == 'cmd'){
+// 	error_log(print_r($get_vars[$key_name], true));
+// }
 
 						if( isset($get_vars[$key_name]) && is_null($get_vars[$key_name]) ) {
 							unset($get_vars[$key_name]);

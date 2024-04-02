@@ -286,7 +286,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 		// function isSecret()
 		public function is_secret() {
 			$o_post_model = \X2board\Includes\getModel('post');
-			$s_secret_tag = $o_post_model->getConfigStatus('secret');
+			$s_secret_tag = $o_post_model->get_config_status('secret');
 			unset($o_post_model);
 			return $this->get('post_status') == $s_secret_tag ? true : false;
 		}

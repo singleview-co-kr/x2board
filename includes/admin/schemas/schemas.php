@@ -53,7 +53,7 @@ dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_post` (
 `is_notice` char(1) NOT NULL DEFAULT 'N',
 `is_secret` char(1) NOT NULL DEFAULT 'N',
 `allow_search` char(1) NOT NULL DEFAULT '1',
-`allow_comment` char(1) NOT NULL DEFAULT 'Y',
+`comment_status` varchar(10) NOT NULL DEFAULT 'ALLOW',
 `post_status` varchar(10),
 `vote_count` int(11) NOT NULL,
 `uploaded_count` smallint(2) NOT NULL,

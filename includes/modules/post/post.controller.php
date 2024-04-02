@@ -49,10 +49,10 @@ var_dump('post controller init()');
 				$wp_verify_nonce = \X2board\Includes\Classes\Context::get('x2b_'.X2B_CMD_PROC_WRITE_POST.'_nonce');
 // var_dump($wp_verify_nonce);
 				if( is_null( $wp_verify_nonce ) ){
-					return new \X2board\Includes\Classes\BaseObject(-1, 'msg_invalid_request1');
+					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request1', 'x2board') );
 				}
 				if( !wp_verify_nonce($wp_verify_nonce, 'x2b_'.X2B_CMD_PROC_WRITE_POST) ){
-					return new \X2board\Includes\Classes\BaseObject(-1, 'msg_invalid_request2');
+					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request2', 'x2board') );
 				}
 			}
 
@@ -117,7 +117,7 @@ var_dump('post controller init()');
 				$obj->post_id = \X2board\Includes\getNextSequence();
 			}
 			elseif(!$manual_inserted && !$isRestore && !checkUserSequence($obj->post_id)) {
-				return new \X2board\Includes\Classes\BaseObject(-1, 'msg_not_permitted');
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', 'x2board') );
 			}
 
 			$o_post_model = \X2board\Includes\getModel('post');
@@ -125,7 +125,7 @@ var_dump('post controller init()');
 			if($obj->category_id) {
 				$category_list = $o_post_model->getCategoryList($obj->module_srl);
 				if(count($category_list) > 0 && !$category_list[$obj->category_srl]->grant) {
-					return new \X2board\Includes\Classes\BaseObject(-1, 'msg_not_permitted');
+					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', 'x2board') );
 				}
 				if(count($category_list) > 0 && !$category_list[$obj->category_srl]) {
 					$obj->category_srl = 0;
@@ -157,7 +157,7 @@ var_dump('post controller init()');
 				// user_id, user_name and nick_name already encoded
 				// $obj->user_id = htmlspecialchars_decode($o_logged_info->user_id);
 				// $obj->user_name = htmlspecialchars_decode($o_logged_info->user_name);
-				$obj->nick_name = htmlspecialchars_decode($o_logged_info->nick_name);
+				$obj->nick_name = htmlspecialchars_decode($o_logged_info->display_name);
 				$obj->email_address = $o_logged_info->email_address;
 				// $obj->homepage = $o_logged_info->homepage;
 			}
@@ -186,13 +186,13 @@ var_dump('post controller init()');
 			}
 			// An error appears if both log-in info and user name don't exist.
 			if(!$o_logged_info->ID && !$obj->nick_name) {
-				return new \X2board\Includes\Classes\BaseObject(-1,'msg_invalid_request3');
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request3', 'x2board') );
 			}
 			unset($o_logged_info);
 
 			// $obj->lang_code = Context::getLangType();
 			// Insert data into the DB
-			// if(!$obj->status) {
+			// if(!$obj->post_status) {
 			// 	$this->_checkDocumentStatusForOldVersion($obj);
 			// }
 // var_dump($obj);
@@ -241,7 +241,7 @@ var_dump('post controller init()');
 			// <option value="3">통합검색 제외</option>
 				
 			$a_new_post['allow_search'] = isset($obj->allow_search)?intval(($obj->allow_search && $obj->allow_search == '1' ) ? '2' : $obj->allow_search ): '1';
-			$a_new_post['post_status'] = sanitize_text_field($obj->status); //isset($data['status'])?sanitize_key($data['status']):'';
+			$a_new_post['post_status'] = sanitize_text_field($obj->post_status); //isset($data['status'])?sanitize_key($data['status']):'';
 			// add user agent
 			$a_new_post['ua'] = wp_is_mobile() ? 'M' : 'P';
 			$a_new_post['ipaddress'] = \X2board\Includes\get_remote_ip();
@@ -255,7 +255,7 @@ var_dump('post controller init()');
 			// 	$obj->post_id = getNextSequence();
 			// }
 			// elseif(!$manual_inserted && !$isRestore && !checkUserSequence($obj->post_id)) {
-			// 	return new \X2board\Includes\Classes\BaseObject(-1, 'msg_not_permitted');
+			// return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', 'x2board') );
 			// }
 
 			// if(!$data['member_display']){
@@ -288,7 +288,7 @@ var_dump('post controller init()');
 				$a_insert_key[] = "`$key`";
 				$a_insert_val[] = "'$value'";
 			}
-			unset($a_new_post);
+			
 			// $board = $this->getBoard();
 			// $board_total = $board->getTotal();
 			// $board_list_total = $board->getListTotal();
@@ -318,9 +318,10 @@ var_dump('post controller init()');
 			// $n_new_wp_post_id = $this->_insert_wp_post($a_new_post);
 			// $a_new_post['post_id'] = $n_new_wp_post_id;
 			if( $this->_insert_wp_post($a_new_post) === false ) {
-				return new \X2board\Includes\Classes\BaseObject(-1, 'msg_wp_post_registration_failed');
+				unset($a_new_post);
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_wp_post_registration_failed', 'x2board') );
 			}
-
+			
 			// Insert extra variables if the document successfully inserted.
 			/*$extra_keys = $o_post_model->getExtraKeys($obj->module_srl);
 			if(count($extra_keys)) {
@@ -349,61 +350,17 @@ var_dump('post controller init()');
 			if($obj->category_id) {
 				$this->updateCategoryCount($obj->module_srl, $obj->category_srl);
 			}
-			// Call a trigger (after)
-			// if($output->toBool()) {
-			// 	$trigger_output = ModuleHandler::triggerCall('document.insertDocument', 'after', $obj);
-			// 	if(!$trigger_output->toBool()) {
-			// 		$oDB->rollback();
-			// 		return $trigger_output;
-			// 	}
-			// }
 
-			// commit
-			// $oDB->commit();
-
-			// return
 			if(!$manual_inserted) {
 				$this->addGrant($a_new_post['post_id']);
 			}
 			$o_rst = new \X2board\Includes\Classes\BaseObject();
 			$o_rst->add('post_id',$a_new_post['post_id']);
 			$o_rst->add('category_id',$obj->category_id);
+			unset($a_new_post);
 // var_dump('insert_post finished without redirection');
 // exit;
 			return $o_rst;
-		}
-
-		/**
-		 * x2b post를 WP post에 복제함
-		 * @param int $content_uid
-		 * @param int $member_uid
-		 */
-		private function _insert_wp_post($a_post_param){
-			// if($content_uid && $this->search>0 && $this->search<3){
-				$a_params = array(
-					'post_author'   => $a_post_param['post_author'],
-					'post_title'    => $a_post_param['title'],
-					'post_content'  => ( $a_post_param['post_status'] == 'SECRET' || $a_post_param['post_status'] == '2' ) ? '' : $a_post_param['content'], 
-					//($this->secret || $this->search==2)?'':$this->content,
-					'post_status'   => 'publish',
-					'comment_status'=> 'closed',
-					'ping_status'   => 'closed',
-					'post_name'     => $a_post_param['post_id'],
-					'post_parent'   => $a_post_param['board_id'],
-					'post_type'     => 'x2board',
-					'post_date'     => $a_post_param['regdate']
-				);
-				// if($regdate ) {
-				// 	$a_params['post_date'] = $regdate;
-				// }
-				$result = wp_insert_post($a_params, true);
-				if( is_wp_error( $result ) ) {
-					echo $result->get_error_message();
-					return false;
-				}
-				return $result; // new WP post ID
-				// add_action('kboard_document_insert', array($this, '_setPostThumbnail'), 10, 4);
-			// }
 		}
 
 		/**
@@ -455,243 +412,301 @@ var_dump('post controller init()');
 		}
 
 		/**
-		 * Update the document
+		 * Update the post
 		 * @param object $source_obj
 		 * @param object $obj
 		 * @param bool $manual_updated
 		 * @return object
 		 */
-		function updateDocument($source_obj, $obj, $manual_updated = FALSE)
-		{
-			$logged_info = Context::get('logged_info');
-
-			if(!$manual_updated && !checkCSRF())
-			{
-				return new BaseObject(-1, 'msg_invalid_request');
+		// function updateDocument($source_obj, $obj, $manual_updated = FALSE)
+		public function update_post($o_old_post, $o_new_obj, $manual_updated = FALSE) {
+			// if(!$manual_updated && !checkCSRF()) {
+			// 	return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', 'x2board') );
+			// }
+			if(!$manual_updated) {  // check WP nonce if a guest update a old post
+				$wp_verify_nonce = \X2board\Includes\Classes\Context::get('x2b_'.X2B_CMD_PROC_MODIFY_POST.'_nonce');
+				if( is_null( $wp_verify_nonce ) ){
+					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request1', 'x2board') );
+				}
+				if( !wp_verify_nonce($wp_verify_nonce, 'x2b_'.X2B_CMD_PROC_MODIFY_POST) ){
+					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request2', 'x2board') );
+				}
 			}
 
-			if(!$source_obj->document_srl || !$obj->document_srl) return new BaseObject(-1,'msg_invalied_request');
-			if(!$obj->status && $obj->is_secret == 'Y') $obj->status = 'SECRET';
-			if(!$obj->status) $obj->status = 'PUBLIC';
+			if(!$o_old_post->post_id || !$o_new_obj->post_id) {
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', 'x2board') );
+			}
+			if(!$o_new_obj->post_status && $o_new_obj->is_secret == 'Y') {
+				$o_new_obj->post_status = 'SECRET';
+			}
+			if(!$o_new_obj->post_status) {
+				$o_new_obj->post_status = 'PUBLIC';
+			}
 
 			// Call a trigger (before)
-			$output = ModuleHandler::triggerCall('document.updateDocument', 'before', $obj);
-			if(!$output->toBool()) return $output;
+			// $output = ModuleHandler::triggerCall('document.updateDocument', 'before', $o_new_obj);
+			// if(!$output->toBool()) return $output;
 
 			// begin transaction
-			$oDB = &DB::getInstance();
-			$oDB->begin();
+			// $oDB = &DB::getInstance();
+			// $oDB->begin();
 
-			$oModuleModel = getModel('module');
-			if(!$obj->module_srl) $obj->module_srl = $source_obj->get('module_srl');
-			$module_srl = $obj->module_srl;
-			$document_config = $oModuleModel->getModulePartConfig('document', $module_srl);
-			if(!$document_config)
-			{
-				$document_config = new stdClass();
+			// $oModuleModel = getModel('module');
+			// if(!$o_new_obj->module_srl) $o_new_obj->module_srl = $o_old_post->get('module_srl');
+			// $module_srl = $o_new_obj->module_srl;
+			$document_config = null; // $oModuleModel->getModulePartConfig('document', $module_srl);
+			if(!$document_config) {
+				$document_config = new \stdClass();
 			}
-			if(!isset($document_config->use_history)) $document_config->use_history = 'N';
+			if(!isset($document_config->use_history)) {
+				$document_config->use_history = 'N';
+			}
 			$bUseHistory = $document_config->use_history == 'Y' || $document_config->use_history == 'Trace';
 
-			if($bUseHistory)
-			{
-				$args = new stdClass;
-				$args->history_srl = getNextSequence();
-				$args->document_srl = $obj->document_srl;
+			if($bUseHistory) {
+				$args = new \stdClass;
+				$args->history_srl = \X2board\Includes\getNextSequence();
+				$args->document_srl = $o_new_obj->document_srl;
 				$args->module_srl = $module_srl;
-				if($document_config->use_history == 'Y') $args->content = $source_obj->get('content');
-				$args->nick_name = $source_obj->get('nick_name');
-				$args->member_srl = $source_obj->get('member_srl');
-				$args->regdate = $source_obj->get('last_update');
-				$args->ipaddress = $_SERVER['REMOTE_ADDR'];
+				if($document_config->use_history == 'Y') {
+					$args->content = $o_old_post->get('content');
+				}
+				$args->nick_name = $o_old_post->get('nick_name');
+				$args->member_srl = $o_old_post->get('member_srl');
+				$args->regdate = $o_old_post->get('last_update');
+				$args->ipaddress = \X2board\Includes\get_remote_ip(); // $_SERVER['REMOTE_ADDR'];
 				$output = executeQuery("document.insertHistory", $args);
 			}
-			else
-			{
-				$obj->ipaddress = $source_obj->get('ipaddress');
+			else {
+				$o_new_obj->ipaddress = $o_old_post->get('ipaddress');
 			}
 			// List variables
-			if($obj->comment_status) $obj->commentStatus = $obj->comment_status;
-			if(!$obj->commentStatus) $obj->commentStatus = 'DENY';
-			if($obj->commentStatus == 'DENY') $this->_checkCommentStatusForOldVersion($obj);
-			if($obj->allow_trackback!='Y') $obj->allow_trackback = 'N';
-			// if($obj->homepage)
+			if(!$o_new_obj->comment_status) {
+				$o_new_obj->comment_status = 'DENY';
+			}
+			// if(!$o_new_obj->commentStatus) {
+			// 	$o_new_obj->commentStatus = 'DENY';
+			// }
+			// if($o_new_obj->commentStatus == 'DENY') $this->_checkCommentStatusForOldVersion($o_new_obj);
+			// if($o_new_obj->allow_trackback!='Y') $o_new_obj->allow_trackback = 'N';
+			// if($o_new_obj->homepage)
 			// {
-			// 	$obj->homepage = escape($obj->homepage);
-			// 	if(!preg_match('/^[a-z]+:\/\//i',$obj->homepage))
+			// 	$o_new_obj->homepage = escape($o_new_obj->homepage);
+			// 	if(!preg_match('/^[a-z]+:\/\//i',$o_new_obj->homepage))
 			// 	{
-			// 		$obj->homepage = 'http://'.$obj->homepage;
+			// 		$o_new_obj->homepage = 'http://'.$o_new_obj->homepage;
 			// 	}
 			// }
 			
-			if($obj->notify_message != 'Y') $obj->notify_message = 'N';
+			// if($o_new_obj->notify_message != 'Y') $o_new_obj->notify_message = 'N';
 			
 			// can modify regdate only manager
-					$grant = Context::get('grant');
-			if(!$grant->manager)
-			{
-				unset($obj->regdate);
+			$grant = \X2board\Includes\Classes\Context::get('grant');
+			if(!$grant->manager) {
+				unset($o_new_obj->regdate);
 			}
 			
 			// Serialize the $extra_vars
-			if(!is_string($obj->extra_vars)) $obj->extra_vars = serialize($obj->extra_vars);
+			// if(!is_string($o_new_obj->extra_vars)) $o_new_obj->extra_vars = serialize($o_new_obj->extra_vars);
 			// Remove the columns for automatic saving
-			unset($obj->_saved_doc_srl);
-			unset($obj->_saved_doc_title);
-			unset($obj->_saved_doc_content);
-			unset($obj->_saved_doc_message);
+			unset($o_new_obj->_saved_doc_srl);
+			unset($o_new_obj->_saved_doc_title);
+			unset($o_new_obj->_saved_doc_content);
+			unset($o_new_obj->_saved_doc_message);
 
-			$oDocumentModel = getModel('document');
+			$o_post_model = \X2board\Includes\getModel('post');
+// var_dump($o_old_post->get('category_id'));
+// var_dump(intval($o_new_obj->category_id));
 			// Set the category_srl to 0 if the changed category is not exsiting.
-			if($source_obj->get('category_srl')!=$obj->category_srl)
-			{
-				$category_list = $oDocumentModel->getCategoryList($obj->module_srl);
-				if(!$category_list[$obj->category_srl]) $obj->category_srl = 0;
+			if(intval($o_old_post->get('category_id'))!=intval($o_new_obj->category_id)) {
+				$category_list = $o_post_model->get_category_list(); //$o_new_obj->board_id);
+				if(!$category_list[$o_new_obj->category_id]) {
+					$o_new_obj->category_id = 0;
+				}
 			}
 			// Change the update order
-			$obj->update_order = getNextSequence() * -1;
+			$o_new_obj->update_order = \X2board\Includes\getNextSequence() * -1;
 			// Hash the password if it exists
-			if($obj->password)
-			{
-				$obj->password = getModel('member')->hashPassword($obj->password);
+			if($o_new_obj->password) {
+				$o_new_obj->password = getModel('member')->hashPassword($o_new_obj->password);
 			}
 
+			$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
 			// If an author is identical to the modifier or history is used, use the logged-in user's information.
-			if(Context::get('is_logged') && !$manual_updated)
-			{
-				if($source_obj->get('member_srl')==$logged_info->member_srl)
-				{
-					$obj->member_srl = $logged_info->member_srl;
-					$obj->user_name = htmlspecialchars_decode($logged_info->user_name);
-					$obj->nick_name = htmlspecialchars_decode($logged_info->nick_name);
-					$obj->email_address = $logged_info->email_address;
-					// $obj->homepage = $logged_info->homepage;
+			if(\X2board\Includes\Classes\Context::get('is_logged') && !$manual_updated)  {
+				if($o_old_post->get('post_author')==$o_logged_info->ID) {
+					$o_new_obj->post_author = $o_logged_info->ID;
+					// $o_new_obj->user_name = htmlspecialchars_decode($logged_info->user_name);
+					$o_new_obj->nick_name = htmlspecialchars_decode($o_logged_info->nick_name);
+					$o_new_obj->email_address = $o_logged_info->email_address;
+					// $o_new_obj->homepage = $logged_info->homepage;
 				}
 			}
 
-			// For the document written by logged-in user however no nick_name exists
-			if($source_obj->get('member_srl')&& !$obj->nick_name)
-			{
-				$obj->member_srl = $source_obj->get('member_srl');
-				$obj->user_name = $source_obj->get('user_name');
-				$obj->nick_name = $source_obj->get('nick_name');
-				$obj->email_address = $source_obj->get('email_address');
-				// $obj->homepage = $source_obj->get('homepage');
+			// For the post written by logged-in user however no nick_name exists
+			if($o_old_post->get('post_author') && !$o_new_obj->nick_name) {
+				$o_new_obj->post_author = $o_old_post->get('post_author');
+				// $o_new_obj->user_name = $o_old_post->get('user_name');
+				$o_new_obj->nick_name = $o_old_post->get('nick_name');
+				$o_new_obj->email_address = $o_old_post->get('email_address');
+				// $o_new_obj->homepage = $o_old_post->get('homepage');
 			}
 			// If the tile is empty, extract string from the contents.
-			$obj->title = htmlspecialchars($obj->title, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
-			settype($obj->title, "string");
-			if($obj->title == '') $obj->title = cut_str(strip_tags($obj->content),20,'...');
+			$o_new_obj->title = htmlspecialchars($o_new_obj->title, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
+			settype($o_new_obj->title, "string");
+			if($o_new_obj->title == '') {
+				$o_new_obj->title = cut_str(strip_tags($o_new_obj->content),20,'...');
+			}
 			// If no tile extracted from the contents, leave it untitled.
-			if($obj->title == '') $obj->title = 'Untitled';
+			if($o_new_obj->title == '') {
+				$o_new_obj->title = __('Untitled', 'x2board'); //'Untitled';
+			}
 			// Remove XE's own tags from the contents.
-			$obj->content = preg_replace('!<\!--(Before|After)(Document|Comment)\(([0-9]+),([0-9]+)\)-->!is', '', $obj->content);
-			if(Mobile::isFromMobilePhone() && $obj->use_editor != 'Y')
-			{
-				if($obj->use_html != 'Y')
-				{
-					$obj->content = htmlspecialchars($obj->content, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
+			// $o_new_obj->content = preg_replace('!<\!--(Before|After)(Document|Comment)\(([0-9]+),([0-9]+)\)-->!is', '', $o_new_obj->content);
+			if( !isset($o_new_obj->use_editor) ) {
+				$o_new_obj->use_editor = 'N';
+				$o_new_obj->use_html = 'N';
+			}
+			if(wp_is_mobile() && $o_new_obj->use_editor != 'Y') {
+				if($o_new_obj->use_html != 'Y') {
+					$o_new_obj->content = htmlspecialchars($o_new_obj->content, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
 				}
-				$obj->content = nl2br($obj->content);
+				$o_new_obj->content = nl2br($o_new_obj->content);
 			}
 			// Remove iframe and script if not a top adminisrator in the session.
-			if($logged_info->is_admin != 'Y')
-			{
-				$obj->content = removeHackTag($obj->content);
+			if($o_logged_info->is_admin != 'Y') {
+				$o_new_obj->content = \X2board\Includes\removeHackTag($o_new_obj->content);
 			}
 			// Change not extra vars but language code of the original document if document's lang_code is different from author's setting.
-			if($source_obj->get('lang_code') != Context::getLangType())
-			{
-				// Change not extra vars but language code of the original document if document's lang_code doesn't exist.
-				if(!$source_obj->get('lang_code'))
-				{
-					$lang_code_args->document_srl = $source_obj->get('document_srl');
-					$lang_code_args->lang_code = Context::getLangType();
-					$output = executeQuery('document.updateDocumentsLangCode', $lang_code_args);
-				}
-				else
-				{
-					$extra_content = new stdClass;
-					$extra_content->title = $obj->title;
-					$extra_content->content = $obj->content;
+			// if($o_old_post->get('lang_code') != Context::getLangType())
+			// {
+			// 	// Change not extra vars but language code of the original document if document's lang_code doesn't exist.
+			// 	if(!$o_old_post->get('lang_code'))
+			// 	{
+			// 		$lang_code_args->document_srl = $o_old_post->get('document_srl');
+			// 		$lang_code_args->lang_code = Context::getLangType();
+			// 		$output = executeQuery('document.updateDocumentsLangCode', $lang_code_args);
+			// 	}
+			// 	else
+			// 	{
+			// 		$extra_content = new stdClass;
+			// 		$extra_content->title = $o_new_obj->title;
+			// 		$extra_content->content = $o_new_obj->content;
 
-					$document_args = new stdClass;
-					$document_args->document_srl = $source_obj->get('document_srl');
-					$document_output = executeQuery('document.getDocument', $document_args);
-					$obj->title = $document_output->data->title;
-					$obj->content = $document_output->data->content;
-				}
-			}
+			// 		$document_args = new stdClass;
+			// 		$document_args->document_srl = $o_old_post->get('document_srl');
+			// 		$document_output = executeQuery('document.getDocument', $document_args);
+			// 		$o_new_obj->title = $document_output->data->title;
+			// 		$o_new_obj->content = $document_output->data->content;
+			// 	}
+			// }
 			// if temporary document, regdate is now setting
-			if($source_obj->get('status') == $this->getConfigStatus('temp')) $obj->regdate = date('YmdHis');
+			if($o_old_post->get('status') == $this->get_config_status('temp')) {
+				$o_new_obj->regdate = date('Y-m-d H:i:s', current_time('timestamp')); //date('YmdHis');
+			}
 
 			// Insert data into the DB
-			$output = executeQuery('document.updateDocument', $obj);
-			if(!$output->toBool())
-			{
-				$oDB->rollback();
-				return $output;
+			// $output = executeQuery('document.updateDocument', $o_new_obj);
+			// if(!$output->toBool())
+			// {
+			// 	$oDB->rollback();
+			// 	return $output;
+			// }
+
+			// sanitize
+			$a_new_post = array();
+			$a_ignore_key = array('use_editor', 'use_html');  // 'post_id', 
+			foreach($o_new_obj as $s_key => $s_val ) {
+				if( !in_array($s_key, $a_ignore_key) && isset($s_val) ) {
+					$a_new_post[$s_key] = esc_sql($s_val);
+				}
 			}
+
+// var_dump($a_new_post);
+			global $wpdb;
+			$result = $wpdb->update ( "{$wpdb->prefix}x2b_post", $a_new_post, array ( 'post_id' => esc_sql(intval($a_new_post['post_id'] )) ) );
+			if( $result < 0 || $result === false ){
+// var_dump($wpdb->last_error);					
+				return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error );
+			}
+			
+// var_dump($n_wp_post_id);
+// exit;
+			
+			if( $this->_update_wp_post($a_new_post) === false ) {
+				unset($a_new_post);
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_wp_post_update_failed', 'x2board') );
+			}
+			unset($a_ignore_key);
+			unset($a_new_post);
+// exit;
+
 			// Remove all extra variables
-			if(Context::get('act')!='procFileDelete')
-			{
-				$this->deleteDocumentExtraVars($source_obj->get('module_srl'), $obj->document_srl, null, Context::getLangType());
-				// Insert extra variables if the document successfully inserted.
-				$extra_keys = $oDocumentModel->getExtraKeys($obj->module_srl);
-				if(count($extra_keys))
-				{
-					foreach($extra_keys as $idx => $extra_item)
-					{
-						$value = NULL;
-						if(isset($obj->{'extra_vars'.$idx}))
-						{
-							$tmp = $obj->{'extra_vars'.$idx};
-							if(is_array($tmp))
-								$value = implode('|@|', $tmp);
-							else
-								$value = trim($tmp);
-						}
-						else if(isset($obj->{$extra_item->name})) $value = trim($obj->{$extra_item->name});
-						if($value == NULL) continue;
-						$this->insertDocumentExtraVar($obj->module_srl, $obj->document_srl, $idx, $value, $extra_item->eid);
-					}
-				}
-				// Inert extra vars for multi-language support of title and contents.
-				if($extra_content->title) $this->insertDocumentExtraVar($obj->module_srl, $obj->document_srl, -1, $extra_content->title, 'title_'.Context::getLangType());
-				if($extra_content->content) $this->insertDocumentExtraVar($obj->module_srl, $obj->document_srl, -2, $extra_content->content, 'content_'.Context::getLangType());
-			}
-			// Update the category if the category_srl exists.
-			if($source_obj->get('category_srl') != $obj->category_srl || $source_obj->get('module_srl') == $logged_info->member_srl)
-			{
-				if($source_obj->get('category_srl') != $obj->category_srl) $this->updateCategoryCount($obj->module_srl, $source_obj->get('category_srl'));
-				if($obj->category_srl) $this->updateCategoryCount($obj->module_srl, $obj->category_srl);
-			}
-			// Call a trigger (after)
-			if($output->toBool())
-			{
-				$trigger_output = ModuleHandler::triggerCall('document.updateDocument', 'after', $obj);
-				if(!$trigger_output->toBool())
-				{
-					$oDB->rollback();
-					return $trigger_output;
+			if(false) //Context::get('act')!='procFileDelete')
+			// {
+			// 	$this->deleteDocumentExtraVars($o_old_post->get('module_srl'), $o_new_obj->document_srl, null, Context::getLangType());
+			// 	// Insert extra variables if the document successfully inserted.
+			// 	$extra_keys = $o_post_model->getExtraKeys($o_new_obj->module_srl);
+			// 	if(count($extra_keys))
+			// 	{
+			// 		foreach($extra_keys as $idx => $extra_item)
+			// 		{
+			// 			$value = NULL;
+			// 			if(isset($o_new_obj->{'extra_vars'.$idx}))
+			// 			{
+			// 				$tmp = $o_new_obj->{'extra_vars'.$idx};
+			// 				if(is_array($tmp))
+			// 					$value = implode('|@|', $tmp);
+			// 				else
+			// 					$value = trim($tmp);
+			// 			}
+			// 			else if(isset($o_new_obj->{$extra_item->name})) $value = trim($o_new_obj->{$extra_item->name});
+			// 			if($value == NULL) continue;
+			// 			$this->insertDocumentExtraVar($o_new_obj->module_srl, $o_new_obj->document_srl, $idx, $value, $extra_item->eid);
+			// 		}
+			// 	}
+			// 	// Inert extra vars for multi-language support of title and contents.
+			// 	if($extra_content->title) {
+			// 		$this->insertDocumentExtraVar($o_new_obj->module_srl, $o_new_obj->document_srl, -1, $extra_content->title, 'title_'.Context::getLangType());
+			// 	}
+			// 	if($extra_content->content) {
+			// 		$this->insertDocumentExtraVar($o_new_obj->module_srl, $o_new_obj->document_srl, -2, $extra_content->content, 'content_'.Context::getLangType());
+			// 	}
+			// }
+			// Update the category if the category_id exists.
+			if($o_old_post->get('category_id') != $o_new_obj->category_id || $o_old_post->get('board_id') == $o_logged_info->ID) {
+				if($o_old_post->get('category_id') != $o_new_obj->category_id) {
+					$this->updateCategoryCount($o_new_obj->board_id, $o_old_post->get('category_id'));
+				} 
+				if($o_new_obj->category_id) {
+					$this->updateCategoryCount($o_new_obj->board_id, $o_new_obj->category_id);
 				}
 			}
+			unset($o_logged_info);
+			unset($o_old_post);
 
 			// commit
-			$oDB->commit();
+			// $oDB->commit();
 			// Remove the thumbnail file
-			FileHandler::removeDir(sprintf('files/thumbnails/%s',getNumberingPath($obj->document_srl, 3)));
+			// FileHandler::removeDir(sprintf('files/thumbnails/%s',getNumberingPath($o_new_obj->document_srl, 3)));
 
-			$output->add('document_srl',$obj->document_srl);
+			$o_rst = new \X2board\Includes\Classes\BaseObject();
+			$o_rst->add('post_id',$o_new_obj->post_id);
+			$o_rst->add('category_id',$o_new_obj->category_id);
+			unset($o_new_obj);
+// var_dump('insert_post finished without redirection');
+// exit;
+			return $o_rst;
+
+			
 			//remove from cache
-			$oCacheHandler = CacheHandler::getInstance('object');
-			if($oCacheHandler->isSupport())
-			{
-				//remove document item from cache
-				$cache_key = 'document_item:'. getNumberingPath($obj->document_srl) . $obj->document_srl;
-				$oCacheHandler->delete($cache_key);
-			}
-
+			// $oCacheHandler = CacheHandler::getInstance('object');
+			// if($oCacheHandler->isSupport())
+			// {
+			// 	//remove document item from cache
+			// 	$cache_key = 'document_item:'. getNumberingPath($o_new_obj->document_srl) . $o_new_obj->document_srl;
+			// 	$oCacheHandler->delete($cache_key);
+			// }
 			return $output;
 		}
 
@@ -785,6 +800,76 @@ var_dump('post controller init()');
 
 			return $output;
 		}
+
+		/**
+		 * x2b post를 WP post에 복제함
+		 * @param int $a_post_param
+		 */
+		private function _insert_wp_post($a_post_param){
+			// if($content_uid && $this->search>0 && $this->search<3){
+				$a_params = array(
+					'post_author'   => $a_post_param['post_author'],
+					'post_title'    => $a_post_param['title'],
+					'post_content'  => ( $a_post_param['post_status'] == 'SECRET' || $a_post_param['post_status'] == '2' ) ? '' : $a_post_param['content'], 
+					//($this->secret || $this->search==2)?'':$this->content,
+					'post_status'   => 'publish',
+					'comment_status'=> 'closed',
+					'ping_status'   => 'closed',
+					'post_name'     => $a_post_param['post_id'],
+					'post_parent'   => $a_post_param['board_id'],
+					'post_type'     => X2B_DOMAIN,
+					'post_date'     => $a_post_param['regdate']
+				);
+				// if($regdate ) {
+				// 	$a_params['post_date'] = $regdate;
+				// }
+				$result = wp_insert_post($a_params, true);
+				if( is_wp_error( $result ) ) {
+					echo $result->get_error_message();
+					return false;
+				}
+				return $result; // new WP post ID
+				// add_action('kboard_document_insert', array($this, '_setPostThumbnail'), 10, 4);
+			// }
+		}
+
+		/**
+		 * x2b post를 WP post에 수정함
+		 * @param int $a_post_param
+		 */
+		private function _update_wp_post($a_post_param){
+			$n_wp_post_id = $this->_get_wp_post_id( $a_post_param['post_id'] );
+			$o_post = get_post( intval($n_wp_post_id) );
+			$o_post->post_content = $a_post_param['post_author'];
+			$o_post->post_title = $a_post_param['title'];
+			$o_post->post_content = ( $a_post_param['post_status'] == 'SECRET' || $a_post_param['post_status'] == '2' ) ? '' : $a_post_param['content'];
+			$result = wp_update_post($o_post);
+// var_dump($result);
+			if( is_wp_error( $result ) ) {
+				echo $result->get_error_message();
+				return false;
+			}
+			return $result; // old WP post ID
+			// add_action('kboard_document_insert', array($this, '_setPostThumbnail'), 10, 4);
+		}
+
+		/**
+		 * wp_posts 테이블에 등록된 x2b_post의 ID 값을 가져온다.
+		 */
+		private function _get_wp_post_id($n_x2b_post_id) {
+			global $wpdb;
+			$n_x2b_post_id = esc_sql( $n_x2b_post_id );
+			$n_wp_post_id = $wpdb->get_var("SELECT `ID` FROM `{$wpdb->prefix}posts` WHERE `post_name`='$n_x2b_post_id' AND `post_type`='".X2B_DOMAIN."'");
+			if(!$n_wp_post_id){
+				$n_wp_post_id = $wpdb->get_var("SELECT `ID` FROM `{$wpdb->prefix}posts` WHERE `post_name`='{$n_x2b_post_id}__trashed' AND `post_type`='".X2B_DOMAIN."'");
+			}
+			return intval($n_wp_post_id);
+		}
+
+
+
+
+
 /////////////////////////////////////////////////
 
 		/**
@@ -2692,7 +2777,7 @@ var_dump($comment_count);
 			$obj = Context::getRequestVars();
 			// Change the target module to log-in information
 			$obj->module_srl = $module_info->module_srl;
-			$obj->status = $this->getConfigStatus('temp');
+			$obj->post_status = $this->getConfigStatus('temp');
 			unset($obj->is_notice);
 
 			// Extract from beginning part of contents in the guestbook
@@ -2718,7 +2803,7 @@ var_dump($comment_count);
 					return new BaseObject(-1, 'msg_invalid_request');
 				}
 				//if exist document status is already public, use temp status can point problem
-				$obj->status = $oDocument->get('status');
+				$obj->post_status = $oDocument->get('status');
 				$output = $oDocumentController->updateDocument($oDocument, $obj);
 				$msg_code = 'success_updated';
 				// Otherwise, get a new
@@ -2839,8 +2924,8 @@ var_dump($comment_count);
 		 */
 		// function _checkDocumentStatusForOldVersion(&$obj)
 		// {
-		// 	if(!$obj->status && $obj->is_secret == 'Y') $obj->status = $this->getConfigStatus('secret');
-		// 	if(!$obj->status && $obj->is_secret != 'Y') $obj->status = $this->getConfigStatus('public');
+		// 	if(!$obj->post_status && $obj->is_secret == 'Y') $obj->post_status = $this->getConfigStatus('secret');
+		// 	if(!$obj->post_status && $obj->is_secret != 'Y') $obj->post_status = $this->getConfigStatus('public');
 		// }
 
 		/**

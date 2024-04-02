@@ -31,6 +31,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 		 * @return void
 		 */
 		function __construct() {
+			global $G_X2B_CACHE;
+			if(!isset($G_X2B_CACHE['EXTRA_VARS'])) {
+				$G_X2B_CACHE['EXTRA_VARS'] = array();
+			}
 
 			$this->default_fields = array(
 				'title' => array(
@@ -490,7 +494,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 				$virtual_number--;
 			}
 
-			// if($load_extra_vars) $this->setToAllDocumentExtraVars();
+			if($load_extra_vars) {
+				$this->_set_to_all_post_extra_vars();
+			}
 
 			if(count($output->data)) {
 				foreach($output->data as $number => $post) {
@@ -546,7 +552,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 				}
 				$result->data[$post_id] = $G_X2B_CACHE['POST_LIST'][$post_id];
 			}
-			// $this->setToAllDocumentExtraVars();
+			$this->_set_to_all_post_extra_vars();
 // var_dump($G_X2B_CACHE);
 			foreach($result->data as $post_id => $val) {
 				$result->data[$post_id] = $G_X2B_CACHE['POST_LIST'][$post_id];
@@ -561,6 +567,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 		 * @param array $columnList
 		 * @return array
 		 */
+		// function getCategoryList()
 		function get_category_list($columnList = array()) {  // $module_srl, 
 			// $module_srl = (int)$module_srl;
 			$n_board_id = \X2board\Includes\Classes\Context::get('board_id');
@@ -575,9 +582,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			// include($filename);
 
 			// Cleanup of category
-			$document_category = array();
-			// $this->_arrangeCategory($document_category, $menu->list, 0);
-			return $document_category;
+			$post_category = array();
+			// $this->_arrangeCategory($post_category, $menu->list, 0);
+			return $post_category;
 		}
 
 		/**
@@ -625,7 +632,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 				}
 				$G_X2B_CACHE['POST_LIST'][$n_post_id] = $o_post;
 				if($load_extra_vars) {
-					// $this->setToAllDocumentExtraVars();
+					$this->_set_to_all_post_extra_vars();
 				}
 			}
 			if($is_admin) {
@@ -647,12 +654,15 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 				// Extended to extract the values of variables set
 				// $o_post = $this->getDocument($board_id, false);
 				$G_X2B_CACHE['POST_LIST'][$board_id] = $this->get_post($board_id, false); //$o_post;
-				// $this->setToAllDocumentExtraVars();
+				$this->_set_to_all_post_extra_vars();
 			}
-			if(is_array($G_X2B_CACHE['EXTRA_VARS'][$board_id])) {
-				ksort($G_X2B_CACHE['EXTRA_VARS'][$board_id]);
-			} 
-			return $G_X2B_CACHE['EXTRA_VARS'][$board_id];
+			if(isset($G_X2B_CACHE['EXTRA_VARS'][$board_id])) {
+				if(is_array($G_X2B_CACHE['EXTRA_VARS'][$board_id])) {
+					ksort($G_X2B_CACHE['EXTRA_VARS'][$board_id]);
+				} 
+				return $G_X2B_CACHE['EXTRA_VARS'][$board_id];
+			}
+			return null;
 		}
 
 		/**
@@ -660,33 +670,33 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 		 * @return void
 		 */
 		// function setToAllDocumentExtraVars()
-		public function setToAllDocumentExtraVars()
-		{
+		private function _set_to_all_post_extra_vars() {
 			global $G_X2B_CACHE;
 			static $checked_documents = array();
-			$_document_list = &$G_X2B_CACHE['POST_LIST'];
+			$_post_list = &$G_X2B_CACHE['POST_LIST'];
 
 			// X2B POST_LIST all posts that the object referred to the global variable settings
-			if(count($_document_list) <= 0) {
+			if(count($_post_list) <= 0) {
 				return;
 			}
 
 			// Find all called the document object variable has been set extension
-			$document_srls = array();
-			foreach($_document_list as $key => $val) {
+			$post_ids = array();
+			foreach($_post_list as $key => $val) {
 				if(!$val->document_srl || $checked_documents[$val->document_srl]) {
 					continue;
 				}
 				$checked_documents[$val->document_srl] = true;
-				$document_srls[] = $val->document_srl;
+				$post_ids[] = $val->document_srl;
 			}
+				
 			// If the document number, return detected
-			if(!count($document_srls)) {
+			if(!count($post_ids)) {
 				return;
 			}
 			// Expand variables mijijeongdoen article about a current visitor to the extension of the language code, the search variable
-			//$obj->document_srl = implode(',',$document_srls);
-			$output = $this->getDocumentExtraVarsFromDB($document_srls);
+			//$obj->document_srl = implode(',',$post_ids);
+			$output = $this->getDocumentExtraVarsFromDB($post_ids);
 			if($output->toBool() && $output->data) {
 				foreach($output->data as $key => $val) {
 					if(!isset($val->value)) {
@@ -700,16 +710,16 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			}
 
 			$user_lang_code = Context::getLangType();
-			for($i=0,$c=count($document_srls);$i<$c;$i++)
+			for($i=0,$c=count($post_ids);$i<$c;$i++)
 			{
-				$document_srl = $document_srls[$i];
+				$document_srl = $post_ids[$i];
 				unset($vars);
 
-				if(!$_document_list[$document_srl] || !is_object($_document_list[$document_srl]) || !$_document_list[$document_srl]->isExists()) continue;
-				$module_srl = $_document_list[$document_srl]->get('module_srl');
+				if(!$_post_list[$document_srl] || !is_object($_post_list[$document_srl]) || !$_post_list[$document_srl]->isExists()) continue;
+				$module_srl = $_post_list[$document_srl]->get('module_srl');
 				$extra_keys = $this->getExtraKeys($module_srl);
 				$vars = $extra_vars[$document_srl];
-				$document_lang_code = $_document_list[$document_srl]->get('lang_code');
+				$document_lang_code = $_post_list[$document_srl]->get('lang_code');
 				// Expand the variable processing
 				if(count($extra_keys))
 				{
@@ -729,9 +739,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 				$evars = new ExtraVar($module_srl);
 				$evars->setExtraVarKeys($extra_keys);
 				// Title Processing
-				if($vars[-1][$user_lang_code]) $_document_list[$document_srl]->add('title',$vars[-1][$user_lang_code]);
+				if($vars[-1][$user_lang_code]) $_post_list[$document_srl]->add('title',$vars[-1][$user_lang_code]);
 				// Information processing
-				if($vars[-2][$user_lang_code]) $_document_list[$document_srl]->add('content',$vars[-2][$user_lang_code]);
+				if($vars[-2][$user_lang_code]) $_post_list[$document_srl]->add('content',$vars[-2][$user_lang_code]);
 				
 				// static 데이터를 갱신해주기 위해 들어간 코드같으나 어차피 언어 변경 자체는 페이지 전환이 일어나면서 발생하는게 대부분이라 효용이 없음. 또한 예기치않게 권한이 없는 다국어 문서 내용을 보여주는 부효과가 일어남		
 				/*		
@@ -741,7 +751,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 				}
 				*/
 
-				$GLOBALS['EXTRA_VARS'][$document_srl] = $evars->getExtraVars();
+				$G_X2B_CACHE['EXTRA_VARS'][$document_srl] = $evars->getExtraVars();
 			}
 		}
 
@@ -1003,7 +1013,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 				// 	$args->statusList = array($this->getConfigStatus('secret'), $this->getConfigStatus('public'), $this->getConfigStatus('temp'));
 				// }
 				// else {
-					$args->statusList = array($this->getConfigStatus('secret'), $this->getConfigStatus('public'));
+					$args->statusList = array($this->get_config_status('secret'), $this->get_config_status('public'));
 				// }
 			}
 
@@ -1234,6 +1244,20 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			return $o_query_rst;
 		}
 
+		/**
+		 * Return status name list
+		 * @return array
+		 */
+		// function getStatusNameList()
+		public function get_status_name_list() {
+			global $lang;
+			if(!isset($lang->status_name_list)) {
+				return array_flip($this->get_status_list());
+			}
+			return $lang->status_name_list;
+		}
+
+
 
 
 
@@ -1303,7 +1327,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 				$result[$attribute->document_srl] = $GLOBALS['XE_DOCUMENT_LIST'][$document_srl];
 			}
 
-			if($load_extra_vars) $this->setToAllDocumentExtraVars();
+			if($load_extra_vars) {
+				$this->_set_to_all_post_extra_vars();
+			}
 
 			$output = null;
 			if(count($result))
@@ -1853,18 +1879,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			}
 
 			$this->add('voted_member_list',$output->data);
-		}
-
-		/**
-		 * Return status name list
-		 * @return array
-		 */
-		function getStatusNameList()
-		{
-			global $lang;
-			if(!isset($lang->status_name_list))
-				return array_flip($this->getStatusList());
-			else return $lang->status_name_list;
 		}
 
 		/**

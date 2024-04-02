@@ -69,6 +69,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 				case X2B_CMD_VIEW_POST:
 					$this->_disp_content();
 				case X2B_CMD_VIEW_WRITE_POST:
+				case X2B_CMD_VIEW_MODIFY_POST:
 					$s_cmd = '_'.$s_cmd;
 					$this->$s_cmd();
 					break;
@@ -76,7 +77,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 					$this->_disp_content();
 					break;
 			}
-
 		}
 		// {
 		// 	$oSecurity = new Security();
@@ -300,142 +300,8 @@ var_dump(X2B_CMD_VIEW_LIST);
 		/**
 		 * @brief display post write form
 		 **/
-		private function _view_write_post()
-		{
-var_dump(X2B_CMD_VIEW_WRITE_POST);
-			// check grant
-			if(!$this->grant->write_post) {
-				return $this->_disp_message( __('msg_not_permitted', 'x2board') );
-			}
-
-			$o_post_model = \X2board\Includes\getModel('post');
-
-			/**
-			 * check if the category option is enabled not not
-			 **/
-			if($this->module_info->use_category=='Y') {
-				// get the user group information
-				if(\X2board\Includes\Classes\Context::get('is_logged')) {
-					$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
-					$a_group_srls = array(); // array_keys($o_logged_info->group_list);
-				}
-				else {
-					$a_group_srls = array();
-				}
-				// $group_srls_count = count($a_group_srls);
-
-				// check the grant after obtained the category list
-				$a_category_list = array();
-				$n_normal_category_list = $o_post_model->get_category_list();
-				if(count($n_normal_category_list)) {
-					foreach($n_normal_category_list as $category_srl => $category) {
-						$is_granted = TRUE;
-						if($category->group_srls) {
-							$category_group_srls = explode(',',$category->group_srls);
-							$is_granted = FALSE;
-							if(count(array_intersect($a_group_srls, $category_group_srls))) {
-								$is_granted = TRUE;
-							}
-						}
-						if($is_granted) {
-							$a_category_list[$category_srl] = $category;
-						}
-					}
-				}
-				\X2board\Includes\Classes\Context::set('category_list', $a_category_list);
-				unset($a_category_list);
-			}
-
-			// GET parameter post_id from request
-			$n_post_id = \X2board\Includes\Classes\Context::get('post_id');
-			$o_post = $o_post_model->get_post(0, $this->grant->manager);
-			$o_post->set_post($n_post_id);
-
-			// if($oDocument->get('module_srl') == $oDocument->get('member_srl')) {
-			if($o_post->get('board_id') == $o_post->get('post_author')) {
-				$savedDoc = TRUE;
-			}
-			// $oDocument->add('module_srl', $this->module_srl);
-// var_dump($this->grant->write_post);
-			$o_post->add('board_id', \X2board\Includes\Classes\Context::get('board_id') ); // $this->board_id);
-
-			if($o_post->is_exists() && $this->module_info->protect_content=="Y" && $o_post->get('comment_count')>0 && $this->grant->manager==false) {
-				return new BaseObject(-1, __('msg_protect_content', 'x2board') );
-			}
-
-			// if the post is not granted, then back to the password input form
-			if($o_post->is_exists()&&!$o_post->is_granted()) {
-				return $this->setTemplateFile('input_password_form');
-			}
-// var_dump($o_post->is_granted());
-			if(!$o_post->is_exists()) {
-				// $oModuleModel = getModel('module');
-				// $point_config = $oModuleModel->getModulePartConfig('point',$this->module_srl);
-				// unset($oModuleModel);
-				// $logged_info = \X2board\Includes\Classes\Context::get('logged_info');
-				// $oPointModel = getModel('point');
-				// $pointForInsert = $point_config["insert_document"];
-				// if($pointForInsert < 0)
-				// {
-				// 	if( !$logged_info )
-				// 	{
-				// 		return $this->_disp_message('msg_not_permitted');
-				// 	}
-				// 	else if (($oPointModel->getPoint($logged_info->member_srl) + $pointForInsert )< 0 )
-				// 	{
-				// 		return $this->_disp_message('msg_not_enough_point');
-				// 	}
-				// }
-			}
-			if(!$o_post->get('status')) {
-				$o_post->add('status', $o_post_model->get_default_status());
-			}
-
-			$statusList = $this->_get_status_name_list($o_post_model);
-			if(count($statusList) > 0) {
-				\X2board\Includes\Classes\Context::set('status_list', $statusList);
-			}
-
-			// get Document status config value
-			// \X2board\Includes\Classes\Context::set('document_srl',$document_srl);
-
-			// apply xml_js_filter on header
-			// $oDocumentController = getController('document');
-			// $oDocumentController->addXmlJsFilter($this->module_info->module_srl);
-
-			// if the post exists, then setup extra variabels on context
-			if($o_post->is_exists() && !$savedDoc) {
-				\X2board\Includes\Classes\Context::set('extra_keys', $o_post->get_extra_vars());
-			}
-			
-			/**
-			 * add JS filters
-			 **/
-			// if(Context::get('logged_info')->is_admin=='Y') Context::addJsFilter($this->module_path.'tpl/filter', 'insert_admin.xml');
-			// else Context::addJsFilter($this->module_path.'tpl/filter', 'insert.xml');
-
-			// $oSecurity = new Security();
-			// $oSecurity->encodeHTML('category_list.text', 'category_list.title');
-
-			\X2board\Includes\Classes\Context::set('post', $o_post);
-			unset($o_post);
-
-			$o_post_model = \X2board\Includes\getModel('post');
-			$a_user_input_field = $o_post_model->get_user_input_fields();
-// var_dump($a_user_input_field);
-			unset($o_post_model);
-			\X2board\Includes\Classes\Context::set('field', $a_user_input_field);
-
-			wp_localize_script('x2board-script', 'kboard_current', array(
-				'board_id'          => \X2board\Includes\Classes\Context::get('board_id'), // $this->board_id,
-				'content_uid'       => \X2board\Includes\Classes\Context::get('post_id'),
-				'tree_category'     => '',//unserialize($this->meta->tree_category),
-				'mod'               => \X2board\Includes\Classes\Context::get('cmd'), //$this->mod,
-				'use_editor' => ''  //$this->board->use_editor,
-			));
-
-			// setup the skin file
-			echo $this->render_skin_file('editor');
+		private function _view_modify_post() {
+			$this->_view_write_post();
 		}
 
 		/**
@@ -757,6 +623,152 @@ var_dump(X2B_CMD_VIEW_POST);
 		}
 
 		/**
+		 * @brief display post write form
+		 **/
+		private function _view_write_post() {
+var_dump(X2B_CMD_VIEW_WRITE_POST);
+			// check grant
+			if(!$this->grant->write_post) {
+				return $this->_disp_message( __('msg_not_permitted', 'x2board') );
+			}
+
+			$o_post_model = \X2board\Includes\getModel('post');
+
+			/**
+			 * check if the category option is enabled not not
+			 **/
+			if($this->module_info->use_category=='Y') {
+				// get the user group information
+				if(\X2board\Includes\Classes\Context::get('is_logged')) {
+					$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
+					$a_group_srls = array(); // array_keys($o_logged_info->group_list);
+				}
+				else {
+					$a_group_srls = array();
+				}
+				// $group_srls_count = count($a_group_srls);
+
+				// check the grant after obtained the category list
+				$a_category_list = array();
+				$n_normal_category_list = $o_post_model->get_category_list();
+				if(count($n_normal_category_list)) {
+					foreach($n_normal_category_list as $category_srl => $category) {
+						$is_granted = TRUE;
+						if($category->group_srls) {
+							$category_group_srls = explode(',',$category->group_srls);
+							$is_granted = FALSE;
+							if(count(array_intersect($a_group_srls, $category_group_srls))) {
+								$is_granted = TRUE;
+							}
+						}
+						if($is_granted) {
+							$a_category_list[$category_srl] = $category;
+						}
+					}
+				}
+				\X2board\Includes\Classes\Context::set('category_list', $a_category_list);
+				unset($a_category_list);
+			}
+
+			// GET parameter post_id from request
+			$n_post_id = \X2board\Includes\Classes\Context::get('post_id');
+			$o_post = $o_post_model->get_post(0, $this->grant->manager);
+			$o_post->set_post($n_post_id);
+
+			// if($oDocument->get('module_srl') == $oDocument->get('member_srl')) {
+// var_dump($o_post->get('board_id'));
+// var_dump($o_post->get('post_author'));
+			if($o_post->get('board_id') == $o_post->get('post_author')) {
+				$savedDoc = TRUE;
+			}
+			else {
+				$savedDoc = FALSE;
+			}
+			// $oDocument->add('module_srl', $this->module_srl);
+// var_dump($this->grant->write_post);
+			$o_post->add('board_id', \X2board\Includes\Classes\Context::get('board_id') ); // $this->board_id);
+
+			if($o_post->is_exists() && $this->module_info->protect_content=="Y" && 
+				$o_post->get('comment_count')>0 && $this->grant->manager==false) {
+				return new BaseObject(-1, __('msg_protect_content', 'x2board') );
+			}
+
+			// if the post is not granted, then back to the password input form
+			if($o_post->is_exists() && !$o_post->is_granted()) {
+				return $this->setTemplateFile('input_password_form');
+			}
+// var_dump($o_post->is_granted());
+			if(!$o_post->is_exists()) {
+				// $oModuleModel = getModel('module');
+				// $point_config = $oModuleModel->getModulePartConfig('point',$this->module_srl);
+				// unset($oModuleModel);
+				// $logged_info = \X2board\Includes\Classes\Context::get('logged_info');
+				// $oPointModel = getModel('point');
+				// $pointForInsert = $point_config["insert_document"];
+				// if($pointForInsert < 0)
+				// {
+				// 	if( !$logged_info )
+				// 	{
+				// 		return $this->_disp_message('msg_not_permitted');
+				// 	}
+				// 	else if (($oPointModel->getPoint($logged_info->member_srl) + $pointForInsert )< 0 )
+				// 	{
+				// 		return $this->_disp_message('msg_not_enough_point');
+				// 	}
+				// }
+			}
+			if(!$o_post->get('status')) {
+				$o_post->add('status', $o_post_model->get_default_status());
+			}
+
+			$statusList = $this->_get_status_name_list($o_post_model);
+			if(count($statusList) > 0) {
+				\X2board\Includes\Classes\Context::set('status_list', $statusList);
+			}
+
+			// get Document status config value
+			// \X2board\Includes\Classes\Context::set('document_srl',$document_srl);
+
+			// apply xml_js_filter on header
+			// $oDocumentController = getController('document');
+			// $oDocumentController->addXmlJsFilter($this->module_info->module_srl);
+
+			// if the post exists, then setup extra variabels on context
+			if($o_post->is_exists() && !$savedDoc) {
+				\X2board\Includes\Classes\Context::set('extra_keys', $o_post->get_extra_vars());
+			}
+			
+			/**
+			 * add JS filters
+			 **/
+			// if(Context::get('logged_info')->is_admin=='Y') Context::addJsFilter($this->module_path.'tpl/filter', 'insert_admin.xml');
+			// else Context::addJsFilter($this->module_path.'tpl/filter', 'insert.xml');
+
+			// $oSecurity = new Security();
+			// $oSecurity->encodeHTML('category_list.text', 'category_list.title');
+
+			\X2board\Includes\Classes\Context::set('post', $o_post);
+			unset($o_post);
+
+			$o_post_model = \X2board\Includes\getModel('post');
+			$a_user_input_field = $o_post_model->get_user_input_fields();
+// var_dump($a_user_input_field);
+			unset($o_post_model);
+			\X2board\Includes\Classes\Context::set('field', $a_user_input_field);
+
+			wp_localize_script('x2board-script', 'x2board_'.X2B_CMD_VIEW_WRITE_POST, array(
+				'board_id'          => \X2board\Includes\Classes\Context::get('board_id'), // $this->board_id,
+				'content_uid'       => \X2board\Includes\Classes\Context::get('post_id'),
+				// 'tree_category'     => '',//unserialize($this->meta->tree_category),
+				'cmd'               => \X2board\Includes\Classes\Context::get('cmd'), //$this->mod,
+				// 'use_editor' => ''  //$this->board->use_editor,
+			));
+
+			// setup the skin file
+			echo $this->render_skin_file('editor');
+		}
+
+		/**
 		 * /includes/no_namespace.helper.php::x2b_write_post_hidden_fields()를 통해서
 		 * editor스킨의 hidden field 출력
 		 */
@@ -769,12 +781,15 @@ var_dump(X2B_CMD_VIEW_POST);
 			// do_action('x2b_skin_editor_header_before', $content, $board);
 			$o_post = \X2board\Includes\Classes\Context::get('post');
 			$header = array();
-			$a_header['cmd'] = X2B_CMD_PROC_WRITE_POST; // '<input type="hidden" name="action" value="x2b_write_post">';
 			$a_header['board_id'] = get_the_ID(); // sprintf('<input type="hidden" name="board_id" value="%d">', $o_post->board_id);
 			// $a_header['mod'] = "editor"; // '<input type="hidden" name="mod" value="editor">';
-			if($o_post->post_id) {
+			if($o_post->post_id) {  // update a old post
+				$a_header['cmd'] = X2B_CMD_PROC_MODIFY_POST;
 				$a_header['post_id'] = $o_post->post_id; // sprintf('<input type="hidden" name="post_id" value="%d">', $o_post->post_id);
-				$a_header['parent_post_id'] = $o_post->parent_post_id; // sprintf('<input type="hidden" name="parent_post_id" value="%d">', $o_post->parent_post_id);
+				// $a_header['parent_post_id'] = $o_post->parent_post_id; // sprintf('<input type="hidden" name="parent_post_id" value="%d">', $o_post->parent_post_id);
+			}
+			else {
+				$a_header['cmd'] = X2B_CMD_PROC_WRITE_POST; // write a new post
 			}
 			
 			// $a_header['post_author'] = $o_post->post_author; // sprintf('<input type="hidden" name="post_author" value="%d">', $o_post->post_author);
@@ -836,53 +851,54 @@ var_dump(X2B_CMD_VIEW_POST);
 			$shortcode = (isset($field['shortcode']) && $field['shortcode']) ? $field['shortcode'] : '';
 			$row = false;
 
-			$content = new \stdClass();
-			$content->title = '';
-			$content->nick_name = '';
-			$content->content = '';
-			$content->getCategoryList = array();
-			$content->search = false;
+			// $content = new \stdClass();
+			// $content->title = '';
+			// $content->nick_name = '';
+			// $content->content = '';
+			// $content->getCategoryList = array();
+			// $content->search = false;
 			
-			$board = new \stdClass(); 
-			$board->viewUsernameField = true;
-			$board->useCAPTCHA = false;
-			$board->use_editor = '';
+			// $board = new \stdClass(); 
+			// $board->viewUsernameField = true;
+			// $board->useCAPTCHA = false;
+			// $board->use_editor = '';
 			
 			if($field['field_type'] == 'content'){
-				$board->editor_html = $this->ob_get_editor_html(array(
-										'board' => $board,
-										'content' => $content,
+				$editor_html = $this->ob_get_editor_html(array(
+										'use_editor' => '',
+										// 'content' => $content,
 										'required' => $required,
 										'placeholder' => $placeholder,
 										'editor_height' => '400',
 									));
 			}
+
+			$post = \X2board\Includes\Classes\Context::get('post');
 			
-			$default_value_list = array();
-			if(isset($field['row']) && $field['row']){
-				foreach($field['row'] as $item){
-					if(isset($item['label']) && $item['label']){
-						$row = true;
-						if(isset($item['default_value']) && $item['default_value']){
-							$default_value_list[] = $item['label'];
-						}
-					}
-				}
-			}
+			// $default_value_list = array();
+			// if(isset($field['row']) && $field['row']){
+			// 	foreach($field['row'] as $item){
+			// 		if(isset($item['label']) && $item['label']){
+			// 			$row = true;
+			// 			if(isset($item['default_value']) && $item['default_value']){
+			// 				$default_value_list[] = $item['label'];
+			// 			}
+			// 		}
+			// 	}
+			// }
 			
-			if($default_value_list){
-				$default_value = $default_value_list;
-			}
+			// if($default_value_list){
+			// 	$default_value = $default_value_list;
+			// }
 			
-			if($field['field_type'] == 'search'){
-				if($content->search){
-					$wordpress_search = $content->search;
-				}
-				else if(isset($field['default_value']) && $field['default_value']){
-					$wordpress_search = $field['default_value'];
-				}
-			}
-			
+			// if($field['field_type'] == 'search'){
+			// 	if($content->search){
+			// 		$wordpress_search = $content->search;
+			// 	}
+			// 	else if(isset($field['default_value']) && $field['default_value']){
+			// 		$wordpress_search = $field['default_value'];
+			// 	}
+			// }
 			
 			// $order = new KBOrder();
 			// $order->board = $this->board;
@@ -905,18 +921,18 @@ var_dump(X2B_CMD_VIEW_POST);
 			// 	$boardBuilder->board = $this->board;
 			// }
 			// var_dump($this->board->skin)			;
-			if(strpos($html, '#{ESC_ATTR_VALUE}') !== false){
-				$value = $content->option->{$meta_key} ? esc_attr($content->option->{$meta_key}) : esc_attr($default_value);
-				$html = str_replace('#{ESC_ATTR_VALUE}', $value, $html);
-			}
-			if(strpos($html, '#{ESC_TEXTAREA_VALUE}') !== false){
-				$value = $content->option->{$meta_key} ? esc_textarea($content->option->{$meta_key}) : esc_textarea($default_value);
-				$html = str_replace('#{ESC_TEXTAREA_VALUE}', $value, $html);
-			}
-			if(strpos($html, '#{ESC_HTML_VALUE}') !== false){
-				$value = $content->option->{$meta_key} ? esc_html($content->option->{$meta_key}) : esc_html($default_value);
-				$html = str_replace('#{ESC_HTML_VALUE}', $value, $html);
-			}
+			// if(strpos($html, '#{ESC_ATTR_VALUE}') !== false){
+			// 	$value = $content->option->{$meta_key} ? esc_attr($content->option->{$meta_key}) : esc_attr($default_value);
+			// 	$html = str_replace('#{ESC_ATTR_VALUE}', $value, $html);
+			// }
+			// if(strpos($html, '#{ESC_TEXTAREA_VALUE}') !== false){
+			// 	$value = $content->option->{$meta_key} ? esc_textarea($content->option->{$meta_key}) : esc_textarea($default_value);
+			// 	$html = str_replace('#{ESC_TEXTAREA_VALUE}', $value, $html);
+			// }
+			// if(strpos($html, '#{ESC_HTML_VALUE}') !== false){
+			// 	$value = $content->option->{$meta_key} ? esc_html($content->option->{$meta_key}) : esc_html($default_value);
+			// 	$html = str_replace('#{ESC_HTML_VALUE}', $value, $html);
+			// }
 			
 			// $parent = new KBContent();
 			// $parent->initWithUID($content->parent_uid);
@@ -994,18 +1010,20 @@ var_dump(X2B_CMD_VIEW_POST);
 				'placeholder' => '',
 				'editor_height' => '400',
 			), $vars);
-			
+
+			$o_post = \X2board\Includes\Classes\Context::get('post');
 			// $vars = apply_filters('kboard_content_editor_vars', $vars);
 			extract($vars, EXTR_SKIP);
 			
 			ob_start();
-			if($board->use_editor == 'yes'){
-				wp_editor($content->content, 'content', array('editor_height'=>$editor_height));
+			if($use_editor == 'yes'){
+				wp_editor($o_post->content, 'content', array('editor_height'=>$editor_height));
 			}
 			else{
-				echo sprintf('<textarea id="content" class="editor-textarea %s" name="content" placeholder="%s">%s</textarea>', esc_attr($required), esc_attr($placeholder), esc_textarea($content->content));
+				echo sprintf('<textarea id="content" class="editor-textarea %s" name="content" placeholder="%s">%s</textarea>', esc_attr($required), esc_attr($placeholder), esc_textarea($o_post->content));
 			}
 			$s_editor_html = ob_get_clean();
+			unset($o_post);
 			return apply_filters('x2board_content_editor', $s_editor_html); //, $vars);
 		}
 
@@ -1066,14 +1084,13 @@ var_dump(X2B_CMD_VIEW_POST);
 		}
 
 		// function _getStatusNameList(&$oDocumentModel)
-		private function _get_status_name_list($o_post_model)
-		{
+		private function _get_status_name_list($o_post_model) {
 			$resultList = array();
 			if(!empty($this->module_info->use_status)) {
-				$statusNameList = $o_post_model->getStatusNameList();
-				$statusList = explode('|@|', $this->module_info->use_status);
-				if(is_array($statusList)) {
-					foreach($statusList as $key => $value) {
+				$statusNameList = $o_post_model->get_status_name_list();
+				$statusList = $this->module_info->use_status;
+				if(is_array($this->module_info->use_status)) {
+					foreach($this->module_info->use_status as $key => $value) {
 						$resultList[$value] = $statusNameList[$value];
 					}
 				}

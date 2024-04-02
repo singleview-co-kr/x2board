@@ -29,26 +29,33 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 				default:
 					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_approach', 'x2board') );
 					break;
-			}
-		 }
+			}	
+		}
 
 		/**
-		 * @brief insert document
+		 * @brief update post
+		 **/
+		private function _proc_modify_post() {
+			$this->_proc_write_post();
+		}
+
+		/**
+		 * @brief insert post
 		 **/
 		// function procBoardInsertDocument()
 		private function _proc_write_post() {
 // var_dump($this->module_info);
 			// check grant
-			if($this->module_info->module != "board") {
-				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', 'x2board') );
-			}
+			// if($this->module_info->module != "board") {
+			// 	return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', 'x2board') );
+			// }
 			if(!$this->grant->write_post) {
 				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', 'x2board') );
 			}
 			// $logged_info = Context::get('logged_info');
 
 			// setup variables
-			$obj = \X2board\Includes\Classes\Context::gets('board_id', 'title', 'content', 'password', 'nick_name', 'wordpress_search');
+			$obj = \X2board\Includes\Classes\Context::gets('board_id', 'post_id', 'title', 'content', 'post_status', 'is_secret', 'is_notice', 'password', 'nick_name', 'comment_status', 'category_id', 'allow_search');
 			if(is_null($obj->board_id) || intval($obj->board_id) <= 0) {
 				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', 'x2board') );
 			}
@@ -58,15 +65,16 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 			$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
 
 			/////////// tmporary test block begin /////////////
-			$obj->is_notice = '';
-			$obj->post_id = '';//23423;
+			// $obj->is_notice = '';
+			// $obj->post_id = '';//23423;
 			$obj->post_author = $o_logged_info->ID;
-			$obj->is_secret = '';
-			$obj->status = 'PUBLIC'; // PUBLIC SECRET TEMP
-			$obj->comment_status = ''; // DENY ALLOW
-			$obj->email_address = '';
-			$obj->category_id = null;
-			
+			// $obj->is_secret = '';
+			if( !isset($obj->post_status)){
+				$obj->post_status = 'PUBLIC'; // PUBLIC SECRET TEMP
+			}
+			// $obj->comment_status = ''; // DENY ALLOW
+			// $obj->email_address = '';
+			// $obj->category_id = null;
 			/////////// tmporary test block end /////////////
 			
 			// $obj->module_srl = $this->module_srl;
@@ -81,7 +89,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 			/////////// tmporary test block begin /////////////
 			$module_config = new \stdClass();
 			$module_config->mobile_use_editor = 'Y';
-			$module_config->subject_len_count = null;
+			$module_config->subject_len_count = null; ////////////////////////
 			/////////// tmporary test block end /////////////
 
 			if($module_config->mobile_use_editor === 'Y') {
@@ -100,22 +108,22 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 			}
 			//setup dpcument title tp 'Untitled'
 			if($obj->title == '') {
-				$obj->title = 'Untitled';
+				$obj->title = __('Untitled', 'x2board'); //'Untitled';
 			}
 
-			// unset document style if the user is not the document manager
+			// unset post style if the user is not the post manager
 			if(!$this->grant->manager) {
 				unset($obj->title_color);
 				unset($obj->title_bold);
 			}
 
-			// generate document module model object
+			// generate post module model object
 			$o_post_model = \X2board\Includes\getModel('post');
-			// check if the document is existed
+			// check if the post is existed
 			$o_post = $o_post_model->get_post($obj->post_id, $this->grant->manager);
 			unset($o_post_model);
 
-			// update the document if it is existed
+			// update the post if it is existed
 			$is_update = false;
 			if($o_post->is_exists() && $o_post->post_id == $obj->post_id) {
 				$is_update = true;
@@ -141,18 +149,18 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 				$bAnonymous = false;
 			}
 			unset($o_logged_info);
-
-			if($obj->is_secret == 'Y' || strtoupper($obj->status) == 'SECRET') {
-				$use_status = explode('|@|', $this->module_info->use_status);
+			
+			if($obj->is_secret == 'Y' || strtoupper($obj->post_status) == 'SECRET') {
+				$use_status = $this->module_info->use_status; // explode('|@|', $this->module_info->use_status);
 				if(!is_array($use_status) || !in_array('SECRET', $use_status)) {
 					unset($obj->is_secret);
-					$obj->status = 'PUBLIC';
+					$obj->post_status = 'PUBLIC';
 				}
 			}
 
-			// update the document if it is existed
+			// update the post if it is existed
 			if($is_update) {
-				if(!$o_post->isGranted()) {
+				if(!$o_post->is_granted()) {
 					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', 'x2board') );
 				}
 
@@ -166,24 +174,25 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 				}
 
 				if(!$this->grant->manager) {
-					// notice & document style same as before if not manager
+					// notice & post style same as before if not manager
 					$obj->is_notice = $o_post->get('is_notice');
 					$obj->title_color = $o_post->get('title_color');
 					$obj->title_bold = $o_post->get('title_bold');
 				}
 				
-				// modify list_order if document status is temp
+				// modify list_order if post status is temp
 				if($o_post->get('status') == 'TEMP') {
 					$obj->last_update = $obj->regdate = date('YmdHis');
 					$obj->update_order = $obj->list_order = (getNextSequence() * -1);
 				}
-				// generate document module의 controller object
+				// generate post module의 controller object
 				$o_post_controller = \X2board\Includes\getController('post');
-				$output = $o_post_controller->updateDocument($o_post, $obj, true);
+				$output = $o_post_controller->update_post($o_post, $obj, true);
 				unset($o_post_controller);
 				$msg_code = 'success_updated';
-			} else {  // insert a new post otherwise
-				// generate document module의 controller object
+			} 
+			else {  // insert a new post otherwise
+				// generate post module의 controller object
 				$o_post_controller = \X2board\Includes\getController('post');
 				$output = $o_post_controller->insert_post($obj, $bAnonymous);
 				unset($o_post_controller);
@@ -244,12 +253,12 @@ var_dump(X2B_CMD_PROC_WRITE_COMMENT);
 															'parent_comment_id', 'comment_id', 'is_secret',
 															'use_editor', 'use_html', 'password' );
 
-			if(!$this->module_info->use_status) {
-				$this->module_info->use_status = 'PUBLIC';
-			}
-			if(!is_array($this->module_info->use_status)) {
-				$this->module_info->use_status = explode('|@|', $this->module_info->use_status);
-			}
+			// if(!$this->module_info->use_status) {
+			// 	$this->module_info->use_status = 'PUBLIC';
+			// }
+			// if(!is_array($this->module_info->use_status)) {
+			// 	$this->module_info->use_status = explode('|@|', $this->module_info->use_status);
+			// }
 
 			if(in_array('SECRET', $this->module_info->use_status)) {
 				$this->module_info->secret = 'Y';

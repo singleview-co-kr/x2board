@@ -25,12 +25,12 @@ function plugin_loaded(){
 	}
 	// 언어 파일 추가
 	// load_plugin_textdomain('x2board', false, X2B_PATH . 'languages');
-	register_post_type('x2board', array(
-		'labels' => array('name'=>'X2Board'),
+	register_post_type(X2B_DOMAIN, array(
+		'labels' => array('name'=>X2B_DOMAIN),
 		'show_ui'=> false,
 		'show_in_menu'=> false,
 		'rewrite' => false,
-		'query_var' => 'x2board_post_redirect',
+		'query_var' => X2B_DOMAIN.'_post_redirect',
 		'public'=> true
 	));
 }

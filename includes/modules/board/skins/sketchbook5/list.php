@@ -160,8 +160,8 @@ $mi_page_count = $this->n_page_count;
 
 			<!-- <block loop="$page_no=$page_navigation->getNextPage()" cond="$page_no!=1 && $page_no!=$page_navigation->last_page"> -->
 			<?php while($page_no = $page_navigation->getNextPage()) {
-				if( $page_no==1 || $page_no==$page_navigation->last_page ){
-					break;
+				if( $page_no==1 || $page_no==$page_navigation->n_last_page ){
+					continue;
 				}
 			?>
 				<?php if( $page==$page_no ):?>

@@ -48,15 +48,23 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\post')) {
 		}
 
 		/**
+		 * Document Status List
+		 * @return array
+		 */
+		// function getStatusList()
+		public function get_status_list() {
+			return $this->statusList;
+		}
+
+		/**
 		 * Return status by key
 		 * @return string
 		 */
-		function getConfigStatus($key)
-		{
+		// function getConfigStatus($key)
+		public function get_config_status($key) {
 			if(array_key_exists(strtolower($key), $this->statusList)) return $this->statusList[$key];
 			else $this->get_default_status();
 		}
-
 
 		/**
 		 * Re-generate the cache file
@@ -68,15 +76,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\post')) {
 		// 	{
 		// 		FileHandler::makeDir('./files/cache/tmp');
 		// 	}
-		// }
-
-		/**
-		 * Document Status List
-		 * @return array
-		 */
-		// function getStatusList()
-		// {
-		// 	return $this->statusList;
 		// }
 
 		}
