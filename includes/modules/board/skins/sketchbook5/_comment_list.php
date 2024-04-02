@@ -55,7 +55,7 @@
 				</div>
 				<div class="fdb_nav img_tx">
 					<!-- <a class="comment_<?=$comment->comment_id?> m_no" href="#popup_menu_area" onclick="return false"><i class="fa fa-ellipsis-h"></i>이 댓글을</a> -->
-					<a href="<?php echo x2b_get_url('cmd', X2B_CMD_PROC_MODIFY_COMMENT, 'comment_id',$comment->comment_id)?>"><i class="fa fa-pencil"></i><?=__('Edit', 'x2board')?></a>
+					<a href="<?php echo x2b_get_url('cmd', X2B_CMD_VIEW_MODIFY_COMMENT, 'comment_id',$comment->comment_id)?>"><i class="fa fa-pencil"></i><?=__('Edit', 'x2board')?></a>
 					<a href="<?php echo x2b_get_url('cmd', X2B_CMD_VIEW_DELETE_COMMENT, 'comment_id',$comment->comment_id)?>" title="<?=__('Delete', 'x2board')?>"><i class="fa fa-eraser"></i><?=__('Delete', 'x2board')?></a>
 					
 					<?php if(!$grant->write_comment){

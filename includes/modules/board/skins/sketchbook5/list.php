@@ -109,7 +109,7 @@
 		<div class="fr">
 			<?php if($grant->write_post):?>
 				<!-- 게스트 버튼 시작 -->
-				<a class="btn_img" href="<?php echo esc_url(x2b_get_url('cmd', X2B_CMD_VIEW_WRITE_POST, 'post_id', ''))?>"><i class="ico_16px write"></i> <?php echo __('New', 'x2board')?></a>
+				<a class="btn_img" href="<?php echo esc_url(x2b_get_url('cmd', X2B_CMD_VIEW_WRITE_POST, 'post_id', '', 'page', ''))?>"><i class="ico_16px write"></i> <?php echo __('New', 'x2board')?></a>
 				<!-- 게스트 버튼 끝 -->
 			<?php endif?>
 		</div>

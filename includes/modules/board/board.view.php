@@ -70,6 +70,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 					$this->_disp_content();
 				case X2B_CMD_VIEW_WRITE_POST:
 				case X2B_CMD_VIEW_MODIFY_POST:
+				case X2B_CMD_VIEW_MODIFY_COMMENT:
 					$s_cmd = '_'.$s_cmd;
 					$this->$s_cmd();
 					break;
@@ -765,42 +766,59 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			));
 
 			// setup the skin file
-			echo $this->render_skin_file('editor');
+			echo $this->render_skin_file('editor_post');
 		}
 
 		/**
 		 * /includes/no_namespace.helper.php::x2b_write_post_hidden_fields()를 통해서
 		 * editor스킨의 hidden field 출력
 		 */
-		public function write_post_hidden_fields() { 
-			wp_nonce_field('x2b_'.X2B_CMD_PROC_WRITE_POST, 'x2b_'.X2B_CMD_PROC_WRITE_POST.'_nonce');
-			// if($o_post->post_id) {
-			// 	wp_nonce_field("x2b_".X2B_CMD_PROC_MODIFY_POST."_".$o_post->post_id, 'x2b_'.X2B_CMD_PROC_MODIFY_POST.'_nonce');
-			// }
-			
-			// do_action('x2b_skin_editor_header_before', $content, $board);
+		public function write_comment_hidden_fields() {
+			$a_header = array();
+			$a_header['board_id'] = get_the_ID();
+			$a_header['parent_post_id'] = \X2board\Includes\Classes\Context::get('post_id');
+			$o_comment = \X2board\Includes\Classes\Context::get('o_comment');
+// var_dump($o_comment);
+			if($o_comment->comment_id) {  // update a old comment
+				$a_header['cmd'] = X2B_CMD_PROC_MODIFY_COMMENT;
+				$a_header['comment_id'] = $o_comment->comment_id;
+			}
+			else { // write a new comment
+				$a_header['cmd'] = X2B_CMD_PROC_WRITE_COMMENT; 
+			}
+			unset($o_comment);
+			wp_nonce_field('x2b_'.$a_header['cmd'], 'x2b_'.$a_header['cmd'].'_nonce');
+			// $header = apply_filters('x2b_skin_editor_header', $header, $content, $board);
+			foreach( $a_header as $s_field_name => $s_field_value ) {
+				echo '<input type="hidden" name="'.$s_field_name.'" value="'.$s_field_value.'">' . "\n";
+			}
+			unset($a_header);
+			// do_action('x2b_skin_editor_header_after', $content, $board);
+		}
+
+		/**
+		 * /includes/no_namespace.helper.php::x2b_write_post_hidden_fields()를 통해서
+		 * editor스킨의 hidden field 출력
+		 */
+		public function write_post_hidden_fields() {
+			$a_header = array();
+			$a_header['board_id'] = get_the_ID();
 			$o_post = \X2board\Includes\Classes\Context::get('post');
-			$header = array();
-			$a_header['board_id'] = get_the_ID(); // sprintf('<input type="hidden" name="board_id" value="%d">', $o_post->board_id);
-			// $a_header['mod'] = "editor"; // '<input type="hidden" name="mod" value="editor">';
 			if($o_post->post_id) {  // update a old post
 				$a_header['cmd'] = X2B_CMD_PROC_MODIFY_POST;
-				$a_header['post_id'] = $o_post->post_id; // sprintf('<input type="hidden" name="post_id" value="%d">', $o_post->post_id);
-				// $a_header['parent_post_id'] = $o_post->parent_post_id; // sprintf('<input type="hidden" name="parent_post_id" value="%d">', $o_post->parent_post_id);
+				$a_header['post_id'] = $o_post->post_id;
+				// $a_header['parent_post_id'] = $o_post->parent_post_id;
 			}
-			else {
-				$a_header['cmd'] = X2B_CMD_PROC_WRITE_POST; // write a new post
+			else { // write a new post
+				$a_header['cmd'] = X2B_CMD_PROC_WRITE_POST; 
 			}
-			
-			// $a_header['post_author'] = $o_post->post_author; // sprintf('<input type="hidden" name="post_author" value="%d">', $o_post->post_author);
-			// $a_header['nick_name'] = $o_post->nick_name; // sprintf('<input type="hidden" name="member_display" value="%s">', $o_post->nick_name);
-			// $a_header['regdate'] = $o_post->regdate; // sprintf('<input type="hidden" name="date" value="%s">', $o_post->regdate);
-			// $a_header['user_id'] = get_current_user_id(); // sprintf('<input type="hidden" name="user_id" value="%d">', get_current_user_id());
 			unset($o_post);
+			// }
 			// $product_id = isset($_GET['woocommerce_product_tabs_inside']) ? intval($_GET['woocommerce_product_tabs_inside']) : '';
 			// if($product_id){
 			// 	$header['x2b_option_woocommerce_product_id'] = sprintf('<input type="hidden" name="x2b_option_woocommerce_product_id" value="%d">', $product_id);
 			// }
+			wp_nonce_field('x2b_'.$a_header['cmd'], 'x2b_'.$a_header['cmd'].'_nonce');
 			
 			// $header = apply_filters('x2b_skin_editor_header', $header, $content, $board);
 			foreach( $a_header as $s_field_name => $s_field_value ) {
@@ -864,13 +882,15 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			// $board->use_editor = '';
 			
 			if($field['field_type'] == 'content'){
+				$o_post = \X2board\Includes\Classes\Context::get('post');
 				$editor_html = $this->ob_get_editor_html(array(
 										'use_editor' => '',
-										// 'content' => $content,
+										's_content' => $o_post->content,
 										'required' => $required,
 										'placeholder' => $placeholder,
 										'editor_height' => '400',
 									));
+				unset($o_post);
 			}
 
 			$post = \X2board\Includes\Classes\Context::get('post');
@@ -1006,26 +1026,123 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 		// kboard_content_editor()
 		public function ob_get_editor_html($vars=array()){
 			$vars = array_merge(array(
+				'content_field_name' => 'content',
 				'required' => '',
 				'placeholder' => '',
 				'editor_height' => '400',
 			), $vars);
-
-			$o_post = \X2board\Includes\Classes\Context::get('post');
 			// $vars = apply_filters('kboard_content_editor_vars', $vars);
 			extract($vars, EXTR_SKIP);
 			
 			ob_start();
 			if($use_editor == 'yes'){
-				wp_editor($o_post->content, 'content', array('editor_height'=>$editor_height));
+				wp_editor($s_content, $content_field_name, array('editor_height'=>$editor_height));
 			}
 			else{
-				echo sprintf('<textarea id="content" class="editor-textarea %s" name="content" placeholder="%s">%s</textarea>', esc_attr($required), esc_attr($placeholder), esc_textarea($o_post->content));
+				echo sprintf('<textarea id="%s" class="editor-textarea %s" name="%s" placeholder="%s">%s</textarea>', esc_attr($content_field_name), esc_attr($required), esc_attr($content_field_name), esc_attr($placeholder), esc_textarea($s_content));
 			}
 			$s_editor_html = ob_get_clean();
-			unset($o_post);
 			return apply_filters('x2board_content_editor', $s_editor_html); //, $vars);
 		}
+
+		/**
+		 * @brief display comment wirte form
+		 **/
+		// function dispBoardWriteComment()
+		private function _view_write_comment() {
+			$n_post_id = \X2board\Includes\Classes\Context::get('post_id');
+
+			// check grant
+			if(!$this->grant->write_comment) {
+				return $this->_disp_message(__('msg_not_permitted', 'x2board'));
+			}
+
+			// get the document information
+			// $oDocumentModel = getModel('document');
+			$o_post_model = \X2board\Includes\getModel('post');
+			$o_post = $o_post_model->get_post($n_post_id);
+			unset($o_post_model);
+			if(!$o_post->is_exists()) {
+				return $this->_disp_message(__('msg_invalid_request', 'x2board'));
+			}
+
+			// Check allow comment
+			if(!$o_post->allow_comment()) {
+				return $this->_disp_message(__('msg_not_allow_comment', 'x2board'));
+			}
+
+			// obtain the comment (create an empty comment document for comment_form usage)
+			$o_comment_model = \X2board\Includes\getModel('comment');
+			$o_source_comment = $o_comment = $o_comment_model->get_comment(0);
+			unset($o_comment_model);
+			$o_comment->add('parent_post_id', $n_post_id);
+			// $oComment->add('module_srl', $this->module_srl);
+
+			// setup document variables on context
+			\X2board\Includes\Classes\Context::set('o_post', $o_post);
+			\X2board\Includes\Classes\Context::set('o_source_comment',$o_source_comment);
+			\X2board\Includes\Classes\Context::set('o_comment',$o_comment);
+
+			/**
+			 * add JS filter
+			 **/
+			// Context::addJsFilter($this->module_path.'tpl/filter', 'insert_comment.xml');
+
+			// $this->setTemplateFile('comment_form');
+			echo $this->render_skin_file('editor_comment');
+		}
+
+		/**
+		 * @brief display the comment modification from
+		 **/
+		// function dispBoardModifyComment()
+		private function _view_modify_comment() {
+			// check grant
+			if(!$this->grant->write_comment) {
+				return $this->_disp_message(__('msg_not_permitted', 'x2board'));
+			}
+
+			// get the post_id and comment_id
+			$n_post_id = \X2board\Includes\Classes\Context::get('post_id');
+			$n_comment_id = \X2board\Includes\Classes\Context::get('comment_id');
+
+			// if the comment is not existed
+			if(!$n_comment_id) {
+				return new BaseObject(-1, __('msg_invalid_request', 'x2board'));
+			}
+
+			// get comment information
+			// $oCommentModel = getModel('comment');
+			$o_comment_model = \X2board\Includes\getModel('comment');
+			$o_comment = $o_comment_model->get_comment($n_comment_id, $this->grant->manager);
+			$o_source_comment = $o_comment_model->get_comment();
+// var_dump($o_comment);
+// var_dump($o_source_comment);
+			unset($o_comment_model);
+			// if the comment is not exited, alert an error message
+			if(!$o_comment->is_exists()) {
+				return $this->_disp_message(__('msg_invalid_request', 'x2board'));
+			}
+
+			// if the comment is not granted, then back to the password input form
+			if(!$o_comment->is_granted()) {
+				return $this->setTemplateFile('input_password_form');
+			}
+
+			// setup the comment variables on context
+			// \X2board\Includes\Classes\Context::set('o_source_comment', $oCommentModel->getComment());
+			\X2board\Includes\Classes\Context::set('o_source_comment', $o_source_comment);
+			\X2board\Includes\Classes\Context::set('o_comment', $o_comment);
+
+			/**
+			 * add JS fitlers
+			 **/
+			// Context::addJsFilter($this->module_path.'tpl/filter', 'insert_comment.xml');
+
+			// $this->setTemplateFile('comment_form');
+			echo $this->render_skin_file('editor_comment');
+		}
+
 
 		/**
 		 * 입력 필드를 사용할 수 있는 권한인지 확인한다.
@@ -1258,52 +1375,6 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 		}
 
 		/**
-		 * @brief display comment wirte form
-		 **/
-		function dispBoardWriteComment()
-		{
-			$document_srl = Context::get('document_srl');
-
-			// check grant
-			if(!$this->grant->write_comment)
-			{
-				return $this->_disp_message('msg_not_permitted');
-			}
-
-			// get the document information
-			$oDocumentModel = getModel('document');
-			$oDocument = $oDocumentModel->getDocument($document_srl);
-			if(!$oDocument->isExists())
-			{
-				return $this->_disp_message('msg_invalid_request');
-			}
-
-			// Check allow comment
-			if(!$oDocument->allowComment())
-			{
-				return $this->_disp_message('msg_not_allow_comment');
-			}
-
-			// obtain the comment (create an empty comment document for comment_form usage)
-			$oCommentModel = getModel('comment');
-			$oSourceComment = $oComment = $oCommentModel->getComment(0);
-			$oComment->add('document_srl', $document_srl);
-			$oComment->add('module_srl', $this->module_srl);
-
-			// setup document variables on context
-			Context::set('oDocument',$oDocument);
-			Context::set('oSourceComment',$oSourceComment);
-			Context::set('oComment',$oComment);
-
-			/**
-			 * add JS filter
-			 **/
-			Context::addJsFilter($this->module_path.'tpl/filter', 'insert_comment.xml');
-
-			$this->setTemplateFile('comment_form');
-		}
-
-		/**
 		 * @brief display comment replies page
 		 **/
 		function dispBoardReplyComment()
@@ -1357,55 +1428,6 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 
 			/**
 			 * add JS filters
-			 **/
-			Context::addJsFilter($this->module_path.'tpl/filter', 'insert_comment.xml');
-
-			$this->setTemplateFile('comment_form');
-		}
-
-		/**
-		 * @brief display the comment modification from
-		 **/
-		function dispBoardModifyComment()
-		{
-			// check grant
-			if(!$this->grant->write_comment)
-			{
-				return $this->_disp_message('msg_not_permitted');
-			}
-
-			// get the document_srl and comment_srl
-			$document_srl = Context::get('document_srl');
-			$comment_srl = Context::get('comment_srl');
-
-			// if the comment is not existed
-			if(!$comment_srl)
-			{
-				return new BaseObject(-1, 'msg_invalid_request');
-			}
-
-			// get comment information
-			$oCommentModel = getModel('comment');
-			$oComment = $oCommentModel->getComment($comment_srl, $this->grant->manager);
-
-			// if the comment is not exited, alert an error message
-			if(!$oComment->isExists())
-			{
-				return $this->_disp_message('msg_invalid_request');
-			}
-
-			// if the comment is not granted, then back to the password input form
-			if(!$oComment->isGranted())
-			{
-				return $this->setTemplateFile('input_password_form');
-			}
-
-			// setup the comment variables on context
-			Context::set('oSourceComment', $oCommentModel->getComment());
-			Context::set('oComment', $oComment);
-
-			/**
-			 * add JS fitlers
 			 **/
 			Context::addJsFilter($this->module_path.'tpl/filter', 'insert_comment.xml');
 

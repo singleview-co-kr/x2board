@@ -23,12 +23,14 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 				case X2B_CMD_PROC_WRITE_POST:
 				case X2B_CMD_PROC_MODIFY_POST:
 				case X2B_CMD_PROC_WRITE_COMMENT:
+				case X2B_CMD_PROC_MODIFY_COMMENT:
 					$s_cmd = '_'.$s_cmd;
 					$this->$s_cmd();
 					break;
 				default:
 					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_approach', 'x2board') );
 					break;
+exit;					
 			}	
 		}
 
@@ -236,6 +238,14 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 		 * @brief insert comments
 		 **/
 		// function procBoardInsertComment()
+		private function _proc_modify_comment() {
+			$this->_proc_write_comment();
+		}
+
+		/**
+		 * @brief insert comments
+		 **/
+		// function procBoardInsertComment()
 		private function _proc_write_comment() {
 var_dump(X2B_CMD_PROC_WRITE_COMMENT);
 
@@ -267,28 +277,32 @@ var_dump(X2B_CMD_PROC_WRITE_COMMENT);
 				unset($obj->is_secret);
 				$this->module_info->secret = 'N';
 			}
-
-			// $oModuleModel = getModel('module');
-			// $module_config = $oModuleModel->getModuleInfoByModuleSrl($obj->module_srl);
-			// if($module_config->mobile_use_editor === 'Y') {
+	
 			if($this->module_info->mobile_use_editor === 'Y') {
-				if(!isset($obj->use_editor)) $obj->use_editor = 'Y';
-				if(!isset($obj->use_html)) $obj->use_html = 'Y';
+				if(!isset($obj->use_editor)) {
+					$obj->use_editor = 'Y';
+				}
+				if(!isset($obj->use_html)) {
+					$obj->use_html = 'Y';
+				}
 			}
 			else {
-				if(!isset($obj->use_editor)) $obj->use_editor = 'N';
-				if(!isset($obj->use_html)) $obj->use_html = 'N';
+				if(!isset($obj->use_editor)) {
+					$obj->use_editor = 'N';
+				}
+				if(!isset($obj->use_html)) {
+					$obj->use_html = 'N';
+				}
 			}
 // var_dump($this->module_info);
-
 			// check if the doument is existed
 			$o_post_model = \X2board\Includes\getModel('post');
 			$o_post = $o_post_model->get_post($obj->parent_post_id);
 			if(!$o_post->is_exists()) {
-				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_founded', 'x2board') );
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_found', 'x2board') );
 			}
 			unset($o_post_model);
-
+			
 			// For anonymous use, remove writer's information and notifying information
 			if($this->module_info->use_anonymous == 'Y') {
 				$this->module_info->admin_mail = '';
@@ -328,18 +342,13 @@ var_dump(X2B_CMD_PROC_WRITE_COMMENT);
 				} 
 				else {  // parent_comment_id is not existed
 					$output = $o_comment_controller->insert_comment($obj, $bAnonymous);
-// var_dump($output);
-// exit;							
 				}
-			// update the comment if it is not existed
-			} else {
-				// check the grant
-				if(!$o_comment->is_granted()) {
+			} 
+			else {  // update the comment if it is not existed
+				if(!$o_comment->is_granted()) {  // check the grant
 					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', 'x2board') );
 				}
-				$obj->parent_srl = $o_comment->parent_srl;
-				$output = $o_comment_controller->updateComment($obj, $this->grant->manager);
-				$comment_id = $obj->comment_id;
+				$output = $o_comment_controller->update_comment($obj, $this->grant->manager);
 			}
 
 			if(!$output->toBool()) {
@@ -355,7 +364,7 @@ var_dump(X2B_CMD_PROC_WRITE_COMMENT);
 			// $this->add('comment_id', $obj->comment_id);
 			
 			// if s_wp_redirect_url is not added, automatically redirect to home_url
-			$this->add('s_wp_redirect_url', '?'.X2B_CMD_VIEW_POST.'/'.$obj->parent_post_id.'#comment_id-'.$output->get('comment_id'));
+			$this->add('s_wp_redirect_url', '?'.X2B_CMD_VIEW_POST.'/'.$obj->parent_post_id.'#comment_id-'.$obj->comment_id);
 		}
 
 		/**

@@ -19,7 +19,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentItem')) {
 		 * comment number
 		 * @var int
 		 */
-		var $comment_srl = 0;
+		var $comment_id = 0;
 
 		/**
 		 * Get the column list int the table
@@ -49,10 +49,19 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentItem')) {
 			if(!$this->comment_id) {
 				return;
 			}
-			$args = new stdClass();
-			$args->comment_id = $this->comment_id;
-			$output = executeQuery('comment.getComment', $args, $this->columnList);
-			$this->set_attr($output->data);
+			// $args = new \stdClass();
+			// $args->comment_id = $this->comment_id;
+			// $output = executeQuery('comment.getComment', $args, $this->columnList);
+			global $wpdb;
+			$s_query = "SELECT * FROM ".$wpdb->prefix."x2b_comments WHERE `comment_id`=".$this->comment_id;
+			if ($wpdb->query($s_query) === FALSE) {
+				return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error);
+			} 
+			else {
+				$a_result = $wpdb->get_results($s_query);
+				$wpdb->flush();
+			}
+			$this->set_attr($a_result[0]);
 		}
 
 		/**
@@ -142,6 +151,18 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentItem')) {
 			return $this->get('is_secret') == 'Y' ? TRUE : FALSE;
 		}
 
+		// function setGrant()
+		public function set_grant() {
+			$_SESSION['x2b_own_comment'][$this->comment_id] = TRUE;
+			$this->is_granted = TRUE;
+		}
+
+		// function isExists()
+		public function is_exists() {
+			return $this->comment_id ? TRUE : FALSE;
+		}
+
+
 
 
 
@@ -153,17 +174,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentItem')) {
 			$this->_loadFromDB();
 		}
 
-		function isExists()
-		{
-			return $this->comment_srl ? TRUE : FALSE;
-		}
-
-		function setGrant()
-		{
-			$_SESSION['own_comment'][$this->comment_srl] = TRUE;
-			$this->is_granted = TRUE;
-		}
-
 		function isEditable()
 		{
 			if($this->isGranted() || !$this->get('member_srl'))
@@ -171,56 +181,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentItem')) {
 				return TRUE;
 			}
 			return FALSE;
-		}
-
-		function useNotify()
-		{
-			return $this->get('notify_message') == 'Y' ? TRUE : FALSE;
-		}
-
-		/**
-		 * Notify to comment owner
-		 * @return void
-		 */
-		function notify($type, $content)
-		{
-			// return if not useNotify
-			if(!$this->useNotify())
-			{
-				return;
-			}
-
-			// pass if the author is not logged-in user 
-			if(!$this->get('member_srl'))
-			{
-				return;
-			}
-
-			// return if the currently logged-in user is an author of the comment.
-			$logged_info = Context::get('logged_info');
-			if($logged_info->member_srl == $this->get('member_srl'))
-			{
-				return;
-			}
-
-			// get where the comment belongs to 
-			$oDocumentModel = getModel('document');
-			$oDocument = $oDocumentModel->getDocument($this->get('document_srl'));
-
-			// Variables
-			if($type)
-			{
-				$title = "[" . $type . "] ";
-			}
-
-			$title .= cut_str(strip_tags($content), 30, '...');
-			$content = sprintf('%s<br /><br />from : <a href="%s#comment_%s" target="_blank">%s</a>', $content, getFullUrl('', 'document_srl', $this->get('document_srl')), $this->get('comment_srl'), getFullUrl('', 'document_srl', $this->get('document_srl')));
-			$receiver_srl = $this->get('member_srl');
-			$sender_member_srl = $logged_info->member_srl;
-
-			// send a message
-			$oCommunicationController = getController('communication');
-			$oCommunicationController->sendMessage($sender_member_srl, $receiver_srl, $title, $content, FALSE);
 		}
 
 		function getIpAddress()
@@ -233,45 +193,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentItem')) {
 			return '*' . strstr($this->get('ipaddress'), '.');
 		}
 
-		function isExistsHomepage()
-		{
-			if(trim($this->get('homepage')))
-			{
-				return TRUE;
-			}
-
-			return FALSE;
-		}
-
-		function getHomepageUrl()
-		{
-			$url = trim($this->get('homepage'));
-			if(!$url)
-			{
-				return;
-			}
-
-			if(strncasecmp('http://', $url, 7) !== 0)
-			{
-				$url = "http://" . $url;
-			}
-
-			return escape($url, false);
-		}
-
-		function getMemberSrl()
-		{
-			return $this->get('member_srl');
-		}
-
 		function getUserID()
 		{
 			return escape($this->get('user_id'), false);
-		}
-
-		function getUserName()
-		{
-			return escape($this->get('user_name'), false);
 		}
 
 		/**
@@ -482,40 +406,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentItem')) {
 			return $profile_info->src;
 		}
 
-		/**
-		 * Return author's signiture
-		 * @return string
-		 */
-		function getSignature()
-		{
-			// pass if the posting not exists.
-			if(!$this->isExists() || !$this->get('member_srl'))
-			{
-				return;
-			}
-
-			// get the signiture information
-			$oMemberModel = getModel('member');
-			$signature = $oMemberModel->getSignature($this->get('member_srl'));
-
-			// check if max height of the signiture is specified on the member module
-			if(!isset($GLOBALS['__member_signature_max_height']))
-			{
-				$oModuleModel = getModel('module');
-				$member_config = $oModuleModel->getModuleConfig('member');
-				$GLOBALS['__member_signature_max_height'] = $member_config->signature_max_height;
-			}
-
-			$max_signature_height = $GLOBALS['__member_signature_max_height'];
-
-			if($max_signature_height)
-			{
-				$signature = sprintf('<div style="max-height:%dpx;overflow:auto;overflow-x:hidden;height:expression(this.scrollHeight > %d ? \'%dpx\': \'auto\')">%s</div>', $max_signature_height, $max_signature_height, $max_signature_height, $signature);
-			}
-
-			return $signature;
-		}
-
 		function thumbnailExists($width = 80, $height = 0, $type = '')
 		{
 			if(!$this->comment_srl)
@@ -694,17 +584,137 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentItem')) {
 		{
 			return $_SESSION['comment_management'][$this->comment_srl];
 		}
+
+		/**
+		 * Return author's signiture
+		 * @return string
+		 */
+		// function getSignature()
+		// {
+		// 	// pass if the posting not exists.
+		// 	if(!$this->isExists() || !$this->get('member_srl'))
+		// 	{
+		// 		return;
+		// 	}
+
+		// 	// get the signiture information
+		// 	$oMemberModel = getModel('member');
+		// 	$signature = $oMemberModel->getSignature($this->get('member_srl'));
+
+		// 	// check if max height of the signiture is specified on the member module
+		// 	if(!isset($GLOBALS['__member_signature_max_height']))
+		// 	{
+		// 		$oModuleModel = getModel('module');
+		// 		$member_config = $oModuleModel->getModuleConfig('member');
+		// 		$GLOBALS['__member_signature_max_height'] = $member_config->signature_max_height;
+		// 	}
+
+		// 	$max_signature_height = $GLOBALS['__member_signature_max_height'];
+
+		// 	if($max_signature_height)
+		// 	{
+		// 		$signature = sprintf('<div style="max-height:%dpx;overflow:auto;overflow-x:hidden;height:expression(this.scrollHeight > %d ? \'%dpx\': \'auto\')">%s</div>', $max_signature_height, $max_signature_height, $max_signature_height, $signature);
+		// 	}
+
+		// 	return $signature;
+		// }
 		
 		/**
 		 * Returns the comment's mid in order to construct SEO friendly URLs
 		 * @return string
 		 */
-		function getCommentMid()
-		{
-			$model = getModel('module');
-			$module = $model->getModuleInfoByModuleSrl($this->get('module_srl'));
-			return $module->mid;
-		}
+		// function getCommentMid()
+		// {
+		// 	$model = getModel('module');
+		// 	$module = $model->getModuleInfoByModuleSrl($this->get('module_srl'));
+		// 	return $module->mid;
+		// }
+
+		// function useNotify()
+		// {
+		// 	return $this->get('notify_message') == 'Y' ? TRUE : FALSE;
+		// }
+
+		/**
+		 * Notify to comment owner
+		 * @return void
+		 */
+		// function notify($type, $content)
+		// {
+		// 	// return if not useNotify
+		// 	if(!$this->useNotify())
+		// 	{
+		// 		return;
+		// 	}
+
+		// 	// pass if the author is not logged-in user 
+		// 	if(!$this->get('member_srl'))
+		// 	{
+		// 		return;
+		// 	}
+
+		// 	// return if the currently logged-in user is an author of the comment.
+		// 	$logged_info = Context::get('logged_info');
+		// 	if($logged_info->member_srl == $this->get('member_srl'))
+		// 	{
+		// 		return;
+		// 	}
+
+		// 	// get where the comment belongs to 
+		// 	$oDocumentModel = getModel('document');
+		// 	$oDocument = $oDocumentModel->getDocument($this->get('document_srl'));
+
+		// 	// Variables
+		// 	if($type)
+		// 	{
+		// 		$title = "[" . $type . "] ";
+		// 	}
+
+		// 	$title .= cut_str(strip_tags($content), 30, '...');
+		// 	$content = sprintf('%s<br /><br />from : <a href="%s#comment_%s" target="_blank">%s</a>', $content, getFullUrl('', 'document_srl', $this->get('document_srl')), $this->get('comment_srl'), getFullUrl('', 'document_srl', $this->get('document_srl')));
+		// 	$receiver_srl = $this->get('member_srl');
+		// 	$sender_member_srl = $logged_info->member_srl;
+
+		// 	// send a message
+		// 	$oCommunicationController = getController('communication');
+		// 	$oCommunicationController->sendMessage($sender_member_srl, $receiver_srl, $title, $content, FALSE);
+		// }
+
+		// function isExistsHomepage()
+		// {
+		// 	if(trim($this->get('homepage')))
+		// 	{
+		// 		return TRUE;
+		// 	}
+
+		// 	return FALSE;
+		// }
+
+		// function getHomepageUrl()
+		// {
+		// 	$url = trim($this->get('homepage'));
+		// 	if(!$url)
+		// 	{
+		// 		return;
+		// 	}
+
+		// 	if(strncasecmp('http://', $url, 7) !== 0)
+		// 	{
+		// 		$url = "http://" . $url;
+		// 	}
+
+		// 	return escape($url, false);
+		// }
+
+		// function getMemberSrl()
+		// {
+		// 	return $this->get('member_srl');
+		// }
+
+		// function getUserName()
+		// {
+		// 	return escape($this->get('user_name'), false);
+		// }
 	}
 }
 /* End of file comment.item.php */

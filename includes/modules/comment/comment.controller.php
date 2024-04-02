@@ -15,8 +15,7 @@ if ( !defined( 'ABSPATH' ) ) {
 
 if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 
-	class commentController extends comment
-	{
+	class commentController extends comment {
 
 		/**
 		 * Initialization
@@ -33,8 +32,7 @@ var_dump('commentController::init()');
 		 * @return object
 		 */
 		// function insertComment($obj, $manual_inserted = FALSE)
-		public function insert_comment($obj, $manual_inserted = FALSE)
-		{
+		public function insert_comment($obj, $manual_inserted = FALSE) {
 			if(!$manual_inserted) {  // check WP nonce if a guest inserts a new post
 				$wp_verify_nonce = \X2board\Includes\Classes\Context::get('x2b_'.X2B_CMD_PROC_WRITE_COMMENT.'_nonce');
 				if( is_null( $wp_verify_nonce ) ){
@@ -382,6 +380,168 @@ var_dump($manual_inserted);
 			$output->add('comment_id', $obj->comment_id);
 			return $output;
 		}
+
+		/**
+		 * Fix the comment
+		 * @param object $obj
+		 * @param bool $is_admin
+		 * @param bool $manual_updated
+		 * @return object
+		 */
+		// function updateComment($obj, $is_admin = FALSE, $manual_updated = FALSE)
+		public function update_comment($obj, $is_admin = FALSE, $manual_updated = FALSE) {
+			// if(!$manual_updated && !checkCSRF()) {
+			// 	return new BaseObject(-1, 'msg_invalid_request');
+			// }
+			if(!$manual_updated) {  // check WP nonce if a guest inserts a new post
+				$wp_verify_nonce = \X2board\Includes\Classes\Context::get('x2b_'.X2B_CMD_PROC_MODIFY_COMMENT.'_nonce');
+				if( is_null( $wp_verify_nonce ) ){
+					return new \X2board\Includes\Classes\BaseObject(-1, 'msg_invalid_request1');
+				}
+				if( !wp_verify_nonce($wp_verify_nonce, 'x2b_'.X2B_CMD_PROC_MODIFY_COMMENT) ){
+					return new \X2board\Includes\Classes\BaseObject(-1, 'msg_invalid_request2');
+				}
+			}
+
+			if(!is_object($obj)) {
+				$obj = new \stdClass();
+			}
+
+			if(!isset($obj->content)) {
+				$obj->content = $obj->comment_content;
+			}
+			unset($obj->comment_content);
+
+			// call a trigger (before)
+			// $output = ModuleHandler::triggerCall('comment.updateComment', 'before', $obj);
+			// if(!$output->toBool())
+			// {
+			// 	return $output;
+			// }
+
+			// create a comment model object
+			$o_comment_model = \X2board\Includes\getModel('comment');
+			// get the original data
+			$o_source_comment = $o_comment_model->get_comment($obj->comment_id);
+			unset($o_comment_model);
+			if(!$o_source_comment->comment_author) {
+				$obj->comment_author = $o_source_comment->get('comment_author');
+				$obj->user_name = $o_source_comment->get('user_name');
+				$obj->nick_name = $o_source_comment->get('nick_name');
+				$obj->email_address = $o_source_comment->get('email_address');
+				$obj->homepage = $o_source_comment->get('homepage');
+			}
+
+			// check if permission is granted
+			if(!$is_admin && !$o_source_comment->isGranted()) {
+				return new \X2board\Includes\Classes\BaseObject(-1, 'msg_not_permitted');
+			}
+
+			if($obj->password) {
+				$obj->password = \X2board\Includes\getModel('member')->hashPassword($obj->password);
+			}
+
+			// if($obj->homepage) 
+			// {
+			// 	$obj->homepage = escape($obj->homepage);
+			// 	if(!preg_match('/^[a-z]+:\/\//i',$obj->homepage))
+			// 	{
+			// 		$obj->homepage = 'http://'.$obj->homepage;
+			// 	}
+			// }
+
+			// set modifier's information if logged-in and posting author and modifier are matched.
+			if(\X2board\Includes\Classes\Context::get('is_logged')) {
+				$logged_info = \X2board\Includes\Classes\Context::get('logged_info');
+				if($o_source_comment->comment_author == $logged_info->ID) {
+					$obj->comment_author = $logged_info->ID;
+					// $obj->user_name = $logged_info->user_name;
+					$obj->nick_name = $logged_info->nick_name;
+					$obj->email_address = $logged_info->email_address;
+					// $obj->homepage = $logged_info->homepage;
+				}
+			}
+
+			// if nick_name of the logged-in author doesn't exist
+			if($o_source_comment->get('comment_author') && !$obj->nick_name) {
+				$obj->comment_author = $o_source_comment->get('comment_author');
+				// $obj->user_name = $o_source_comment->get('user_name');
+				$obj->nick_name = $o_source_comment->get('nick_name');
+				$obj->email_address = $o_source_comment->get('email_address');
+				// $obj->homepage = $o_source_comment->get('homepage');
+			}
+
+			if(!$obj->content) {
+				$obj->content = $o_source_comment->get('content');
+			}
+
+			// remove XE's wn tags from contents
+			// $obj->content = preg_replace('!<\!--(Before|After)(Document|Comment)\(([0-9]+),([0-9]+)\)-->!is', '', $obj->content);
+
+			if(wp_is_mobile() && $obj->use_editor != 'Y') {
+				if($obj->use_html != 'Y') {
+					$obj->content = htmlspecialchars($obj->content, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
+				}
+				$obj->content = nl2br($obj->content);
+			}
+
+			// remove iframe and script if not a top administrator on the session
+			if($logged_info->is_admin != 'Y') {
+				$obj->content = removeHackTag($obj->content);
+			}
+
+			// begin transaction
+			// $oDB = DB::getInstance();
+			// $oDB->begin();
+
+			// Update
+			if(!isset($obj->last_update)) {
+				$obj->last_update = date('Y-m-d H:i:s', current_time('timestamp')); //date("YmdHis");
+			}		
+			
+			// var_dump($obj);
+			// sanitize
+			$a_new_comment = array();
+			$a_ignore_key = array('board_id', 'use_html', 'use_editor', 'parent_post_id');
+			foreach($obj as $s_key => $s_val ) {
+				if( !in_array($s_key, $a_ignore_key) && isset($s_val) ) {
+					$a_new_comment[$s_key] = esc_sql($s_val);
+				}
+			}
+			global $wpdb;
+			$result = $wpdb->update ( "{$wpdb->prefix}x2b_comments", $a_new_comment, array ( 'comment_id' => esc_sql(intval($a_new_comment['comment_id'] )) ) );
+			if( $result < 0 || $result === false ){
+				return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error );
+			}
+			unset($a_new_comment);
+			unset($a_ignore_key);
+			// $output = executeQuery('comment.updateComment', $obj);
+			// if(!$output->toBool())
+			// {
+			// 	$oDB->rollback();
+			// 	return $output;
+			// }
+
+			// call a trigger (after)
+			// if($output->toBool())
+			// {
+			// 	$trigger_output = ModuleHandler::triggerCall('comment.updateComment', 'after', $obj);
+			// 	if(!$trigger_output->toBool())
+			// 	{
+			// 		$oDB->rollback();
+			// 		return $trigger_output;
+			// 	}
+			// }
+
+			// commit
+			// $oDB->commit();
+			if( !isset($output)) {
+				$output = new \X2board\Includes\Classes\BaseObject();
+			}
+			$output->add('comment_id', $obj->comment_id);
+			unset($obj);
+			return $output;
+		}
 		
 		/**
 		 * Check if module is using comment validation system
@@ -416,148 +576,10 @@ var_dump($manual_inserted);
 			$_SESSION['own_comment'][$comment_id] = TRUE;
 		}
 
+		
+
 /////////////////////////////////////////
 
-		
-		/**
-		 * Fix the comment
-		 * @param object $obj
-		 * @param bool $is_admin
-		 * @param bool $manual_updated
-		 * @return object
-		 */
-		function updateComment($obj, $is_admin = FALSE, $manual_updated = FALSE)
-		{
-			if(!$manual_updated && !checkCSRF())
-			{
-				return new BaseObject(-1, 'msg_invalid_request');
-			}
-
-			if(!is_object($obj))
-			{
-				$obj = new stdClass();
-			}
-
-			// $obj->__isupdate = TRUE;
-
-			// call a trigger (before)
-			$output = ModuleHandler::triggerCall('comment.updateComment', 'before', $obj);
-			if(!$output->toBool())
-			{
-				return $output;
-			}
-
-			// create a comment model object
-			$oCommentModel = getModel('comment');
-
-			// get the original data
-			$source_obj = $oCommentModel->getComment($obj->comment_srl);
-			if(!$source_obj->getMemberSrl())
-			{
-				$obj->member_srl = $source_obj->get('member_srl');
-				$obj->user_name = $source_obj->get('user_name');
-				$obj->nick_name = $source_obj->get('nick_name');
-				$obj->email_address = $source_obj->get('email_address');
-				$obj->homepage = $source_obj->get('homepage');
-			}
-
-			// check if permission is granted
-			if(!$is_admin && !$source_obj->isGranted())
-			{
-				return new BaseObject(-1, 'msg_not_permitted');
-			}
-
-			if($obj->password)
-			{
-				$obj->password = getModel('member')->hashPassword($obj->password);
-			}
-
-			if($obj->homepage) 
-			{
-				$obj->homepage = escape($obj->homepage);
-				if(!preg_match('/^[a-z]+:\/\//i',$obj->homepage))
-				{
-					$obj->homepage = 'http://'.$obj->homepage;
-				}
-			}
-
-			// set modifier's information if logged-in and posting author and modifier are matched.
-			if(Context::get('is_logged'))
-			{
-				$logged_info = Context::get('logged_info');
-				if($source_obj->member_srl == $logged_info->member_srl)
-				{
-					$obj->member_srl = $logged_info->member_srl;
-					$obj->user_name = $logged_info->user_name;
-					$obj->nick_name = $logged_info->nick_name;
-					$obj->email_address = $logged_info->email_address;
-					$obj->homepage = $logged_info->homepage;
-				}
-			}
-
-			// if nick_name of the logged-in author doesn't exist
-			if($source_obj->get('member_srl') && !$obj->nick_name)
-			{
-				$obj->member_srl = $source_obj->get('member_srl');
-				$obj->user_name = $source_obj->get('user_name');
-				$obj->nick_name = $source_obj->get('nick_name');
-				$obj->email_address = $source_obj->get('email_address');
-				$obj->homepage = $source_obj->get('homepage');
-			}
-
-			if(!$obj->content)
-			{
-				$obj->content = $source_obj->get('content');
-			}
-
-			// remove XE's wn tags from contents
-			$obj->content = preg_replace('!<\!--(Before|After)(Document|Comment)\(([0-9]+),([0-9]+)\)-->!is', '', $obj->content);
-
-			if(Mobile::isFromMobilePhone() && $obj->use_editor != 'Y')
-			{
-				if($obj->use_html != 'Y')
-				{
-					$obj->content = htmlspecialchars($obj->content, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
-				}
-				$obj->content = nl2br($obj->content);
-			}
-
-			// remove iframe and script if not a top administrator on the session
-			if($logged_info->is_admin != 'Y')
-			{
-				$obj->content = removeHackTag($obj->content);
-			}
-
-			// begin transaction
-			$oDB = DB::getInstance();
-			$oDB->begin();
-
-			// Update
-			$output = executeQuery('comment.updateComment', $obj);
-			if(!$output->toBool())
-			{
-				$oDB->rollback();
-				return $output;
-			}
-
-			// call a trigger (after)
-			if($output->toBool())
-			{
-				$trigger_output = ModuleHandler::triggerCall('comment.updateComment', 'after', $obj);
-				if(!$trigger_output->toBool())
-				{
-					$oDB->rollback();
-					return $trigger_output;
-				}
-			}
-
-			// commit
-			$oDB->commit();
-
-			$output->add('comment_srl', $obj->comment_srl);
-
-			return $output;
-		}
 
 		/**
 		 * Delete comment

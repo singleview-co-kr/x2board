@@ -36,7 +36,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 		public function get_comment($comment_id = 0, $is_admin = FALSE, $columnList = array()) {
 			$o_comment = new commentItem($comment_id, $columnList);
 			if($is_admin) {
-				$o_comment->setGrant();
+				$o_comment->set_grant();
 			}
 			return $o_comment;
 		}
@@ -78,7 +78,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 			// $output = executeQuery('comment.getCommentCount', $args, NULL, 'master');
 			// $total_count = $output->data->count;
 			global $wpdb;
-// var_Dump("SELECT count(*) as `count` FROM `{$wpdb->prefix}comments` WHERE `parent_post_id`='$n_parent_post_id'")		;	
 			$count = $wpdb->get_var("SELECT count(*) as `count` FROM `{$wpdb->prefix}x2b_comments` WHERE `parent_post_id`='$n_parent_post_id'");
 			return intval($count);
 		}

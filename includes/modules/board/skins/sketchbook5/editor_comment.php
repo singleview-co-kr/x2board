@@ -1,26 +1,31 @@
 <div id="kboard-default-editor" class="bd">
-	<form class="kboard-form" method="post" enctype="multipart/form-data">
-		<?php $skin->editorHeaderComment($comment, $board)?>
+	<form class="kboard-form" method="post" action="<?php echo esc_url(x2b_get_url('cmd', '', 'post_id', '', 'page', ''))?>" enctype="multipart/form-data">
+		<?php x2b_write_comment_hidden_fields();
+$board_meta_max_attached_count = 1;
+$accept_file_types = null;
+$board_meta_max_each_file_size_mb = 0;	
+$o_comment->attach = array();
+?>
 		
-		<div class="kbo11ard-attr-row">
+		<div class="kboard-attr-row">
             <div class="attr-value">
-				<?php wp_editor($comment->content, 'comment_content_'.$comment->uid, array('media_buttons'=>$board->isAdmin(), 'textarea_name'=>'comment_content', 'editor_height'=>200))?>
+				<?php echo x2b_write_comment_content_editor() ?>
             </div>
         </div>
 		<?php 
-		wp_enqueue_style("kboard-jquery-fileupload-css", KBOARD_URL_PATH . '/assets/jquery.fileupload/css/jquery.fileupload.css', [], KBOARD_VERSION);
-		wp_enqueue_style("kboard-jquery-fileupload-css", KBOARD_URL_PATH . '/assets/jquery.fileupload/css/jquery.fileupload-ui.css', [], KBOARD_VERSION);
-		wp_enqueue_script('kboard-jquery-ui-widget', KBOARD_URL_PATH . '/assets/jquery.fileupload/js/vendor/jquery.ui.widget.js', [], KBOARD_VERSION, true);
-		wp_enqueue_script('kboard-jquery-iframe-transport', KBOARD_URL_PATH . '/assets/jquery.fileupload/js/jquery.iframe-transport.js', [], KBOARD_VERSION, true);
-		wp_enqueue_script('kboard-fileupload', KBOARD_URL_PATH . '/assets/jquery.fileupload/js/jquery.fileupload.js', [], KBOARD_VERSION, true);
-		wp_enqueue_script('kboard-fileupload-process', KBOARD_URL_PATH . '/assets/jquery.fileupload/js/jquery.fileupload-process.js', [], KBOARD_VERSION, true);
-		wp_enqueue_script('kboard-fileupload-caller', KBOARD_URL_PATH . '/template/js/file-upload.js', [], KBOARD_VERSION, true);
-		$accept_file_types = str_replace(" ", "", kboard_allow_file_extensions());
-		$accept_file_types = str_replace(",", "|", $accept_file_types);
+		// wp_enqueue_style("kboard-jquery-fileupload-css", KBOARD_URL_PATH . '/assets/jquery.fileupload/css/jquery.fileupload.css', [], KBOARD_VERSION);
+		// wp_enqueue_style("kboard-jquery-fileupload-css", KBOARD_URL_PATH . '/assets/jquery.fileupload/css/jquery.fileupload-ui.css', [], KBOARD_VERSION);
+		// wp_enqueue_script('kboard-jquery-ui-widget', KBOARD_URL_PATH . '/assets/jquery.fileupload/js/vendor/jquery.ui.widget.js', [], KBOARD_VERSION, true);
+		// wp_enqueue_script('kboard-jquery-iframe-transport', KBOARD_URL_PATH . '/assets/jquery.fileupload/js/jquery.iframe-transport.js', [], KBOARD_VERSION, true);
+		// wp_enqueue_script('kboard-fileupload', KBOARD_URL_PATH . '/assets/jquery.fileupload/js/jquery.fileupload.js', [], KBOARD_VERSION, true);
+		// wp_enqueue_script('kboard-fileupload-process', KBOARD_URL_PATH . '/assets/jquery.fileupload/js/jquery.fileupload-process.js', [], KBOARD_VERSION, true);
+		// wp_enqueue_script('kboard-fileupload-caller', KBOARD_URL_PATH . '/template/js/file-upload.js', [], KBOARD_VERSION, true);
+		// $accept_file_types = str_replace(" ", "", kboard_allow_file_extensions());
+		// $accept_file_types = str_replace(",", "|", $accept_file_types);
 		?>
-		<input type="file" name="files" id="file_software" class="file-upload" data-maxfilecount='<?php echo $board->meta->max_attached_count?>' data-accpet_file_types="<?php echo $accept_file_types?>" data-max_each_file_size_mb="<?php echo $board->meta->max_each_file_size_mb?>">
+		<input type="file" name="files" id="file_software" class="file-upload" data-maxfilecount='<?php echo $board_meta_max_attached_count?>' data-accpet_file_types="<?php echo $accept_file_types?>" data-max_each_file_size_mb="<?php echo $board_meta_max_each_file_size_mb?>">
 		<ul class="file-list list-unstyled mb-0">
-			<?php foreach($comment->attach as $file_key=>$file_value):?>
+			<?php foreach($o_comment->attach as $file_key=>$file_value):?>
 				<li class="file my-1 row">
 					<div class="file-name col-md-3">
 						<img src='<?=$file_value['thumbnail_abs_url']?>' class='attach_thumbnail'>
@@ -39,15 +44,15 @@
 		
 		<div class="kboard-control">
 			<div class="center">
-				<?php if($comment->uid):?>
-				<button type="button" class="kboard-default-button-medium white" onClick="location.href='<?=esc_url($url->getDocumentURLWithUID($comment->content_uid))?>'"><?=__('Back', 'kboard')?></button>
-				<!-- <button type="button" class="kboard-default-button-medium white" onClick="location.href='<?=esc_url($url->getBoardList())?>'"><?=__('List', 'kboard')?></button> -->
+				<?php if($o_comment->comment_id):?>
+				<button type="button" class="kboard-default-button-medium white" onClick="history.back()"><?=__('Back to post', 'kboard')?></button>
+				<!-- <button type="button" class="kboard-default-button-medium white" onClick="location.href='<?php //echo esc_url($url->getBoardList())?>'"><?=__('List', 'kboard')?></button> -->
 				<?php else:?>
-				<button type="button" class="kboard-default-button-medium white" onClick="location.href='<?=esc_url($url->getBoardList())?>'"><?=__('Back', 'kboard')?></button>
+				<!-- <button type="button" class="kboard-default-button-medium white" onClick="location.href='<?php //echo esc_url(x2b_get_url())?>'"><?=__('Back to list', 'kboard')?></button> -->
 				<?php endif?>
 			<!-- </div>
 			<div class="right"> -->
-				<?php if($board->isWriter()):?>
+				<?php if($this->grant->write_comment): //if($board->isWriter()):?>
 				<button type="submit" class="kboard-default-button-medium blue"><?=__('Save', 'kboard')?></button>
 				<?php endif?>
 			</div>

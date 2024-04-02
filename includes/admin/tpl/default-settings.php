@@ -123,6 +123,25 @@ function x2b_settings_general() {
 			'type'    => 'textarea',
 			'options' => false,
 		),
+		'mobile_setup_header'					=> array(
+			'id'      => 'mobile_setup_header',
+			// 'name'    => esc_html__( 'Advanced setup', 'x2board' ),
+			'desc'    => esc_html__( 'Mobile presentation setup', 'x2board' ),
+			'type'    => 'header',
+			'options' => false,
+		),
+		'board_mobile_use_editor'  => array(
+			'id'      => 'board_mobile_use_editor',
+			'name'    => esc_html__( 'Mobile editor', 'x2board' ),
+			'desc'    => esc_html__( 'Use WP editor for mobile', 'x2board' ),
+			'type'    => 'checkbox',
+			'options' => false,
+			'default' => 'N',
+			'checked_value' => array(
+				'checked' => 'Y',
+				'unchecked'   => 'N',
+			),
+		),
 		'advanced_setup_header'					=> array(
 			'id'      => 'advanced_setup_header',
 			// 'name'    => esc_html__( 'Advanced setup', 'x2board' ),

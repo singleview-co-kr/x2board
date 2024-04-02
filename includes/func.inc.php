@@ -42,6 +42,7 @@ function init_proc_cmd() {
 		case X2B_CMD_PROC_WRITE_POST:
 		case X2B_CMD_PROC_MODIFY_POST:
 		case X2B_CMD_PROC_WRITE_COMMENT:
+		case X2B_CMD_PROC_MODIFY_COMMENT:
 		case 'x2board_file_download': 	
 			_launch_x2b('proc');
 			break;
