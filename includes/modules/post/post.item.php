@@ -332,23 +332,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			return '*' . strstr($this->get('ipaddress'), '.');
 		}
 
-		/**
-		 * 게시글에 표시할 첨부파일을 반환한다.
-		 * @return object
-		 */
-		// public function getAttachmentList(){
-		public function get_attachments(){
-			$attachment_list = [];
-			return $attachment_list;
-			if($this->uid){
-				$board = $this->getBoard();
-				if( $board->fields()->isFileAttachmentActive() ){
-					$attachment_list = (array)$this->attach;
-				}
-			}
-			return apply_filters('kboard_content_get_attachment_list', $attachment_list);
-		}
-
 		public function getDocumentOptionsHTML() {
 			return;
 		}
@@ -476,7 +459,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 		 * Authority to write a comment and to write a document is separated
 		 * @return bool
 		 */
-		function is_enable_comment()
+		public function is_enable_comment()
 		{
 			// Return false if not authorized, if a secret document, if the document is set not to allow any comment
 			if (!$this->allow_comment()) return false;
@@ -484,6 +467,30 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 
 			return true;
 		}
+
+		/**
+		 * 게시글에 표시할 첨부파일을 반환한다.
+		 * @return object
+		 */
+		// function getUploadedFiles($sortIndex = 'file_srl')
+		public function get_uploaded_files($sortIndex = 'file_id') {
+			if(!$this->_n_wp_post_id) { // if write new post
+				return array();
+			}
+			if($this->is_secret() && !$this->is_granted()) {
+				return array();
+			}
+			if(!$this->get('uploaded_count')) {
+				return array();
+			}
+			if(!isset($this->_a_uploaded_file[$sortIndex])) {
+				$o_file_model = \X2board\Includes\getModel('file');
+				$this->_a_uploaded_file[$sortIndex] = $o_file_model->get_files($this->_n_wp_post_id, array(), $sortIndex, true);
+				unset($o_file_model);
+			}
+			return $this->_a_uploaded_file[$sortIndex];
+		}
+
 
 		
 
@@ -616,54 +623,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			$content = str_replace(array('<', '>', '"'),array('&lt;', '&gt;', '&quot;'), $content);
 
 			return $content;
-		}
-
-		function getRegdateTime()
-		{
-			$regdate = $this->get('regdate');
-			$year = substr($regdate,0,4);
-			$month = substr($regdate,4,2);
-			$day = substr($regdate,6,2);
-			$hour = substr($regdate,8,2);
-			$min = substr($regdate,10,2);
-			$sec = substr($regdate,12,2);
-			return mktime($hour,$min,$sec,$month,$day,$year);
-		}
-
-		function getRegdateGM()
-		{
-			return $this->getRegdate('D, d M Y H:i:s').' '.$GLOBALS['_time_zone'];
-		}
-
-		function getRegdateDT()
-		{
-			return $this->getRegdate('Y-m-d').'T'.$this->getRegdate('H:i:s').substr($GLOBALS['_time_zone'],0,3).':'.substr($GLOBALS['_time_zone'],3,2);
-		}
-
-		function getUpdate($format = 'Y.m.d H:i:s')
-		{
-			return zdate($this->get('last_update'), $format);
-		}
-
-		function getUpdateTime()
-		{
-			$year = substr($this->get('last_update'),0,4);
-			$month = substr($this->get('last_update'),4,2);
-			$day = substr($this->get('last_update'),6,2);
-			$hour = substr($this->get('last_update'),8,2);
-			$min = substr($this->get('last_update'),10,2);
-			$sec = substr($this->get('last_update'),12,2);
-			return mktime($hour,$min,$sec,$month,$day,$year);
-		}
-
-		function getUpdateGM()
-		{
-			return gmdate("D, d M Y H:i:s", $this->getUpdateTime());
-		}
-
-		function getUpdateDT()
-		{
-			return $this->getUpdate('Y-m-d').'T'.$this->getUpdate('H:i:s').substr($GLOBALS['_time_zone'],0,3).':'.substr($GLOBALS['_time_zone'],3,2);
 		}
 
 		function isExtraVarsExists()
@@ -926,22 +885,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			return $this->get('uploaded_count')? true : false;
 		}
 
-		function getUploadedFiles($sortIndex = 'file_srl')
-		{
-			if(!$this->_n_wp_post_id) return;
-
-			if($this->isSecret() && !$this->isGranted()) return;
-			if(!$this->get('uploaded_count')) return;
-
-			if(!$this->_a_uploaded_file[$sortIndex])
-			{
-				$oFileModel = getModel('file');
-				$this->_a_uploaded_file[$sortIndex] = $oFileModel->getFiles($this->_n_wp_post_id, array(), $sortIndex, true);
-			}
-
-			return $this->_a_uploaded_file[$sortIndex];
-		}
-
 		/**
 		 * Return Editor html
 		 * @return string
@@ -990,6 +933,54 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 		{
 			return preg_replace('/src=(["\']?)files/i','src=$1'.Context::getRequestUri().'files', $matches[0]);
 		}
+
+		// function getRegdateTime()
+		// {
+		// 	$regdate = $this->get('regdate');
+		// 	$year = substr($regdate,0,4);
+		// 	$month = substr($regdate,4,2);
+		// 	$day = substr($regdate,6,2);
+		// 	$hour = substr($regdate,8,2);
+		// 	$min = substr($regdate,10,2);
+		// 	$sec = substr($regdate,12,2);
+		// 	return mktime($hour,$min,$sec,$month,$day,$year);
+		// }
+
+		// function getRegdateGM()
+		// {
+		// 	return $this->getRegdate('D, d M Y H:i:s').' '.$GLOBALS['_time_zone'];
+		// }
+
+		// function getRegdateDT()
+		// {
+		// 	return $this->getRegdate('Y-m-d').'T'.$this->getRegdate('H:i:s').substr($GLOBALS['_time_zone'],0,3).':'.substr($GLOBALS['_time_zone'],3,2);
+		// }
+
+		// function getUpdate($format = 'Y.m.d H:i:s')
+		// {
+		// 	return zdate($this->get('last_update'), $format);
+		// }
+
+		// function getUpdateTime()
+		// {
+		// 	$year = substr($this->get('last_update'),0,4);
+		// 	$month = substr($this->get('last_update'),4,2);
+		// 	$day = substr($this->get('last_update'),6,2);
+		// 	$hour = substr($this->get('last_update'),8,2);
+		// 	$min = substr($this->get('last_update'),10,2);
+		// 	$sec = substr($this->get('last_update'),12,2);
+		// 	return mktime($hour,$min,$sec,$month,$day,$year);
+		// }
+
+		// function getUpdateGM()
+		// {
+		// 	return gmdate("D, d M Y H:i:s", $this->getUpdateTime());
+		// }
+
+		// function getUpdateDT()
+		// {
+		// 	return $this->getUpdate('Y-m-d').'T'.$this->getUpdate('H:i:s').substr($GLOBALS['_time_zone'],0,3).':'.substr($GLOBALS['_time_zone'],3,2);
+		// }
 
 		/**
 		 * Send notify message to document owner

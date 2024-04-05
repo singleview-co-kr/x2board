@@ -24,7 +24,7 @@
 				</div>
 			</div>
 			<?php 
-			$attachments = $post->get_attachments();
+			$attachments = $post->get_uploaded_files();
 			if( count($attachments) ):?>
 			<div id="files_290669" class="rd_fnt rd_file">
 				<table class="bd_tb" style="margin-bottom: 0px;">
@@ -35,7 +35,7 @@
 							<td>
 								<ul>
 									<?php foreach($attachments as $key=>$attach):?>
-									<li><a class="bubble" href="<?php echo $url->getDownloadURLWithAttach($content->uid, $key)?>" title="<?php echo sprintf(__('Download %s', 'x2board'), $attach['file_name'])?> [File Size:<?php echo intval($attach['file_size']/1024)?>KB/Download:<?php echo number_format($attach['download_count'])?>]"><?php echo $attach['file_name']?><span class="wrp" style="margin-left: -73px; bottom: 100%; display: none;"><i class="edge"></i></span></a><span class="comma">,</span></li>
+									<li><a class="bubble" href="<?php echo esc_url($attach->download_url)?>" title="<?php echo sprintf(__('Download %s', 'x2board'), $attach->source_filename)?> [File Size:<?php echo intval($attach->file_size/1024)?>KB/Download:<?php echo number_format($attach->download_count)?>]"><?php echo $attach->source_filename?><span class="wrp" style="margin-left: -73px; bottom: 100%; display: none;"><i class="edge"></i></span></a><span class="comma">,</span></li>
 									<?php endforeach?>
 								</ul>
 							</td>

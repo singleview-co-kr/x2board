@@ -19,8 +19,8 @@ if ( !defined( 'ABSPATH' ) ) {
 if ( !defined( 'X2B_VERSION' ) ) {
     define('X2B_VERSION', '0.0.1');
 }
-if ( !defined( 'X2B_PAGE_TITLE' ) ) {
-    define('X2B_PAGE_TITLE', __('x2Board', 'x2board'));
+if ( !defined( 'X2B_ADMIN_PAGE_TITLE' ) ) {
+    define('X2B_ADMIN_PAGE_TITLE', __('x2Board', 'x2board'));
 }
 if ( !defined( 'X2B_DOMAIN' ) ) {
     define('X2B_DOMAIN', 'x2board');

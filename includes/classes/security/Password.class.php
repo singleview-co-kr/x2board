@@ -8,13 +8,13 @@
  * @package /classes/security
  * @version 1.1
  */
-namespace X2board\Includes\Classes;
+namespace X2board\Includes\Classes\Security;
 
 if (!defined('ABSPATH')) {
 	exit;
 } // Exit if accessed directly
 
-if (!class_exists('\\X2board\\Includes\\Classes\\Password')) {
+if (!class_exists('\\X2board\\Includes\\Classes\\Security\\Password')) {
 
 	class Password
 	{
@@ -39,7 +39,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Password')) {
 
 				case 'pbkdf2':
 					$iterations = pow(2, $this->_get_work_factor() + 5);
-					$salt = $this->_create_secure_salt(12, 'alnum');
+					$salt = $this->create_secure_salt(12, 'alnum');
 					$hash = base64_encode($this->_pbkdf2($password, $salt, 'sha256', $iterations, 24));
 					return 'sha256:'.sprintf('%07d', $iterations).':'.$salt.':'.$hash;
 
@@ -204,7 +204,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Password')) {
 		 * @param string $format hex or alnum
 		 * @return string
 		 */
-		private function _create_secure_salt($length, $format = 'hex')
+		public function create_secure_salt($length, $format = 'hex')
 		{
 			// Find out how many bytes of entropy we really need
 			switch($format) {

@@ -11,4 +11,4 @@
 	</form>
 </div>
 
-<?php wp_enqueue_script('kboard-default-script', "{$skin_path}/js/editor.js", array(), X2B_VERSION, true)?>
+<?php //wp_enqueue_script('kboard-default-script', "{$skin_path}/js/editor.js", array(), X2B_VERSION, true)?>

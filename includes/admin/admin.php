@@ -77,12 +77,12 @@ function add_admin_pages_links() {
 	global $_wp_last_object_menu;
 	$_wp_last_object_menu++;
 	// visible admin page
-	add_menu_page(X2B_PAGE_TITLE, 'X2Board', 'manage_x2board', X2B_CMD_ADMIN_VIEW_IDX, 'X2board\Includes\Admin\disp_admin_board', 'dashicons-admin-post', $_wp_last_object_menu);
-	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(X2B_CMD_ADMIN_VIEW_IDX, X2B_PAGE_TITLE, __('Dashboard', 'x2board'), 'manage_x2board', X2B_CMD_ADMIN_VIEW_IDX, 'X2board\Includes\Admin\disp_admin_board' );
-	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(X2B_CMD_ADMIN_VIEW_IDX, X2B_PAGE_TITLE, __('Board list', 'x2board'), 'manage_x2board', X2B_CMD_ADMIN_VIEW_BOARD_LIST, 'X2board\Includes\Admin\disp_admin_board' );
-	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(X2B_CMD_ADMIN_VIEW_IDX, X2B_PAGE_TITLE, __('Create board', 'x2board'), 'manage_x2board', X2B_CMD_ADMIN_VIEW_BOARD_INSERT, 'X2board\Includes\Admin\disp_admin_board' );
+	add_menu_page(X2B_ADMIN_PAGE_TITLE, 'X2Board', 'manage_x2board', X2B_CMD_ADMIN_VIEW_IDX, 'X2board\Includes\Admin\disp_admin_board', 'dashicons-admin-post', $_wp_last_object_menu);
+	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(X2B_CMD_ADMIN_VIEW_IDX, X2B_ADMIN_PAGE_TITLE, __('Dashboard', 'x2board'), 'manage_x2board', X2B_CMD_ADMIN_VIEW_IDX, 'X2board\Includes\Admin\disp_admin_board' );
+	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(X2B_CMD_ADMIN_VIEW_IDX, X2B_ADMIN_PAGE_TITLE, __('Board list', 'x2board'), 'manage_x2board', X2B_CMD_ADMIN_VIEW_BOARD_LIST, 'X2board\Includes\Admin\disp_admin_board' );
+	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(X2B_CMD_ADMIN_VIEW_IDX, X2B_ADMIN_PAGE_TITLE, __('Create board', 'x2board'), 'manage_x2board', X2B_CMD_ADMIN_VIEW_BOARD_INSERT, 'X2board\Includes\Admin\disp_admin_board' );
 	// hidden admin page
-	// $A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(null, X2B_PAGE_TITLE, __('Configure the board', 'x2board'), 'manage_x2board', X2B_CMD_ADMIN_VIEW_BOARD_UPDATE, 'X2board\Includes\Admin\disp_admin_board' );
+	// $A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(null, X2B_ADMIN_PAGE_TITLE, __('Configure the board', 'x2board'), 'manage_x2board', X2B_CMD_ADMIN_VIEW_BOARD_UPDATE, 'X2board\Includes\Admin\disp_admin_board' );
 	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_options_page(
 		esc_html__( 'X2Board', 'x2board' ),
 		esc_html__( 'quick board', 'x2board' ),

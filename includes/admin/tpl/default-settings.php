@@ -60,21 +60,21 @@ function x2b_settings_general() {
 		'x2board_title'					=> array(
 			'id'      => 'board_title',
 			'name'    => esc_html__( 'Board title', 'x2board' ),
-			'desc'    => esc_html__( '관리용 게시판 제목을 입력하세요. 방문자에게는 표시되지 않아요.', 'x2board' ),
+			'desc'    => esc_html__( 'Enter the managerial title of the board. It is not visible to visitors.', 'x2board' ),
 			'type'    => 'text',
 			'options' => false,
 		),
 		'wp_page_title'					=> array(
 			'id'      => 'wp_page_title',
 			'name'    => esc_html__( 'WP page title', 'x2board' ),
-			'desc'    => esc_html__( 'WP 페이지 제목은 브라우저 제목으로 표시되요.', 'x2board' ),
+			'desc'    => esc_html__( 'The title of the WP page is displayed as a browser title.', 'x2board' ),
 			'type'    => 'text',
 			'options' => false,
 		),
 		'board_skin'					=> array(
 			'id'      => 'board_skin',
 			'name'    => esc_html__( 'Board skin', 'x2board' ),
-			'desc'    => esc_html__( '게시판 스킨을 선택하세요.', 'x2board' ),
+			'desc'    => esc_html__( 'Select the board skin', 'x2board' ),
 			'type'    => 'select',
 			'options' => array(
 				'default'            => esc_html__( 'default', 'x2board' ),
@@ -84,42 +84,42 @@ function x2b_settings_general() {
 		'board_list_count'		      => array(
 			'id'      => 'board_list_count',
 			'name'    => esc_html__( 'List per page', 'x2board' ),
-			'desc'    => esc_html__( '한 페이지에 표시될 글 수를 지정할 수 있습니다. (기본 20개)', 'x2board' ),
+			'desc'    => esc_html__( 'Specify the number of posts on a single page (default 20)', 'x2board' ),
 			'type'    => 'number',
 			'options' => '20',
 		),
 		'board_search_list_count'		      => array(
 			'id'      => 'board_search_list_count',
 			'name'    => esc_html__( 'Search list per page', 'x2board' ),
-			'desc'    => esc_html__( '검색, 카테고리 선택 등을 할 경우 표시될 글 수를 지정할 수 있습니다. (기본 20개)', 'x2board' ),
+			'desc'    => esc_html__( 'Specify the number of posts displayed when searching and categorizing. (default 20)', 'x2board' ),
 			'type'    => 'number',
 			'options' => '20',
 		),
 		'board_page_count'		      => array(
 			'id'      => 'board_page_count',
 			'name'    => esc_html__( 'Displaying page count', 'x2board' ),
-			'desc'    => esc_html__( '목록 하단, 페이지를 이동하는 링크 수를 지정할 수 있습니다. (기본 10개)', 'x2board' ),
+			'desc'    => esc_html__( 'Specify the number of page link at the bottom of the posts list. (default 10)', 'x2board' ),
 			'type'    => 'number',
 			'options' => '10',
 		),
 		'board_excerpted_title_length'		      => array(
 			'id'      => 'board_excerpted_title_length',
 			'name'    => esc_html__( 'Excerpted title length', 'x2board' ),
-			'desc'    => esc_html__( '빈 제목 입력되면 본문 첫줄에서 추출하는 문자열 수를 지정합니다. (기본 20자)', 'x2board' ),
+			'desc'    => esc_html__( 'Specify the number of extracted chars from the beginning of the post contents if empty title. (default 20)', 'x2board' ),
 			'type'    => 'number',
 			'options' => '20',
 		),
 		'board_header_text'     => array(
 			'id'      => 'board_header_text',
 			'name'    => esc_html__( 'Board header html', 'x2board' ),
-			'desc'    => esc_html__( '콘텐츠 상단에 표시되는 내용입니다. (HTML 태그 사용 가능)', 'x2board' ),
+			'desc'    => esc_html__( 'Anything displayed at the top of the posts list (HTML tag available)', 'x2board' ),
 			'type'    => 'textarea',
 			'options' => false, // esc_html__( 'No related posts found', 'x2board' ),
 		),
 		'board_footer_text'     => array(
 			'id'      => 'board_footer_text',
 			'name'    => esc_html__( 'Board footer html', 'x2board' ),
-			'desc'    => esc_html__( '콘텐츠 하단에 표시되는 내용입니다. (HTML 태그 사용 가능)', 'x2board' ),
+			'desc'    => esc_html__( 'Anything displayed at the bottom of the posts list (HTML tag available)', 'x2board' ),
 			'type'    => 'textarea',
 			'options' => false,
 		),
@@ -314,53 +314,6 @@ function x2b_settings_category() {
 				'unchecked'   => 'N',
 			),
 		),
-		// 'limit'                  => array(
-		// 	'id'      => 'limit',
-		// 	'name'    => esc_html__( 'Number of posts to display', 'x2board' ),
-		// 	'desc'    => esc_html__( 'Maximum number of posts that will be displayed in the list. This option is used if you do not specify the number of posts in the widget or shortcodes', 'x2board' ),
-		// 	'type'    => 'number',
-		// 	'options' => '6',
-		// 	'min'     => '0',
-		// 	'size'    => 'small',
-		// ),
-		// 'ordering'               => array(
-		// 	'id'      => 'ordering',
-		// 	'name'    => esc_html__( 'Order posts', 'x2board' ),
-		// 	'desc'    => '',
-		// 	'type'    => 'radio',
-		// 	'default' => 'relevance',
-		// 	'options' => crp_get_orderings(),
-		// ),
-	
-		// 'post_types'             => array(
-		// 	'id'      => 'post_types',
-		// 	'name'    => esc_html__( 'Post types to include', 'x2board' ),
-		// 	'desc'    => esc_html__( 'At least one option should be selected above. Select which post types you want to include in the list of posts. This field can be overridden using a comma separated list of post types when using the manual display.', 'x2board' ),
-		// 	'type'    => 'posttypes',
-		// 	'options' => 'post,page',
-		// ),
-		// 'same_taxes'             => array(
-		// 	'id'      => 'same_taxes',
-		// 	'name'    => esc_html__( 'Only from same', 'x2board' ),
-		// 	'desc'    => esc_html__( 'Limit the related posts only to the categories, tags, and/or taxonomies of the current post.', 'x2board' ),
-		// 	'type'    => 'taxonomies',
-		// 	'options' => '',
-		// ),
-		// 'related_meta_keys'      => array(
-		// 	'id'      => 'related_meta_keys',
-		// 	'name'    => esc_html__( 'Related Meta Keys', 'x2board' ),
-		// 	'desc'    => esc_html__( 'Enter a comma-separated list of meta keys. Posts that match the same value of the meta key are displayed before the other related posts', 'x2board' ),
-		// 	'type'    => 'csv',
-		// 	'options' => '',
-		// 	'size'    => 'large',
-		// ),
-		// 'exclude_post_ids'       => array(
-		// 	'id'      => 'exclude_post_ids',
-		// 	'name'    => esc_html__( 'Post/page IDs to exclude', 'x2board' ),
-		// 	'desc'    => esc_html__( 'Comma-separated list of post or page IDs to exclude from the list. e.g. 188,320,500', 'x2board' ),
-		// 	'type'    => 'numbercsv',
-		// 	'options' => '',
-		// ),
 	);
 
 	/**
@@ -480,77 +433,6 @@ function x2b_settings_permission() {
 				'selected'        => esc_html__( 'Selected groups', 'x2board' ),
 			),
 		),
-		// 'post_thumb_op'      => array(
-		// 	'id'      => 'post_thumb_op',
-		// 	'name'    => esc_html__( 'Location of the post thumbnail', 'x2board' ),
-		// 	'desc'    => '',
-		// 	'type'    => 'radio',
-		// 	'default' => 'text_only',
-		// 	'options' => array(
-		// 		'inline'      => esc_html__( 'Display thumbnails inline with posts, before title', 'x2board' ),
-		// 		'after'       => esc_html__( 'Display thumbnails inline with posts, after title', 'x2board' ),
-		// 		'thumbs_only' => esc_html__( 'Display only thumbnails, no text', 'x2board' ),
-		// 		'text_only'   => esc_html__( 'Do not display thumbnails, only text', 'x2board' ),
-		// 	),
-		// ),
-		// 'thumb_size'         => array(
-		// 	'id'      => 'thumb_size',
-		// 	'name'    => esc_html__( 'Thumbnail size', 'x2board' ),
-		// 	'desc'    => esc_html__( 'You can choose from existing image sizes above or create a custom size. If you have chosen Custom size above, then enter the width, height and crop settings below. For best results, use a cropped image. If you change the width and/or height below, existing images will not be automatically resized.' ) . '<br />' . sprintf(
-		// 		/* translators: 1: OTF Regenerate plugin link, 2: Force regenerate plugin link. */
-		// 		esc_html__( 'I recommend using %1$s or %2$s to regenerate all image sizes.', 'x2board' ),
-		// 		'<a href="' . esc_url( network_admin_url( 'plugin-install.php?tab=plugin-information&amp;plugin=otf-regenerate-thumbnails&amp;TB_iframe=true&amp;width=600&amp;height=550' ) ) . '" class="thickbox">OTF Regenerate Thumbnails</a>',
-		// 		'<a href="' . esc_url( network_admin_url( 'plugin-install.php?tab=plugin-information&amp;plugin=regenerate-thumbnails&amp;TB_iframe=true&amp;width=600&amp;height=550' ) ) . '" class="thickbox">Regenerate Thumbnails</a>'
-		// 	),
-		// 	'type'    => 'thumbsizes',
-		// 	'default' => 'crp_thumbnail',
-		// 	'options' => crp_get_all_image_sizes(),
-		// ),
-		// 'thumb_height'       => array(
-		// 	'id'      => 'thumb_height',
-		// 	'name'    => esc_html__( 'Thumbnail height', 'x2board' ),
-		// 	'desc'    => '',
-		// 	'type'    => 'number',
-		// 	'options' => '150',
-		// 	'min'     => '0',
-		// 	'size'    => 'small',
-		// ),
-		// 'thumb_create_sizes' => array(
-		// 	'id'      => 'thumb_create_sizes',
-		// 	'name'    => esc_html__( 'Generate thumbnail sizes', 'x2board' ),
-		// 	'desc'    => esc_html__( 'If you select this option and Custom size is selected above, the plugin will register the image size with WordPress to create new thumbnails. Does not update old images as explained above.', 'x2board' ),
-		// 	'type'    => 'checkbox',
-		// 	'options' => true,
-		// ),
-		// 'thumb_html'         => array(
-		// 	'id'      => 'thumb_html',
-		// 	'name'    => esc_html__( 'Thumbnail size attributes', 'x2board' ),
-		// 	'desc'    => '',
-		// 	'type'    => 'radio',
-		// 	'default' => 'html',
-		// 	'options' => array(
-		// 		/* translators: %s: Code. */
-		// 		'css'  => sprintf( esc_html__( 'Use CSS to set the width and height: e.g. %s', 'x2board' ), '<code>style="max-width:250px;max-height:250px"</code>' ),
-		// 		/* translators: %s: Code. */
-		// 		'html' => sprintf( esc_html__( 'Use HTML attributes to set the width and height: e.g. %s', 'x2board' ), '<code>width="250" height="250"</code>' ),
-		// 		'none' => esc_html__( 'No width or height set. You will need to use external styles to force any width or height of your choice.', 'x2board' ),
-		// 	),
-		// ),
-		// 'scan_images'        => array(
-		// 	'id'      => 'scan_images',
-		// 	'name'    => esc_html__( 'Get first image', 'x2board' ),
-		// 	'desc'    => esc_html__( 'The plugin will fetch the first image in the post content if this is enabled. This can slow down the loading of your page if the first image in the followed posts is large in file-size.', 'x2board' ),
-		// 	'type'    => 'checkbox',
-		// 	'options' => true,
-		// ),
-		// 'thumb_default'      => array(
-		// 	'id'      => 'thumb_default',
-		// 	'name'    => esc_html__( 'Default thumbnail', 'x2board' ),
-		// 	'desc'    => esc_html__( 'Enter the full URL of the image that you wish to display if no thumbnail is found. This image will be displayed below.', 'x2board' ),
-		// 	'type'    => 'text',
-		// 	'options' => CRP_PLUGIN_URL . 'default.png',
-		// 	'size'    => 'large',
-		// ),
 	);
 
 	/**
@@ -584,16 +466,15 @@ function x2b_settings_extra() {
 		'comment_count'		      => array(
 			'id'      => 'comment_count',
 			'name'    => esc_html__( 'Number of comments', 'x2board' ),
-			'desc'    => esc_html__( 'Set number of comments on a single list', 'x2board' ),
+			'desc'    => esc_html__( 'Set number of comments on a single list.', 'x2board' ),
 			'default' => '20',
 			'type'    => 'number',
 			'options' => '20',
 		),
-
 		'comment_use_vote_up'					=> array(
 			'id'      => 'comment_use_vote_up',
 			'name'    => esc_html__( 'Comment vote up', 'x2board' ),
-			'desc'    => esc_html__( 'Activate vote up for a comment', 'x2board' ),
+			'desc'    => esc_html__( 'Activate vote up for a comment.', 'x2board' ),
 			'type'    => 'select',
 			'default' => 'N',
 			'options' => array(
@@ -605,7 +486,7 @@ function x2b_settings_extra() {
 		'comment_use_vote_down'					=> array(
 			'id'      => 'comment_use_vote_down',
 			'name'    => esc_html__( 'Comment vote down', 'x2board' ),
-			'desc'    => esc_html__( 'Activate vote down for a comment', 'x2board' ),
+			'desc'    => esc_html__( 'Activate vote down for a comment.', 'x2board' ),
 			'type'    => 'select',
 			'default' => 'N',
 			'options' => array(
@@ -617,7 +498,7 @@ function x2b_settings_extra() {
 		'comment_use_validation'					=> array(
 			'id'      => 'comment_use_validation',
 			'name'    => esc_html__( 'Use comment approval', 'x2board' ),
-			'desc'    => esc_html__( 'Hide unapproved comment', 'x2board' ),
+			'desc'    => esc_html__( 'Hide unapproved comment.', 'x2board' ),
 			'type'    => 'select',
 			'default' => 'N',
 			'options' => array(
@@ -625,24 +506,78 @@ function x2b_settings_extra() {
 				'Y'            => esc_html__( 'Activate', 'x2board' ),  // 사용
 			),
 		),
-
-		// 'crp_styles' => array(
-		// 	'id'      => 'crp_styles',
-		// 	'name'    => esc_html__( 'Related Posts style', 'x2board' ),
-		// 	'desc'    => '',
-		// 	'type'    => 'radiodesc',
-		// 	'default' => 'rounded_thumbs',
-		// 	'options' => crp_get_styles(),
-		// ),
-		// 'custom_css' => array(
-		// 	'id'          => 'custom_css',
-		// 	'name'        => esc_html__( 'Custom CSS', 'x2board' ),
-		// 	/* translators: 1: Opening a tag, 2: Closing a tag, 3: Opening code tage, 4. Closing code tag. */
-		// 	'desc'        => sprintf( esc_html__( 'Do not include %3$sstyle%4$s tags. Check out the %1$sFAQ%2$s for available CSS classes to style.', 'x2board' ), '<a href="' . esc_url( 'http://wordpress.org/plugins/x2board/faq/' ) . '" target="_blank">', '</a>', '<code>', '</code>' ),
-		// 	'type'        => 'css',
-		// 	'options'     => '',
-		// 	'field_class' => 'codemirror_css',
-		// ),
+		'file_attachment_setup_header'	=> array(
+			'id'      => 'file_attachment_setup_header',
+			// 'name'    => esc_html__( 'Advanced setup', 'x2board' ),
+			'desc'    => esc_html__( 'Configure file attachment', 'x2board' ),
+			'type'    => 'header',
+			'options' => false,
+		),
+		'file_allowed_filesize_mb'	=> array(
+			'id'      => 'file_allowed_filesize_mb',
+			'name'    => esc_html__( 'Max Mb size of each file', 'x2board' ),
+			'desc'    => esc_html__( 'Specify maximum mega-byte size of an each file. Admin is exceptional', 'x2board' ),
+			'type'    => 'number',
+			'options' => '2',
+		),
+		'file_allowed_attach_size_mb'	=> array(
+			'id'      => 'file_allowed_attach_size_mb',
+			'name'    => esc_html__( 'Max Mb size of all files', 'x2board' ),
+			'desc'    => esc_html__( 'Specify maximum mega-byte size of all files a single post. Admin is exceptional', 'x2board' ),
+			'type'    => 'number',
+			'options' => '2',
+		),
+		'file_max_attached_count'	=> array(
+			'id'      => 'file_max_attached_count',
+			'name'    => esc_html__( 'Max number of all files', 'x2board' ),
+			'desc'    => esc_html__( 'Specify maximum number of appending files.', 'x2board' ),
+			'type'    => 'number',
+			'options' => '2',
+		),
+		'file_allowed_filetypes'     => array(
+			'id'      => 'file_allowed_filetypes',
+			'name'    => esc_html__( 'Allowed file extensions', 'x2board' ),
+			'desc'    => esc_html__( 'Specify appendable file extensions. comma separated', 'x2board' ),
+			'type'    => 'textarea',
+			'options' => 'jpg, jpeg, gif, png, bmp, pjp, pjpeg, jfif, svg, webp, ico, zip, 7z, hwp, ppt, xls, doc, txt, pdf, xlsx, pptx, docx, torrent, smi, mp4, mp3',
+		),
+		'file_allow_outlink'               => array(
+			'id'      => 'file_allow_outlink',
+			'name'    => esc_html__( 'Allow external download', 'x2board' ),
+			'desc'    => esc_html__( 'Allow download of appended file from extenal site', 'x2board' ),
+			'type'    => 'radio',
+			'default' => 'Y',
+			'options' => array(
+				'Y'      => esc_html__( 'Allow', 'x2board' ),
+				'N'       => esc_html__( 'Disallow', 'x2board' ),
+			),
+		),
+		'file_allow_outlink_format'     => array(
+			'id'      => 'file_allow_outlink_format',
+			'name'    => esc_html__( 'External download allowed file extensions', 'x2board' ),
+			'desc'    => esc_html__( 'Specify outlink-allowable file extensions. comma separated', 'x2board' ),
+			'type'    => 'textarea',
+			'options' => false,
+		),
+		'file_allow_outlink_site'     => array(
+			'id'      => 'file_allow_outlink_site',
+			'name'    => esc_html__( 'Download allowed external site', 'x2board' ),
+			'desc'    => esc_html__( 'Specify trusted external sites regardless of [Allow external download] configuration. Separate lines to enter multiple domains. ex)http://www.domain.com', 'x2board' ),
+			'type'    => 'textarea',
+			'options' => false,
+		),
+		'file_download_grant'               => array(
+			'id'      => 'file_download_grant',
+			'name'    => esc_html__( 'Download allowed group', 'x2board' ),
+			'desc'    => sprintf( esc_html__( 'Allow download for selected group only, No choice no restriction', 'x2board' ) ),
+			'type'    => 'multicheck',
+			'default' => false, // array(	'single' => 'single',),
+			'options' => array(
+				'admin'            => esc_html__( 'Admin', 'x2board' ),
+				'manager'              => esc_html__( 'Manager', 'x2board' ),
+				'other'    => esc_html__( 'Other', 'x2board' ),
+			),
+		),
 	);
 
 	/**
@@ -666,41 +601,6 @@ function x2b_settings_extra() {
 function x2b_settings_skin_vars() {
 
 	$settings = array(
-		// 'feed_options_desc'  => array(
-		// 	'id'   => 'feed_options_desc',
-		// 	'name' => '<strong>' . esc_html__( 'About this tab', 'x2board' ) . '</strong>',
-		// 	'desc' => esc_html__( 'Below options override the related posts settings for your blog feed. These only apply if you have selected to add related posts to Feeds in the General Options tab. It is recommended to not display thumbnails as there is no easy way to style the related posts in the feed.', 'x2board' ),
-		// 	'type' => 'descriptive_text',
-		// ),
-		// 'limit_feed'         => array(
-		// 	'id'      => 'limit_feed',
-		// 	'name'    => esc_html__( 'Number of posts to display', 'x2board' ),
-		// 	'desc'    => '',
-		// 	'type'    => 'number',
-		// 	'options' => '5',
-		// 	'min'     => '0',
-		// 	'size'    => 'small',
-		// ),
-		// 'show_excerpt_feed'  => array(
-		// 	'id'      => 'show_excerpt_feed',
-		// 	'name'    => esc_html__( 'Show post excerpt', 'x2board' ),
-		// 	'desc'    => '',
-		// 	'type'    => 'checkbox',
-		// 	'options' => false,
-		// ),
-		// 'post_thumb_op_feed' => array(
-		// 	'id'      => 'post_thumb_op_feed',
-		// 	'name'    => esc_html__( 'Location of the post thumbnail', 'x2board' ),
-		// 	'desc'    => '',
-		// 	'type'    => 'radio',
-		// 	'default' => 'text_only',
-		// 	'options' => array(
-		// 		'inline'      => esc_html__( 'Display thumbnails inline with posts, before title', 'x2board' ),
-		// 		'after'       => esc_html__( 'Display thumbnails inline with posts, after title', 'x2board' ),
-		// 		'thumbs_only' => esc_html__( 'Display only thumbnails, no text', 'x2board' ),
-		// 		'text_only'   => esc_html__( 'Do not display thumbnails, only text', 'x2board' ),
-		// 	),
-		// ),
 	);
 
 	/**

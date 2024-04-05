@@ -38,7 +38,38 @@
 		</div>
 		<?php endif?>
 	<?php endif?>
-<?php elseif($field['field_type'] == 'tree_category'):?> 
+<?php elseif($field['field_type'] == 'attach'):
+	wp_enqueue_style("x2board-jquery-fileupload-css", X2B_URL . '/assets/jquery.fileupload/css/jquery.fileupload.css', [], X2B_VERSION);
+	wp_enqueue_style("x2board-jquery-fileupload-css", X2B_URL . '/assets/jquery.fileupload/css/jquery.fileupload-ui.css', [], X2B_VERSION);
+	wp_enqueue_script('x2board-jquery-ui-widget', X2B_URL . '/assets/jquery.fileupload/js/vendor/jquery.ui.widget.js', ['jquery'], X2B_VERSION, true);
+	wp_enqueue_script('x2board-jquery-iframe-transport', X2B_URL . '/assets/jquery.fileupload/js/jquery.iframe-transport.js', ['jquery'], X2B_VERSION, true);
+	wp_enqueue_script('x2board-fileupload', X2B_URL . '/assets/jquery.fileupload/js/jquery.fileupload.js', ['jquery'], X2B_VERSION, true);
+	wp_enqueue_script('x2board-fileupload-process', X2B_URL . '/assets/jquery.fileupload/js/jquery.fileupload-process.js', ['jquery'], X2B_VERSION, true);
+	wp_enqueue_script('x2board-fileupload-caller', X2B_URL . '/assets/jquery.fileupload/file-upload.js', ['jquery'], X2B_VERSION, true);
+	$s_accept_file_types = str_replace(" ", "", $this->module_info->file_allowed_filetypes);
+	$s_accept_file_types = str_replace(",", "|", $s_accept_file_types);
+	$n_file_max_attached_count = intval($this->module_info->file_max_attached_count);
+	$n_file_allowed_filesize_mb = intval($this->module_info->file_allowed_filesize_mb);
+	?>
+	<input type="file" name="files" id="file_software" class="file-upload" data-maxfilecount='<?php echo $n_file_max_attached_count?>' data-accpet_file_types="<?php echo $s_accept_file_types?>" data-max_each_file_size_mb="<?php echo $n_file_allowed_filesize_mb?>">
+	<ul class="file-list list-unstyled mb-0">
+		<?php foreach($post->get_uploaded_files() as $file_key=>$file_value):?>
+			<li class="file my-1 row">
+				<div class="file-name col-md-3">
+					<img src='<?=$file_value['thumbnail_abs_url']?>' class='attach_thumbnail'>
+					<?=$file_value['file_name']?> 
+				</div>
+				<div class="del-button col-md-1">
+					<button type="button" class="btn btn-sm btn-danger file-embed" data-thumbnail_abs_url="<?=$file_value['thumbnail_abs_url']?>" <?php if( $file_value['file_type'] !== 'image'):?>disabled<?php endif?>><i class="fa fa-plus"></i></button>
+					<button type="button" class="btn btn-sm btn-danger file-delete" data-file_uid="<?=$file_value['file_uid']?>"><i class="far fa-trash-alt"></i></button>
+				</div>
+				<div class="progress col-md-7 my-auto px-0">
+					<!-- <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 100%;"></div> -->
+				</div>
+			</li>
+		<?php endforeach?>
+	</ul>	
+<?php elseif($field['field_type'] == '!!tree_category'):?> 
 	<div class="kboard-attr-row <?php echo esc_attr($field['class'])?> <?php echo esc_attr($required)?>">
 		<label class="attr-name" for="<?php echo esc_attr($meta_key)?>"><span class="field-name"><?php echo esc_html($field_name)?></span></label>
 		<div class="attr-value">
@@ -102,9 +133,9 @@
 			<label class="attr-name" for="kboard-select-wordpress-search"><span class="field-name"><?php echo esc_html($field_name)?></span></label>
 			<div class="attr-value">
 				<select id="kboard-select-wordpress-search" name="allow_search">
-					<option value="1"<?php if($allow_search == '1'):?> selected<?php endif?>><?php echo __('Public', 'x2board')?></option>
-					<option value="2"<?php if($allow_search == '2'):?> selected<?php endif?>><?php echo __('Only title (secret document)', 'x2board')?></option>
-					<option value="3"<?php if($allow_search == '3'):?> selected<?php endif?>><?php echo __('Exclusion', 'x2board')?></option>
+					<option value="1"<?php if($post->allow_search == '1'):?> selected<?php endif?>><?php echo __('Public', 'x2board')?></option>
+					<option value="2"<?php if($post->allow_search == '2'):?> selected<?php endif?>><?php echo __('Only title (secret document)', 'x2board')?></option>
+					<option value="3"<?php if($post->allow_search == '3'):?> selected<?php endif?>><?php echo __('Exclusion', 'x2board')?></option>
 				</select>
 				<?php if(isset($field['description']) && $field['description']):?><div class="description"><?php echo esc_html($field['description'])?></div><?php endif?>
 			</div>
@@ -185,14 +216,6 @@
 		<label class="attr-name" for="<?php echo esc_attr($meta_key)?>"><span class="field-name"><?php echo esc_html($field_name)?></span><?php if($required):?> <span class="attr-required-text">*</span><?php endif?></label>
 		<div class="attr-value">
 			<textarea id="<?php echo esc_attr($meta_key)?>" name="<?php echo esc_attr($fields->getOptionFieldName($meta_key))?>"class="editor-textarea <?php echo esc_attr($required)?>"<?php if($placeholder):?> placeholder="<?php echo esc_attr($placeholder)?>"<?php endif?>><?php echo $post->option->{$meta_key}?esc_textarea($post->option->{$meta_key}):esc_textarea($default_value)?></textarea>
-			<?php if(isset($field['description']) && $field['description']):?><div class="description"><?php echo esc_html($field['description'])?></div><?php endif?>
-		</div>
-	</div>
-<?php elseif($field['field_type'] == 'wp_editor'):?>
-	<div class="kboard-attr-row <?php echo esc_attr($field['class'])?> meta-key-<?php echo esc_attr($meta_key)?> <?php echo isset($field['custom_class']) && $field['custom_class'] ? esc_attr($field['custom_class']) : ''?> <?php echo esc_attr($required)?>">
-		<label class="attr-name" for="<?php echo esc_attr($meta_key)?>"><span class="field-name"><?php echo esc_html($field_name)?></span><?php if($required):?> <span class="attr-required-text">*</span><?php endif?></label>
-		<div class="attr-value">
-			<?php wp_editor($post->option->{$meta_key}?$post->option->{$meta_key}:$default_value, $fields->getOptionFieldName($meta_key), array('media_buttons'=>$board->isAdmin(), 'editor_height'=>400, 'editor_class'=>$required))?>
 			<?php if(isset($field['description']) && $field['description']):?><div class="description"><?php echo esc_html($field['description'])?></div><?php endif?>
 		</div>
 	</div>

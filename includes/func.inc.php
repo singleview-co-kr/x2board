@@ -20,8 +20,9 @@ function register_content_filter() {
 }
 
 function plugin_loaded(){
-	if(!session_id() && (!is_admin() ) && !wp_is_json_request()){
-		session_start();
+	// if(!session_id() && !is_admin() ) { // && !wp_is_json_request()){
+	if( isset($_POST['action']) ) {  // $_POST['action'] comes from AJAX only
+		session_start();  // activate $_SESSION while AJAX execution
 	}
 	// 언어 파일 추가
 	// load_plugin_textdomain('x2board', false, X2B_PATH . 'languages');
@@ -43,10 +44,18 @@ function init_proc_cmd() {
 		case X2B_CMD_PROC_MODIFY_POST:
 		case X2B_CMD_PROC_WRITE_COMMENT:
 		case X2B_CMD_PROC_MODIFY_COMMENT:
-		case 'x2board_file_download': 	
+		case X2B_CMD_PROC_DOWNLOAD_FILE:
+		case X2B_CMD_PROC_OUTPUT_FILE:
 			_launch_x2b('proc');
 			break;
 	}
+
+	// wp_ajax_nopriv_(action) executes for users that are not logged in
+	// you should refresh admin page if you change this hook
+	add_action('wp_ajax_nopriv_'.X2B_CMD_PROC_AJAX_FILE_UPLOAD, '\X2board\Includes\_launch_x2b');
+	add_action('wp_ajax_'.X2B_CMD_PROC_AJAX_FILE_UPLOAD, '\X2board\Includes\_launch_x2b');
+	add_action('wp_ajax_nopriv_'.X2B_CMD_PROC_AJAX_FILE_DELETE, '\X2board\Includes\_launch_x2b');
+	add_action('wp_ajax_'.X2B_CMD_PROC_AJAX_FILE_DELETE, '\X2board\Includes\_launch_x2b');
 }
 
 /**
@@ -54,7 +63,7 @@ function init_proc_cmd() {
  */
 function enqueue_user_scripts(){
 	wp_enqueue_script('jquery');
-	wp_enqueue_script('x2board-script', X2B_URL . '/template/js/script.js', array(), X2B_VERSION, true);
+	wp_enqueue_script(X2B_JS_HANDLER_USER, X2B_URL . '/template/js/script.js', array(), X2B_VERSION, true);
 // error_log(print_r(X2B_URL, true));
 	// Tags Input 등록
 	// wp_register_style('tagsinput', KBOARD_URL_PATH . '/assets/tagsinput/jquery.tagsinput.css', array(), '1.3.3');
@@ -90,18 +99,20 @@ function enqueue_user_scripts(){
 	// wp_register_script('kboard-field-address', KBOARD_URL_PATH . '/template/js/field-address.js', array('jquery', 'daum-postcode'), X2B_VERSION, true);
 	
 	// 설정 등록
-	// $localize = array(
-	// 	'version' => X2B_VERSION,
-	// 	'home_url' => home_url('/', 'relative'),
-	// 	'site_url' => site_url('/', 'relative'),
-	// 	'post_url' => admin_url('admin-post.php'),
-	// 	'ajax_url' => admin_url('admin-ajax.php'),
-	// 	'plugin_url' => KBOARD_URL_PATH,
-	// 	'view_iframe' => kboard_view_iframe(),
-	// 	'locale' => get_locale(),
-	// 	'ajax_security' => wp_create_nonce('kboard_ajax_security'),
-	// );
-	// wp_localize_script('kboard-script', 'kboard_settings', apply_filters('kboard_settings', $localize));
+	$a_ajax_info= array(
+		// 'version' => X2B_VERSION,
+		// 'home_url' => home_url('/', 'relative'),
+		// 'site_url' => site_url('/', 'relative'),
+		// 'post_url' => admin_url('admin-post.php'),
+		'url' => admin_url('admin-ajax.php'),
+		// 'plugin_url' => KBOARD_URL_PATH,
+		// 'view_iframe' => kboard_view_iframe(),
+		// 'locale' => get_locale(),
+		'cmd_file_upload' => X2B_CMD_PROC_AJAX_FILE_UPLOAD,
+		'cmd_file_delete' => X2B_CMD_PROC_AJAX_FILE_DELETE,
+		'nonce' => wp_create_nonce(X2B_AJAX_SECURITY),
+	);
+	wp_localize_script(X2B_JS_HANDLER_USER, 'x2board_ajax_info', apply_filters('x2board_settings', $a_ajax_info));
 	
 	// 번역 등록
 	// $localize = array(
@@ -186,14 +197,14 @@ function enqueue_user_scripts(){
 	// wp_localize_script('kboard-script', 'kboard_localize_strings', apply_filters('kboard_localize_strings', $localize));
 }
 
-function _launch_x2b($s_cmd_type='view') {
+function _launch_x2b($s_cmd_type) {
 	global $G_X2B_CACHE;
 	$G_X2B_CACHE = array();
 
 	if ( !defined( '__DEBUG__' ) ) {
 		define('__DEBUG__', 0);
 	}
-
+	
 	// load common classes
 	require_once X2B_PATH . 'includes/classes/Context.class.php';
 	require_once X2B_PATH . 'includes/classes/BaseObject.class.php';
@@ -201,8 +212,8 @@ function _launch_x2b($s_cmd_type='view') {
 	require_once X2B_PATH . 'includes/classes/ModuleHandler.class.php';
 	require_once X2B_PATH . 'includes/classes/DB.class.php';
 	require_once X2B_PATH . 'includes/classes/PageHandler.class.php';
-	require_once X2B_PATH . 'includes/classes/Password.class.php';
-	require_once X2B_PATH . 'includes/classes/IpFilter.class.php';
+	require_once X2B_PATH . 'includes/classes/security/Password.class.php';
+	require_once X2B_PATH . 'includes/classes/security/IpFilter.class.php';
 	require_once X2B_PATH . 'includes/no_namespace.helper.php';  // shorten command for skin usage
 	
 	// load modules
@@ -210,20 +221,29 @@ function _launch_x2b($s_cmd_type='view') {
 	require_once X2B_PATH . 'includes/modules/board/board.model.php';
 	require_once X2B_PATH . 'includes/modules/board/board.view.php';
 	require_once X2B_PATH . 'includes/modules/board/board.controller.php';
-	require_once X2B_PATH . 'includes/modules/post/post.class.php';
-	require_once X2B_PATH . 'includes/modules/post/post.model.php';
-	require_once X2B_PATH . 'includes/modules/post/post.controller.php';
-	require_once X2B_PATH . 'includes/modules/member/member.class.php';
-	require_once X2B_PATH . 'includes/modules/member/member.model.php';
 	require_once X2B_PATH . 'includes/modules/comment/comment.class.php';
-	// require_once X2B_PATH . 'includes/modules/comment/comment.item.php';
 	require_once X2B_PATH . 'includes/modules/comment/comment.model.php';
 	require_once X2B_PATH . 'includes/modules/comment/comment.view.php';
 	require_once X2B_PATH . 'includes/modules/comment/comment.controller.php';
+	require_once X2B_PATH . 'includes/modules/file/file.class.php';
+	require_once X2B_PATH . 'includes/modules/file/file.model.php';
+	require_once X2B_PATH . 'includes/modules/file/file.controller.php';
+	require_once X2B_PATH . 'includes/modules/member/member.class.php';
+	require_once X2B_PATH . 'includes/modules/member/member.model.php';
+	require_once X2B_PATH . 'includes/modules/post/post.class.php';
+	require_once X2B_PATH . 'includes/modules/post/post.model.php';
+	require_once X2B_PATH . 'includes/modules/post/post.controller.php';
 
 	$o_context = \X2board\Includes\Classes\Context::getInstance();
+	
+	// if( wp_is_json_request() ) { 
+	if( $s_cmd_type == '' && isset($_POST['action']) ) {  // $_POST['action'] comes from AJAX only
+		$s_cmd_type = 'proc';  // ajax call
+		$_REQUEST['cmd'] = sanitize_text_field($_POST['action']);
+	}
+	// var_dump(wp_is_json_request());
+	// var_dump($s_cmd_type);
 	$o_context->init($s_cmd_type);
-// var_dump($o_context->getAll4Skin());
 	$o_context->close();
 	unset($o_context);
 }
@@ -668,26 +688,117 @@ function zgap() {
  */
 function removeHackTag($content)
 {
-	require_once X2B_PATH . 'classes/security/EmbedFilter.class.php';
-	$oEmbedFilter = EmbedFilter::getInstance();
+	require_once X2B_PATH.'includes/classes/security/EmbedFilter.class.php';
+	$oEmbedFilter = \X2board\Includes\Classes\Security\EmbedFilter::getInstance();
 	$oEmbedFilter->check($content);
-var_dump($content);
-	purifierHtml($content);
+	// purifierHtml($content);  // too old purifier
 
 	// change the specific tags to the common texts
 	$content = preg_replace('@<(\/?(?:html|body|head|title|meta|base|link|script|style|applet)(/*).*?>)@i', '&lt;$1', $content);
-
 	/**
-	 * Remove codes to abuse the admin session in src by tags of imaages and video postings
+	 * Remove codes to abuse the admin session in src by tags of images and video postings
 	 * - Issue reported by Sangwon Kim
 	 */
-	$content = preg_replace_callback('@<(/?)([a-z]+[0-9]?)((?>"[^"]*"|\'[^\']*\'|[^>])*?\b(?:on[a-z]+|data|style|background|href|(?:dyn|low)?src)\s*=[\s\S]*?)(/?)($|>|<)@i', 'removeSrcHack', $content);
-
+	$content = preg_replace_callback('@<(/?)([a-z]+[0-9]?)((?>"[^"]*"|\'[^\']*\'|[^>])*?\b(?:on[a-z]+|data|style|background|href|(?:dyn|low)?src)\s*=[\s\S]*?)(/?)($|>|<)@i',
+									 '\X2board\Includes\removeSrcHack',
+									  $content);
 	$content = checkXmpTag($content);
 	$content = blockWidgetCode($content);
-
 	return $content;
 }
+
+/**
+ * Remove src hack(preg_replace_callback)
+ *
+ * @param array $match
+ * @return string
+ */
+function removeSrcHack($match) {
+	$tag = strtolower($match[2]);
+
+	// xmp tag ?뺣━
+	if($tag == 'xmp') {
+		return "<{$match[1]}xmp>";
+	}
+	if($match[1]) {
+		return $match[0];
+	}
+	if($match[4]) {
+		$match[4] = ' ' . $match[4];
+	}
+
+	$attrs = array();
+	if(preg_match_all('/([\w:-]+)\s*=(?:\s*(["\']))?(?(2)(.*?)\2|([^ ]+))/s', $match[3], $m)) {
+		foreach($m[1] as $idx => $name) {
+			if(strlen($name) >= 2 && substr_compare($name, 'on', 0, 2) === 0) {
+				continue;
+			}
+
+			$val = preg_replace_callback('/&#(?:x([a-fA-F0-9]+)|0*(\d+));/', function($n) {return chr($n[1] ? ('0x00' . $n[1]) : ($n[2] + 0)); }, $m[3][$idx] . $m[4][$idx]);
+			$val = preg_replace('/^\s+|[\t\n\r]+/', '', $val);
+
+			if(preg_match('/^[a-z]+script:/i', $val)) {
+				continue;
+			}
+			$attrs[$name] = $val;
+		}
+	}
+
+	$filter_arrts = array('style', 'src', 'href');
+
+	if($tag === 'object') array_push($filter_arrts, 'data');
+	if($tag === 'param') array_push($filter_arrts, 'value');
+
+	foreach($filter_arrts as $attr) {
+		if(!isset($attrs[$attr])) continue;
+
+		$attr_value = rawurldecode($attrs[$attr]);
+		$attr_value = htmlspecialchars_decode($attr_value, ENT_COMPAT);
+		$attr_value = preg_replace('/\s+|[\t\n\r]+/', '', $attr_value);
+		if(preg_match('@(\?|&|;)(act=(\w+))@i', $attr_value, $m) && $m[3] !== 'procFileDownload'){
+			unset($attrs[$attr]);
+		}
+	}
+
+	if(isset($attrs['style']) && preg_match('@(?:/\*|\*/|\n|:\s*expression\s*\()@i', $attrs['style'])) {
+		unset($attrs['style']);
+	}
+
+	$attr = array();
+	foreach($attrs as $name => $val) {
+		if($tag == 'object' || $tag == 'embed' || $tag == 'a') {
+			$attribute = strtolower(trim($name));
+			if($attribute == 'data' || $attribute == 'src' || $attribute == 'href') {
+				if(stripos($val, 'data:') === 0) {
+					continue;
+				}
+			}
+		}
+
+		if($tag == 'img') {
+			$attribute = strtolower(trim($name));
+			if(stripos($val, 'data:') === 0) {
+				continue;
+			}
+		}
+		$val = str_replace('"', '&quot;', $val);
+		$attr[] = $name . "=\"{$val}\"";
+	}
+	$attr = count($attr) ? ' ' . implode(' ', $attr) : '';
+	return "<{$match[1]}{$tag}{$attr}{$match[4]}>";
+}
+
+// function purifierHtml(&$content) {
+// 	require_once X2B_PATH.'includes/classes/security/Purifier.class.php';
+// 	$oPurifier = \X2board\Includes\Classes\Security\Purifier::getInstance();
+// 	// @see https://github.com/xpressengine/xe-core/issues/2278
+// 	$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
+// 	if($o_logged_info->is_admin !== 'Y') {
+// 		$oPurifier->setConfig('HTML.Nofollow', true);
+// 	}
+// 	unset($o_logged_info);
+// 	$oPurifier->purify($content);
+// }
 
 /**
  * blocking widget code
@@ -695,11 +806,9 @@ var_dump($content);
  * @param string $content Taget content
  * @return string
  **/
-function blockWidgetCode($content)
-{
-	$content = preg_replace('/(<(?:img|div)(?:[^>]*))(widget)(?:(=([^>]*?)>))/is', '$1blocked-widget$3', $content);
-
-	return $content;
+function blockWidgetCode($s_content) {
+	$s_content = preg_replace('/(<(?:img|div)(?:[^>]*))(widget)(?:(=([^>]*?)>))/is', '$1blocked-widget$3', $s_content);
+	return $s_content;
 }
 
 /**
@@ -708,23 +817,17 @@ function blockWidgetCode($content)
  * @param string $content Target content
  * @return string
  */
-function checkXmpTag($content)
-{
-	$content = preg_replace('@<(/?)xmp.*?>@i', '<\1xmp>', $content);
-
-	if(($start_xmp = strrpos($content, '<xmp>')) !== FALSE)
-	{
-		if(($close_xmp = strrpos($content, '</xmp>')) === FALSE)
-		{
-			$content .= '</xmp>';
+function checkXmpTag($s_content) {
+	$s_content = preg_replace('@<(/?)xmp.*?>@i', '<\1xmp>', $s_content);
+	if(($start_xmp = strrpos($s_content, '<xmp>')) !== FALSE) {
+		if(($close_xmp = strrpos($s_content, '</xmp>')) === FALSE) {
+			$s_content .= '</xmp>';
 		}
-		else if($close_xmp < $start_xmp)
-		{
-			$content .= '</xmp>';
+		else if($close_xmp < $start_xmp) {
+			$s_content .= '</xmp>';
 		}
 	}
-
-	return $content;
+	return $s_content;
 }
 
 /**
@@ -844,6 +947,61 @@ function stripEmbedTagForAdmin(&$s_content, $writer_member_id) {
 	return;
 }
 
+/**
+ * Trim a given number to a fiven size recursively
+ *
+ * @param int $no A given number
+ * @param int $size A given digits
+ */
+function getNumberingPath($no, $size = 3) {
+	$mod = pow(10, $size);
+	$output = sprintf('%0' . $size . 'd/', $no % $mod);
+	if($no >= $mod)	{
+		$output .= getNumberingPath((int) $no / $mod, $size);
+	}
+	return $output;
+}
+
+/**
+ * check uploaded file which may be hacking attempts
+ *
+ * @param string $file Taget file path
+ * @return bool
+ */
+function checkUploadedFile($file, $filename = null) {
+	require_once X2B_PATH.'includes/classes/security/UploadFileFilter.class.php';
+	return \X2board\Includes\Classes\Security\UploadFileFilter::check($file, $filename);
+}
+
+/**
+ * Get a not encoded(html entity) url
+ *
+ * @see getUrl()
+ * @return string
+ */
+function getNotEncodedUrl() {
+	$num_args = func_num_args();
+	$args_list = func_get_args();
+
+	if($num_args) {
+		$url = \X2board\Includes\Classes\Context::get_url($num_args, $args_list, NULL, FALSE);
+	}
+	else {
+		$url = \X2board\Includes\Classes\Context::get_request_uri();
+	}
+
+	return preg_replace('@\berror_return_url=[^&]*|\w+=(?:&|$)@', '', $url);
+}
+
+
+
+
+
+
+
+
+
+
 
 ///////////////////////////////
 // define an empty function to avoid errors when iconv function doesn't exist
@@ -948,29 +1106,6 @@ function stripEmbedTagForAdmin(&$s_content, $writer_member_id) {
 // {
 // 	$oDB = DB::getInstance();
 // 	return $oDB->executeQuery($query_id, $args, $arg_columns);
-// }
-
-/**
- * Get a not encoded(html entity) url
- *
- * @see getUrl()
- * @return string
- */
-// function getNotEncodedUrl()
-// {
-// 	$num_args = func_num_args();
-// 	$args_list = func_get_args();
-
-// 	if($num_args)
-// 	{
-// 		$url = Context::getUrl($num_args, $args_list, NULL, FALSE);
-// 	}
-// 	else
-// 	{
-// 		$url = Context::getRequestUri();
-// 	}
-
-// 	return preg_replace('@\berror_return_url=[^&]*|\w+=(?:&|$)@', '', $url);
 // }
 
 /**
@@ -1522,23 +1657,6 @@ function stripEmbedTagForAdmin(&$s_content, $writer_member_id) {
 // }
 
 /**
- * Trim a given number to a fiven size recursively
- *
- * @param int $no A given number
- * @param int $size A given digits
- */
-// function getNumberingPath($no, $size = 3)
-// {
-// 	$mod = pow(10, $size);
-// 	$output = sprintf('%0' . $size . 'd/', $no % $mod);
-// 	if($no >= $mod)
-// 	{
-// 		$output .= getNumberingPath((int) $no / $mod, $size);
-// 	}
-// 	return $output;
-// }
-
-/**
  * Decode the URL in Korean
  *
  * @param string $str The url
@@ -1547,132 +1665,6 @@ function stripEmbedTagForAdmin(&$s_content, $writer_member_id) {
 // function url_decode($str)
 // {
 // 	return preg_replace('/%u([[:alnum:]]{4})/', '&#x\\1;', $str);
-// }
-
-// function purifierHtml(&$content)
-// {
-// 	require_once(_XE_PATH_ . 'classes/security/Purifier.class.php');
-// 	$oPurifier = Purifier::getInstance();
-
-// 	// @see https://github.com/xpressengine/xe-core/issues/2278
-// 	$logged_info = Context::get('logged_info');
-// 	if($logged_info->is_admin !== 'Y') {
-// 		$oPurifier->setConfig('HTML.Nofollow', true);
-// 	}
-
-// 	$oPurifier->purify($content);
-// }
-
-/**
- * check uploaded file which may be hacking attempts
- *
- * @param string $file Taget file path
- * @return bool
- */
-// function checkUploadedFile($file, $filename = null)
-// {
-// 	require_once(_XE_PATH_ . 'classes/security/UploadFileFilter.class.php');
-// 	return UploadFileFilter::check($file, $filename);
-// }
-
-/**
- * Remove src hack(preg_replace_callback)
- *
- * @param array $match
- * @return string
- */
-// function removeSrcHack($match)
-// {
-// 	$tag = strtolower($match[2]);
-
-// 	// xmp tag ?뺣━
-// 	if($tag == 'xmp')
-// 	{
-// 		return "<{$match[1]}xmp>";
-// 	}
-// 	if($match[1])
-// 	{
-// 		return $match[0];
-// 	}
-// 	if($match[4])
-// 	{
-// 		$match[4] = ' ' . $match[4];
-// 	}
-
-// 	$attrs = array();
-// 	if(preg_match_all('/([\w:-]+)\s*=(?:\s*(["\']))?(?(2)(.*?)\2|([^ ]+))/s', $match[3], $m))
-// 	{
-// 		foreach($m[1] as $idx => $name)
-// 		{
-// 			if(strlen($name) >= 2 && substr_compare($name, 'on', 0, 2) === 0)
-// 			{
-// 				continue;
-// 			}
-
-// 			$val = preg_replace_callback('/&#(?:x([a-fA-F0-9]+)|0*(\d+));/', function($n) {return chr($n[1] ? ('0x00' . $n[1]) : ($n[2] + 0)); }, $m[3][$idx] . $m[4][$idx]);
-// 			$val = preg_replace('/^\s+|[\t\n\r]+/', '', $val);
-
-// 			if(preg_match('/^[a-z]+script:/i', $val))
-// 			{
-// 				continue;
-// 			}
-
-// 			$attrs[$name] = $val;
-// 		}
-// 	}
-
-// 	$filter_arrts = array('style', 'src', 'href');
-
-// 	if($tag === 'object') array_push($filter_arrts, 'data');
-// 	if($tag === 'param') array_push($filter_arrts, 'value');
-
-// 	foreach($filter_arrts as $attr)
-// 	{
-// 		if(!isset($attrs[$attr])) continue;
-
-// 		$attr_value = rawurldecode($attrs[$attr]);
-// 		$attr_value = htmlspecialchars_decode($attr_value, ENT_COMPAT);
-// 		$attr_value = preg_replace('/\s+|[\t\n\r]+/', '', $attr_value);
-// 		if(preg_match('@(\?|&|;)(act=(\w+))@i', $attr_value, $m) && $m[3] !== 'procFileDownload')
-// 		{
-// 			unset($attrs[$attr]);
-// 		}
-// 	}
-
-// 	if(isset($attrs['style']) && preg_match('@(?:/\*|\*/|\n|:\s*expression\s*\()@i', $attrs['style']))
-// 	{
-// 		unset($attrs['style']);
-// 	}
-
-// 	$attr = array();
-// 	foreach($attrs as $name => $val)
-// 	{
-// 		if($tag == 'object' || $tag == 'embed' || $tag == 'a')
-// 		{
-// 			$attribute = strtolower(trim($name));
-// 			if($attribute == 'data' || $attribute == 'src' || $attribute == 'href')
-// 			{
-// 				if(stripos($val, 'data:') === 0)
-// 				{
-// 					continue;
-// 				}
-// 			}
-// 		}
-
-// 		if($tag == 'img')
-// 		{
-// 			$attribute = strtolower(trim($name));
-// 			if(stripos($val, 'data:') === 0)
-// 			{
-// 				continue;
-// 			}
-// 		}
-// 		$val = str_replace('"', '&quot;', $val);
-// 		$attr[] = $name . "=\"{$val}\"";
-// 	}
-// 	$attr = count($attr) ? ' ' . implode(' ', $attr) : '';
-
-// 	return "<{$match[1]}{$tag}{$attr}{$match[4]}>";
 // }
 
 // convert hexa value to RGB

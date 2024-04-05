@@ -174,8 +174,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 			$this->grant = $o_grant;
 			Context::set('grant', $o_grant);
 
-			$this->module_config = null;// $oModuleModel->getModuleConfig($this->module, $module_info->site_srl);
-
+			// $this->module_config = null;// $oModuleModel->getModuleConfig($this->module, $module_info->site_srl);
 			if(method_exists($this, 'init')) {
 				$this->init();
 			}

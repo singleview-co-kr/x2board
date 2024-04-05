@@ -24,14 +24,80 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 				case X2B_CMD_PROC_MODIFY_POST:
 				case X2B_CMD_PROC_WRITE_COMMENT:
 				case X2B_CMD_PROC_MODIFY_COMMENT:
+				case X2B_CMD_PROC_AJAX_FILE_UPLOAD:
+				case X2B_CMD_PROC_AJAX_FILE_DELETE:
+				case X2B_CMD_PROC_DOWNLOAD_FILE:
+				case X2B_CMD_PROC_OUTPUT_FILE:
 					$s_cmd = '_'.$s_cmd;
 					$this->$s_cmd();
 					break;
 				default:
 					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_approach', 'x2board') );
 					break;
-exit;					
+// var_dump('exit here');
+// exit;
 			}	
+		}
+
+		/**
+		 * @brief check download file
+		 **/
+		private function _proc_output_file() {
+			$o_file_controller = \X2board\Includes\getController('file');
+			$o_file_controller->init(); // to init related $_SESSION
+			// $o_appending_file_conf = new \stdClass();
+			// foreach( $this->module_info as $s_key => $val ){
+			// 	if( substr( $s_key, 0, 5 ) === "file_" ) {
+			// 		$o_appending_file_conf->$s_key = $val;
+			// 	}
+			// }
+			// \X2board\Includes\Classes\Context::set('appending_file_config', $o_appending_file_conf);
+			$o_file_controller->proc_file_output();
+			unset($o_file_controller);
+		}
+
+		/**
+		 * @brief check download file
+		 **/
+		private function _proc_download_file() {
+			$o_file_controller = \X2board\Includes\getController('file');
+			$o_file_controller->init(); // to init related $_SESSION
+			$o_appending_file_conf = new \stdClass();
+			foreach( $this->module_info as $s_key => $val ){
+				if( substr( $s_key, 0, 5 ) === "file_" ) {
+					$o_appending_file_conf->$s_key = $val;
+				}
+			}
+			\X2board\Includes\Classes\Context::set('appending_file_config', $o_appending_file_conf);
+			$o_file_controller->proc_file_download();
+			unset($o_file_controller);
+		}
+
+		/**
+		 * @brief upload file ajax
+		 **/
+		private function _proc_ajax_file_upload() {
+			check_ajax_referer(X2B_AJAX_SECURITY, 'security');
+			$o_file_controller = \X2board\Includes\getController('file');
+			$o_file_controller->init(); // to init related $_SESSION
+			$upload_attach_files = $o_file_controller->proc_file_upload();
+			unset($o_file_controller);
+			wp_send_json(['result'=>'success', 'files'=>$upload_attach_files]);
+		}
+
+		/**
+		 * @brief upload file ajax
+		 **/
+		private function _proc_ajax_file_delete() {
+			check_ajax_referer(X2B_AJAX_SECURITY, 'security');
+			$o_file_controller = \X2board\Includes\getController('file');
+			$o_file_controller->init(); // to init related $_SESSION
+			$o_rst = $o_file_controller->proc_file_delete();
+			unset($o_file_controller);
+			if(!$o_rst->toBool()){
+				wp_send_json(['result'=>'error', 'message'=>__('It is an invalid access.', 'x2board')]);
+			}		
+			wp_send_json(['result'=>'success']);		
 		}
 
 		/**

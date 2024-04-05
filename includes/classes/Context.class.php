@@ -208,7 +208,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 		 * @see This function should be called only once
 		 * @return void
 		 */
-		function init($s_cmd_type='view')	{
+		function init($s_cmd_type)	{
 			// fix missing HTTP_RAW_POST_DATA in PHP 5.6 and above
 			// if(!isset($GLOBALS['HTTP_RAW_POST_DATA']) && version_compare(PHP_VERSION, '5.6.0', '>=') === TRUE)
 			// {
@@ -269,7 +269,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 			if( $s_cmd_type == 'proc' ) {  // load controller priority
 				$s_cmd = isset( $_REQUEST['cmd'])?$_REQUEST['cmd'] : '';
 				$s_cmd_prefix = substr( $s_cmd, 0, 4 );
-var_dump('detected proc cmd:'. $s_cmd);
+// var_dump('detected proc cmd:'. $s_cmd);
 				if( $s_cmd_prefix === 'proc' ) {  
 					$o_controller = \X2board\Includes\getController('board');
 					$n_board_id = sanitize_text_field(intval($_REQUEST['board_id']));

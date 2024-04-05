@@ -32,7 +32,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Member\\memberModel')) {
 		 */
 		// function hashPassword($password_text, $algorithm = null)
 		public function hash_password($password_text, $algorithm = null) {
-			$o_password = new \X2board\Includes\Classes\Password();
+			$o_password = new \X2board\Includes\Classes\Security\Password();
 			$s_pw = $o_password->create_hash($password_text, $algorithm);
 			unset($o_password);
 			return $s_pw;

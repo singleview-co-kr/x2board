@@ -16,7 +16,7 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 
 if ( !defined( 'X2B_CMD_VIEW_LIST' ) ) {
-    // define view cmd
+    // define GET view cmd
     define('X2B_CMD_VIEW_LIST', 'view_list');
     define('X2B_CMD_VIEW_POST', 'view_post');
     define('X2B_CMD_VIEW_WRITE_POST', 'view_write_post');
@@ -27,11 +27,33 @@ if ( !defined( 'X2B_CMD_VIEW_LIST' ) ) {
     define('X2B_CMD_VIEW_REPLY_COMMENT', 'view_reply_comment');
     define('X2B_CMD_VIEW_MODIFY_COMMENT', 'view_modify_comment');
     define('X2B_CMD_VIEW_DELETE_COMMENT', 'view_delete_comment');
-    // define controller cmd
+    // define POST controller cmd
     define('X2B_CMD_PROC_WRITE_POST', 'proc_write_post');
     define('X2B_CMD_PROC_MODIFY_POST', 'proc_modify_post');
     define('X2B_CMD_PROC_WRITE_COMMENT', 'proc_write_comment');
     define('X2B_CMD_PROC_MODIFY_COMMENT', 'proc_modify_comment');
+    define('X2B_CMD_PROC_DOWNLOAD_FILE', 'proc_download_file');
+    define('X2B_CMD_PROC_OUTPUT_FILE', 'proc_output_file');
+    
+    // define AJAX controller cmd
+    define('X2B_CMD_PROC_AJAX_FILE_UPLOAD', 'proc_ajax_file_upload');
+    define('X2B_CMD_PROC_AJAX_FILE_DELETE', 'proc_ajax_file_delete');
+}
+
+if ( !defined( 'X2B_AJAX_SECURITY' ) ) {
+    define('X2B_AJAX_SECURITY', 'x2board_ajax_security');
+}
+
+if ( !defined( 'X2B_JS_HANDLER_USER' ) ) {
+    define('X2B_JS_HANDLER_USER', 'x2board-script-user');
+}
+
+if ( !defined( 'X2B_CACHE_PATH' ) ) {
+    define('X2B_CACHE_PATH', X2B_DOMAIN.DIRECTORY_SEPARATOR.'cache');
+}
+
+if ( !defined( 'X2B_ATTACH_FILE_PATH' ) ) {
+    define('X2B_ATTACH_FILE_PATH', X2B_DOMAIN.'/attach');
 }
 
 global $G_X2B_CACHE;

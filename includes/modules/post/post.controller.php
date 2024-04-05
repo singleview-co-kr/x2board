@@ -18,7 +18,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postController')) {
 	class postController extends post
 	{
 		function __construct() {
-var_dump('post controller __construct()');
+// var_dump('post controller __construct()');
 			if(!isset($_SESSION['banned_post'])) {
 				$_SESSION['banned_post'] = array();
 			}
@@ -85,7 +85,7 @@ var_dump('post controller init()');
 			// if($obj->notify_message != 'Y') {
 			// 	$obj->notify_message = 'N';
 			// }
-			if(!$obj->email_address) {
+			if(!isset($obj->email_address)) {
 				$obj->email_address = '';
 			}
 			if(!$isRestore) {
@@ -116,7 +116,7 @@ var_dump('post controller init()');
 			if(!$obj->post_id) {
 				$obj->post_id = \X2board\Includes\getNextSequence();
 			}
-			elseif(!$manual_inserted && !$isRestore && !checkUserSequence($obj->post_id)) {
+			elseif(!$manual_inserted && !$isRestore && !\X2board\Includes\checkUserSequence($obj->post_id)) {
 				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', 'x2board') );
 			}
 
@@ -182,7 +182,7 @@ var_dump('post controller init()');
 			}
 			// Remove iframe and script if not a top adminisrator in the session.
 			if($o_logged_info->is_admin != 'Y') {
-				$obj->content = \X2board\Includes\removeHackTag($obj->content); //////////////////////////
+				$obj->content = \X2board\Includes\removeHackTag($obj->content);
 			}
 			// An error appears if both log-in info and user name don't exist.
 			if(!$o_logged_info->ID && !$obj->nick_name) {
@@ -314,13 +314,6 @@ var_dump('post controller init()');
 			// 	// $oDB->rollback();
 			// 	return $output;
 			// }
-
-			// $n_new_wp_post_id = $this->_insert_wp_post($a_new_post);
-			// $a_new_post['post_id'] = $n_new_wp_post_id;
-			if( $this->_insert_wp_post($a_new_post) === false ) {
-				unset($a_new_post);
-				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_wp_post_registration_failed', 'x2board') );
-			}
 			
 			// Insert extra variables if the document successfully inserted.
 			/*$extra_keys = $o_post_model->getExtraKeys($obj->module_srl);
@@ -345,7 +338,7 @@ var_dump('post controller init()');
 				}
 			}*/
 			unset($o_post_model);
-			
+				
 			// Update the category if the category_srl exists.
 			if($obj->category_id) {
 				$this->updateCategoryCount($obj->module_srl, $obj->category_srl);
@@ -354,6 +347,21 @@ var_dump('post controller init()');
 			if(!$manual_inserted) {
 				$this->addGrant($a_new_post['post_id']);
 			}
+
+			$o_file_controller = \X2board\Includes\getController('file');
+			$output = $o_file_controller->set_files_valid($a_new_post['post_id']);
+			unset($o_file_controller);
+			unset($output);
+
+			$this->update_uploaded_count(array($a_new_post['post_id']));
+
+			// $n_new_wp_post_id = $this->_insert_wp_post($a_new_post);
+			// $a_new_post['post_id'] = $n_new_wp_post_id;
+			if( $this->_insert_wp_post($a_new_post) === false ) {
+				unset($a_new_post);
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_wp_post_registration_failed', 'x2board') );
+			}
+exit;			
 			$o_rst = new \X2board\Includes\Classes\BaseObject();
 			$o_rst->add('post_id',$a_new_post['post_id']);
 			$o_rst->add('category_id',$obj->category_id);
@@ -399,7 +407,7 @@ var_dump('post controller init()');
 			// $args->document_srl = $n_post_id;
 			// $output = executeQuery('document.updateReadedCount', $args);
 			global $wpdb;
-			$query = "UPDATE `{$wpdb->prefix}x2b_post` SET `readed_count`=`readed_count`+1 WHERE `post_id`='{$n_post_id}'";
+			$query = "UPDATE `{$wpdb->prefix}x2b_post` SET `readed_count`=`readed_count`+1 WHERE `post_id`='".esc_sql(intval($n_post_id))."'";
 			if ($wpdb->query($query) === FALSE) {
 				return false;
 			} 
@@ -528,7 +536,7 @@ var_dump('post controller init()');
 			$o_new_obj->update_order = \X2board\Includes\getNextSequence() * -1;
 			// Hash the password if it exists
 			if($o_new_obj->password) {
-				$o_new_obj->password = getModel('member')->hashPassword($o_new_obj->password);
+				$o_new_obj->password = \X2board\Includes\getModel('member')->hash_password($o_new_obj->password);
 			}
 
 			$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
@@ -573,6 +581,7 @@ var_dump('post controller init()');
 				}
 				$o_new_obj->content = nl2br($o_new_obj->content);
 			}
+		
 			// Remove iframe and script if not a top adminisrator in the session.
 			if($o_logged_info->is_admin != 'Y') {
 				$o_new_obj->content = \X2board\Includes\removeHackTag($o_new_obj->content);
@@ -708,6 +717,29 @@ var_dump('post controller init()');
 			// 	$oCacheHandler->delete($cache_key);
 			// }
 			return $output;
+		}
+
+		// public function updateUploaedCount($documentSrlList)
+		public function update_uploaded_count($a_post_id) {
+			if(is_array($a_post_id)) {
+				global $wpdb;
+				$o_file_model = \X2board\Includes\getModel('file');
+				$a_post_id = array_unique($a_post_id);
+				foreach($a_post_id AS $_ => $n_post_id) {
+					$fileCount = $o_file_model->get_files_count($n_post_id);
+					// $args = new stdClass();
+					// $args->document_srl = $documentSrl;
+					// $args->uploaded_count = $fileCount;
+					// executeQuery('document.updateUploadedCount', $args);
+					$result = $wpdb->update( "{$wpdb->prefix}x2b_post", 
+											 array( 'uploaded_count' => $fileCount), 
+											 array ( 'post_id' => esc_sql(intval($n_post_id )) ) );
+					if( $result < 0 || $result === false ){
+						return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error );
+					}
+				}
+				unset($o_file_model);
+			}
 		}
 
 		/**
@@ -2853,25 +2885,6 @@ var_dump($comment_count);
 			$oSecurity = new Security($documentList);
 			$oSecurity->encodeHTML('..variables.');
 			$this->add('document_list', $documentList);
-		}
-
-		public function updateUploaedCount($documentSrlList)
-		{
-			$oDocumentModel = getModel('document');
-			$oFileModel = getModel('file');
-
-			if(is_array($documentSrlList))
-			{
-				$documentSrlList = array_unique($documentSrlList);
-				foreach($documentSrlList AS $key => $documentSrl)
-				{
-					$fileCount = $oFileModel->getFilesCount($documentSrl);
-					$args = new stdClass();
-					$args->document_srl = $documentSrl;
-					$args->uploaded_count = $fileCount;
-					executeQuery('document.updateUploadedCount', $args);
-				}
-			}
 		}
 
 		/**

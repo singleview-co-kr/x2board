@@ -757,13 +757,13 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			unset($o_post_model);
 			\X2board\Includes\Classes\Context::set('field', $a_user_input_field);
 
-			wp_localize_script('x2board-script', 'x2board_'.X2B_CMD_VIEW_WRITE_POST, array(
-				'board_id'          => \X2board\Includes\Classes\Context::get('board_id'), // $this->board_id,
-				'content_uid'       => \X2board\Includes\Classes\Context::get('post_id'),
+			// wp_localize_script(X2B_JS_HANDLER_USER, 'x2board_common_info', array(
+			// 	'board_id'      => \X2board\Includes\Classes\Context::get('board_id'),
+				// 'post_id'       => \X2board\Includes\Classes\Context::get('post_id'),
 				// 'tree_category'     => '',//unserialize($this->meta->tree_category),
-				'cmd'               => \X2board\Includes\Classes\Context::get('cmd'), //$this->mod,
+				// 'cmd'               => \X2board\Includes\Classes\Context::get('cmd'), //$this->mod,
 				// 'use_editor' => ''  //$this->board->use_editor,
-			));
+			// ));
 
 			// setup the skin file
 			echo $this->render_skin_file('editor_post');
@@ -811,6 +811,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			}
 			else { // write a new post
 				$a_header['cmd'] = X2B_CMD_PROC_WRITE_POST; 
+				$a_header['post_id'] = \X2board\Includes\getNextSequence(); // reserve new post id for file appending
 			}
 			unset($o_post);
 			// }
@@ -818,6 +819,10 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			// if($product_id){
 			// 	$header['x2b_option_woocommerce_product_id'] = sprintf('<input type="hidden" name="x2b_option_woocommerce_product_id" value="%d">', $product_id);
 			// }
+			$o_file_controller = \X2board\Includes\getController('file');
+			$o_file_controller->set_upload_info($a_header['post_id'], $a_header['post_id']);
+			unset($o_file_controller);
+
 			wp_nonce_field('x2b_'.$a_header['cmd'], 'x2b_'.$a_header['cmd'].'_nonce');
 			
 			// $header = apply_filters('x2b_skin_editor_header', $header, $content, $board);

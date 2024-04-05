@@ -124,6 +124,36 @@ KEY `idx_list` (`parent_post_id`,`head`,`arrange`),
 KEY `idx_date` (`board_id`,`regdate`)
 ) {$charset_collate};");		
 
+dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_files` (
+`file_id` bigint(11) NOT NULL,
+`upload_target_id` bigint(11) NOT NULL DEFAULT 0,
+`upload_target_type` char(3) DEFAULT NULL,
+`sid` varchar(60) DEFAULT NULL,
+`board_id` bigint(11) NOT NULL DEFAULT 0,
+`author` bigint(11) NOT NULL,
+`download_count` bigint(11) NOT NULL DEFAULT 0,
+`direct_download` char(1) NOT NULL DEFAULT 'N',
+`source_filename` varchar(250) DEFAULT NULL,
+`uploaded_filename` varchar(250) DEFAULT NULL,
+`file_size` bigint(11) NOT NULL DEFAULT 0,
+`comment` varchar(250) DEFAULT NULL,
+`isvalid` char(1) DEFAULT 'N',
+`cover_image` char(1) NOT NULL DEFAULT 'N',
+`regdate` datetime DEFAULT NULL,
+`ipaddress` varchar(128) NOT NULL,
+PRIMARY KEY (`file_id`),
+KEY `idx_upload_target_id` (`upload_target_id`),
+KEY `idx_upload_target_type` (`upload_target_type`),
+KEY `idx_board_id` (`board_id`),
+KEY `idx_author` (`author`),
+KEY `idx_download_count` (`download_count`),
+KEY `idx_file_size` (`file_size`),
+KEY `idx_is_valid` (`isvalid`),
+KEY `idx_list_order` (`cover_image`),
+KEY `idx_regdate` (`regdate`),
+KEY `idx_ipaddress` (`ipaddress`)
+) {$charset_collate};");
+
 dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_category` (
 `category_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
 `board_id` bigint(20) unsigned NOT NULL,
