@@ -120,7 +120,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentItem')) {
 
 		// function getNickName()
 		public function get_nick_name()	{
-			return \X2board\Includes\escape($this->get('nick_name'), false);
+			$s_nick_name = strlen($this->get('nick_name')) > 0 ? $this->get('nick_name') : __('No name', 'x2board');
+			return \X2board\Includes\escape($s_nick_name, false);
 		}
 
 		// function isAccessible()
@@ -162,108 +163,86 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentItem')) {
 			return $this->comment_id ? TRUE : FALSE;
 		}
 
-
-
-
-
-///////////////////////////		
-
-		function setComment($comment_srl)
-		{
-			$this->comment_srl = $comment_srl;
-			$this->_loadFromDB();
+		// function getRegdate($format = 'Y.m.d H:i:s')
+		public function get_regdate($format = 'Y.m.d H:i:s') {
+			$dt_regdate = date_create($this->get('regdate_dt'));
+			$s_regdate = date_format($dt_regdate, $format);
+			unset($dt_regdate);
+			return $s_regdate;
+			// return zdate($this->get('regdate'), $format);
 		}
 
-		function isEditable()
-		{
-			if($this->isGranted() || !$this->get('member_srl'))
-			{
-				return TRUE;
-			}
-			return FALSE;
-		}
-
-		function getIpAddress()
-		{
-			if($this->isGranted())
-			{
+		// function getIpAddress()
+		public function get_ip_addr() {
+			if($this->is_granted()) {
 				return $this->get('ipaddress');
 			}
-
 			return '*' . strstr($this->get('ipaddress'), '.');
-		}
-
-		function getUserID()
-		{
-			return escape($this->get('user_id'), false);
-		}
-
-		/**
-		 * Return content with htmlspecialchars
-		 * @return string
-		 */
-		function getContentText($strlen = 0)
-		{
-			if($this->isSecret() && !$this->isAccessible())
-			{
-				return Context::getLang('msg_is_secret');
-			}
-
-			$content = $this->get('content');
-
-			if($strlen)
-			{
-				return cut_str(strip_tags($content), $strlen, '...');
-			}
-
-			return escape($content, false);
 		}
 
 		/**
 		 * Return content after filter
 		 * @return string
 		 */
-		function getContent($add_popup_menu = TRUE, $add_content_info = TRUE, $add_xe_content_class = TRUE)
-		{
-			if($this->isSecret() && !$this->isAccessible())
-			{
-				return Context::getLang('msg_is_secret');
+		// function getContent($add_popup_menu = TRUE, $add_content_info = TRUE, $add_xe_content_class = TRUE)
+		public function get_content() {
+			if($this->_is_secret() && !$this->is_accessible()) {
+				return __('msg_is_secret', 'x2board');
 			}
-
-			$content = $this->get('content');
-			stripEmbedTagForAdmin($content, $this->get('member_srl'));
-
-			// when displaying the comment on the pop-up menu
-			if($add_popup_menu && Context::get('is_logged'))
-			{
-				$content = sprintf(
-						'%s<div class="comment_popup_menu"><a href="#popup_menu_area" class="comment_%d" onclick="return false">%s</a></div>', $content, $this->comment_srl, Context::getLang('cmd_comment_do')
-				);
-			}
-
-			// if additional information which can access contents is set
-			if($add_content_info)
-			{
-				$memberSrl = $this->get('member_srl');
-				if($memberSrl < 0)
-				{
-					$memberSrl = 0;
-				}
-				$content = sprintf(
-						'<!--BeforeComment(%d,%d)--><div class="comment_%d_%d xe_content">%s</div><!--AfterComment(%d,%d)-->', $this->comment_srl, $memberSrl, $this->comment_srl, $memberSrl, $content, $this->comment_srl, $memberSrl
-				);
-				// xe_content class name should be specified although content access is not necessary.
-			}
-			else
-			{
-				if($add_xe_content_class)
-				{
-					$content = sprintf('<div class="xe_content">%s</div>', $content);
-				}
-			}
-
-			return $content;
+			$s_content = $this->get('content');
+			\X2board\Includes\stripEmbedTagForAdmin($s_content, $this->get('comment_author'));
+			return wpautop($s_content);
 		}
+
+
+
+
+
+
+
+
+///////////////////////////		
+
+		// function setComment($comment_srl)
+		// {
+		// 	$this->comment_srl = $comment_srl;
+		// 	$this->_loadFromDB();
+		// }
+
+		// function isEditable()
+		// {
+		// 	if($this->isGranted() || !$this->get('member_srl'))
+		// 	{
+		// 		return TRUE;
+		// 	}
+		// 	return FALSE;
+		// }
+
+		// function getUserID()
+		// {
+		// 	return escape($this->get('user_id'), false);
+		// }
+
+		/**
+		 * Return content with htmlspecialchars
+		 * @return string
+		 */
+		// function getContentText($strlen = 0)
+		// {
+		// 	if($this->isSecret() && !$this->isAccessible())
+		// 	{
+		// 		return Context::getLang('msg_is_secret');
+		// 	}
+
+		// 	$content = $this->get('content');
+
+		// 	if($strlen)
+		// 	{
+		// 		return cut_str(strip_tags($content), $strlen, '...');
+		// 	}
+
+		// 	return escape($content, false);
+		// }
 
 		/**
 		 * Return summary content
@@ -295,11 +274,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentItem')) {
 			$content = str_replace(array('<', '>', '"'), array('&lt;', '&gt;', '&quot;'), $content);
 
 			return $content;
-		}
-
-		function getRegdate($format = 'Y.m.d H:i:s')
-		{
-			return zdate($this->get('regdate'), $format);
 		}
 
 		function getRegdateTime()

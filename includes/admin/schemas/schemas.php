@@ -118,24 +118,44 @@ KEY `idx_board_blamed_count` (`board_id`,`blamed_count`),
 KEY `idx_board_status` (`board_id`,`status`)
 ) {$charset_collate};");
 
+// `module_srl` bigint(11) NOT NULL DEFAULT 0,  -- for XE
+// `voted_count` bigint(11) NOT NULL DEFAULT 0,  -- for XE
+// `blamed_count` bigint(11) NOT NULL DEFAULT 0,  -- for XE
+// `notify_message` char(1) NOT NULL DEFAULT 'N',  -- for XE
+// `user_id` varchar(80) DEFAULT NULL,  -- for XE
+// `user_name` varchar(80) NOT NULL,  -- for XE
+// `homepage` varchar(250) NOT NULL,  -- for XE
+// `regdate` varchar(14) DEFAULT NULL,  -- for XE
+// `last_update` varchar(14) DEFAULT NULL,  -- for XE
+
 dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_comments` (
 `comment_id` bigint(11) NOT NULL,
+`module_srl` bigint(11) NOT NULL DEFAULT 0,
 `board_id` bigint(11) NOT NULL DEFAULT 0,
 `parent_post_id` bigint(11) NOT NULL DEFAULT 0,
 `parent_comment_id` bigint(11) NOT NULL DEFAULT 0,
 `is_secret` char(1) NOT NULL DEFAULT 'N',
 `content` longtext NOT NULL,
+`voted_count` bigint(11) NOT NULL DEFAULT 0,
+`blamed_count` bigint(11) NOT NULL DEFAULT 0,
+`notify_message` char(1) NOT NULL DEFAULT 'N',
 `password` varchar(60) DEFAULT NULL,
+`user_id` varchar(80) DEFAULT NULL,
+`user_name` varchar(80) NOT NULL,
 `nick_name` varchar(80) NOT NULL,
+`member_srl` bigint(11) NOT NULL,
 `comment_author` bigint(11) NOT NULL,
 `email_address` varchar(250) NOT NULL,
+`homepage` varchar(250) NOT NULL,
 `uploaded_count` bigint(11) NOT NULL DEFAULT 0,
-`regdate` datetime DEFAULT NULL,
-`last_update` datetime DEFAULT NULL,
+`regdate` varchar(14) DEFAULT NULL,
+`last_update` varchar(14) DEFAULT NULL,
 `ipaddress` varchar(128) NOT NULL,
 `list_order` bigint(11) NOT NULL,
+`status` char(1) NOT NULL DEFAULT 1,
 `ua` char(1) NOT NULL,
-`status` char(1) NOT NULL DEFAULT 1,  -- 없어도 되나?
+`regdate_dt` datetime DEFAULT NULL,
+`last_update_dt` datetime DEFAULT NULL,
 PRIMARY KEY (`comment_id`),
 UNIQUE KEY `idx_board_list_order` (`board_id`,`list_order`),
 KEY `idx_board_id` (`board_id`),
@@ -143,8 +163,8 @@ KEY `idx_parent_post_id` (`parent_post_id`),
 KEY `idx_parent_comment_id` (`parent_comment_id`),
 KEY `idx_comment_author` (`comment_author`),
 KEY `idx_uploaded_count` (`uploaded_count`),
-KEY `idx_regdate` (`regdate`),
-KEY `idx_last_update` (`last_update`),
+KEY `idx_regdate_dt` (`regdate_dt`),
+KEY `idx_last_update_dt` (`last_update_dt`),
 KEY `idx_ipaddress` (`ipaddress`),
 KEY `idx_list_order` (`list_order`),
 KEY `idx_status` (`status`)
@@ -156,11 +176,12 @@ dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_comments_list` (
 `head` bigint(11) NOT NULL DEFAULT 0,
 `arrange` bigint(11) NOT NULL DEFAULT 0,
 `board_id` bigint(11) NOT NULL DEFAULT 0,
-`regdate` datetime DEFAULT NULL,
+`regdate` varchar(14) DEFAULT NULL,
+`regdate_dt` datetime DEFAULT NULL,
 `depth` bigint(11) NOT NULL DEFAULT 0,
 PRIMARY KEY (`comment_id`),
 KEY `idx_list` (`parent_post_id`,`head`,`arrange`),
-KEY `idx_date` (`board_id`,`regdate`)
+KEY `idx_date` (`board_id`,`regdate_dt`)
 ) {$charset_collate};");		
 
 dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_files` (

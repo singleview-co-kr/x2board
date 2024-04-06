@@ -15,8 +15,8 @@
 				<span class="profile img no_img">?</span>
 				<div class="meta">
 					<a href="#popup_menu_area" class="member_4" onclick="return false"><?=$comment->get_nick_name()?></a>
-					<span class="date" itemprop="dateCreated"><?=date('Y-m-d H:i', strtotime($comment->regdate))?></span>
-					<?php if($grant->manager):?><small class="m_no">(<?=$comment->ipaddress?>)</small><?php endif?>
+					<span class="date" itemprop="dateCreated"><?php echo $comment->get_regdate()?></span>
+					<?php if($grant->manager):?><small class="m_no">(<?=$comment->get_ip_addr()?>)</small><?php endif?>
 					<?php
 					$n_attachment = count((array)$comment->attach);
 					if($n_attachment):?>
@@ -42,7 +42,7 @@
 				</div>
 				<div class="comment_<?=$comment->comment_id?>_4 xe_content" itemprop="description">
 				<?php if($comment->is_accessible()):?>
-					<?=wpautop($comment->content)?>
+					<?php echo $comment->get_content()?>
 				<?php else:?>
 					<?php if($comment->remaining_time_for_reading):?>
 						<div class="remaining_time_for_reading"><?=sprintf(__('You can read comments after %d minutes. <a href="%s">Login</a> and you can read it right away.', 'x2board'), round($comment->remaining_time_for_reading/60), wp_login_url($_SERVER['REQUEST_URI']))?></div>

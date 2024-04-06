@@ -163,8 +163,8 @@ var_dump('commentController::init()');
 				$obj->comment_content = nl2br($obj->comment_content);
 			}
 
-			if(!isset($obj->regdate)) {
-				$obj->regdate = date('Y-m-d H:i:s', current_time('timestamp')); //date("YmdHis");
+			if(!isset($obj->regdate_dt)) {
+				$obj->regdate_dt = date('Y-m-d H:i:s', current_time('timestamp')); //date("YmdHis");
 			}
 
 			// remove iframe and script if not a top administrator on the session.
@@ -190,7 +190,7 @@ var_dump('commentController::init()');
 			$list_args->comment_id = $obj->comment_id;
 			$list_args->parent_post_id = $obj->parent_post_id;
 			$list_args->board_id = $obj->board_id;
-			$list_args->regdate = $obj->regdate;
+			$list_args->regdate_dt = $obj->regdate_dt;
 
 			// If parent comment doesn't exist, set data directly
 			if(!$obj->parent_comment_id) {  // parent comment
@@ -241,7 +241,7 @@ var_dump('commentController::init()');
 			$a_new_comment_list['comment_id'] = $list_args->comment_id;
 			$a_new_comment_list['parent_post_id'] = $list_args->parent_post_id;
 			$a_new_comment_list['board_id'] = $list_args->board_id;
-			$a_new_comment_list['regdate'] = $list_args->regdate;
+			$a_new_comment_list['regdate_dt'] = $list_args->regdate_dt;
 			$a_new_comment_list['arrange'] = $list_args->arrange;
 			$a_new_comment_list['head'] = $list_args->head;
 			$a_new_comment_list['depth'] = $list_args->depth;
@@ -285,8 +285,8 @@ var_dump('commentController::init()');
 			$a_new_comment['nick_name'] = sanitize_text_field($obj->nick_name);
 			$a_new_comment['status'] = intval($obj->status);
 			$a_new_comment['list_order'] = intval($obj->list_order);
-			$a_new_comment['regdate'] = $obj->regdate;
-			$a_new_comment['last_update'] = $a_new_comment['regdate'];
+			$a_new_comment['regdate_dt'] = $obj->regdate_dt;
+			$a_new_comment['last_update_dt'] = $a_new_comment['regdate_dt'];
 			$a_new_comment['is_secret'] = sanitize_text_field($obj->is_secret);
 			$a_new_comment['ua'] = wp_is_mobile() ? 'M' : 'P';  // add user agent
 			$a_new_comment['ipaddress'] = \X2board\Includes\get_remote_ip();
@@ -320,7 +320,6 @@ var_dump('commentController::init()');
 			// get the number of all comments in the posting
 			$n_comment_count = $o_comment_model->get_comment_count($parent_post_id);
 			unset($o_comment_model);
-// var_dump($n_comment_count);
 // var_dump($is_admin);
 			// create the controller object of the document
 			$o_post_controller = \X2board\Includes\getController('post');
@@ -338,7 +337,7 @@ var_dump('commentController::init()');
 
 			// grant autority of the comment
 			if(!$manual_inserted) {
-				$this->_add_grant($n_new_comment_id);
+				$this->_add_grant($obj->comment_id);
 			}
 // exit;
 			// call a trigger(after)

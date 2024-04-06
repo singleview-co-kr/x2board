@@ -1708,8 +1708,8 @@ var_dump('post controller init()');
 				// 	$oCacheHandler->delete($cache_key);
 				// }
 			}
-var_dump($comment_count);
-			$a_param['comment_count'] = $comment_count + 1;
+// var_dump($comment_count);
+			$a_param['comment_count'] = $comment_count;
 			$a_param['last_update_dt'] = date('Y-m-d H:i:s', current_time('timestamp'));
 
 			// $a_update_key = array();
