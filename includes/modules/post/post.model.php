@@ -441,9 +441,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 					// $query_id = 'post.getPostList';
 					global $wpdb;
 					$o_query = new \stdClass();
-					$o_query->s_tables = '`'.$wpdb->prefix.'x2b_post`';
+					$o_query->s_tables = '`'.$wpdb->prefix.'x2b_posts`';
 					$o_query->s_columns = "*";
-					// $o_query->s_where = "WHERE `board_id`=".$obj->wp_page_id." AND `post_status` in ('SECRET', 'PUBLIC')"; // and `list_order` <= 2100000000";
+					// $o_query->s_where = "WHERE `board_id`=".$obj->wp_page_id." AND `status` in ('SECRET', 'PUBLIC')"; // and `list_order` <= 2100000000";
 					// $o_query->s_orderby = "ORDER BY `list_order` asc";
 					$o_query->s_where = $o_search_check->s_where;
 					$o_query->s_orderby = $o_search_check->s_orderby;
@@ -527,11 +527,11 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			global $wpdb;
 			$o_query = new \stdClass();
 			$o_query->s_query_type = 'select';
-			// $o_query->s_table_name = 'x2b_post';
-			$o_query->s_tables = '`'.$wpdb->prefix.'x2b_post`';
-			// $o_query->s_columns = "`title`, `nick_name`, `regdate`, `readed_count`, `is_notice`, `is_secret`, `post_id`, `board_id`, `category_id`, `post_author`, `content`, `last_update`, `comment_count`, `vote_count`, `uploaded_count`, `post_status`, `title_bold`, `title_color`, `tags`";
+			// $o_query->s_table_name = 'x2b_posts';
+			$o_query->s_tables = '`'.$wpdb->prefix.'x2b_posts`';
+			// $o_query->s_columns = "`title`, `nick_name`, `regdate_dt`, `readed_count`, `is_notice`, `post_id`, `board_id`, `category_id`, `post_author`, `content`, `last_update_dt`, `comment_count`, `voted_count`, `uploaded_count`, `status`, `title_bold`, `title_color`, `tags`";
 			$o_query->s_columns = "*";
-			$o_query->s_where = "WHERE `board_id`=".$obj->wp_page_id." AND `is_notice`='Y' AND `post_status` in ('PUBLIC')"; // and `list_order` <= 2100000000";
+			$o_query->s_where = "WHERE `board_id`=".$obj->wp_page_id." AND `is_notice`='Y' AND `status` in ('PUBLIC')"; // and `list_order` <= 2100000000";
 			$o_query->s_orderby = "ORDER BY `list_order` desc";
 			$output = \X2board\Includes\executeQueryArray($o_query, $columnList); // $query_id, $args, $columnList);
 			unset($o_query);
@@ -863,7 +863,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 						$args->{$o_sort_check->sort_index} = $o_post->get($o_sort_check->sort_index);
 					}
 				}
-				elseif($o_sort_check->sort_index === 'regdate') {
+				elseif($o_sort_check->sort_index === 'regdate_dt') {
 
 					if($args->order_type === 'asc') {
 						$args->{'rev_' . $o_sort_check->sort_index} = $o_post->get($o_sort_check->sort_index);
@@ -881,7 +881,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			// total number of the article search page
 			$query_id .= 'Page';  // $output = executeQuery($query_id . 'Page', $args);
 			global $wpdb;
-			$s_tables = '`'.$wpdb->prefix.'x2b_post`';
+			$s_tables = '`'.$wpdb->prefix.'x2b_posts`';
 			$s_query = "SELECT COUNT(*) as `rec_cnt` FROM {$s_tables}";
 			
 			if( $query_id == 'post.getPostListPage' ) {
@@ -914,8 +914,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 		private function _set_sort_index($obj, $load_extra_vars) {
 			$sortIndex = $obj->sort_index;
 			$isExtraVars = false;
-			$a_sortable_field = array('list_order','regdate','last_update','update_order','readed_count',
-									  'vote_count','like','dislike','comment_count','uploaded_count','title',
+			$a_sortable_field = array('list_order','regdate_dt','last_update_dt','update_order','readed_count',
+									  'voted_count','comment_count','uploaded_count','title',
 									  'category_id');
 			if(!in_array($sortIndex, $a_sortable_field)) {
 				// get module_srl extra_vars list
@@ -1092,7 +1092,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 						break;
 					case 'post_authors' :// case 'member_srl' :
 					case 'readed_count' :
-					case 'vote_count' :  // case 'voted_count' :
+					case 'voted_count' :
 					case 'comment_count' :
 					// case 'trackback_count' :
 					case 'uploaded_count' :
@@ -1112,11 +1112,11 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 							}
 						}
 						break;
-					case 'dislike' : //case 'blamed_count' :
+					case 'blamed_count' :
 						$args->{"s_".$search_target} = (int)$search_keyword * -1;
 						break;
-					case 'regdate' :
-					case 'last_update' :
+					case 'regdate_dt' : // case 'regdate' :
+					case 'last_update_dt' :
 					case 'ipaddress' :
 						$args->{"s_".$search_target} = $search_keyword;
 						break;
@@ -1234,7 +1234,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			$o_query_rst->s_where = "WHERE `board_id`=".get_the_ID();
 			if( isset( $args->statusList ) && is_array($args->statusList) ) {
 				// var_dump(implode("', '" , $args->statusList));
-				$o_query_rst->s_where .= " AND `post_status` in ('".implode("', '" , $args->statusList)."')"; // and `list_order` <= 2100000000";
+				$o_query_rst->s_where .= " AND `status` in ('".implode("', '" , $args->statusList)."')"; // and `list_order` <= 2100000000";
 			}
 
 			if( isset($args->sort_index) ) {
@@ -1597,7 +1597,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			$args = new stdClass;
 			if(is_array($obj->module_srl)) $args->module_srl = implode(',', $obj->module_srl);
 			else $args->module_srl = $obj->module_srl;
-			$args->regdate = $obj->regdate;
+			$args->regdate_dt = $obj->regdate_dt;
 
 			$output = executeQuery('document.getDailyArchivedList', $args);
 			if(!$output->toBool()) return $output;
@@ -1808,8 +1808,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 					case 'uploaded_count' :
 						$args->{"s_".$search_target} = (int)$search_keyword;
 						break;
-					case 'regdate' :
-					case 'last_update' :
+					case 'regdate_dt' :
+					case 'last_update_dt' :
 					case 'ipaddress' :
 					case 'tag' :
 						$args->{"s_".$search_target} = $search_keyword;

@@ -95,7 +95,7 @@ var_dump('post controller init()');
 			// can modify regdate only manager
 			// $grant = Context::get('grant');
 			// if(!$grant->manager) {
-			// 	unset($obj->regdate);
+			// 	unset($obj->regdate_dt);
 			// }
 
 			// Serialize the $extra_vars, check the extra_vars type, because duplicate serialized avoid
@@ -192,7 +192,7 @@ var_dump('post controller init()');
 
 			// $obj->lang_code = Context::getLangType();
 			// Insert data into the DB
-			// if(!$obj->post_status) {
+			// if(!$obj->status) {
 			// 	$this->_checkDocumentStatusForOldVersion($obj);
 			// }
 // var_dump($obj);
@@ -224,13 +224,11 @@ var_dump('post controller init()');
 			$a_new_post['nick_name'] = sanitize_text_field($obj->nick_name);
 			$a_new_post['title'] = sanitize_text_field($obj->title); // isset($data['title'])?kboard_safeiframe(kboard_xssfilter($data['title'])):'';
 			$a_new_post['content'] = sanitize_text_field($obj->content); // isset($data['content'])?kboard_safeiframe(kboard_xssfilter($data['content'])):'';
-			$a_new_post['regdate'] = date('Y-m-d H:i:s', current_time('timestamp'));  // $n_cur_unix_timestamp; // isset($data['date'])?sanitize_key($data['date']):date('YmdHis', current_time('timestamp'));
-			$a_new_post['last_update'] = $a_new_post['regdate']; // $n_cur_unix_timestamp; //isset($data['update'])?sanitize_key($data['update']):$data['date'];
+			$a_new_post['regdate_dt'] = date('Y-m-d H:i:s', current_time('timestamp'));  // $n_cur_unix_timestamp; // isset($data['date'])?sanitize_key($data['date']):date('YmdHis', current_time('timestamp'));
+			$a_new_post['last_update_dt'] = $a_new_post['regdate_dt']; // $n_cur_unix_timestamp; //isset($data['update'])?sanitize_key($data['update']):$data['date'];
 			$a_new_post['readed_count'] = 0; //isset($data['view'])?intval($data['view']):0;
 			$a_new_post['comment_count'] = 0;//isset($data['comment'])?intval($data['comment']):0;
-			$a_new_post['like'] = 0; // isset($data['like'])?intval($data['like']):0;
-			$a_new_post['dislike'] = 0; //isset($data['unlike'])?intval($data['unlike']):0;
-			$a_new_post['vote_count'] = 0; //isset($data['vote'])?intval($data['vote']):0;
+			$a_new_post['voted_count'] = 0; //isset($data['vote'])?intval($data['vote']):0;
 			$a_new_post['category_id'] = intval($obj->category_id); //isset($data['category_id'])?intval($data['category_id']):0;
 			$a_new_post['is_notice'] = sanitize_text_field($obj->is_notice); //isset($data['notice'])?sanitize_key($data['notice']):'';
 			$a_new_post['update_order'] = intval($obj->update_order);
@@ -241,7 +239,7 @@ var_dump('post controller init()');
 			// <option value="3">통합검색 제외</option>
 				
 			$a_new_post['allow_search'] = isset($obj->allow_search)?intval(($obj->allow_search && $obj->allow_search == '1' ) ? '2' : $obj->allow_search ): '1';
-			$a_new_post['post_status'] = sanitize_text_field($obj->post_status); //isset($data['status'])?sanitize_key($data['status']):'';
+			$a_new_post['status'] = sanitize_text_field($obj->status); //isset($data['status'])?sanitize_key($data['status']):'';
 			// add user agent
 			$a_new_post['ua'] = wp_is_mobile() ? 'M' : 'P';
 			$a_new_post['ipaddress'] = \X2board\Includes\get_remote_ip();
@@ -273,7 +271,7 @@ var_dump('post controller init()');
 
 			// 불필요한 데이터 필터링
 			// $data = kboard_array_filter($data, array('board_id', 'parent_uid', 'member_uid', 'member_display', 'title', 
-			// 									'content', 'date', 'update', 'view', 'comment', 'like', 'dislike', 'vote', 
+			// 									'content', 'date', 'update', 'view', 'comment', 'vote', 
 			// 									'category_id', 'secret', 'notice', 'allow_comment', 'search', 
 			// 									'status', 'password', 'ipaddress', 'ua'));
 // var_dump($a_new_post_param);
@@ -301,7 +299,7 @@ var_dump('post controller init()');
 			// 	$board->meta->total = $board_total + 1;
 			// }
 			global $wpdb;
-			$query = "INSERT LOW_PRIORITY INTO `{$wpdb->prefix}x2b_post` (".implode(',', $a_insert_key).") VALUES (".implode(',', $a_insert_val).")";
+			$query = "INSERT LOW_PRIORITY INTO `{$wpdb->prefix}x2b_posts` (".implode(',', $a_insert_key).") VALUES (".implode(',', $a_insert_val).")";
 			if ($wpdb->query($query) === FALSE) {
 				return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error);
 			} 
@@ -361,7 +359,7 @@ var_dump('post controller init()');
 				unset($a_new_post);
 				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_wp_post_registration_failed', 'x2board') );
 			}
-exit;			
+
 			$o_rst = new \X2board\Includes\Classes\BaseObject();
 			$o_rst->add('post_id',$a_new_post['post_id']);
 			$o_rst->add('category_id',$obj->category_id);
@@ -407,7 +405,7 @@ exit;
 			// $args->document_srl = $n_post_id;
 			// $output = executeQuery('document.updateReadedCount', $args);
 			global $wpdb;
-			$query = "UPDATE `{$wpdb->prefix}x2b_post` SET `readed_count`=`readed_count`+1 WHERE `post_id`='".esc_sql(intval($n_post_id))."'";
+			$query = "UPDATE `{$wpdb->prefix}x2b_posts` SET `readed_count`=`readed_count`+1 WHERE `post_id`='".esc_sql(intval($n_post_id))."'";
 			if ($wpdb->query($query) === FALSE) {
 				return false;
 			} 
@@ -444,11 +442,11 @@ exit;
 			if(!$o_old_post->post_id || !$o_new_obj->post_id) {
 				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', 'x2board') );
 			}
-			if(!$o_new_obj->post_status && $o_new_obj->is_secret == 'Y') {
-				$o_new_obj->post_status = 'SECRET';
+			if(!$o_new_obj->status && $o_new_obj->is_secret == 'Y') {
+				$o_new_obj->status = 'SECRET';
 			}
-			if(!$o_new_obj->post_status) {
-				$o_new_obj->post_status = 'PUBLIC';
+			if(!$o_new_obj->status) {
+				$o_new_obj->status = 'PUBLIC';
 			}
 
 			// Call a trigger (before)
@@ -481,7 +479,7 @@ exit;
 				}
 				$args->nick_name = $o_old_post->get('nick_name');
 				$args->member_srl = $o_old_post->get('member_srl');
-				$args->regdate = $o_old_post->get('last_update');
+				$args->regdate_dt = $o_old_post->get('last_update_dt');
 				$args->ipaddress = \X2board\Includes\get_remote_ip(); // $_SERVER['REMOTE_ADDR'];
 				$output = executeQuery("document.insertHistory", $args);
 			}
@@ -511,7 +509,7 @@ exit;
 			// can modify regdate only manager
 			$grant = \X2board\Includes\Classes\Context::get('grant');
 			if(!$grant->manager) {
-				unset($o_new_obj->regdate);
+				unset($o_new_obj->regdate_dt);
 			}
 			
 			// Serialize the $extra_vars
@@ -609,9 +607,9 @@ exit;
 			// 		$o_new_obj->content = $document_output->data->content;
 			// 	}
 			// }
-			// if temporary document, regdate is now setting
+			// if temporary document, regdate_dt is now setting
 			if($o_old_post->get('status') == $this->get_config_status('temp')) {
-				$o_new_obj->regdate = date('Y-m-d H:i:s', current_time('timestamp')); //date('YmdHis');
+				$o_new_obj->regdate_dt = date('Y-m-d H:i:s', current_time('timestamp')); //date('YmdHis');
 			}
 
 			// Insert data into the DB
@@ -633,7 +631,7 @@ exit;
 
 // var_dump($a_new_post);
 			global $wpdb;
-			$result = $wpdb->update ( "{$wpdb->prefix}x2b_post", $a_new_post, array ( 'post_id' => esc_sql(intval($a_new_post['post_id'] )) ) );
+			$result = $wpdb->update ( "{$wpdb->prefix}x2b_posts", $a_new_post, array ( 'post_id' => esc_sql(intval($a_new_post['post_id'] )) ) );
 			if( $result < 0 || $result === false ){
 // var_dump($wpdb->last_error);					
 				return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error );
@@ -731,7 +729,7 @@ exit;
 					// $args->document_srl = $documentSrl;
 					// $args->uploaded_count = $fileCount;
 					// executeQuery('document.updateUploadedCount', $args);
-					$result = $wpdb->update( "{$wpdb->prefix}x2b_post", 
+					$result = $wpdb->update( "{$wpdb->prefix}x2b_posts", 
 											 array( 'uploaded_count' => $fileCount), 
 											 array ( 'post_id' => esc_sql(intval($n_post_id )) ) );
 					if( $result < 0 || $result === false ){
@@ -842,7 +840,7 @@ exit;
 				$a_params = array(
 					'post_author'   => $a_post_param['post_author'],
 					'post_title'    => $a_post_param['title'],
-					'post_content'  => ( $a_post_param['post_status'] == 'SECRET' || $a_post_param['post_status'] == '2' ) ? '' : $a_post_param['content'], 
+					'post_content'  => ( $a_post_param['status'] == 'SECRET' || $a_post_param['status'] == '2' ) ? '' : $a_post_param['content'], 
 					//($this->secret || $this->search==2)?'':$this->content,
 					'post_status'   => 'publish',
 					'comment_status'=> 'closed',
@@ -850,7 +848,7 @@ exit;
 					'post_name'     => $a_post_param['post_id'],
 					'post_parent'   => $a_post_param['board_id'],
 					'post_type'     => X2B_DOMAIN,
-					'post_date'     => $a_post_param['regdate']
+					'post_date'     => $a_post_param['regdate_dt']
 				);
 				// if($regdate ) {
 				// 	$a_params['post_date'] = $regdate;
@@ -874,7 +872,7 @@ exit;
 			$o_post = get_post( intval($n_wp_post_id) );
 			$o_post->post_content = $a_post_param['post_author'];
 			$o_post->post_title = $a_post_param['title'];
-			$o_post->post_content = ( $a_post_param['post_status'] == 'SECRET' || $a_post_param['post_status'] == '2' ) ? '' : $a_post_param['content'];
+			$o_post->post_content = ( $a_post_param['status'] == 'SECRET' || $a_post_param['status'] == '2' ) ? '' : $a_post_param['content'];
 			$result = wp_update_post($o_post);
 // var_dump($result);
 			if( is_wp_error( $result ) ) {
@@ -886,7 +884,7 @@ exit;
 		}
 
 		/**
-		 * wp_posts 테이블에 등록된 x2b_post의 ID 값을 가져온다.
+		 * wp_posts 테이블에 등록된 x2b_posts의 ID 값을 가져온다.
 		 */
 		private function _get_wp_post_id($n_x2b_post_id) {
 			global $wpdb;
@@ -1712,7 +1710,7 @@ exit;
 			}
 var_dump($comment_count);
 			$a_param['comment_count'] = $comment_count + 1;
-			$a_param['last_update'] = date('Y-m-d H:i:s', current_time('timestamp'));
+			$a_param['last_update_dt'] = date('Y-m-d H:i:s', current_time('timestamp'));
 
 			// $a_update_key = array();
 			// $a_update_val = array();
@@ -1730,7 +1728,7 @@ var_dump($comment_count);
 // exit;
 			// download_count 증가
 			global $wpdb;
-			$query = "UPDATE `{$wpdb->prefix}x2b_post` SET ".implode(',', $a_set)." WHERE `post_id` = $n_post_id";
+			$query = "UPDATE `{$wpdb->prefix}x2b_posts` SET ".implode(',', $a_set)." WHERE `post_id` = $n_post_id";
 			// $query = "INSERT INTO `{$wpdb->prefix}x2b_comments` (".implode(',', $a_insert_key).") VALUES (".implode(',', $a_insert_val).")";
 			if ($wpdb->query($query) === FALSE) {
 				return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error);
@@ -2809,7 +2807,7 @@ var_dump($comment_count);
 			$obj = Context::getRequestVars();
 			// Change the target module to log-in information
 			$obj->module_srl = $module_info->module_srl;
-			$obj->post_status = $this->getConfigStatus('temp');
+			$obj->status = $this->getConfigStatus('temp');
 			unset($obj->is_notice);
 
 			// Extract from beginning part of contents in the guestbook
@@ -2835,7 +2833,7 @@ var_dump($comment_count);
 					return new BaseObject(-1, 'msg_invalid_request');
 				}
 				//if exist document status is already public, use temp status can point problem
-				$obj->post_status = $oDocument->get('status');
+				$obj->status = $oDocument->get('status');
 				$output = $oDocumentController->updateDocument($oDocument, $obj);
 				$msg_code = 'success_updated';
 				// Otherwise, get a new
@@ -2937,8 +2935,8 @@ var_dump($comment_count);
 		 */
 		// function _checkDocumentStatusForOldVersion(&$obj)
 		// {
-		// 	if(!$obj->post_status && $obj->is_secret == 'Y') $obj->post_status = $this->getConfigStatus('secret');
-		// 	if(!$obj->post_status && $obj->is_secret != 'Y') $obj->post_status = $this->getConfigStatus('public');
+		// 	if(!$obj->status && $obj->is_secret == 'Y') $obj->status = $this->getConfigStatus('secret');
+		// 	if(!$obj->status && $obj->is_secret != 'Y') $obj->status = $this->getConfigStatus('public');
 		// }
 
 		/**

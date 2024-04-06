@@ -31,7 +31,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardModel')) {
 		// 	$list_config = $oModuleModel->getModulePartConfig('board', $module_srl);
 		// 	if(!$list_config || count($list_config) <= 0)
 		// 	{
-		// 		$list_config = array( 'no', 'title', 'nick_name','regdate','readed_count');
+		// 		$list_config = array( 'no', 'title', 'nick_name','regdate_dt','readed_count');
 		// 	}
 
 		// 	// get the extra variables
@@ -64,7 +64,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardModel')) {
 		// function getDefaultListConfig($module_srl)
 		// {
 		// 	// add virtual srl, title, registered date, update date, nickname, ID, name, readed count, voted count etc.
-		// 	$virtual_vars = array( 'no', 'title', 'regdate', 'last_update', 'last_post', 'nick_name',
+		// 	$virtual_vars = array( 'no', 'title', 'regdate_dt', 'last_update_dt', 'last_post', 'nick_name',
 		// 			'user_id', 'user_name', 'readed_count', 'voted_count', 'blamed_count', 'thumbnail', 'summary', 'comment_status');
 		// 	foreach($virtual_vars as $key)
 		// 	{

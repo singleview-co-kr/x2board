@@ -43,7 +43,7 @@
 					</td>
 					<td class="author"><?php echo $post->get_nick_name()?></td>
 					<td class="time"><?php echo $post->get_regdate('Y.m.d')?></td>
-					<td class="m_no"><?php echo $post->vote_count?></td>
+					<td class="m_no"><?php echo $post->voted_count?></td>
 					<td class="m_no"><?php echo $post->readed_count?></td>
 					<?php if($grant->manager):?>
 						<td class="check m_no"><input type="checkbox" value="<?php echo $post->post_id?>" name='doc_chk' title="Check This Post"/></td>
@@ -87,7 +87,7 @@
 					</td>
 					<td class="author"><span><?php echo $post->get_nick_name()?></span></td>
 					<td class="time" title="2 시간 전"><?php echo $post->get_regdate('Y.m.d')?></td>
-					<td class="m_no"><?php echo $post->vote_count?></td>
+					<td class="m_no"><?php echo $post->voted_count?></td>
 					<td class="m_no"><?php echo $post->readed_count?></td>
 					<?php if($grant->manager):?>
 						<td class="check m_no"><input type="checkbox" value="<?php echo $post->post_id?>" name='doc_chk' title="Check This Post"/></td>

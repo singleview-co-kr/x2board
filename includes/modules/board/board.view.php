@@ -360,7 +360,7 @@ var_dump(X2B_CMD_VIEW_POST);
 				}
 				else { // if the post is not existed, then alert a warning message					
 					\X2board\Includes\Classes\Context::set( 'post_id', '', true );
-					$this->alertMessage( __('msg_not_founded', 'x2board') );
+					$this->_alert_message( __('msg_not_founded', 'x2board') );
 				}
 			}
 			else {  // if the post is not existed, get an empty post
@@ -371,7 +371,7 @@ var_dump(X2B_CMD_VIEW_POST);
 				if(!$this->grant->view && !$oDocument->is_granted()) {
 					$o_post = $o_post_model->get_post(0);
 					\X2board\Includes\Classes\Context::set('post_id','',true);
-					$this->alertMessage('msg_not_permitted');
+					$this->_alert_message( __('msg_not_permitted', 'x2board') );
 				}
 				else {
 					// add the document title to the browser
@@ -593,14 +593,14 @@ var_dump(X2B_CMD_VIEW_POST);
 					'title', 'title_bold', 'title_color', 'content', 'readed_count', 'voted_count',
 					'blamed_count', 'comment_count', 'trackback_count', 'uploaded_count', 'password', 'user_id',
 					'user_name', 'nick_name', 'member_srl', 'email_address', 'homepage', 'tags', 'extra_vars',
-					'regdate', 'last_update', 'last_updater', 'ipaddress', 'list_order', 'update_order',
+					'regdate_dt', 'last_update_dt', 'last_updater', 'ipaddress', 'list_order', 'update_order',
 					'allow_trackback', 'notify_message', 'status', 'comment_status');
 			$this->columnList = array_intersect($configColumList, $tableColumnList);
 
 			if(in_array('summary', $configColumList)) array_push($this->columnList, 'content');
 
 			// default column list add
-			$defaultColumn = array('document_srl', 'module_srl', 'category_srl', 'lang_code', 'member_srl', 'last_update', 'comment_count', 'trackback_count', 'uploaded_count', 'status', 'regdate', 'title_bold', 'title_color');
+			$defaultColumn = array('document_srl', 'module_srl', 'category_srl', 'lang_code', 'member_srl', 'last_update_dt', 'comment_count', 'trackback_count', 'uploaded_count', 'status', 'regdate_dt', 'title_bold', 'title_color');
 
 			//TODO guestbook, blog style supports legacy codes.
 			// if($this->module_info->skin == 'x2_guestbook' || $this->module_info->default_style == 'blog') {
@@ -1483,6 +1483,14 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 		}
 
 		/**
+		 * @brief the method for displaying the warning messages
+		 * display an error message if it has not  a special design
+		 **/
+		private function _alert_message($s_message) {
+			echo sprintf('<script> jQuery(function(){ alert("%s"); } );</script>', $s_message);
+		}
+
+		/**
 		 * @brief display the document comment list (can be used by API)
 		 **/
 		// function dispBoardContentCommentList(){
@@ -1544,16 +1552,5 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 
 		// 	$this->setTemplateFile('delete_trackback_form');
 		// }
-
-		
-		/**
-		 * @brief the method for displaying the warning messages
-		 * display an error message if it has not  a special design
-		 **/
-		function alertMessage($message)
-		{
-			$script =  sprintf('<script> jQuery(function(){ alert("%s"); } );</script>', Context::getLang($message));
-			Context::addHtmlFooter( $script );
-		}
 	}
 }

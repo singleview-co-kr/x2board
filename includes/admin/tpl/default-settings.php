@@ -158,7 +158,7 @@ function x2b_settings_general() {
 			'options' => array(
 				'list_order'            => esc_html__( 'Latest Post', 'x2board' ),  // 문서번호
 				'update_order'        => esc_html__( 'Latest updated', 'x2board' ),  // 최근 수정일
-				'regdate'            => esc_html__( 'Post date', 'x2board' ), // 등록일
+				'regdate_dt'            => esc_html__( 'Post date', 'x2board' ), // 등록일
 				'voted_count'        => esc_html__( 'Recommended', 'x2board' ),  // 추천 수
 				'blamed_count'            => esc_html__( 'Blamed', 'x2board' ),  // 비추천 수
 				'readed_count'        => esc_html__( 'Readed', 'x2board' ),  // 조회 수

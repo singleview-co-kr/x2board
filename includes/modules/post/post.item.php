@@ -61,7 +61,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			$this->_n_wp_post_id = $attribute->post_id;
 			// $this->lang_code = $attribute->lang_code;
 			$this->adds($attribute);
-// var_dump($this->get('post_status'));
+// var_dump($this->get('status'));
 			// Tags
 			if($this->get('tags')) {
 				$tag_list = explode(',', $this->get('tags'));
@@ -146,7 +146,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			$b_new = false;
 			if($this->post_id){
 				$n_expiration_sec = 86400; // kboard_new_document_notify_time();
-				if( $n_expiration_sec > 1 && (current_time('timestamp') - strtotime($this->regdate)) <= $n_expiration_sec ){
+				if( $n_expiration_sec > 1 && (current_time('timestamp') - strtotime($this->regdate_dt)) <= $n_expiration_sec ){
 					$b_new = true;
 				}
 			}
@@ -158,7 +158,11 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 		}
 
 		public function get_regdate($format = 'Y.m.d H:i:s') {
-			return \X2board\Includes\zdate($this->get('regdate'), $format);
+			$dt_regdate = date_create($this->get('regdate_dt'));
+			$s_regdate = date_format($dt_regdate, $format);
+			unset($dt_regdate);
+			return $s_regdate;
+			// return \X2board\Includes\zdate($this->get('regdate_dt'), $format);
 		}
 
 		// function setDocument($post_id, $load_extra_vars = true)	{
@@ -195,7 +199,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			// 	}
 			// }
 			global $wpdb;
-			$o_post = $wpdb->get_row("SELECT * FROM `{$wpdb->prefix}x2b_post` WHERE `post_id`={$this->_n_wp_post_id}");
+			$o_post = $wpdb->get_row("SELECT * FROM `{$wpdb->prefix}x2b_posts` WHERE `post_id`={$this->_n_wp_post_id}");
 			// $output = executeQuery('document.getDocument', $args, $columnList);
 // var_dump($o_post);
 			// if($post_item === false) {
@@ -268,7 +272,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 
 		// function getStatus()
 		public function get_status() {
-			$s_cur_post_status = $this->get('post_status');
+			$s_cur_post_status = $this->get('status');
 			if(!$s_cur_post_status) {
 				$o_post_class = \X2board\Includes\getClass('post');
 				$s_default_status = $o_post_class->get_default_status();
@@ -288,7 +292,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			$o_post_model = \X2board\Includes\getModel('post');
 			$s_secret_tag = $o_post_model->get_config_status('secret');
 			unset($o_post_model);
-			return $this->get('post_status') == $s_secret_tag ? true : false;
+			return $this->get('status') == $s_secret_tag ? true : false;
 		}
 
 		/**
@@ -439,19 +443,21 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 		}
 
 		// function isLocked()
-		public function is_locked() {
-			if(!$this->is_exists()) return false;
-			// return $this->get('comment_status') == 'ALLOW' ? false : true;
-			return $this->get('allow_comment') == 'Y' ? false : true;
-		}
+		// public function is_locked() {
+		// 	if(!$this->is_exists()) {
+		// 		return false;
+		// 	}
+		// 	return $this->get('comment_status') == 'ALLOW' ? false : true;
+		// 	// return $this->get('allow_comment') == 'Y' ? false : true;
+		// }
 
 		// function allowComment()
 		public function allow_comment()	{
 			// init write, document is not exists. so allow comment status is true ??? 뭔소리?
 			if(!$this->is_exists()) return true;
 			if($this->is_exists()) return true;
-			// return $this->get('comment_status') == 'ALLOW' ? true : false;
-			return $this->get('allow_comment') == 'Y' ? false : true;
+			return $this->get('comment_status') == 'ALLOW' ? true : false;
+			// return $this->get('allow_comment') == 'Y' ? false : true;
 		}
 
 		/**

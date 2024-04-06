@@ -123,7 +123,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 			// $logged_info = Context::get('logged_info');
 
 			// setup variables
-			$obj = \X2board\Includes\Classes\Context::gets('board_id', 'post_id', 'title', 'content', 'post_status', 'is_secret', 'is_notice', 'password', 'nick_name', 'comment_status', 'category_id', 'allow_search');
+			$obj = \X2board\Includes\Classes\Context::gets('board_id', 'post_id', 'title', 'content', 'status', 'is_secret', 'is_notice', 'password', 'nick_name', 'comment_status', 'category_id', 'allow_search');
 			if(is_null($obj->board_id) || intval($obj->board_id) <= 0) {
 				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', 'x2board') );
 			}
@@ -137,8 +137,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 			// $obj->post_id = '';//23423;
 			$obj->post_author = $o_logged_info->ID;
 			// $obj->is_secret = '';
-			if( !isset($obj->post_status)){
-				$obj->post_status = 'PUBLIC'; // PUBLIC SECRET TEMP
+			if( !isset($obj->status)){
+				$obj->status = 'PUBLIC'; // PUBLIC SECRET TEMP
 			}
 			// $obj->comment_status = ''; // DENY ALLOW
 			// $obj->email_address = '';
@@ -218,11 +218,11 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 			}
 			unset($o_logged_info);
 			
-			if($obj->is_secret == 'Y' || strtoupper($obj->post_status) == 'SECRET') {
+			if($obj->is_secret == 'Y' || strtoupper($obj->status) == 'SECRET') {
 				$use_status = $this->module_info->use_status; // explode('|@|', $this->module_info->use_status);
 				if(!is_array($use_status) || !in_array('SECRET', $use_status)) {
 					unset($obj->is_secret);
-					$obj->post_status = 'PUBLIC';
+					$obj->status = 'PUBLIC';
 				}
 			}
 
@@ -250,7 +250,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 				
 				// modify list_order if post status is temp
 				if($o_post->get('status') == 'TEMP') {
-					$obj->last_update = $obj->regdate = date('YmdHis');
+					$obj->last_update_dt = $obj->regdate_dt = date('YmdHis');
 					$obj->update_order = $obj->list_order = (getNextSequence() * -1);
 				}
 				// generate post module의 controller object
@@ -412,13 +412,14 @@ var_dump(X2B_CMD_PROC_WRITE_COMMENT);
 			} 
 			else {  // update the comment if it is not existed
 				if(!$o_comment->is_granted()) {  // check the grant
-					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', 'x2board') );
+					// return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', 'x2board') );
+					wp_die('msg_not_permitted');
 				}
 				$output = $o_comment_controller->update_comment($obj, $this->grant->manager);
 			}
 
 			if(!$output->toBool()) {
-				return $output;
+				wp_die($output->getMessage());
 			}
 
 			// if(Context::get('xeVirtualRequestMethod') !== 'xml')

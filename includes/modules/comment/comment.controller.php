@@ -62,7 +62,7 @@ var_dump('commentController::init()');
 			else {
 				$is_admin = FALSE;
 			}
-var_dump($manual_inserted);
+
 			// check if comment's module is using comment validation and set the publish status to 0 (false)
 			// for inserting query, otherwise default is 1 (true - means comment is published)
 			$using_validation = $this->isModuleUsingPublishValidation(); // $obj->module_srl);
@@ -102,16 +102,16 @@ var_dump($manual_inserted);
 
 			// get the original posting
 			// if(!$manual_inserted) {
-			if($manual_inserted) {
+			if(!$manual_inserted) {
 				// get a object of post model
 				$o_post_model = \X2board\Includes\getModel('post');
 				$o_post = $o_post_model->get_post($parent_post_id);
 				unset($o_post_model);
-	
+
 				if($parent_post_id != $o_post->post_id) {
 					return new \X2board\Includes\Classes\BaseObject( -1, __('msg_invalid_document', 'x2board') );
 				}
-				if($o_post->is_locked()) {
+				if(!$o_post->allow_comment()) {
 					return new \X2board\Includes\Classes\BaseObject( -1, __('msg_invalid_request', 'x2board') );
 				}
 				unset($o_post);

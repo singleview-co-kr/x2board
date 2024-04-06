@@ -18,7 +18,7 @@
 					<div class="side fr">
 					<?php if($grant->manager):?><small class="m_no"><?php echo esc_html($post->get_ip_addr())?> </small><?php endif?>
 					<span><?php echo __('Views', 'x2board')?> <b><?php echo intval($post->readed_count)?></b></span>
-					<span><?php echo __('Votes', 'x2board')?> <b><?php echo intval($post->like)?></b></span>
+					<span><?php echo __('Votes', 'x2board')?> <b><?php echo intval($post->voted_count)?></b></span>
 					<span><?php echo __('Comment', 'x2board')?> <b><?php echo intval($post->get_comment_count())?></b></span>
 					</div>
 				</div>
@@ -150,11 +150,11 @@ foreach( $post_list as $no => $o_post ) {
 			<?php if(true): //!$board->meta->permission_vote_hide):?>
 				<div class="rd_vote">
 					<a class="bd_login" onclick="kboard_document_like(this)" data-uid="<?php echo $post->post_id?>" title="<?php echo __('Like', 'x2board')?>" style="border:2px solid #333333;color:#333333;">
-						<b><i class="fa fa-heart"></i> <?php echo intval($post->like)?></b>
+						<b><i class="fa fa-heart"></i> <?php echo intval($post->voted_count)?></b>
 						<p><?php echo __('Like', 'x2board')?></p>
 					</a>
 					<a class="blamed bd_login" onclick="kboard_document_dislike(this)" data-uid="<?php echo $post->post_id?>" title="<?php echo __('Dislike', 'x2board')?>">
-						<b><i class="fa fa-heart"></i> <?php echo intval($post->dislike)?></b>
+						<b><i class="fa fa-heart"></i> <?php echo intval($post->blamed_count)?></b>
 						<p><?php echo __('Dislike', 'x2board')?></p>
 					</a>
 				</div>

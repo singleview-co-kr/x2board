@@ -33,37 +33,64 @@ dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_mapper` (
 PRIMARY KEY (`board_id`)
 ) {$charset_collate};");
 
-dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_post` (
+// `module_srl` bigint(11) NOT NULL DEFAULT 0,  --- for XE document
+// `module_srl` bigint(11) NOT NULL DEFAULT 0,  --- for XE document
+// `category_id` bigint(20) unsigned DEFAULT 0,   --- it was category_srl
+// `lang_code` varchar(10) NOT NULL DEFAULT '',  --- for XE document
+// `trackback_count` bigint(11) NOT NULL DEFAULT 0,  --- for XE document
+// `user_id` varchar(80) DEFAULT NULL,   --- for XE document
+// `user_name` varchar(80) NOT NULL,   --- for XE document
+// `member_srl` bigint(11) NOT NULL,  --- for XE document
+// `post_author` bigint(20) unsigned NOT NULL DEFAULT 0,
+// `homepage` varchar(250) NOT NULL,  --- for XE document
+// `extra_vars` text DEFAULT NULL,  --- for XE document
+// `regdate` varchar(14) DEFAULT NULL,   --- for XE document
+// `last_update` varchar(14) DEFAULT NULL,   --- for XE document
+// `allow_trackback` char(1) NOT NULL DEFAULT 'Y',   --- for XE document
+// `notify_message` char(1) NOT NULL DEFAULT 'N',   --- for XE document
+
+dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_posts` (
 `post_id` bigint(20) unsigned NOT NULL,
+`module_srl` bigint(11) NOT NULL DEFAULT 0,
 `board_id` bigint(20) unsigned NOT NULL,
 `parent_post_id` bigint(20) unsigned NOT NULL DEFAULT 0,
 `category_id` bigint(20) unsigned DEFAULT 0,
-`post_author` bigint(20) unsigned NOT NULL DEFAULT 0,
-`nick_name` varchar(127) NOT NULL,
+`lang_code` varchar(10) NOT NULL DEFAULT '',
+`is_notice` char(1) NOT NULL DEFAULT 'N',
 `title` varchar(127) NOT NULL,
 `title_bold` char(1) NOT NULL DEFAULT 'N',
 `title_color` varchar(7),
 `content` longtext NOT NULL,
-`email_address` varchar(25),
-`password` varchar(60) NOT NULL,
-`comment_count` int(10) unsigned NOT NULL,
 `readed_count` int(10) unsigned NOT NULL,
-`like` int(10) unsigned NOT NULL,
-`dislike` int(10) unsigned NOT NULL,
-`is_notice` char(1) NOT NULL DEFAULT 'N',
-`is_secret` char(1) NOT NULL DEFAULT 'N',
-`allow_search` char(1) NOT NULL DEFAULT '1',
-`comment_status` varchar(10) NOT NULL DEFAULT 'ALLOW',
-`post_status` varchar(10),
-`vote_count` int(11) NOT NULL,
+`voted_count` int(11) NOT NULL,
+`blamed_count` bigint(11) NOT NULL DEFAULT 0,
+`comment_count` int(10) unsigned NOT NULL,
+`trackback_count` bigint(11) NOT NULL DEFAULT 0,
 `uploaded_count` smallint(2) NOT NULL,
+`password` varchar(60) NOT NULL,
+`user_id` varchar(80) DEFAULT NULL,
+`user_name` varchar(80) NOT NULL,
+`nick_name` varchar(127) NOT NULL,
+`member_srl` bigint(11) NOT NULL,
+`post_author` bigint(20) unsigned NOT NULL DEFAULT 0,
+`email_address` varchar(25),
+`homepage` varchar(250) NOT NULL,
+`tags` varchar(256),
+`extra_vars` text DEFAULT NULL,
+`regdate` varchar(14) DEFAULT NULL,
+`last_update` varchar(14) DEFAULT NULL,
+`last_updater` varchar(80) DEFAULT NULL,
 `ipaddress` varchar(128) NOT NULL,
 `list_order` bigint(20) NOT NULL,
 `update_order` bigint(20) NOT NULL,
-`tags` varchar(256),
+`allow_trackback` char(1) NOT NULL DEFAULT 'Y',
+`notify_message` char(1) NOT NULL DEFAULT 'N',
+`status` varchar(20),
+`comment_status` varchar(10) NOT NULL DEFAULT 'ALLOW',
+`allow_search` char(1) NOT NULL DEFAULT '1',
 `ua` char(1) NOT NULL,
-`regdate` datetime NOT NULL,
-`last_update` datetime NOT NULL,
+`regdate_dt` datetime NOT NULL,
+`last_update_dt` datetime NOT NULL,
 PRIMARY KEY (`post_id`),
 KEY `idx_board_id` (`board_id`),
 KEY `idx_parent_post_id` (`parent_post_id`),
@@ -71,12 +98,24 @@ KEY `idx_category_id` (`category_id`),
 KEY `idx_is_notice` (`is_notice`),
 KEY `idx_post_author` (`post_author`),
 KEY `idx_readed_count` (`readed_count`),
-KEY `idx_post_status` (`post_status`),
-KEY `idx_vote_count` (`vote_count`),
+KEY `idx_voted_count` (`voted_count`),
+KEY `idx_blamed_count` (`blamed_count`),
+KEY `idx_comment_count` (`comment_count`),
+KEY `idx_uploaded_count` (`uploaded_count`),
+KEY `idx_status` (`status`),
 KEY `idx_list_order` (`list_order`),
 KEY `idx_update_order` (`update_order`),
-KEY `idx_regdate` (`regdate`),
-KEY `idx_last_update` (`last_update`)
+KEY `idx_regdate_dt` (`regdate_dt`),
+KEY `idx_last_update_dt` (`last_update_dt`),
+KEY `idx_ipaddress` (`ipaddress`),
+KEY `idx_board_list_order` (`board_id`,`list_order`),
+KEY `idx_board_update_order` (`board_id`,`update_order`),
+KEY `idx_board_readed_count` (`board_id`,`readed_count`),
+KEY `idx_board_voted_count` (`board_id`,`voted_count`),
+KEY `idx_board_notice` (`board_id`,`is_notice`),
+KEY `idx_board_document_srl` (`board_id`,`post_id`),
+KEY `idx_board_blamed_count` (`board_id`,`blamed_count`),
+KEY `idx_board_status` (`board_id`,`status`)
 ) {$charset_collate};");
 
 dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_comments` (

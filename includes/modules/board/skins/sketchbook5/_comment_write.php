@@ -139,7 +139,7 @@ else {
 						// 댓글 입력 필드 출력
 						$field_html = ob_get_clean();
 						// do_action('kboard_comments_field', $field_html, $board, $post->post_id, $commentBuilder);
-						do_action('kboard_comments_field', $field_html, $post->post_id);
+						// do_action('kboard_comments_field', $field_html, $post->post_id);
 						?>
 					</div>
 				</div>
@@ -218,7 +218,7 @@ else {
 						<?php
 						// 댓글 입력 필드 출력
 						$field_html = ob_get_clean();
-						do_action('kboard_comments_field', $field_html); //, $board, $content_uid, $commentBuilder);
+						// do_action('kboard_comments_field', $field_html); //, $board, $content_uid, $commentBuilder);
 						?>
 					</div>
 				</div>

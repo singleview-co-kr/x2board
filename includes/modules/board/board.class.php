@@ -32,7 +32,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\board')) {
 // var_dump('board high class');
 			// $this->board_id = get_the_ID();  // x2board id is WP post ID
 			$this->a_search_option = array('title_content','title','content','comment','user_name','nick_name','user_id','tag');
-			$this->a_order_target = array('list_order', 'update_order', 'regdate', 'voted_count', 'blamed_count', 'readed_count', 'comment_count', 'title', 'nick_name', 'user_name', 'user_id');
+			$this->a_order_target = array('list_order', 'update_order', 'regdate_dt', 'voted_count', 'blamed_count', 'readed_count', 'comment_count', 'title', 'nick_name', 'user_name', 'user_id');
 			$this->n_list_count = 20;
 			$this->n_page_count = 10;
 			$this->consultation = false;
