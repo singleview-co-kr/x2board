@@ -52,12 +52,13 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Category\\categoryAdminModel'))
 			foreach($results as $row){
 				$category_id = intval($row->category_id);
 				$tree_category_source[$category_id] = ['id' => $category_id, 
-														'parent_id' => $row->parent_id ? intval($row->parent_id) : null,
-														'title' => $row->title, 
-														'post_count' => intval($row->post_count),
-														'is_default' => $row->is_default ? $row->is_default : null];
+													   'parent_id' => $row->parent_id ? intval($row->parent_id) : null,
+													   'title' => $row->title, 
+													   'post_count' => intval($row->post_count),
+													   'is_default' => $row->is_default ? $row->is_default : null];
 			}
 			unset($results);
+			$tree_category_recursive = array();
 			foreach($tree_category_source as $item) {
 				if(!(isset($item['parent_id']) && $item['parent_id'])) {
 					$children = $this->_get_category_recurisve($tree_category_source, $item['id']);

@@ -45,7 +45,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Category\\categoryAdminControll
 			$a_new_cat['category_id'] = \X2board\Includes\getNextSequence();
 			$a_new_cat['board_id'] = esc_sql($n_board_id);
 			$a_new_cat['title'] = esc_sql($new_cat_name);
-			$a_new_cat['regdate'] = date('YmdHis', current_time('timestamp'));
+			$a_new_cat['regdate_dt'] = date('YmdHis', current_time('timestamp'));
+			$a_new_cat['last_update_dt'] = $a_new_cat['regdate_dt'];
 			$result = $wpdb->insert("{$wpdb->prefix}x2b_categories", $a_new_cat);
 			if( $result < 0 || $result === false ){
 				unset($a_new_cat);
@@ -167,13 +168,21 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Category\\categoryAdminControll
 		 * @return none
 		 */
 		private function __save_category(&$list_order, $tree_category, $level=0){
-			if($tree_category){
+			if($tree_category) {
 				global $wpdb;
-				foreach($tree_category as $key=>$value){
-					$parent_id = $value['parent_id'] ? $value['parent_id'] : 0;
-					$title = "'".$value['title']."'";
-					$is_default = "'".$value['is_default']."'";
-					$wpdb->query("UPDATE `{$wpdb->prefix}x2b_categories` SET `title`= {$title}, `parent_id`= {$parent_id}, `list_order`= {$list_order}, `is_default`= {$is_default} WHERE `category_id`='{$value['id']}'");
+				foreach($tree_category as $key=>$value) {
+					$a_data['title'] = $value['title'];
+					$a_data['parent_id'] = $value['parent_id'] ? $value['parent_id'] : 0;
+					$a_data['list_order'] = $list_order;
+					$a_data['is_default'] = $value['is_default'];
+					$a_data['last_update_dt'] = date('YmdHis', current_time('timestamp'));
+					$result = $wpdb->update( "{$wpdb->prefix}x2b_categories", $a_data,
+											 array( 'category_id' => esc_sql(intval($value['id'])) ) );
+					unset($a_data);
+					if( $result < 0 || $result === false ) {
+						wp_die($wpdb->last_error);
+					}
+					
 					$list_order++;
 					unset($this->_tree_category_old[$value['id']]);
 					

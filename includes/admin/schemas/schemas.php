@@ -220,16 +220,18 @@ dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_categories` (
 `parent_id` bigint(12) NOT NULL DEFAULT 0,
 `title` varchar(250) DEFAULT NULL,
 `expand` char(1) DEFAULT 'N',
-`is_default` char(1) DEFAULT 'N',
-`deleted` char(1) DEFAULT 'N',
 `post_count` bigint(11) NOT NULL DEFAULT 0,
-`regdate` datetime DEFAULT NULL,
+`regdate` varchar(14) DEFAULT NULL,
 `last_update` varchar(14) DEFAULT NULL,
 `list_order` bigint(11) NOT NULL,
 `group_ids` text DEFAULT NULL,
 `color` varchar(11) DEFAULT NULL,
 `description` varchar(200) DEFAULT NULL,
+`is_default` char(1) DEFAULT 'N',
+`deleted` char(1) DEFAULT 'N',
+`regdate_dt` datetime DEFAULT NULL,
+`last_update_dt` datetime DEFAULT NULL,
 PRIMARY KEY (`category_id`),
 KEY `idx_board_id` (`board_id`),
-KEY `idx_regdate` (`regdate`)
+KEY `idx_regdate_dt` (`regdate_dt`)
 ) {$charset_collate};");
