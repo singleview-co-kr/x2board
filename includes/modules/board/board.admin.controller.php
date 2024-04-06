@@ -30,7 +30,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 		/**
 		 * @brief delete board
 		 **/
-		public function proc_delete_board($args = null) {
+		public function proc_delete_board() {
 			check_admin_referer( X2B_CMD_ADMIN_PROC_UPDATE_BOARD );  // check nounce
 			if( isset($_POST['delete_board']) ) {
 				// delete all post related
@@ -55,7 +55,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 		 * @brief update board
 		 * https://wpguide.usefulparadigm.com/posts/245
 		 **/
-		public function proc_update_board($args = null) {
+		public function proc_update_board() {
 			check_admin_referer( X2B_CMD_ADMIN_PROC_UPDATE_BOARD );  // check nounce
 
 			// require_once X2B_PATH . 'includes\admin\tpl\settings-page.php';
@@ -109,12 +109,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 		 * @brief insert board
 		 * https://wpguide.usefulparadigm.com/posts/245
 		 **/
-		public function proc_insert_board($args = null) {
+		public function proc_insert_board() {
 			check_admin_referer( X2B_CMD_ADMIN_PROC_INSERT_BOARD );  // check nounce
-			// if( !current_user_can('manage_x2board') ) {
-			// 	wp_die(__('You do not have permission.', 'x2board'));
-			// }
-			
 			$_POST = stripslashes_deep($_POST);
 var_dump($_POST);			
 exit;
@@ -227,6 +223,53 @@ exit();
 			// }
 		}
 
+		/**
+		 * @brief create new category ajax
+		 **/
+		public function proc_insert_category() {
+// error_log(print_r('proc_insert_category', true));
+			require_once X2B_PATH . 'includes\modules\category\category.admin.controller.php';
+			$o_cat_admin_controller = new \X2board\Includes\Modules\Category\categoryAdminController();
+			$_POST = stripslashes_deep($_POST);
+			$n_board_id = isset($_POST['board_id'])?$_POST['board_id']:'';
+			$new_cat_name = isset($_POST['new_cat_name']) ? sanitize_text_field($_POST['new_cat_name']) : '';
+			$n_new_cat_id = $o_cat_admin_controller->create_new_category($n_board_id, $new_cat_name);
+			unset($o_cat_admin_controller);
+			wp_send_json(array('new_cat_id'=>$n_new_cat_id));
+		}
+
+		/**
+		 * @brief update name or remove old category ajax
+		 **/
+		public function proc_manage_category() {
+// error_log(print_r('proc_manage_category', true));
+			require_once X2B_PATH . 'includes\modules\category\category.admin.controller.php';
+			$o_cat_admin_controller = new \X2board\Includes\Modules\Category\categoryAdminController();
+			$_POST = stripslashes_deep($_POST);	
+			if( !isset($_POST['board_id']) || !isset($_POST['tree_category']) ){
+				wp_send_json(array('table_body'=>''));	
+			}
+			$n_board_id = intval($_POST['board_id']);
+			$s_table_body = $o_cat_admin_controller->update_category($n_board_id, $_POST['tree_category']);			
+			unset($o_cat_admin_controller);
+			wp_send_json(array('table_body'=>$s_table_body));
+		}
+
+		/**
+		 * @brief reorder whole category ajax
+		 **/
+		public function proc_reorder_category() {
+// error_log(print_r('proc_reorder_category', true));
+			require_once X2B_PATH . 'includes\modules\category\category.admin.controller.php';
+			$o_cat_admin_controller = new \X2board\Includes\Modules\Category\categoryAdminController();
+			$_POST = stripslashes_deep($_POST);
+			$a_tree_category = isset($_POST['tree_category_serialize'])?json_decode($_POST['tree_category_serialize']):'';
+			$n_board_id = isset($_POST['board_id'])?$_POST['board_id']:'';
+			$s_table_body = $o_cat_admin_controller->reorder_category($n_board_id, $a_tree_category);			
+			unset($o_cat_admin_controller);
+			wp_send_json(array('table_body'=>$s_table_body));
+		}
+			
 		/**
 		 * Insert new Board
 		 * @return void 

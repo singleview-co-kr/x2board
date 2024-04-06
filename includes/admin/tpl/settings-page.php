@@ -233,7 +233,7 @@ function x2b_text_callback( $args ) {
 	$html .= '<p class="description">' . wp_kses_post( $args['desc'] ) . '</p>';
 
 	/** This filter has been defined in settings-page.php */
-	echo apply_filters( 'crp_after_setting_output', $html, $args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo apply_filters( 'x2b_after_setting_output', $html, $args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 }
 
 
@@ -262,7 +262,7 @@ function x2b_textarea_callback( $args ) {
 	$html .= '<p class="description">' . wp_kses_post( $args['desc'] ) . '</p>';
 
 	/** This filter has been defined in settings-page.php */
-	echo apply_filters( 'crp_after_setting_output', $html, $args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo apply_filters( 'x2b_after_setting_output', $html, $args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 }
 
 
@@ -335,6 +335,9 @@ function x2b_multicheck_callback( $args ) {
 			if( isset( $args['mandatory'] ) ) { // mandatory field
 				$s_disabled = isset( $args['mandatory'][ $key ] ) && $args['mandatory'][ $key ] == 'mandatory' ? ' checked="checked" onclick="alert(\''.$key.' is mandatory\'); return false;"' : '';
 			}
+			else {
+				$s_disabled = null;
+			}
 
 			$html .= sprintf( '<input name="%1$s[%2$s]" id="%1$s[%2$s]" type="checkbox" value="%3$s" %4$s %5$s /> ', sanitize_key( $args['id'] ), esc_attr( $key ), esc_attr( $key ), checked( $key, $enabled, false ), $s_disabled );
 			$html .= sprintf( '<label for="%1$s[%2$s]">%3$s</label> <br />', sanitize_key( $args['id'] ), esc_attr( $key ), $option );
@@ -378,7 +381,7 @@ function x2b_radio_callback( $args ) {
 	$html .= '<p class="description">' . wp_kses_post( $args['desc'] ) . '</p>';
 
 	/** This filter has been defined in settings-page.php */
-	echo apply_filters( 'crp_after_setting_output', $html, $args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo apply_filters( 'x2b_after_setting_output', $html, $args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 }
 
 
@@ -411,7 +414,7 @@ function x2b_number_callback( $args ) {
 	$html .= '<p class="description">' . wp_kses_post( $args['desc'] ) . '</p>';
 
 	/** This filter has been defined in settings-page.php */
-	echo apply_filters( 'crp_after_setting_output', $html, $args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo apply_filters( 'x2b_after_setting_output', $html, $args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 }
 
 
@@ -450,9 +453,117 @@ function x2b_select_callback( $args ) {
 	$html .= '<p class="description">' . wp_kses_post( $args['desc'] ) . '</p>';
 
 	/** This filter has been defined in settings-page.php */
-	echo apply_filters( 'crp_after_setting_output', $html, $args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo apply_filters( 'x2b_after_setting_output', $html, $args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 }
 
+
+/**
+ * WP sortable UI Callback
+ *
+ * Renders WP sortable UI fields.
+ *
+ * @since 2.6.0
+ *
+ * @param array $args Array of arguments.
+ * @return void
+ */
+function x2b_wpsortableui_callback( $args ) {
+	global $A_X2B_ADMIN_BOARD_SETTINGS;
+
+	// if ( isset( $A_X2B_ADMIN_BOARD_SETTINGS[ $args['id'] ] ) ) {
+	// 	$value = $A_X2B_ADMIN_BOARD_SETTINGS[ $args['id'] ];
+	// } else {
+	// 	$value = isset( $args['default'] ) ? $args['default'] : '';
+	// }
+
+	// if ( isset( $args['chosen'] ) ) {
+	// 	$chosen = 'class="crp-chosen"';
+	// } else {
+	// 	$chosen = '';
+	// }
+
+	// $html = sprintf( '<select id="%1$s" name="%1$s" %2$s />', esc_attr( $args['id'] ), $chosen );
+
+	// foreach ( $args['options'] as $option => $name ) {
+	// 	$html .= sprintf( '<option value="%1$s" %2$s>%3$s</option>', esc_attr( $option ), selected( $option, $value, false ), $name );
+	// }
+
+	// $html .= '</select>';
+	// $html .= '<p class="description">' . wp_kses_post( $args['desc'] ) . '</p>';
+
+	// /** This filter has been defined in settings-page.php */
+	// echo apply_filters( 'x2b_after_setting_output', $html, $args );
+
+	$o_cat_admin_model = new \X2board\Includes\Modules\Category\categoryAdminModel();
+
+	$html = '<div class="col-left x2board-category-setting-left">
+		<div class="col-wrap">
+			<div class="form-wrap">
+				<div class="x2board-update-category">
+					<h2>'.esc_html__( 'Update category', 'x2board' ).'</h2>
+					<div class="form-field form-required term-name-wrap">
+						<label for="update-category-name">'.esc_html__( 'Category to update', 'x2board' ).'</label>
+						<input type="text" id="update-category-name" class="update_category_name" name="update_category_name">
+						<input type="hidden" id="current-category-name" class="update_category_name" name="current_category_name">
+						<input type="hidden" id="category-id" name="category_id" value="">
+						<input type="hidden" id="parent-id" name="parent_id" value="">
+					</div>
+				</div>
+				
+				<div class="x2board-update-category btn">
+					<label><input type="checkbox" id="default-category" name="default-category" value="Y">'.esc_html__( 'Default Category', 'x2board' ).'</label>
+					<button type="button" class="button" onclick="x2board_category_handler(\'update\')">'.esc_html__( 'Update', 'x2board' ).'</button>
+					<button type="button" class="button" onclick="x2board_category_handler(\'remove\')">'.esc_html__( 'Remove', 'x2board' ).'</button>
+				</div>
+				
+				<div class="x2board-new-category">
+					<h2>'.esc_html__( 'Add new category', 'x2board' ).'</h2>
+					<div class="form-field form-required term-name-wrap">
+						<label for="new-category-name">'.esc_html__( 'New category name', 'x2board' ).'</label>
+						<input type="text" id="new-category-name" name="new_category">
+						<input type="hidden" id="new-parent-id">
+					</div>
+				</div>
+				
+				<div class="x2board-new-category-btn">
+					<button type="button" class="button-primary" onclick="x2board_category_handler(\'insert\')">'.esc_html__( 'Add new category', 'x2board' ).'</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="x2board-category-setting-right">
+		<div class="x2board-category-setting-sortable">
+		<h2>'.esc_html__( 'Category status', 'x2board' ).'</h2>
+		<ul class="sortable">';
+	$html .= $o_cat_admin_model->build_category_sortable_html();
+	unset($o_cat_admin_model);
+	$html .= '</ul>
+		</div>
+	</div>';
+	echo apply_filters( 'x2b_after_setting_output', $html, $args );
+}
+
+/**
+ * Display the default thumbnail below the setting.
+ *
+ * @since 2.6.0
+ *
+ * @param  string $html Current HTML.
+ * @param  array  $args Argument array of the setting.
+ * @return string
+ */
+// function x2b_admin_thumbnail( $html, $args ) {
+
+// 	$thumb_default = crp_get_option( 'thumb_default' );
+
+// 	if ( 'thumb_default' === $args['id'] && '' !== $thumb_default ) {
+// 		$html .= '<br />';
+// 		$html .= sprintf( '<img src="%1$s" style="max-width:200px" title="%2$s" alt="%2$s" />', esc_attr( $thumb_default ), esc_html__( 'Default thumbnail', 'contextual-related-posts' ) );
+// 	}
+
+// 	return $html;
+// }
+// add_filter( 'x2b_after_setting_output', 'x2b_admin_thumbnail', 10, 2 );
 
 /**
  * Display csv fields.

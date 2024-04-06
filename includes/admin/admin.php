@@ -25,6 +25,9 @@ if ( !defined( 'X2B_CMD_ADMIN_VIEW_IDX' ) ) {
     // define admin controller cmd
     define('X2B_CMD_ADMIN_PROC_INSERT_BOARD', 'x2b_proc_insert_board');
 	define('X2B_CMD_ADMIN_PROC_UPDATE_BOARD', 'x2b_proc_update_board');
+	define('X2B_CMD_ADMIN_PROC_INSERT_CATEGORY', 'x2b_proc_insert_category');  // ajax
+	define('X2B_CMD_ADMIN_PROC_MANAGE_CATEGORY', 'x2b_proc_manage_category');  // ajax
+	define('X2B_CMD_ADMIN_PROC_REORDER_CATEGORY', 'x2b_proc_reorder_category');  // ajax
 }
 
 /*  Plugins Activation Hook */
@@ -104,12 +107,15 @@ function admin_init() {
 	if(!$admin_role->has_cap('manage_x2board')){
 		$admin_role->add_cap('manage_x2board', true);
 	}
+
 	add_action('admin_post_'.X2B_CMD_ADMIN_PROC_INSERT_BOARD, 'X2board\Includes\Admin\proc_admin_board' );
 	add_action('admin_post_'.X2B_CMD_ADMIN_PROC_UPDATE_BOARD, 'X2board\Includes\Admin\proc_admin_board' );
+	add_action('wp_ajax_'.X2B_CMD_ADMIN_PROC_INSERT_CATEGORY, 'X2board\Includes\Admin\proc_admin_board' );  // ajax for sortable category UI
+	add_action('wp_ajax_'.X2B_CMD_ADMIN_PROC_MANAGE_CATEGORY, 'X2board\Includes\Admin\proc_admin_board' );  // ajax for sortable category UI
+	add_action('wp_ajax_'.X2B_CMD_ADMIN_PROC_REORDER_CATEGORY, 'X2board\Includes\Admin\proc_admin_board' );  // ajax for sortable category UI	
 }
 	
 add_action( 'admin_init', 'X2board\Includes\Admin\admin_init' );
-
 
 /**
  * Trigger Board Admin View.
@@ -190,12 +196,28 @@ function load_scripts( $hook ) {
 	global $A_X2B_ADMIN_SETTINGS_PAGE;
 
 	wp_register_script(
-		X2B_DOMAIN . '-admin-scripts',
+		X2B_DOMAIN . '-tab-scripts',
 		X2B_URL . 'includes/admin/js/admin-scripts.min.js',
 		array( 'jquery', 'jquery-ui-tabs', 'jquery-ui-datepicker' ),
 		X2B_VERSION,
 		true
 	);
+	// begin - for admin sortable UI
+	wp_register_script(
+		X2B_DOMAIN . '-sortable-scripts',
+		X2B_URL . 'includes/admin/js/x2board-category-sortable.js', 
+		array(),
+		X2B_VERSION,
+		true
+	);
+	wp_register_script(
+		X2B_DOMAIN . '-nested-sortable', 
+		X2B_URL . 'includes/admin/js/jquery.mjs.nestedSortable.js', 
+		array('jquery', 'jquery-ui-sortable'), 
+		'2.1a'
+	);
+	// end - for admin sortable UI
+
 	wp_register_style(
 		X2B_DOMAIN . '-admin-style',
 		X2B_URL . 'includes/admin/css/admin.css',
@@ -203,31 +225,19 @@ function load_scripts( $hook ) {
 		X2B_VERSION
 	);
 
-// var_dump($hook);
+	$a_ajax_info= array(
+		'cmd_ajax_insert_category' => X2B_CMD_ADMIN_PROC_INSERT_CATEGORY,
+		'cmd_ajax_manage_category' => X2B_CMD_ADMIN_PROC_MANAGE_CATEGORY,
+		'cmd_ajax_reorder_category' => X2B_CMD_ADMIN_PROC_REORDER_CATEGORY,
+	);
+
 	if ( in_array( $hook, $A_X2B_ADMIN_SETTINGS_PAGE, true ) ) {
-		wp_enqueue_script( X2B_DOMAIN . '-admin-scripts' );
-		// wp_enqueue_script( 'crp-suggest-js' );
-		// wp_enqueue_script( 'plugin-install' );
+		wp_enqueue_script( X2B_DOMAIN . '-tab-scripts' );
+		wp_enqueue_script( X2B_DOMAIN . '-sortable-scripts' );
+		wp_enqueue_script( X2B_DOMAIN . '-nested-sortable' );
 		wp_enqueue_style( X2B_DOMAIN . '-admin-style' );
+		wp_localize_script (X2B_DOMAIN . '-sortable-scripts', 'x2board_admin_ajax_info', $a_ajax_info );
 		add_thickbox();
-
-		// wp_enqueue_code_editor(
-		// 	array(
-		// 		'type'       => 'text/html',
-		// 		'codemirror' => array(
-		// 			'indentUnit' => 2,
-		// 			'tabSize'    => 2,
-		// 		),
-		// 	)
-		// );
-		// wp_localize_script(
-		// 	'crp-admin-js',
-		// 	'crp_admin_data',
-		// 	array(
-		// 		'security' => wp_create_nonce( 'crp-admin' ),
-		// 	)
-		// );
-
 	}
 }
 add_action( 'admin_enqueue_scripts', 'X2board\Includes\Admin\load_scripts' );
@@ -245,22 +255,6 @@ add_action( 'admin_enqueue_scripts', 'X2board\Includes\Admin\load_scripts' );
 // }
 // add_action( 'customize_controls_enqueue_scripts', 'x2b_customize_controls_enqueue_scripts', 99 );
 
-
-/**
- * This function enqueues scripts and styles on widgets.php.
- *
- * @since 2.9.0
- *
- * @param string $hook The current admin page.
- */
-// function x2b_enqueue_scripts_widgets( $hook ) {
-// 	if ( 'widgets.php' !== $hook ) {
-// 		return;
-// 	}
-// 	wp_enqueue_script( 'x2b-suggest-js' );
-// 	wp_enqueue_style( 'x2b-admin-customizer-css' );
-// }
-// add_action( 'admin_enqueue_scripts', 'x2b_enqueue_scripts_widgets', 99 );
 
 /**
  * Adds minor CSS styles to the admin menu.

@@ -154,21 +154,22 @@ KEY `idx_regdate` (`regdate`),
 KEY `idx_ipaddress` (`ipaddress`)
 ) {$charset_collate};");
 
-dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_category` (
-`category_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-`board_id` bigint(20) unsigned NOT NULL,
-`parent_id` bigint(20) NOT NULL DEFAULT 0,
-`category_name` varchar(250) DEFAULT NULL,
+dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_categories` (
+`category_id` bigint(11) NOT NULL DEFAULT 0,
+`board_id` bigint(11) NOT NULL DEFAULT 0,
+`parent_id` bigint(12) NOT NULL DEFAULT 0,
+`title` varchar(250) DEFAULT NULL,
 `expand` char(1) DEFAULT 'N',
-`post_count` mediumint(9) unsigned NOT NULL DEFAULT 0,
-`list_order` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '표시 순서',
-`group_srls` text DEFAULT NULL COMMENT '수정 권한 회원 그룹 번호',
-`color` varchar(11) DEFAULT NULL,
-`is_default` char(1) DEFAULT NULL COMMENT '새글 작성 시 기본 선택',
-`deleted` char(1) NOT NULL DEFAULT 'N',
-`regdate` varchar(14) DEFAULT NULL,
+`is_default` char(1) DEFAULT 'N',
+`deleted` char(1) DEFAULT 'N',
+`post_count` bigint(11) NOT NULL DEFAULT 0,
+`regdate` datetime DEFAULT NULL,
 `last_update` varchar(14) DEFAULT NULL,
+`list_order` bigint(11) NOT NULL,
+`group_ids` text DEFAULT NULL,
+`color` varchar(11) DEFAULT NULL,
+`description` varchar(200) DEFAULT NULL,
 PRIMARY KEY (`category_id`),
-KEY `board_id` (`board_id`),
-KEY `deleted_by_board` (`board_id`,`deleted`)
+KEY `idx_board_id` (`board_id`),
+KEY `idx_regdate` (`regdate`)
 ) {$charset_collate};");

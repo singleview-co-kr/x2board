@@ -92,13 +92,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 			// https://wpengineer.com/2426/wp_list_table-a-step-by-step-guide/
 			// https://supporthost.com/wp-list-table-tutorial/
 			$this->prepare_items();
-
-			// $admin_role = get_role('administrator');
-			// if( $admin_role->has_cap('manage_x2board') ){  // && current_user_can( $post_type_object->cap->create_posts ) )
 			$post_new_file = esc_url( admin_url( "admin.php?page=x2b_disp_board_insert" ) );
-			// }
-			// unset($admin_role);
-
 			include_once X2B_PATH .'includes/admin/tpl/board_list.php';
 		}
 
@@ -172,7 +166,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 			require_once X2B_PATH . 'includes\admin\tpl\settings-page.php';
 			require_once X2B_PATH . 'includes\admin\tpl\default-settings.php';
 			require_once X2B_PATH . 'includes\admin\tpl\register-settings.php';
-
+			require_once X2B_PATH . 'includes\modules\category\category.admin.model.php';
+	
 			\X2board\Includes\Admin\Tpl\x2b_register_settings();
 			\X2board\Includes\Admin\Tpl\x2b_options_page();
 

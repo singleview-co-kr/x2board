@@ -314,6 +314,17 @@ function x2b_settings_category() {
 				'unchecked'   => 'N',
 			),
 		),
+		'board_category_info'  => array(
+			'id'      => 'board_category_info',
+			'name'    => esc_html__( 'Category configuration', 'x2board' ),
+			'desc'    => esc_html__( 'Category configuration', 'x2board' ),
+			'type'    => 'wpsortableui',
+			'options' => false,
+			'checked_value' => array(
+				'checked' => 'Y',
+				'unchecked'   => 'N',
+			),
+		),
 	);
 
 	/**

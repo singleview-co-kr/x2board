@@ -5,3 +5,17 @@
     height: 36px;
     background: url(../images/singleview-logo.png) left top no-repeat;
 }
+
+.x2board-category-setting-left,
+.x2board-category-setting-right { float: left; width: 50%; }
+.x2board-update-category { display: none; }
+.x2board-update-category.btn { margin-bottom: 50px; }
+.x2board-category-setting-sortable .sortable ul { margin-left: 30px; }
+.x2board-category-setting-sortable .placeholder { margin-top: 10px; outline: 1px dashed #0085ba; }
+.x2board-category-setting-sortable .menu-item-handle .item-title { margin: 0; }
+.x2board-category-setting-sortable .menu-item-bar .menu-item-handle { width: auto; }
+
+@media screen and (max-width: 600px) {
+    .kboard-category-setting-left,
+    .kboard-category-setting-right { float: none; width: auto; }
+}
