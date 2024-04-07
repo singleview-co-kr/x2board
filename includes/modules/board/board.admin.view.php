@@ -144,7 +144,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 					return '<A HREF='.$o_post->guid.' target="_blank">'.$o_post->post_title.' '.__('Visit the page', 'x2board').'</A>';
 				case 'board_name':
 					$o_post = get_post(intval($item->wp_page_id)); 
-					return '<A HREF='.admin_url( 'admin.php?page='.X2B_CMD_ADMIN_VIEW_BOARD_UPDATE.'&board_id='.$o_post->ID ).'>'.$item->$column_name.' '.__('Configure the board', 'x2board').'</A>';
+					return '<A HREF='.admin_url( 'admin.php?page='.X2B_CMD_ADMIN_VIEW_BOARD_UPDATE.'&board_id='.$o_post->ID ).'>'.$item->board_title.' '.__('Configure the board', 'x2board').'</A>';
 				case 'create_date':
 					return $item->$column_name;
 				default:

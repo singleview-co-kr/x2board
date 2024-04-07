@@ -922,13 +922,6 @@ var_dump('detected view cmd:'. $s_cmd);
 				// set new variables
 				$get_vars[$key] = $val;
 			}
-			// remove category, tag if empty to avoid $target_map malfunction
-			if( isset($get_vars['category']) && is_null($get_vars['category']) ) {
-				unset($get_vars['category']);
-			}
-			if( isset($get_vars['tag']) && is_null($get_vars['tag']) ) {
-				unset($get_vars['tag']);
-			}
 			// remove vid, rnd
 			// unset($get_vars['rnd']);
 			// if($vid)
@@ -981,25 +974,27 @@ var_dump('detected view cmd:'. $s_cmd);
 					// 'act.document_srl.key.vid' => ($act == 'trackback') ? "$vid/$srl/$key/$act" : '',
 				);
 
-				$a_check_query = array( 'cmd', 'post_id' );
-				foreach( $a_check_query as $key_name ) {
-// if( $key_name == 'cmd'){
-// 	error_log(print_r($get_vars[$key_name], true));
+				$a_check_query = array( 'cmd', 'post_id', 'category', 'tag' );
+				foreach( $a_check_query as $key_name ) {  // remove if null to avoid $target_map malfunction
+// if( $key_name == 'category'){
+	// error_log(print_r(strlen($get_vars[$key_name]) ==0, true));
+	// var_dump($key_name,$get_vars[$key_name]);
 // }
-
-					if( isset($get_vars[$key_name]) && is_null($get_vars[$key_name]) ) {
+// error_log(print_r($key_name, true));
+// error_log(print_r($get_vars[$key_name], true));
+					if( array_key_exists($key_name, $get_vars) && is_null($get_vars[$key_name]) ) {
 						unset($get_vars[$key_name]);
 					}
 				}
-// error_log(print_r($get_vars['page'], true));						
-				if( isset( $get_vars['page'] ) ) {
+	
+				if( array_key_exists('page', $get_vars) ) {
 					if( is_null($get_vars['page']) || $get_vars['page'] == 1 ) {
 						unset($get_vars['page']);
 					}
 				}
 				
 				$var_keys = array_keys($get_vars);
-				sort($var_keys);
+				sort($var_keys);						
 				$target = join('.', $var_keys);
 // if( strlen($s_category_title) )	{
 	// error_log(print_r($target, true));	

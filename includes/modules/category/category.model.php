@@ -13,8 +13,9 @@ if ( !defined( 'ABSPATH' ) ) {
 if (!class_exists('\\X2board\\Includes\\Modules\\Category\\categoryModel')) {
 
 	class categoryModel extends category {
-		private $_tree_category_old = [];
+		private $_tree_category_old = array();
 		private $_n_board_id = null;
+		private $_a_category_id_title_map = array();
 
 		/**
 		 * Initialization
@@ -31,9 +32,13 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Category\\categoryModel')) {
 		 * @param int $category_srl
 		 * @return int
 		 */
-		public static function get_category_name($n_board_id, $n_category_id) {
+		public function get_category_name($n_board_id, $n_category_id) {
 			global $wpdb;
+			if(isset($this->_a_category_id_title_map[$n_category_id]) ){
+				return $this->_a_category_id_title_map[$n_category_id];
+			}
 			$title = $wpdb->get_var("SELECT `title` FROM `{$wpdb->prefix}x2b_categories` WHERE `category_id`='$n_category_id' AND `board_id`='$n_board_id'");
+			$this->_a_category_id_title_map[$n_category_id] = $title;
 			return $title;
 		}
 
