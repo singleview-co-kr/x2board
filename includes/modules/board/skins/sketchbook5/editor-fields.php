@@ -69,18 +69,18 @@
 			</li>
 		<?php endforeach?>
 	</ul>	
-<?php elseif($field['field_type'] == '!!tree_category'):?> 
+<?php elseif($field['field_type'] == 'category'):?> 
 	<div class="kboard-attr-row <?php echo esc_attr($field['class'])?> <?php echo esc_attr($required)?>">
 		<label class="attr-name" for="<?php echo esc_attr($meta_key)?>"><span class="field-name"><?php echo esc_html($field_name)?></span></label>
 		<div class="attr-value">
 			<div class="kboard-tree-category-wrap">
-				<select id="kboard-tree-category" name="kboard-tree-category" class="kboard-tree-category">
-					<option value=""><?php echo __('Category select', 'kboard')?></option>
-					<!-- disabled="disabled"|cond="!$val->grant"  -->
-					<!-- selected="selected"|cond="$val->grant&&$val->selected||$val->category_srl==$oDocument->get('category_srl')" -->
-					<?php foreach($post->getCategoryList as $cat_id=>$option_val):?>
-						<option value="<?php echo $cat_id?>" <?php if($post->category_id == $cat_id):?> selected<?php endif?>>
-							<?php echo str_repeat("&nbsp;&nbsp;",$option_val->depth)?> <?php echo $option_val->category_name?> (<?php echo $option_val->document_count?>)
+				<select id="category_id" name="category_id" class="category">
+					<option value=""><?=__('Category select', 'kboard')?></option>
+					<?php 
+					$category_list = \X2board\Includes\Classes\Context::get('category_list');
+					foreach($category_list as $cat_id=>$option_val):?>
+						<option value="<?=$cat_id?>" <?php if($option_val->grant && $option_val->selected || $post->category_id == $cat_id):?> selected="selected" <?php endif?> <?php if(!$option_val->grant):?> disabled="disabled" <?php endif?>  >
+						<?=str_repeat("&nbsp;&nbsp;",$option_val->depth)?> <?=$option_val->title?> (<?=$option_val->post_count?>)
 						</option>
 					<?php endforeach?>
 				</select>

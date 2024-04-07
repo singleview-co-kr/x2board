@@ -1,10 +1,16 @@
+<?php
+$mi = new \stdClass();
+$mi->use_category = 'Y';
+?>
 <div class="bd hover_effect" >
 	<div class="rd rd_nav_style2 clear" itemscope itemtype="http://schema.org/Article">
 		<div class="rd_hd clear"> <!--  style="margin:0 -15px 20px"> -->
 			<div class="board clear " style=";">
 				<div class="top_area ngeb" style=";">
 					<div class="detail-attr">
-					<strong class="cate fl" title="Category"><?php echo esc_html($post->category_name)?></strong>
+					<?php if( $mi->use_category=='Y' && $post->get('category_id') ):?>
+						<strong class="cate fl" title="Category"><?php echo esc_html($post->category_title)?></strong>
+					<?php endif ?>
 					</div>
 					<div class="fr">
 					<span class="date m_no"><?php echo $post->get_regdate('Y.m.d H:i')?></span>				
@@ -31,7 +37,7 @@
 					<caption class="blind">Atachment</caption>
 					<tbody>
 						<tr>
-							<th scope="row" class="ui_font"><strong>첨부</strong> <span class="fnt_count">'<b><?php echo count($attachments)?></b>'</span></th>
+							<th scope="row" class="ui_font"><strong><?php echo __('Attachments', 'x2board')?></strong> <span class="fnt_count">'<b><?php echo count($attachments)?></b>'</span></th>
 							<td>
 								<ul>
 									<?php foreach($attachments as $key=>$attach):?>

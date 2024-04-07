@@ -279,7 +279,9 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 						unset($o_controller);
 						exit;  // required to execute wp_redirect()
 					}
+					wp_redirect(home_url());
 					unset($o_controller);
+					exit;
 				}
 				wp_redirect(home_url());
 				exit;  // required to execute wp_redirect()
@@ -581,7 +583,7 @@ var_dump('detected view cmd:'. $s_cmd);
 								);
 			$request_uri = wp_parse_url( $_SERVER['REQUEST_URI'] );
 			if( isset($request_uri['query'] ) )	{
-var_dump($request_uri['query']);
+// var_dump($request_uri['query']);
 				$s_uri = trim($request_uri['query']);
 				if( preg_match( "/^[-\w.]+\/[0-9]*$/m", $s_uri ) ) { // ex) post/1234
 					$a_uri = explode('/', sanitize_text_field( $s_uri ) );
@@ -614,31 +616,31 @@ var_dump($request_uri['query']);
 						$a_query_param['cmd'] = $s_cmd;	
 					}
 				}
-				elseif( preg_match( "/^[-\w.]+\/[0-9]+\/[0-9]*$/m", $s_uri ) ) { // ex) reply_comment/123/456
-					$a_uri = explode('/', sanitize_text_field( $s_uri ) );
-					$s_cmd = trim($a_uri[0]);
-					if( $s_cmd == X2B_CMD_VIEW_REPLY_COMMENT) {
-						$a_query_param['cmd'] = $s_cmd;	
-						$a_query_param['post_id'] = intval($a_uri[1]);  // parent_post_id
-						$a_query_param['comment_id'] = intval($a_uri[2]);  // parent_comment_id
-					}
-					unset($a_uri);
-				}
-				elseif( preg_match( "/^[-\w.]+\/[-\w.]*$/m", $s_uri ) ) { // ex) cat/category_value
-					$a_uri = explode('/', sanitize_text_field( $s_uri ) );
-					$s_cmd = trim($a_uri[0]);
-					switch($s_cmd) {
-						case 'cat':
-							// $a_query_param['cmd'] = X2B_CMD_VIEW_LIST;
-							$a_query_param['category'] = trim($a_uri[1]);
-							break;
-						case 'tag':
-							// $a_query_param['cmd'] = X2B_CMD_VIEW_LIST;
-							$a_query_param['tag'] = trim($a_uri[1]);
-							break;
-					}
-					unset($a_uri);
-				}
+				// elseif( preg_match( "/^[-\w.]+\/[0-9]+\/[0-9]*$/m", $s_uri ) ) { // ex) reply_comment/123/456
+				// 	$a_uri = explode('/', sanitize_text_field( $s_uri ) );
+				// 	$s_cmd = trim($a_uri[0]);
+				// 	if( $s_cmd == X2B_CMD_VIEW_REPLY_COMMENT) {
+				// 		$a_query_param['cmd'] = $s_cmd;	
+				// 		$a_query_param['post_id'] = intval($a_uri[1]);  // parent_post_id
+				// 		$a_query_param['comment_id'] = intval($a_uri[2]);  // parent_comment_id
+				// 	}
+				// 	unset($a_uri);
+				// }
+				// elseif( preg_match( "/^[-\w.]+\/[-\w.]*$/m", $s_uri ) ) { // ex) cat/category_value   한글 숫자 영문 혼합 preg_match 불가능
+				// 	$a_uri = explode('/', sanitize_text_field( $s_uri ) );
+				// 	$s_cmd = trim($a_uri[0]);
+				// 	switch($s_cmd) {
+				// 		case 'cat':
+				// 			// $a_query_param['cmd'] = X2B_CMD_VIEW_LIST;
+				// 			$a_query_param['category'] = trim($a_uri[1]);
+				// 			break;
+				// 		case 'tag':
+				// 			// $a_query_param['cmd'] = X2B_CMD_VIEW_LIST;
+				// 			$a_query_param['tag'] = trim($a_uri[1]);
+				// 			break;
+				// 	}
+				// 	unset($a_uri);
+				// }
 				elseif( preg_match( "/^[-\w.]+\/[-\w.]+\/[-\w.]+\/[-\w.]*$/m", $s_uri ) ) { // ex) search/search_field/q/search_value
 					$a_uri = explode('/', sanitize_text_field( $s_uri ) );
 					$s_cmd = trim($a_uri[0]);
@@ -653,14 +655,14 @@ var_dump($request_uri['query']);
 					}
 					unset($a_uri);
 				}
-				else { // cascaded search
+				else { // cascaded search   ex) cat/category_value 
 					// $a_query_param['cmd'] = X2B_CMD_VIEW_LIST;
-					$a_uri = explode('/', sanitize_text_field( $s_uri ) );
+					$a_uri = explode('/', $s_uri );
 					foreach( $a_uri as $n_idx => $s_val ) {
 						if( $n_idx % 2 == 0 ) {
 							if( isset( $a_cascaded_search_cmd[$s_val] ) ){
-								$s_cmd = $a_cascaded_search_cmd[$s_val];
-								$a_query_param[$s_cmd] = $a_uri[$n_idx+1];
+								$s_cmd = wp_unslash( $a_cascaded_search_cmd[$s_val]);
+								$a_query_param[$s_cmd] = wp_unslash( $a_uri[$n_idx+1]);
 							}
 						}
 					}
@@ -883,7 +885,7 @@ var_dump($request_uri['query']);
 			elseif($_SERVER['REQUEST_METHOD'] == 'GET') {
 				// Otherwise, make GET variables into array
 				// $get_vars = get_object_vars($self->get_vars);
-				$get_vars = get_object_vars($self->gets('cmd', 'post_id', 'page'));
+				$get_vars = get_object_vars($self->gets('cmd', 'post_id', 'page', 'category'));
 // error_log(print_r($get_vars, true));
 				// 이 조건문 작동하면 ?cmd=view_post&post_id=17&cpage=2#17_comment 와 같은 댓글 페이지 처리가 안됨
 				// if( isset( $get_vars['cmd'] ) && $get_vars['cmd'] == X2B_CMD_VIEW_POST &&
@@ -920,7 +922,13 @@ var_dump($request_uri['query']);
 				// set new variables
 				$get_vars[$key] = $val;
 			}
-
+			// remove category, tag if empty to avoid $target_map malfunction
+			if( isset($get_vars['category']) && is_null($get_vars['category']) ) {
+				unset($get_vars['category']);
+			}
+			if( isset($get_vars['tag']) && is_null($get_vars['tag']) ) {
+				unset($get_vars['tag']);
+			}
 			// remove vid, rnd
 			// unset($get_vars['rnd']);
 			// if($vid)
@@ -950,88 +958,78 @@ var_dump($request_uri['query']);
 			if(count($get_vars) > 0) {
 				// if using rewrite mod
 				// if($self->allow_rewrite)
-				{
-// error_log(print_r($get_vars, true));
-					$cmd = $get_vars['cmd'];
-					$page = isset( $get_vars['page'] ) ? $get_vars['page'] : ''; // $get_vars['page'];
-					$post_id = isset( $get_vars['post_id'] ) ? $get_vars['post_id'] : '';
-					// $post_id = $get_vars['post_id']; // $srl = $get_vars['document_srl'];
+				// {
+				$cmd = $get_vars['cmd'];
+				$page = isset( $get_vars['page'] ) ? $get_vars['page'] : ''; // $get_vars['page'];
+				$post_id = isset( $get_vars['post_id'] ) ? $get_vars['post_id'] : '';
+				$s_category_title = isset( $get_vars['category'] ) ? $get_vars['category'] : '';
 
-					// $tmpArray = array('rss' => 1, 'atom' => 1, 'api' => 1);
-					// $is_feed = isset($tmpArray[$act]);
+				// $tmpArray = array('rss' => 1, 'atom' => 1, 'api' => 1);
+				// $is_feed = isset($tmpArray[$act]);
 // error_log(print_r($get_vars, true));					
-					$target_map = array(
-						// 'vid' => $vid,
-						// 'mid' => $mid,
-						// 'mid.vid' => "$vid/$mid",
-						// 'entry.mid' => "$mid/entry/" . $get_vars['entry'],
-						// 'entry.mid.vid' => "$vid/$mid/entry/" . $get_vars['entry'],
-						'cmd' => get_the_permalink().( strlen($cmd) > 0 ? '?'.$cmd : '' ),  // X2B_CMD_VIEW_LIST equals with blank cmd
-						'post_id' => get_the_permalink().'?'.X2B_CMD_VIEW_POST.'/'.$post_id,
-						'cmd.post_id' => get_the_permalink().'?'.$cmd.'/'.$post_id,
-						'cmd.page' => get_the_permalink().'?p/'.$page,
-						// 'cmd.comment_id.post_id' => get_the_permalink().'?'.$cmd.'/'.$post_id.'/'.$comment_id,
-						
-						// 'document_srl' => $srl,
-						// 'document_srl.mid' => "$mid/$srl",
-						// 'document_srl.vid' => "$vid/$srl",
-						// 'document_srl.mid.vid' => "$vid/$mid/$srl",
-						// 'act' => ($is_feed && $act !== 'api') ? $act : '',
-						// 'act.mid' => $is_feed ? "$mid/$act" : '',
-						// 'act.mid.vid' => $is_feed ? "$vid/$mid/$act" : '',
-						// 'act.document_srl.key' => ($act == 'trackback') ? "$srl/$key/$act" : '',
-						// 'act.document_srl.key.mid' => ($act == 'trackback') ? "$mid/$srl/$key/$act" : '',
-						// 'act.document_srl.key.vid' => ($act == 'trackback') ? "$vid/$srl/$key/$act" : '',
-						// 'act.document_srl.key.mid.vid' => ($act == 'trackback') ? "$vid/$mid/$srl/$key/$act" : ''
-					);
+				$target_map = array(
+					'cmd' => get_the_permalink().( strlen($cmd) > 0 ? '?'.$cmd : '' ),  // X2B_CMD_VIEW_LIST equals with blank cmd
+					'post_id' => get_the_permalink().'?'.X2B_CMD_VIEW_POST.'/'.$post_id,
+					'cmd.post_id' => get_the_permalink().'?'.$cmd.'/'.$post_id,
+					'cmd.page' => get_the_permalink().'?p/'.$page,
+					'category.cmd.post_id' => get_the_permalink().'?cat/'.$s_category_title,
+					// 'vid' => $vid,
+					// 'mid.vid' => "$vid/$mid",
+					// 'entry.mid.vid' => "$vid/$mid/entry/" . $get_vars['entry'],
+					// 'cmd.comment_id.post_id' => get_the_permalink().'?'.$cmd.'/'.$post_id.'/'.$comment_id,
+					// 'document_srl.mid.vid' => "$vid/$mid/$srl",
+					// 'act.document_srl.key.vid' => ($act == 'trackback') ? "$vid/$srl/$key/$act" : '',
+				);
 
-					$a_check_query = array( 'cmd', 'post_id' );
-					foreach( $a_check_query as $key_name ) {
+				$a_check_query = array( 'cmd', 'post_id' );
+				foreach( $a_check_query as $key_name ) {
 // if( $key_name == 'cmd'){
 // 	error_log(print_r($get_vars[$key_name], true));
 // }
 
-						if( isset($get_vars[$key_name]) && is_null($get_vars[$key_name]) ) {
-							unset($get_vars[$key_name]);
-						}
+					if( isset($get_vars[$key_name]) && is_null($get_vars[$key_name]) ) {
+						unset($get_vars[$key_name]);
 					}
+				}
 // error_log(print_r($get_vars['page'], true));						
-					if( isset( $get_vars['page'] ) ) {
-						if( is_null($get_vars['page']) || $get_vars['page'] == 1 ) {
-							unset($get_vars['page']);
-						}
+				if( isset( $get_vars['page'] ) ) {
+					if( is_null($get_vars['page']) || $get_vars['page'] == 1 ) {
+						unset($get_vars['page']);
 					}
-					
-					$var_keys = array_keys($get_vars);
-					sort($var_keys);
-					$target = join('.', $var_keys);
-// error_log(print_r($target, true));	
-					$query = isset( $target_map[$target] ) ? $target_map[$target] : null;
 				}
+				
+				$var_keys = array_keys($get_vars);
+				sort($var_keys);
+				$target = join('.', $var_keys);
+// if( strlen($s_category_title) )	{
+	// error_log(print_r($target, true));	
+// }
+				$query = isset( $target_map[$target] ) ? $target_map[$target] : null;
+			}
 // error_log(print_r($query, true));
-				if(!$query)	{
-					$queries = array();
+			if(!$query)	{
+				$queries = array();
 // error_log(print_r($get_vars, true));					
-					foreach($get_vars as $key => $val) {
-						if(is_array($val) && count($val) > 0) {
-							foreach($val as $k => $v) {
-								$queries[] = $key . '[' . $k . ']=' . urlencode($v);
-							}
-						}
-						elseif(!is_array($val))	{
-							$queries[] = $key . '=' . urlencode($val);
+				foreach($get_vars as $key => $val) {
+					if(is_array($val) && count($val) > 0) {
+						foreach($val as $k => $v) {
+							$queries[] = $key . '[' . $k . ']=' . urlencode($v);
 						}
 					}
-if( $target == 'cmd.cpage.post_id'){
-	error_log(print_r($queries, true));		
-}
-
-					$query = get_the_permalink();
-					$n_cnt_queires = count($queries);
-					if($n_cnt_queires > 0) {
-						$query .= '?' . join('&', $queries);
+					elseif(!is_array($val))	{
+						$queries[] = $key . '=' . urlencode($val);
 					}
 				}
+// if( $target == 'cmd.cpage.post_id'){
+// error_log(print_r($queries, true));		
+// }
+
+				$query = get_the_permalink();
+				$n_cnt_queires = count($queries);
+				if($n_cnt_queires > 0) {
+					$query .= '?' . join('&', $queries);
+				}
+				// }
 			}
 
 			// If using SSL always

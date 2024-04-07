@@ -1,19 +1,18 @@
 <?php if($post->is_exists()) {
-	x2b_include_skin('document');
+	x2b_include_skin('post');
 }?>
 
 <div class="bd hover_effect" >
 	<!-- 카테고리 시작 -->
 	<?php
-	if( false) { //$category_type != '' ){
-		$category_type = 'tree-'.$category_type;
-		$category_type = apply_filters('kboard_skin_category_type', $category_type, $board, $boardBuilder);
-		echo $skin->render($board->skin, "list-category-{$category_type}.php", $vars);
+	if( $this->module_info->use_category == 'Y') {
+		$category_type = 'tree-tab';
+		x2b_include_skin("list-category-{$category_type}");
 	}
 	?>
 	<!-- 카테고리 끝 -->
 	<table id="document-table" class="bd_lst bd_tb_lst bd_tb">
-		<caption class="blind">List of Posts</caption>
+		<caption class="blind"><?php echo __('List of Posts', 'x2board')?></caption>
 		<thead class="bg_f_f9">
 			<tr>
 				<th scope="col" class="no"><span><a href="" title=""><?php echo __('Number', 'x2board')?></a></span></th>
@@ -31,7 +30,7 @@
 		<tbody>
 			<?php foreach( $notice_list as $no => $post ): //while($content = $list->hasNextNotice()): ?>
 				<tr class="notice">
-					<td class="no"><strong>공지</strong></td>
+					<td class="no"><strong><?php echo __('Notice', 'x2board')?></strong></td>
 					<td class="cate" style="color:"></td>
 					<td class="title">
 						<a href="<?php echo esc_url(x2b_get_url('cmd', X2B_CMD_VIEW_POST, 'post_id', $post->post_id))?>"><strong><?php echo $post->title?></strong></a>
@@ -63,7 +62,7 @@
 							<?php if($content->secret):?><img src="<?php echo $skin_path?>/img/icon-lock.png" alt="<?php echo __('Secret', 'x2board')?>"><?php endif?>
 						</span>
 					</td>
-					<td class="author"><span><?php echo $content->getUserDisplay()?></span></td>
+					<td class="author"><span><3?php echo $content->getUserDisplay()?></span></td>
 					<td class="time" title="2 시간 전"><?php echo $content->getDate()?></td>
 					<td class="m_no"><?php echo $content->vote?></td>
 					<td class="m_no"><?php echo $content->view?></td>
@@ -72,10 +71,11 @@
 					<?php endif?>
 				</tr>
 			<?php endif //endwhile?>
-			<?php foreach( $post_list as $no => $post ): //while($content = $list->hasNext()):?>
+			<?php 
+			foreach( $post_list as $no => $post ): //while($content = $list->hasNext()):?>
 				<tr <?php if($post->post_id == $post_id):?>class='select'<?php endif?> >
 					<td class="no"><?php echo $no?></td>
-					<td class="cate"><span style="color:"><?php echo esc_html($post->category_id)?></span></td>
+					<td class="cate"><span style="color:"><?php echo esc_html($post->category_title)?></span></td>
 					<td class="title">
 						<a href="<?php echo esc_url(x2b_get_url('cmd', X2B_CMD_VIEW_POST, 'post_id', $post->post_id))?>" class="hx">
 						<?php echo $post->title?></a>
@@ -101,8 +101,8 @@
 		<div class="fl">
 			<?php if($grant->manager):?>
 				<!-- 게시판 관리 기능 시작 -->
-				<a class="btn_img" href="<?php echo admin_url('admin.php?page=x2b_disp_board_update&board_id='.$board_id);?>" target='_blank'><i class="ico_16px setup"></i> 설정</a>
-				<a class="btn_img" id='btn_control_panel'><i class="tx_ico_chk">✔</i> 게시글 관리</a>
+				<a class="btn_img" href="<?php echo admin_url('admin.php?page=x2b_disp_board_update&board_id='.$board_id);?>" target='_blank'><i class="ico_16px setup"></i> <?php echo __('Configure board', 'x2board')?></a>
+				<a class="btn_img" id='btn_control_panel'><i class="tx_ico_chk">✔</i><?php echo __('Manage posts', 'x2board')?></a>
 				<!-- 게시판 관리 기능 끝 -->
 			<?php endif?>
 		</div>
@@ -139,7 +139,7 @@ $mi_page_count = $this->n_page_count;
 		<!--// 페이지네이션 -->
 		<form action="./" method="get" class="bd_pg clear">
 			<fieldset>
-			<legend class="blind">Board Pagination</legend>
+			<legend class="blind"><?php echo __('Board Pagination', 'x2board')?></legend>
 			<input type="hidden" name="vid" value="{$vid}" />
 			<input type="hidden" name="mid" value="{$mid}" />
 			<input type="hidden" name="category" value="{$category}" />
@@ -148,10 +148,10 @@ $mi_page_count = $this->n_page_count;
 			<input type="hidden" name="listStyle" value="{$mi->default_style}" />
 			
 			<?php if( $page!=$prev_page ):?>
-				<a href="<?php echo x2b_get_url('page',$prev_page,'post_id','')?>" class="direction"><i class="fa fa-angle-left"></i> Prev</a>
+				<a href="<?php echo x2b_get_url('page',$prev_page,'post_id','')?>" class="direction"><i class="fa fa-angle-left"></i> <?php echo __('Prev', 'x2board')?></a>
 			<?php endif?>
 			<?php if( $page==$prev_page ):?>
-				<strong class="direction"><i class="fa fa-angle-left"></i> Prev</strong>
+				<strong class="direction"><i class="fa fa-angle-left"></i> <?php echo __('Prev', 'x2board')?></strong>
 			<?php endif?>
 			<a class="frst_last bubble <?php if( $page==1 ):?> this<?php endif?>" href="<?php echo x2b_get_url('page','','post_id','')?>" title="<?php echo __('first_page', 'x2board')?>">1</a>
 			<?php if( $page>($mi_page_count)/2+2 ):?>
@@ -183,15 +183,15 @@ $mi_page_count = $this->n_page_count;
 			<?php endif?>
 			<?php if( $page!=$next_page ):?>
 				<!-- <a cond="$page!=$next_page" href="{getUrl('page',$next_page,'document_srl','')}" class="direction">Next <i class="fa fa-angle-right"></i></a> -->
-				<a href="<?php echo x2b_get_url('page',$next_page,'post_id','')?>" class="direction">Next <i class="fa fa-angle-right"></i></a>
+				<a href="<?php echo x2b_get_url('page',$next_page,'post_id','')?>" class="direction"><?php echo __('Next', 'x2board')?> <i class="fa fa-angle-right"></i></a>
 			<?php endif?>
 			<?php if( $page==$next_page ):?>
 				<!-- <strong cond="$page==$next_page" class="direction">Next <i class="fa fa-angle-right"></i></strong> -->
-				<strong class="direction">Next <i class="fa fa-angle-right"></i></strong>
+				<strong class="direction"><?php echo __('Next', 'x2board')?> <i class="fa fa-angle-right"></i></strong>
 			<?php endif?>
 			<div class="bd_go_page tg_cnt2 wrp">
 				<button type="button" class="tg_blur2"></button>
-				<input type="text" name="page" class="itx" />/ <?php echo $page_navigation->n_last_page?> <button type="submit" class="bd_btn">GO</button>
+				<input type="text" name="page" class="itx" />/ <?php echo $page_navigation->n_last_page?> <button type="submit" class="bd_btn"><?php echo __('GO', 'x2board')?></button>
 				<span class="edge"></span>
 				<!--// ie8; --><i class="ie8_only bl"></i><i class="ie8_only br"></i>
 				<button type="button" class="tg_blur2"></button>

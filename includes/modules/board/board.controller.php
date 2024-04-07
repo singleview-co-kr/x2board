@@ -289,15 +289,12 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 				}
 			}
 			
-			// if there is an error
-			if(!$output->toBool()) {
-				return $output;
+			if(!$output->toBool()) {  // if there is an error
+				$this->add('s_wp_redirect_url', '?cmd='.X2B_CMD_VIEW_MESSAGE.'&message='.$output->getMessage());
 			}
-// var_dump($output);
-// exit;
-			// if s_wp_redirect_url is not added, automatically redirect to home_url
-			$this->add('s_wp_redirect_url', '?'.X2B_CMD_VIEW_POST.'/'.$output->get('post_id'));
-			// $this->add('s_wp_redirect_url', \X2board\Includes\get_url('cmd', X2B_CMD_VIEW_POST, 'post_id', $output->get('post_id') ));
+			else { // if s_wp_redirect_url is not added, automatically redirect to home_url
+				$this->add('s_wp_redirect_url', '?'.X2B_CMD_VIEW_POST.'/'.$output->get('post_id'));
+			}
 		}
 
 		/**

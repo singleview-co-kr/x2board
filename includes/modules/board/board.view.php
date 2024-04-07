@@ -74,6 +74,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 					$s_cmd = '_'.$s_cmd;
 					$this->$s_cmd();
 					break;
+				case X2B_CMD_VIEW_MESSAGE:
+					$s_msg = sanitize_text_field(\X2board\Includes\Classes\Context::get('message'));
+					$this->_disp_message($s_msg);
+					break;
 				default:
 					$this->_disp_content();
 					break;
@@ -550,18 +554,15 @@ var_dump(X2B_CMD_VIEW_POST);
 		 **/
 		// function dispBoardCategoryList(){
 		private function _disp_category_list() {
-// var_dump($this->module_info);	
-			if($this->module_info->use_category=='Y')  // check if the use_category option is enabled;  -1 deactivated
-			{
+			if($this->module_info->use_category=='Y') { // check if the use_category option is enabled;  -1 deactivated
 				if(!$this->grant->list) { // check the grant
-					\X2board\Includes\Classes\Context::set('category_list', array());
+					\X2board\Includes\Classes\Context::set('category_recursive', array());
 					return;
 				}
-				$o_post_model = \X2board\Includes\getModel('post');
-				\X2board\Includes\Classes\Context::set('category_type', $o_post_model->get_category_header_type()); //$this->module_srl));
-				unset($o_post_model);
-				// $oSecurity = new Security();
-				// $oSecurity->encodeHTML('category_list.', 'category_list.childs.');
+				$o_category_model = \X2board\Includes\getModel('category');
+				$o_category_model->set_board_id(\X2board\Includes\Classes\Context::get('board_id'));
+				\X2board\Includes\Classes\Context::set('category_recursive', $o_category_model->get_category_navigation()); // for category tab navigation
+				unset($o_category_model);
 			}
 		}
 
@@ -633,46 +634,22 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 				return $this->_disp_message( __('msg_not_permitted', 'x2board') );
 			}
 
-			$o_post_model = \X2board\Includes\getModel('post');
-
 			/**
 			 * check if the category option is enabled not not
 			 **/
 			if($this->module_info->use_category=='Y') {
-				// get the user group information
-				if(\X2board\Includes\Classes\Context::get('is_logged')) {
-					$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
-					$a_group_srls = array(); // array_keys($o_logged_info->group_list);
-				}
-				else {
-					$a_group_srls = array();
-				}
-				// $group_srls_count = count($a_group_srls);
-
-				// check the grant after obtained the category list
-				$a_category_list = array();
-				$n_normal_category_list = $o_post_model->get_category_list();
-				if(count($n_normal_category_list)) {
-					foreach($n_normal_category_list as $category_srl => $category) {
-						$is_granted = TRUE;
-						if($category->group_srls) {
-							$category_group_srls = explode(',',$category->group_srls);
-							$is_granted = FALSE;
-							if(count(array_intersect($a_group_srls, $category_group_srls))) {
-								$is_granted = TRUE;
-							}
-						}
-						if($is_granted) {
-							$a_category_list[$category_srl] = $category;
-						}
-					}
-				}
-				\X2board\Includes\Classes\Context::set('category_list', $a_category_list);
-				unset($a_category_list);
+				$o_category_model = \X2board\Includes\getModel('category');
+				$o_category_model->set_board_id(\X2board\Includes\Classes\Context::get('board_id'));
+				$a_linear_category = $o_category_model->build_linear_category();
+// var_dump($normal_category_list);
+				unset($o_category_model);
+				\X2board\Includes\Classes\Context::set('category_list', $a_linear_category);
+				unset($a_linear_category);
 			}
 
 			// GET parameter post_id from request
 			$n_post_id = \X2board\Includes\Classes\Context::get('post_id');
+			$o_post_model = \X2board\Includes\getModel('post');
 			$o_post = $o_post_model->get_post(0, $this->grant->manager);
 			$o_post->set_post($n_post_id);
 

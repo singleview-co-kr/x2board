@@ -77,12 +77,12 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 					'description' => '',
 					'close_button' => ''
 				),
-				'tree_category' => array(
-					'field_type' => 'tree_category',
-					'field_label' => __('Tree Category', 'x2board'),
+				'category' => array(
+					'field_type' => 'category',
+					'field_label' => __('Category', 'x2board'),
 					'field_name' => '',
 					'class' => 'kboard-attr-tree-category',
-					'meta_key' => 'tree_category',
+					'meta_key' => 'category',
 					'permission' => '',
 					'roles' => array(),
 					'option_field' => true,
@@ -481,8 +481,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			foreach($data as $key => $attribute) {
 				if($except_notice && $attribute->is_notice == 'Y') continue;
 				$post_id = $attribute->post_id;
-				if(!isset($G_X2B_CACHE['POST_LIST'][$post_id]))
-				{
+				if(!isset($G_X2B_CACHE['POST_LIST'][$post_id])) {
 					$o_post = null;
 					$o_post = new \X2board\Includes\Modules\Post\postItem();
 					$o_post->set_attr($attribute, false);
@@ -561,33 +560,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 		}
 
 		/**
-		 * Bringing the Categories list the specific module
-		 * Speed and variety of categories, considering the situation created by the php script to include a list of the must, in principle, to use
-		 * @param int $module_srl
-		 * @param array $columnList
-		 * @return array
-		 */
-		// function getCategoryList()
-		function get_category_list($columnList = array()) {  // $module_srl, 
-			// $module_srl = (int)$module_srl;
-			$n_board_id = \X2board\Includes\Classes\Context::get('board_id');
-
-			// Category of the target module file swollen
-			// $filename = sprintf("%sfiles/cache/document_category/%s.php", _XE_PATH_, $module_srl);
-			// If the target file to the cache file regeneration category
-			// if(!file_exists($filename))	{
-			// 	$oDocumentController = getController('document');
-			// 	if(!$oDocumentController->makeCategoryFile($module_srl)) return array();
-			// }
-			// include($filename);
-
-			// Cleanup of category
-			$post_category = array();
-			// $this->_arrangeCategory($post_category, $menu->list, 0);
-			return $post_category;
-		}
-
-		/**
 		 * 설정된 사용자 입력 필드를 반환한다.
 		 * @return array
 		 */
@@ -606,7 +578,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 					}
 				}
 			}
-			return apply_filters('x2board_user_input_fields', $fields);
+			return $fields;
 		}
 
 		/**
@@ -753,88 +725,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 
 				$G_X2B_CACHE['EXTRA_VARS'][$document_srl] = $evars->getExtraVars();
 			}
-		}
-
-		/**
-		 * Category within a primary method to change the array type
-		 * @param array $document_category
-		 * @param array $list
-		 * @param int $depth
-		 * @return void
-		 */
-		private function _arrangeCategory(&$document_category, $list, $depth)
-		{
-			if(!count((array)$list)) return;
-			$idx = 0;
-			$list_order = array();
-			foreach($list as $key => $val)
-			{
-				$obj = new stdClass;
-				$obj->mid = $val['mid'];
-				$obj->module_srl = $val['module_srl'];
-				$obj->category_srl = $val['category_srl'];
-				$obj->parent_srl = $val['parent_srl'];
-				$obj->title = $obj->text = $val['text'];
-				$obj->description = $val['description'];
-				$obj->expand = $val['expand']=='Y'?true:false;
-				$obj->color = $val['color'];
-				$obj->document_count = $val['document_count'];
-				$obj->depth = $depth;
-				$obj->child_count = 0;
-				$obj->childs = array();
-				$obj->grant = $val['grant'];
-
-				if(Context::get('mid') == $obj->mid && Context::get('category') == $obj->category_srl) $selected = true;
-				else $selected = false;
-
-				$obj->selected = $selected;
-
-				$list_order[$idx++] = $obj->category_srl;
-				// If you have a parent category of child nodes apply data
-				if($obj->parent_srl)
-				{
-					$parent_srl = $obj->parent_srl;
-					$document_count = $obj->document_count;
-					$expand = $obj->expand;
-					if($selected) $expand = true;
-
-					while($parent_srl)
-					{
-						$document_category[$parent_srl]->document_count += $document_count;
-						$document_category[$parent_srl]->childs[] = $obj->category_srl;
-						$document_category[$parent_srl]->child_count = count($document_category[$parent_srl]->childs);
-						if($expand) $document_category[$parent_srl]->expand = $expand;
-
-						$parent_srl = $document_category[$parent_srl]->parent_srl;
-					}
-				}
-
-				$document_category[$key] = $obj;
-
-				if(count($val['list'])) $this->_arrangeCategory($document_category, $val['list'], $depth+1);
-			}
-			$document_category[$list_order[0]]->first = true;
-			$document_category[$list_order[count($list_order)-1]]->last = true;
-		}
-
-		/**
-		 * skin/../list.php에서 카테고리 표시 판단
-		 * @return string
-		 */
-		public function get_category_header_type() {
-			if( $this->_is_category_active() )	{
-				return apply_filters('kboard_category_type', $this->meta->tree_category_header_type, $this);
-			}
-			return '';
-		}
-
-		/**
-		 * skin/default/list.php에서 카테고리 입력란 표시 판단
-		 * @return string
-		 */
-		private function _is_category_active(){
-			return false;
-			return isset($this->fields->getSkinFields()['tree_category']) ? true : false;
 		}
 
 		/**
@@ -1019,10 +909,11 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 
 			// Category is selected, further sub-categories until all conditions
 			if($args->category_id) {
-				$category_list = $this->getCategoryList($args->module_srl);
-				$category_info = $category_list[$args->category_id];
-				$category_info->childs[] = $args->category_id;
-				$args->category_id = implode(',',$category_info->childs);
+var_dump('plz define category search');
+				// $category_list = $this->getCategoryList($args->module_srl);
+				// $category_info = $category_list[$args->category_id];
+				// $category_info->childs[] = $args->category_id;
+				// $args->category_id = implode(',',$category_info->childs);
 			}
 
 			// Used to specify the default query id (based on several search options to query id modified)
@@ -1481,80 +1372,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 		}
 
 		/**
-		 * Imported Category of information
-		 * @param int $category_srl
-		 * @param array $columnList
-		 * @return object
-		 */
-		function getCategory($category_srl, $columnList = array())
-		{
-			$args =new stdClass();
-			$args->category_srl = $category_srl;
-			$output = executeQuery('document.getCategory', $args, $columnList);
-
-			$node = $output->data;
-			if(!$node) return;
-
-			if($node->group_srls)
-			{
-				$group_srls = explode(',',$node->group_srls);
-				unset($node->group_srls);
-				$node->group_srls = $group_srls;
-			}
-			else
-			{
-				unset($node->group_srls);
-				$node->group_srls = array();
-			}
-			return $node;
-		}
-
-		/**
-		 * Check whether the child has a specific category
-		 * @param int $category_srl
-		 * @return bool
-		 */
-		function getCategoryChlidCount($category_srl)
-		{
-			$args = new stdClass();
-			$args->category_srl = $category_srl;
-			$output = executeQuery('document.getChildCategoryCount',$args);
-			if($output->data->count > 0) return true;
-			return false;
-		}
-
-		/**
-		 * Wanted number of documents belonging to category
-		 * @param int $module_srl
-		 * @param int $category_srl
-		 * @return int
-		 */
-		function getCategoryDocumentCount($module_srl, $category_srl)
-		{
-			$args = new stdClass;
-			$args->module_srl = $module_srl;
-			$args->category_srl = $category_srl;
-			$output = executeQuery('document.getCategoryDocumentCount', $args);
-			return (int)$output->data->count;
-		}
-
-		/**
-		 * Php cache files in the document category return information
-		 * @param int $module_srl
-		 * @return string
-		 */
-		function getCategoryPhpFile($module_srl)
-		{
-			$php_file = sprintf('files/cache/document_category/%s.php',$module_srl);
-			if(!file_exists($php_file))
-			{
-				$oDocumentController = getController('document');
-				$oDocumentController->makeCategoryFile($module_srl);
-			}
-			return $php_file;
-		}
-
-		/**
 		 * Imported post monthly archive status
 		 * @param object $obj
 		 * @return object
@@ -1608,28 +1425,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 		}
 
 		/**
-		 * Get a list for a particular module
-		 * @return void|BaseObject
-		 */
-		function getDocumentCategories()
-		{
-			if(!Context::get('is_logged')) return new BaseObject(-1,'msg_not_permitted');
-			$module_srl = Context::get('module_srl');
-			$categories= $this->getCategoryList($module_srl);
-			$lang = Context::get('lang');
-			// No additional category
-			$output = "0,0,{$lang->none_category}\n";
-			if($categories)
-			{
-				foreach($categories as $category_srl => $category)
-				{
-					$output .= sprintf("%d,%d,%s\n",$category_srl, $category->depth,$category->title);
-				}
-			}
-			$this->add('categories', $output);
-		}
-
-		/**
 		 * Wanted to set document information
 		 * @return object
 		 */
@@ -1666,32 +1461,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			// Get information of module_grants
 			$oTemplate = &TemplateHandler::getInstance();
 			return $oTemplate->compile($this->module_path.'tpl', 'extra_keys');
-		}
-
-		/**
-		 * Common:: Category parameter management module
-		 * @param int $module_srl
-		 * @return string
-		 */
-		function getCategoryHTML($module_srl)
-		{
-			$category_xml_file = $this->getCategoryXmlFile($module_srl);
-
-			Context::set('category_xml_file', $category_xml_file);
-
-			Context::loadJavascriptPlugin('ui.tree');
-
-			// Get a list of member groups
-			$oMemberModel = getModel('member');
-			$group_list = $oMemberModel->getGroups($module_info->site_srl);
-			Context::set('group_list', $group_list);
-
-			$security = new Security();
-			$security->encodeHTML('group_list..title');
-
-			// Get information of module_grants
-			$oTemplate = &TemplateHandler::getInstance();
-			return $oTemplate->compile($this->module_path.'tpl', 'category_list');
 		}
 
 		/**
@@ -1936,6 +1705,238 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 
 			return $path;
 		}
+
+		/**
+		 * Bringing the Categories list the specific module
+		 * Speed and variety of categories, considering the situation created by the php script to include a list of the must, in principle, to use
+		 * @param int $module_srl
+		 * @param array $columnList
+		 * @return array
+		 */
+		// function getCategoryList()
+		// function get_category_list($columnList = array()) {  // $module_srl, 
+			// $module_srl = (int)$module_srl;
+			// $n_board_id = \X2board\Includes\Classes\Context::get('board_id');
+
+			// Category of the target module file swollen
+			// $filename = sprintf("%sfiles/cache/document_category/%s.php", _XE_PATH_, $module_srl);
+			// If the target file to the cache file regeneration category
+			// if(!file_exists($filename))	{
+			// 	$oDocumentController = getController('document');
+			// 	if(!$oDocumentController->makeCategoryFile($module_srl)) return array();
+			// }
+			// include($filename);
+
+			// Cleanup of category
+			// $post_category = array();
+			// $this->_arrangeCategory($post_category, $menu->list, 0);
+		// 	return $post_category;
+		// }
+
+		/**
+		 * Category within a primary method to change the array type
+		 * @param array $document_category
+		 * @param array $list
+		 * @param int $depth
+		 * @return void
+		 */
+		// private function _arrangeCategory(&$document_category, $list, $depth)
+		// {
+		// 	if(!count((array)$list)) return;
+		// 	$idx = 0;
+		// 	$list_order = array();
+		// 	foreach($list as $key => $val)
+		// 	{
+		// 		$obj = new stdClass;
+		// 		$obj->mid = $val['mid'];
+		// 		$obj->module_srl = $val['module_srl'];
+		// 		$obj->category_srl = $val['category_srl'];
+		// 		$obj->parent_srl = $val['parent_srl'];
+		// 		$obj->title = $obj->text = $val['text'];
+		// 		$obj->description = $val['description'];
+		// 		$obj->expand = $val['expand']=='Y'?true:false;
+		// 		$obj->color = $val['color'];
+		// 		$obj->document_count = $val['document_count'];
+		// 		$obj->depth = $depth;
+		// 		$obj->child_count = 0;
+		// 		$obj->childs = array();
+		// 		$obj->grant = $val['grant'];
+
+		// 		if(Context::get('mid') == $obj->mid && Context::get('category') == $obj->category_srl) $selected = true;
+		// 		else $selected = false;
+
+		// 		$obj->selected = $selected;
+
+		// 		$list_order[$idx++] = $obj->category_srl;
+		// 		// If you have a parent category of child nodes apply data
+		// 		if($obj->parent_srl)
+		// 		{
+		// 			$parent_srl = $obj->parent_srl;
+		// 			$document_count = $obj->document_count;
+		// 			$expand = $obj->expand;
+		// 			if($selected) $expand = true;
+
+		// 			while($parent_srl)
+		// 			{
+		// 				$document_category[$parent_srl]->document_count += $document_count;
+		// 				$document_category[$parent_srl]->childs[] = $obj->category_srl;
+		// 				$document_category[$parent_srl]->child_count = count($document_category[$parent_srl]->childs);
+		// 				if($expand) $document_category[$parent_srl]->expand = $expand;
+
+		// 				$parent_srl = $document_category[$parent_srl]->parent_srl;
+		// 			}
+		// 		}
+
+		// 		$document_category[$key] = $obj;
+
+		// 		if(count($val['list'])) $this->_arrangeCategory($document_category, $val['list'], $depth+1);
+		// 	}
+		// 	$document_category[$list_order[0]]->first = true;
+		// 	$document_category[$list_order[count($list_order)-1]]->last = true;
+		// }
+
+		/**
+		 * Imported Category of information
+		 * @param int $category_srl
+		 * @param array $columnList
+		 * @return object
+		 */
+		// function getCategory($category_srl, $columnList = array())
+		// {
+		// 	$args =new stdClass();
+		// 	$args->category_srl = $category_srl;
+		// 	$output = executeQuery('document.getCategory', $args, $columnList);
+
+		// 	$node = $output->data;
+		// 	if(!$node) return;
+
+		// 	if($node->group_srls)
+		// 	{
+		// 		$group_srls = explode(',',$node->group_srls);
+		// 		unset($node->group_srls);
+		// 		$node->group_srls = $group_srls;
+		// 	}
+		// 	else
+		// 	{
+		// 		unset($node->group_srls);
+		// 		$node->group_srls = array();
+		// 	}
+		// 	return $node;
+		// }
+
+		/**
+		 * Check whether the child has a specific category
+		 * @param int $category_srl
+		 * @return bool
+		 */
+		// function getCategoryChlidCount($category_srl)
+		// {
+		// 	$args = new stdClass();
+		// 	$args->category_srl = $category_srl;
+		// 	$output = executeQuery('document.getChildCategoryCount',$args);
+		// 	if($output->data->count > 0) return true;
+		// 	return false;
+		// }
+
+		/**
+		 * Wanted number of documents belonging to category
+		 * @param int $module_srl
+		 * @param int $category_srl
+		 * @return int
+		 */
+		// function getCategoryDocumentCount($module_srl, $category_srl)
+		// {
+		// 	$args = new stdClass;
+		// 	$args->module_srl = $module_srl;
+		// 	$args->category_srl = $category_srl;
+		// 	$output = executeQuery('document.getCategoryDocumentCount', $args);
+		// 	return (int)$output->data->count;
+		// }
+
+		/**
+		 * Php cache files in the document category return information
+		 * @param int $module_srl
+		 * @return string
+		 */
+		// function getCategoryPhpFile($module_srl)
+		// {
+		// 	$php_file = sprintf('files/cache/document_category/%s.php',$module_srl);
+		// 	if(!file_exists($php_file))
+		// 	{
+		// 		$oDocumentController = getController('document');
+		// 		$oDocumentController->makeCategoryFile($module_srl);
+		// 	}
+		// 	return $php_file;
+		// }
+
+		/**
+		 * Get a list for a particular module
+		 * @return void|BaseObject
+		 */
+		// function getDocumentCategories()
+		// {
+		// 	if(!Context::get('is_logged')) return new BaseObject(-1,'msg_not_permitted');
+		// 	$module_srl = Context::get('module_srl');
+		// 	$categories= $this->getCategoryList($module_srl);
+		// 	$lang = Context::get('lang');
+		// 	// No additional category
+		// 	$output = "0,0,{$lang->none_category}\n";
+		// 	if($categories)
+		// 	{
+		// 		foreach($categories as $category_srl => $category)
+		// 		{
+		// 			$output .= sprintf("%d,%d,%s\n",$category_srl, $category->depth,$category->title);
+		// 		}
+		// 	}
+		// 	$this->add('categories', $output);
+		// }
+
+		
+		/**
+		 * Common:: Category parameter management module
+		 * @param int $module_srl
+		 * @return string
+		 */
+		/*function getCategoryHTML($module_srl)
+		{
+			$category_xml_file = $this->getCategoryXmlFile($module_srl);
+
+			Context::set('category_xml_file', $category_xml_file);
+
+			Context::loadJavascriptPlugin('ui.tree');
+
+			// Get a list of member groups
+			$oMemberModel = getModel('member');
+			$group_list = $oMemberModel->getGroups($module_info->site_srl);
+			Context::set('group_list', $group_list);
+
+			$security = new Security();
+			$security->encodeHTML('group_list..title');
+
+			// Get information of module_grants
+			$oTemplate = &TemplateHandler::getInstance();
+			return $oTemplate->compile($this->module_path.'tpl', 'category_list');
+		}*/
+
+		/**
+		 * skin/../list.php에서 카테고리 표시 판단
+		 * @return string
+		 */
+		// public function get_category_header_type() {
+		// 	if( $this->_is_category_active() )	{
+		// 		return apply_filters('kboard_category_type', $this->meta->tree_category_header_type, $this);
+		// 	}
+		// 	return '';
+		// }
+
+		/**
+		 * skin/default/list.php에서 카테고리 입력란 표시 판단
+		 * @return string
+		 */
+		// private function _is_category_active(){
+		// 	return false;
+		// 	return isset($this->fields->getSkinFields()['category']) ? true : false;
+		// }
 
 		/**
 		 * document checked the permissions on the session values

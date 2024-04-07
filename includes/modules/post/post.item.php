@@ -69,6 +69,22 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 				$this->add('tag_list', $tag_list);
 			}
 
+			if($this->get('category_id')) {
+				$n_category_id = intval($this->get('category_id'));
+				$n_board_id = intval($this->get('board_id'));
+
+				$o_category_model = \X2board\Includes\getModel('category');
+// var_dump($this->module_info);					
+				// \X2board\Includes\Classes\Context::set('category_type', $o_post_model->get_category_header_type()); //$this->module_srl));
+				$s_title = $o_category_model->get_category_name($n_board_id, $n_category_id);
+// var_dump($s_title);
+				unset($o_category_model);
+			}
+			else {
+				$s_title = null;
+			}
+			$this->add('category_title', $s_title);
+// var_dump($this->category_title);
 			// $oDocumentModel = getModel('document');
 			if($load_extra_vars) {
 				$G_X2B_CACHE['POST_LIST'][$attribute->post_id] = $this;

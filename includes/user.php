@@ -27,6 +27,8 @@ if ( !defined( 'X2B_CMD_VIEW_LIST' ) ) {
     define('X2B_CMD_VIEW_REPLY_COMMENT', 'view_reply_comment');
     define('X2B_CMD_VIEW_MODIFY_COMMENT', 'view_modify_comment');
     define('X2B_CMD_VIEW_DELETE_COMMENT', 'view_delete_comment');
+    define('X2B_CMD_VIEW_MESSAGE', 'view_message');
+    
     // define POST controller cmd
     define('X2B_CMD_PROC_WRITE_POST', 'proc_write_post');
     define('X2B_CMD_PROC_MODIFY_POST', 'proc_modify_post');

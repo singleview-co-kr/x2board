@@ -233,6 +233,9 @@ function _launch_x2b($s_cmd_type) {
 	require_once X2B_PATH . 'includes/modules/post/post.class.php';
 	require_once X2B_PATH . 'includes/modules/post/post.model.php';
 	require_once X2B_PATH . 'includes/modules/post/post.controller.php';
+	require_once X2B_PATH . 'includes/modules/category/category.class.php';
+	require_once X2B_PATH . 'includes/modules/category/category.model.php';
+	require_once X2B_PATH . 'includes/modules/category/category.controller.php';
 
 	$o_context = \X2board\Includes\Classes\Context::getInstance();
 	

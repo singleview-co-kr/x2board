@@ -206,6 +206,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Category\\categoryAdminControll
 
 		/**
 		 * DB의 메뉴 구조를 계층형으로 변환한다.
+		 * \includes\modules\category\category.model.php::_construct_tree_category() 동기화
 		 */
 		private function _construct_tree_category() {
 			$tree_category_source = [];
@@ -230,6 +231,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Category\\categoryAdminControll
 
 		/**
 		 * 재귀적으로 구성된 하위 카테고리를 반환한다.
+		 * \includes\modules\category\category.model.php::_get_tree_category_recurisve() 동기화
 		 * @param string $parent_id
 		 * @return array
 		 */
@@ -282,8 +284,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Category\\categoryAdminControll
 
 		/**
 		 * 기존 계층형 카테고리 정보를 구성한다.
+		 * \includes\modules\category\category.model.php::_get_old_category() 동기화
 		 */
-		// _getOldTreeCategory
 		private function _get_old_category() {
 			global $wpdb;
 			$results = $wpdb->get_results("SELECT `category_id`, `title`, `parent_id`, `is_default`, `post_count` FROM `{$wpdb->prefix}x2b_categories` WHERE `board_id`='{$this->_board_id}' AND `deleted`='N' ORDER BY `list_order` ASC");
@@ -299,6 +301,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Category\\categoryAdminControll
 											 'is_default' => $row->is_default ? $row->is_default : null, //$is_default
 											];
 			}
+			unset($results);
 			$this->_tree_category_old = $a_category;
 		}
 

@@ -192,14 +192,14 @@ class BaseObject
 	 *
 	 * @return BaseObject
 	 */
-	public function getObjectVars()	{
-		$output = new stdClass();
-		foreach($this->variables as $key => $val)
-		{
-			$output->{$key} = $val;
-		}
-		return $output;
-	}
+	// public function getObjectVars()	{
+	// 	$output = new stdClass();
+	// 	foreach($this->variables as $key => $val)
+	// 	{
+	// 		$output->{$key} = $val;
+	// 	}
+	// 	return $output;
+	// }
 
 	/**
 	 * Method to return either true or false depnding on the value in a 'error' variable
