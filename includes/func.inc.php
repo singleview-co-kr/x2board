@@ -10,15 +10,6 @@ if ( !defined( 'ABSPATH' ) ) {
  *
  */
 
-/**
- * Content function with filter.
- *
- * @since 1.9
- */
-function register_content_filter() {
-	add_filter( 'the_content', '\X2board\Includes\filter_the_content' );
-}
-
 function plugin_loaded(){
 	// if(!session_id() && !is_admin() ) { // && !wp_is_json_request()){
 	if( isset($_POST['action']) ) {  // $_POST['action'] comes from AJAX only
@@ -36,6 +27,9 @@ function plugin_loaded(){
 	));
 }
 
+/**
+ * register POST request handler
+ */
 function init_proc_cmd() {
 	$s_cmd = isset($_REQUEST['cmd']) ? $_REQUEST['cmd'] : '';
 
@@ -57,6 +51,31 @@ function init_proc_cmd() {
 	add_action('wp_ajax_nopriv_'.X2B_CMD_PROC_AJAX_FILE_DELETE, '\X2board\Includes\_launch_x2b');
 	add_action('wp_ajax_'.X2B_CMD_PROC_AJAX_FILE_DELETE, '\X2board\Includes\_launch_x2b');
 }
+
+/**
+ * register custom URL router handler
+ * refer to https://wordpress.stackexchange.com/questions/26388/how-can-i-create-custom-url-routes
+ * refer to https://developer.wordpress.org/reference/functions/add_rewrite_rule/
+ */
+function init_custom_route() {
+	$a_board_rewrite_settings = get_option( X2B_REWRITE_OPTION_TITLE );
+	foreach( $a_board_rewrite_settings as $_ => $s_wp_page_post_name ) {
+		// WP stores small-letter like URL wp-%ed%8e%98%ec%9d%b4%ec%a7%80-%ec%a0%9c%eb%aa%a9-2
+		// router needs capitalized URL like wp-%ED%8E%98%EC%9D%B4%EC%A7%80-%EC%A0%9C%EB%AA%A9-2
+		$s_wp_page_post_name = urlencode(urldecode($s_wp_page_post_name));
+		add_rewrite_rule(
+			$s_wp_page_post_name.'/([0-9]+)/?$',
+			'index.php?pagename='.$s_wp_page_post_name.'&cmd=view_post&post_id=$matches[1]',
+			'top' );
+	}
+	add_rewrite_tag( '%post_id%', '([^&]+)' );
+}
+
+// function init_custom_query_vars() {
+// 	$query_vars[] = 'post_id';
+//     return $query_vars;
+// }
+// add_filter( 'query_vars', '\X2board\Includes\init_custom_query_vars', 5 );
 
 /**
  * 스크립트와 스타일 파일 등록
@@ -262,13 +281,12 @@ function _launch_x2b($s_cmd_type) {
  * @return string After the filter has been processed
  */
 function filter_the_content( $content ) {
-	global $post, $wpdb; // , $wp_filters;
+	global $post; // , $wpdb, $wp_filters;
 
 	// Track the number of times this function  is called.
 	static $filter_calls = 0;
 	++$filter_calls;
-
-	if(isset($post->post_content) && is_page($post->ID) ){
+	if(isset($post->post_content) && is_page($post->ID) && !post_password_required()){
 		if( $post->post_content === X2B_PAGE_IDENTIFIER ) {
 			_launch_x2b('view');
 			$content = str_replace(X2B_PAGE_IDENTIFIER,'', $content); //return $content . board_builder(array('id'=>$board_id));
@@ -318,6 +336,15 @@ function filter_the_content( $content ) {
 	// } else {
 	// 	return $content;
 	// }
+}
+
+/**
+ * Content function with filter.
+ *
+ * @since 1.9
+ */
+function register_content_filter() {
+	add_filter( 'the_content', '\X2board\Includes\filter_the_content' );
 }
 
 /**

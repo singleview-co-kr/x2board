@@ -29,6 +29,10 @@ if ( !defined( 'X2B_PAGE_IDENTIFIER' ) ) {
     define('X2B_PAGE_IDENTIFIER', 'Keep this mark, x2board-installed');
 }
 
+if ( !defined( 'X2B_REWRITE_OPTION_TITLE' ) ) {
+    define('X2B_REWRITE_OPTION_TITLE', X2B_DOMAIN.'_settings_rewrite');
+}
+
 if ( !defined( 'X2B__FILE__' ) ) {
     define('X2B__FILE__', __FILE__);
     define('X2B_PLUGIN_BASE', plugin_basename(X2B__FILE__));

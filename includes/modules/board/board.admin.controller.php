@@ -20,7 +20,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 		public function __construct(){
 // var_dump('boardAdminController');
 			$o_current_user = wp_get_current_user();
-			if( !user_can( $o_current_user, 'administrator' ) || !current_user_can('manage_x2board') ) {
+			if( !user_can( $o_current_user, 'administrator' ) || !current_user_can('manage_'.X2B_DOMAIN) ) {
 				unset($o_current_user);
 				wp_die(__('You do not have permission.', 'x2board'));
 			}
@@ -76,7 +76,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 			if( $_POST['board_title'] != $o_rst->a_board_settings['board_title'] ) {
 				$update = array(
 					'data' => array ( 'board_title' => esc_sql(sanitize_text_field($_POST['board_title'] )) ),
-					'where' => array ( 'board_id' => esc_sql(intval($n_board_id )) ),
+					'where' => array ( 'board_id' => esc_sql($n_board_id) ),
 				);
 				global $wpdb;
 				$wpdb->update ( "{$wpdb->prefix}x2b_mapper", $update['data'], $update['where'] );
@@ -85,12 +85,14 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 			// handle [wp_page_title] specially
 			if( $_POST['wp_page_title'] != $o_rst->a_board_settings['wp_page_title'] ) {
 				$a_update_page = array(
-					'ID'         => intval(sanitize_text_field($n_board_id )),
+					'ID'         => $n_board_id,
 					'post_title' => sanitize_text_field($_POST['wp_page_title'] ),
 				);
 				wp_update_post( $a_update_page );
 				unset( $a_update_page );
 			}
+			
+			// do not save keys below
 			unset( $_POST['_wpnonce']);
 			unset( $_POST['_wp_http_referer']);
 			unset( $_POST['action']);
@@ -98,9 +100,25 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 			unset( $_POST['board_title']);
 			unset( $_POST['wp_page_title']);
 			unset( $_POST['submit']);
-
-// var_dump($_POST);
+			$s_board_use_rewrite = $_POST['board_use_rewrite'];
+			unset( $_POST['board_use_rewrite']);
 			update_option( $o_rst->s_x2b_setting_title, $_POST );
+
+			// handle [board_use_rewrite] specially
+			$o_post = get_post( $n_board_id );
+			$a_board_rewrite_settings = get_option( X2B_REWRITE_OPTION_TITLE );
+			if( $s_board_use_rewrite == 'Y' ){
+				if( !is_array($a_board_rewrite_settings) ) {
+					$a_board_rewrite_settings = array();
+				}
+				$a_board_rewrite_settings[$n_board_id] = $o_post->post_name;
+			}
+			else {
+				if( is_array($a_board_rewrite_settings) ) {
+					unset( $a_board_rewrite_settings[$n_board_id] );
+				}
+			}
+			update_option( X2B_REWRITE_OPTION_TITLE, $a_board_rewrite_settings );
 // exit;
 			wp_redirect(admin_url('admin.php?page=x2b_disp_board_update&board_id=' . $n_board_id ));
 		}
@@ -135,8 +153,8 @@ exit;
 			$n_page_id = wp_insert_post( $x2b_page, FALSE ); // Get Post ID - FALSE to return 0 instead of wp_error.
 			
 			// insert x2board
-			$s_x2board_title = isset($a_x2b_settings['x2board_title']) ? esc_sql(sanitize_text_field($a_x2b_settings['x2board_title'])) : '';
-			$this->_insert_new_board($n_page_id, $a_x2b_settings['x2board_title']);
+			$s_x2board_title = isset($a_x2b_settings[X2B_DOMAIN.'_title']) ? esc_sql(sanitize_text_field($a_x2b_settings[X2B_DOMAIN.'_title'])) : '';
+			$this->_insert_new_board($n_page_id, $a_x2b_settings[X2B_DOMAIN.'_title']);
 // var_dump($n_page_id);			
 			unset($a_x2b_settings);
 			

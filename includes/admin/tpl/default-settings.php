@@ -149,6 +149,17 @@ function x2b_settings_general() {
 			'type'    => 'header',
 			'options' => false,
 		),
+		'board_use_rewrite'  => array(
+			'id'      => 'board_use_rewrite',
+			'name'    => esc_html__( 'Activate pretty URL', 'x2board' ),
+			'desc'    => esc_html__( 'Activate page_name/post_id URL to access the board. This doesn’t happen automatically after you save the configuration. You must flush permalinks. Go to WP Admin > Settings > Permalinks > Save.', 'x2board' ),
+			'type'    => 'checkbox',
+			'options' => false,
+			'checked_value' => array(
+				'checked' => 'Y',
+				'unchecked'   => 'N',
+			),
+		),
 		'board_order_target'					=> array(
 			'id'      => 'board_order_target',
 			'name'    => esc_html__( 'Order field', 'x2board' ),
