@@ -60,7 +60,7 @@ function init_proc_cmd() {
 function init_custom_route() {
 	$a_board_rewrite_settings = get_option( X2B_REWRITE_OPTION_TITLE );
 	foreach( $a_board_rewrite_settings as $_ => $s_wp_page_post_name ) {
-		// WP stores small-letter like URL wp-%ed%8e%98%ec%9d%b4%ec%a7%80-%ec%a0%9c%eb%aa%a9-2
+		// WP stores small-letter URL like wp-%ed%8e%98%ec%9d%b4%ec%a7%80-%ec%a0%9c%eb%aa%a9-2
 		// router needs capitalized URL like wp-%ED%8E%98%EC%9D%B4%EC%A7%80-%EC%A0%9C%EB%AA%A9-2
 		$s_wp_page_post_name = urlencode(urldecode($s_wp_page_post_name));
 		add_rewrite_rule(

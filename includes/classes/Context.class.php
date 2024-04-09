@@ -206,6 +206,9 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 			// 	}
 			// }
 			$this->context = new \stdClass();
+
+			// WP stores small-letter URL like wp-%ed%8e%98%ec%9d%b4%ec%a7%80-%ec%a0%9c%eb%aa%a9-2
+			// router needs capitalized URL like wp-%ED%8E%98%EC%9D%B4%EC%A7%80-%EC%A0%9C%EB%AA%A9-2
 			$this->_s_page_permlink = site_url().'/'.urlencode(urldecode(get_post()->post_name));
 		}
 
@@ -575,8 +578,8 @@ var_dump('detected view cmd:'. $s_cmd);
 				if( get_query_var( 'post_id' ) ) {  // post_id from custom route detected, find the code blocks by X2B_REWRITE_OPTION_TITLE
 					$set_to_vars = TRUE;
 					$this->set( 'post_id', get_query_var( 'post_id' ), $set_to_vars);
-					$this->set( 'use_rewrite', 'Y', $set_to_vars);
-				}	
+				}
+				$this->set( 'use_rewrite', 'Y', $set_to_vars);
 			}
 			unset($a_board_rewrite_settings);
 		}
@@ -979,6 +982,7 @@ var_dump('detected view cmd:'. $s_cmd);
 // error_log(print_r($get_vars, true));					
 				$target_map = array(
 					'cmd' => get_the_permalink().( strlen($cmd) > 0 ? '?'.$cmd : '' ),  // X2B_CMD_VIEW_LIST equals with blank cmd
+					'page' => get_the_permalink().'?p/'.$page,
 					'post_id' => get_the_permalink().'?'.X2B_CMD_VIEW_POST.'/'.$post_id,
 					'cmd.post_id' => '', // reserved for pretty post url  // get_the_permalink().'?'.$cmd.'/'.$post_id,
 					'cmd.page' => get_the_permalink().'?p/'.$page,
@@ -1014,15 +1018,14 @@ var_dump('detected view cmd:'. $s_cmd);
 				sort($var_keys);						
 				$target = join('.', $var_keys);
 // if( strlen($s_category_title) )	{
-	// error_log(print_r($target, true));	
+	error_log(print_r($target, true));	
 // }
 				$query = isset( $target_map[$target] ) ? $target_map[$target] : null;
 				// try best to provie prettier post URL as possible
-				if( self::get('use_rewrite') == 'Y' && $target == 'cmd.post_id' && $cmd == X2B_CMD_VIEW_POST ) {
-					$query  = $self->_s_page_permlink.'/'.$post_id;
-				}
-				else {
-					$query .='?'.$cmd.'/'.$post_id;
+				if( self::get('use_rewrite') == 'Y' ) {
+					if( $target == 'cmd.post_id' ) {
+						$query = $cmd == X2B_CMD_VIEW_POST ? $self->_s_page_permlink.'/'.$post_id : $query .='?'.$cmd.'/'.$post_id;
+					}
 				}
 			}
 // error_log(print_r($query, true));
