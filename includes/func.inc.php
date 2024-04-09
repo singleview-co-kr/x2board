@@ -234,27 +234,9 @@ function _launch_x2b($s_cmd_type) {
 	require_once X2B_PATH . 'includes/classes/security/Password.class.php';
 	require_once X2B_PATH . 'includes/classes/security/IpFilter.class.php';
 	require_once X2B_PATH . 'includes/no_namespace.helper.php';  // shorten command for skin usage
-	
+
 	// load modules
-	require_once X2B_PATH . 'includes/modules/board/board.class.php';
-	require_once X2B_PATH . 'includes/modules/board/board.model.php';
-	require_once X2B_PATH . 'includes/modules/board/board.view.php';
-	require_once X2B_PATH . 'includes/modules/board/board.controller.php';
-	require_once X2B_PATH . 'includes/modules/comment/comment.class.php';
-	require_once X2B_PATH . 'includes/modules/comment/comment.model.php';
-	require_once X2B_PATH . 'includes/modules/comment/comment.view.php';
-	require_once X2B_PATH . 'includes/modules/comment/comment.controller.php';
-	require_once X2B_PATH . 'includes/modules/file/file.class.php';
-	require_once X2B_PATH . 'includes/modules/file/file.model.php';
-	require_once X2B_PATH . 'includes/modules/file/file.controller.php';
-	require_once X2B_PATH . 'includes/modules/member/member.class.php';
-	require_once X2B_PATH . 'includes/modules/member/member.model.php';
-	require_once X2B_PATH . 'includes/modules/post/post.class.php';
-	require_once X2B_PATH . 'includes/modules/post/post.model.php';
-	require_once X2B_PATH . 'includes/modules/post/post.controller.php';
-	require_once X2B_PATH . 'includes/modules/category/category.class.php';
-	require_once X2B_PATH . 'includes/modules/category/category.model.php';
-	require_once X2B_PATH . 'includes/modules/category/category.controller.php';
+	\X2board\Includes\Classes\ModuleHandler::auto_load_modules();
 
 	$o_context = \X2board\Includes\Classes\Context::getInstance();
 	

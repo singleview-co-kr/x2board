@@ -209,7 +209,9 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 
 			// WP stores small-letter URL like wp-%ed%8e%98%ec%9d%b4%ec%a7%80-%ec%a0%9c%eb%aa%a9-2
 			// router needs capitalized URL like wp-%ED%8E%98%EC%9D%B4%EC%A7%80-%EC%A0%9C%EB%AA%A9-2
-			$this->_s_page_permlink = site_url().'/'.urlencode(urldecode(get_post()->post_name));
+			if(get_post()){
+				$this->_s_page_permlink = site_url().'/'.urlencode(urldecode(get_post()->post_name));
+			}
 		}
 
 		/**
@@ -575,8 +577,8 @@ var_dump('detected view cmd:'. $s_cmd);
 			// check rewrite conf for pretty post URL
 			$a_board_rewrite_settings = get_option( X2B_REWRITE_OPTION_TITLE );
 			if(isset( $a_board_rewrite_settings[get_the_ID()])) {
+				$set_to_vars = TRUE;
 				if( get_query_var( 'post_id' ) ) {  // post_id from custom route detected, find the code blocks by X2B_REWRITE_OPTION_TITLE
-					$set_to_vars = TRUE;
 					$this->set( 'post_id', get_query_var( 'post_id' ), $set_to_vars);
 				}
 				$this->set( 'use_rewrite', 'Y', $set_to_vars);
@@ -1018,7 +1020,7 @@ var_dump('detected view cmd:'. $s_cmd);
 				sort($var_keys);						
 				$target = join('.', $var_keys);
 // if( strlen($s_category_title) )	{
-	error_log(print_r($target, true));	
+	// error_log(print_r($target, true));	
 // }
 				$query = isset( $target_map[$target] ) ? $target_map[$target] : null;
 				// try best to provie prettier post URL as possible

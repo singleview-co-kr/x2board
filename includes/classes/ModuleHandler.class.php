@@ -399,6 +399,77 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleHandler')) {
 		}
 
 		/**
+		 * module auto loader
+		 * @remarks if there exists a module instance created before, returns it.
+		 * */
+		private static function _scanAllDir($dir) {
+			$result = [];
+			foreach(scandir($dir) as $filename) {
+				if ($filename[0] === '.') continue;
+				if ($filename === 'skins') continue;
+			  	$filePath = $dir . '/' . $filename;
+			  	if (is_dir($filePath)) {
+					foreach (self::_scanAllDir($filePath) as $childFilename) {
+						$result[] = $filename . '/' . $childFilename;
+					}
+				} 
+				else {
+					$result[] = $filename;
+			  	}
+			}
+			return $result;
+		}
+
+		/**
+		 * module auto loader
+		 * @remarks if there exists a module instance created before, returns it.
+		 * */
+		public static function auto_load_modules() {
+			$a_valid_types = array('view','controller','model','class');
+			$s_modules_path_abs = X2B_PATH.'includes'.DIRECTORY_SEPARATOR.'modules';
+
+			$a_requested_modules = array();
+			$a_module_files = self::_scanAllDir($s_modules_path_abs);
+			foreach( $a_module_files as $_ => $s_filename ) {
+				$a_file_info = explode( '.', basename( $s_filename ) );
+				$s_module_name = $a_file_info[0];
+
+				if( !isset($a_requested_modules[$s_module_name]) ) {
+					$a_requested_modules[$s_module_name] = array();
+				}
+				end($a_file_info);
+				$s_module_type = prev($a_file_info);
+
+				$s_admin_type = prev($a_file_info);
+				if( $s_admin_type == 'admin' ) {  // do not automatically load admin modules
+					continue;
+				}
+				if(in_array( $s_module_type, $a_valid_types)) {
+					$a_requested_modules[$s_module_name][$s_module_type] = $s_filename;
+				}
+			}
+			// validate module components
+			$a_valid_modules = array();
+			foreach( $a_requested_modules as $s_module_name => $a_module_info ) {
+				if( isset($a_module_info['class'] ) ) {
+					$a_valid_modules[$s_module_name] = $a_module_info;
+				}
+				else {
+					error_log(X2B_DOMAIN.' Warning! '.$s_modules_path_abs.DIRECTORY_SEPARATOR.$s_module_name.DIRECTORY_SEPARATOR.$s_module_name.'.class.php is required.');
+				}
+			}
+			unset($a_requested_modules);
+
+			// load valid modules
+			foreach( $a_valid_modules as $s_module_name => $a_module_info ) {
+				foreach( $a_module_info as $s_module_type => $s_module_path_abs ) {
+					require_once($s_modules_path_abs.DIRECTORY_SEPARATOR.$s_module_path_abs);					
+				}
+			}
+			unset($a_valid_modules);
+		}
+
+		/**
 		 * It creates a module instance
 		 * @param string $module module name
 		 * @param string $type instance type, (e.g., view, controller, model)
