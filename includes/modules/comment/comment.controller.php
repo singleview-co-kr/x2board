@@ -494,8 +494,8 @@ var_dump('commentController::init()');
 			// $oDB->begin();
 
 			// Update
-			if(!isset($obj->last_update)) {
-				$obj->last_update = date('Y-m-d H:i:s', current_time('timestamp')); //date("YmdHis");
+			if(!isset($obj->last_update_dt)) {
+				$obj->last_update_dt = date('Y-m-d H:i:s', current_time('timestamp')); //date("YmdHis");
 			}		
 			
 			// var_dump($obj);

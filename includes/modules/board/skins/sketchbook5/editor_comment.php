@@ -12,17 +12,6 @@ $o_comment->attach = array();
 				<?php echo x2b_write_comment_content_editor() ?>
             </div>
         </div>
-		<?php 
-		// wp_enqueue_style("kboard-jquery-fileupload-css", KBOARD_URL_PATH . '/assets/jquery.fileupload/css/jquery.fileupload.css', [], KBOARD_VERSION);
-		// wp_enqueue_style("kboard-jquery-fileupload-css", KBOARD_URL_PATH . '/assets/jquery.fileupload/css/jquery.fileupload-ui.css', [], KBOARD_VERSION);
-		// wp_enqueue_script('kboard-jquery-ui-widget', KBOARD_URL_PATH . '/assets/jquery.fileupload/js/vendor/jquery.ui.widget.js', [], KBOARD_VERSION, true);
-		// wp_enqueue_script('kboard-jquery-iframe-transport', KBOARD_URL_PATH . '/assets/jquery.fileupload/js/jquery.iframe-transport.js', [], KBOARD_VERSION, true);
-		// wp_enqueue_script('kboard-fileupload', KBOARD_URL_PATH . '/assets/jquery.fileupload/js/jquery.fileupload.js', [], KBOARD_VERSION, true);
-		// wp_enqueue_script('kboard-fileupload-process', KBOARD_URL_PATH . '/assets/jquery.fileupload/js/jquery.fileupload-process.js', [], KBOARD_VERSION, true);
-		// wp_enqueue_script('kboard-fileupload-caller', KBOARD_URL_PATH . '/template/js/file-upload.js', [], KBOARD_VERSION, true);
-		// $accept_file_types = str_replace(" ", "", kboard_allow_file_extensions());
-		// $accept_file_types = str_replace(",", "|", $accept_file_types);
-		?>
 		<input type="file" name="files" id="file_software" class="file-upload" data-maxfilecount='<?php echo $board_meta_max_attached_count?>' data-accpet_file_types="<?php echo $accept_file_types?>" data-max_each_file_size_mb="<?php echo $board_meta_max_each_file_size_mb?>">
 		<ul class="file-list list-unstyled mb-0">
 			<?php foreach($o_comment->attach as $file_key=>$file_value):?>
@@ -60,4 +49,4 @@ $o_comment->attach = array();
 	</form>
 </div>
 
-<?php wp_enqueue_script('kboard-default-script', "{$skin_path}/js/ed1itor.js", array(), KBOARD_VERSION, true)?>
+<?php wp_enqueue_script('kboard-default-script', "{$skin_url}/js/ed1itor.js", array(), KBOARD_VERSION, true)?>

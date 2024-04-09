@@ -37,7 +37,7 @@
 						<a href="<?php echo esc_url(x2b_get_url('cmd', X2B_CMD_VIEW_POST, 'post_id', $post->post_id))?>#289220_comment" class="replyNum" title="댓글"><?php echo $post->get_comment_count()?></a>
 						<span class="extraimages">
 							<?php if($post->is_new()):?><span class="kboard-default-new-notify">N</span><?php endif?>
-							<?php if($post->is_secret == 'Y'):?><img src="<?php echo $skin_path?>/img/icon-lock.png" alt="<?php echo __('Secret', 'x2board')?>"><?php endif?>
+							<?php if($post->is_secret == 'Y'):?><img src="<?php echo $skin_url?>/img/icon-lock.png" alt="<?php echo __('Secret', 'x2board')?>"><?php endif?>
 						</span>
 					</td>
 					<td class="author"><?php echo $post->get_nick_name()?></td>
@@ -59,7 +59,7 @@
 						<a href="<?php echo esc_url(x2b_get_url('cmd', X2B_CMD_VIEW_POST, 'post_id', $post->post_id))?>#289220_comment" class="replyNum" title="댓글"><?php echo $content->getCommentsCount()?></a>
 						<span class="extraimages">
 							<?php if($content->isNew()):?><span class="kboard-default-new-notify">N</span><?php endif?>
-							<?php if($content->secret):?><img src="<?php echo $skin_path?>/img/icon-lock.png" alt="<?php echo __('Secret', 'x2board')?>"><?php endif?>
+							<?php if($content->secret):?><img src="<?php echo $skin_url?>/img/icon-lock.png" alt="<?php echo __('Secret', 'x2board')?>"><?php endif?>
 						</span>
 					</td>
 					<td class="author"><span><3?php echo $content->getUserDisplay()?></span></td>
@@ -82,7 +82,7 @@
 						<a href="<?php echo esc_url(x2b_get_url('cmd', X2B_CMD_VIEW_POST, 'post_id', $post->post_id))?>#289220_comment" class="replyNum" title="댓글"><?php echo $post->get_comment_count()?></a>
 						<span class="extraimages">
 							<?php if($post->is_new()):?><span class="kboard-default-new-notify">N</span><?php endif?>
-							<?php if($post->is_secret == 'Y'):?><img src="<?php echo $skin_path?>/img/icon-lock.png" alt="<?php echo __('Secret', 'x2board')?>"><?php endif?>
+							<?php if($post->is_secret == 'Y'):?><img src="<?php echo $skin_url?>/img/icon-lock.png" alt="<?php echo __('Secret', 'x2board')?>"><?php endif?>
 						</span>
 					</td>
 					<td class="author"><span><?php echo $post->get_nick_name()?></span></td>

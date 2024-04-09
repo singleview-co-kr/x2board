@@ -112,4 +112,4 @@
 	<?php endif?>
 	<!-- </block> -->
 </div>
-<?php //wp_enqueue_script('x2board-comments-script', "{$skin_path}/script.js", array(), X2B_VERSION, true)?>
+<?php //wp_enqueue_script('x2board-comments-script', "{$skin_url}/script.js", array(), X2B_VERSION, true)?>

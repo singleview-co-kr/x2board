@@ -28,7 +28,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentView')) {
 		 * /includes/no_namespace.helper.php::x2b_write_post_hidden_fields()를 통해서
 		 * editor스킨의 hidden field 출력
 		 */
-		public function ob_get_hidden_fields() { 
+		/*public function ob_get_hidden_fields() { 
 			ob_start();
 			wp_nonce_field('x2b_'.X2B_CMD_PROC_WRITE_COMMENT, 'x2b_'.X2B_CMD_PROC_WRITE_COMMENT.'_nonce');
 			//wp_nonce_field('kboard-comments-execute-'.$post->post_id, 'kboard-comments-execute-nonce', !wp_doing_ajax())
@@ -53,14 +53,14 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentView')) {
 			$s_field = ob_get_clean();
 			// do_action('x2b_skin_editor_header_after', $content, $board);
 			return apply_filters('x2board_comment_field', $s_field);
-		}
+		}*/
 
 		/**
 		 * Add a form fot comment setting on the additional setting of module
 		 * @param string $obj
 		 * @return string
 		 */
-		public function ob_get_editor($vars=array()) {
+		/*public function ob_get_editor($vars=array()) {
 			$vars = array_merge(array(
 				'input_id' => '',
 				'board' => '',
@@ -85,7 +85,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentView')) {
 
 			$s_editor = ob_get_clean();
 			return apply_filters('x2board_comment_editor', $s_editor);
-		}
+		}*/
 	}
 }
 /* End of file comment.view.php */

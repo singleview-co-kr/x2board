@@ -38,19 +38,7 @@
 		</div>
 		<?php endif?>
 	<?php endif?>
-<?php elseif($field['field_type'] == 'attach'):
-	wp_enqueue_style("x2board-jquery-fileupload-css", X2B_URL . '/assets/jquery.fileupload/css/jquery.fileupload.css', [], X2B_VERSION);
-	wp_enqueue_style("x2board-jquery-fileupload-css", X2B_URL . '/assets/jquery.fileupload/css/jquery.fileupload-ui.css', [], X2B_VERSION);
-	wp_enqueue_script('x2board-jquery-ui-widget', X2B_URL . '/assets/jquery.fileupload/js/vendor/jquery.ui.widget.js', ['jquery'], X2B_VERSION, true);
-	wp_enqueue_script('x2board-jquery-iframe-transport', X2B_URL . '/assets/jquery.fileupload/js/jquery.iframe-transport.js', ['jquery'], X2B_VERSION, true);
-	wp_enqueue_script('x2board-fileupload', X2B_URL . '/assets/jquery.fileupload/js/jquery.fileupload.js', ['jquery'], X2B_VERSION, true);
-	wp_enqueue_script('x2board-fileupload-process', X2B_URL . '/assets/jquery.fileupload/js/jquery.fileupload-process.js', ['jquery'], X2B_VERSION, true);
-	wp_enqueue_script('x2board-fileupload-caller', X2B_URL . '/assets/jquery.fileupload/file-upload.js', ['jquery'], X2B_VERSION, true);
-	$s_accept_file_types = str_replace(" ", "", $this->module_info->file_allowed_filetypes);
-	$s_accept_file_types = str_replace(",", "|", $s_accept_file_types);
-	$n_file_max_attached_count = intval($this->module_info->file_max_attached_count);
-	$n_file_allowed_filesize_mb = intval($this->module_info->file_allowed_filesize_mb);
-	?>
+<?php elseif($field['field_type'] == 'attach'): ?>
 	<input type="file" name="files" id="file_software" class="file-upload" data-maxfilecount='<?php echo $n_file_max_attached_count?>' data-accpet_file_types="<?php echo $s_accept_file_types?>" data-max_each_file_size_mb="<?php echo $n_file_allowed_filesize_mb?>">
 	<ul class="file-list list-unstyled mb-0">
 		<?php foreach($post->get_uploaded_files() as $file_key=>$file_value):?>

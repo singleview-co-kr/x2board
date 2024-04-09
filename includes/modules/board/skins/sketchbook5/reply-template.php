@@ -3,13 +3,13 @@
 	<td class="no"><?php echo $list->index()?></td>
 	<td class="cate"><span style="color:"></span></td>
 	<td class="title" style="padding-left:<?php echo ($depth+1)*5?>px">
-		<img src="<?php echo $skin_path?>/images/icon-reply.png" alt="">	
+		<img src="<?php echo $skin_url?>/images/icon-reply.png" alt="">	
 		<a href="<?php echo esc_url($url->getDocumentURLWithUID($content->uid))?>" class="hx">
 		<?php echo $content->title?></a>
 		<a href="<?php echo esc_url($url->getDocumentURLWithUID($content->uid))?>#289220_comment" class="replyNum" title="댓글"><?php echo $content->getCommentsCount()?></a>
 		<span class="extraimages">
 			<?php if($content->isNew()):?><span class="kboard-default-new-notify">N</span><?php endif?>
-			<?php if($content->secret):?><img src="<?php echo $skin_path?>/images/icon-lock.png" alt="<?php echo __('Secret', 'kboard')?>"><?php endif?>
+			<?php if($content->secret):?><img src="<?php echo $skin_url?>/images/icon-lock.png" alt="<?php echo __('Secret', 'kboard')?>"><?php endif?>
 		</span>
 	</td>
 	<td class="author"><span><?php echo $content->getUserDisplay()?></span></td>
