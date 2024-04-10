@@ -167,6 +167,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 			require_once X2B_PATH . 'includes\admin\tpl\default-settings.php';
 			require_once X2B_PATH . 'includes\admin\tpl\register-settings.php';
 			require_once X2B_PATH . 'includes\modules\category\category.admin.model.php';
+			// require_once X2B_PATH . 'includes/classes/BaseObject.class.php';
+			// require_once X2B_PATH . 'includes\modules\post\post.class.php';
+			require_once X2B_PATH . 'includes\modules\post\post.admin.model.php';
 	
 			\X2board\Includes\Admin\Tpl\x2b_register_settings();
 			\X2board\Includes\Admin\Tpl\x2b_options_page();

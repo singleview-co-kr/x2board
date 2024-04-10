@@ -270,30 +270,6 @@ function x2b_settings_general() {
 
 
 /**
- * Retrieve the array of user define field settings
- *
- * @since 2.6.0
- *
- * @return array user define field settings array
- */
-function x2b_settings_user_define_field() {
-
-	$settings = array(
-		
-	);
-
-	/**
-	 * Filters the Output settings array
-	 *
-	 * @since 2.6.0
-	 *
-	 * @param array $settings Output settings array
-	 */
-	return apply_filters( 'x2b_settings_user_define_field', $settings );
-}
-
-
-/**
  * Retrieve the array of category settings
  *
  * @since 2.6.0
@@ -328,7 +304,7 @@ function x2b_settings_category() {
 		'board_category_info'  => array(
 			'id'      => 'board_category_info',
 			'name'    => esc_html__( 'Category configuration', 'x2board' ),
-			'desc'    => esc_html__( 'Category configuration', 'x2board' ),
+			'desc'    => esc_html__( 'Define post category hierarchy', 'x2board' ),
 			'type'    => 'wpsortableui',
 			'options' => false,
 			'checked_value' => array(
@@ -346,6 +322,42 @@ function x2b_settings_category() {
 	 * @param array $settings List settings array
 	 */
 	return apply_filters( 'x2b_settings_category', $settings );
+}
+
+
+
+/**
+ * Retrieve the array of user define field settings
+ *
+ * @since 2.6.0
+ *
+ * @return array user define field settings array
+ */
+function x2b_settings_user_define_field() {
+
+	$settings = array(
+		'board_user_define_field'  => array(
+			'id'      => 'board_user_define_field',
+			'name'    => esc_html__( 'User define field', 'x2board' ),
+			'desc'    => esc_html__( 'Select default and extended fields', 'x2board' ),
+			'type'    => 'wpuserfieldui',
+			'options' => false,
+			'checked_value' => array(
+				'checked' => 'Y',
+				'unchecked'   => 'N',
+			),
+		),
+		
+	);
+
+	/**
+	 * Filters the Output settings array
+	 *
+	 * @since 2.6.0
+	 *
+	 * @param array $settings Output settings array
+	 */
+	return apply_filters( 'x2b_settings_user_define_field', $settings );
 }
 
 

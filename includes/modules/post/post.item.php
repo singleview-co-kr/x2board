@@ -11,8 +11,7 @@ namespace X2board\Includes\Modules\Post;
 
 if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 
-	class postItem extends \X2board\Includes\Classes\BaseObject
-	{
+	class postItem extends \X2board\Includes\Classes\BaseObject	{
 		/**
 		 * Document number
 		 * @var int

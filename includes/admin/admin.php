@@ -218,6 +218,16 @@ function load_scripts( $hook ) {
 	);
 	// end - for admin sortable UI
 
+	// begin - for admin user field UI
+	wp_register_script(
+		X2B_DOMAIN . '-user-field-scripts',
+		X2B_URL . 'includes/admin/js/x2board-user-field.js', 
+		array(),
+		X2B_VERSION,
+		true
+	);
+	// end - for admin user field UI
+
 	wp_register_style(
 		X2B_DOMAIN . '-admin-style',
 		X2B_URL . 'includes/admin/css/admin.css',
@@ -235,6 +245,7 @@ function load_scripts( $hook ) {
 		wp_enqueue_script( X2B_DOMAIN . '-tab-scripts' );
 		wp_enqueue_script( X2B_DOMAIN . '-sortable-scripts' );
 		wp_enqueue_script( X2B_DOMAIN . '-nested-sortable' );
+		wp_enqueue_script( X2B_DOMAIN . '-user-field-scripts' );
 		wp_enqueue_style( X2B_DOMAIN . '-admin-style' );
 		wp_localize_script (X2B_DOMAIN . '-sortable-scripts', 'x2board_admin_ajax_info', $a_ajax_info );
 		add_thickbox();

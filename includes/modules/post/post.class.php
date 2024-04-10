@@ -65,19 +65,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\post')) {
 			if(array_key_exists(strtolower($key), $this->statusList)) return $this->statusList[$key];
 			else $this->get_default_status();
 		}
-
-		/**
-		 * Re-generate the cache file
-		 * @return void
-		 */
-		// function recompileCache()
-		// {
-		// 	if(!is_dir('./files/cache/tmp'))
-		// 	{
-		// 		FileHandler::makeDir('./files/cache/tmp');
-		// 	}
-		// }
-
-		}
+	}
 }
 /* End of file post.class.php */

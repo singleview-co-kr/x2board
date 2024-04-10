@@ -720,8 +720,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			unset($o_post);
 
 			$o_post_model = \X2board\Includes\getModel('post');
-			$a_user_input_field = $o_post_model->get_user_input_fields();
-// var_dump($a_user_input_field);
+			$a_user_input_field = $o_post_model->get_user_define_fields();
 			unset($o_post_model);
 			\X2board\Includes\Classes\Context::set('field', $a_user_input_field);
 			// begin - for editor.view.php module usage	
