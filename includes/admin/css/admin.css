@@ -6,6 +6,8 @@
     background: url(../images/singleview-logo.png) left top no-repeat;
 }
 
+.x2board-hide { display: none; }
+
 .x2board-category-setting-left,
 .x2board-category-setting-right { float: left; width: 50%; }
 .x2board-update-category { display: none; }

@@ -18,9 +18,9 @@ jQuery(document).ready(function(){
 				uniq_id = jQuery(li.item).find('.field_data.field_type').val();
 			}
 			else{
-				uniq_id = 'uniqid from x2board-user-field.js';
+				uniq_id = 'js_' + uniqid();
 			}
-
+// console.log(uniq_id);
 			jQuery(li.item).find('.field_type').attr('name', 'fields['+uniq_id+'][field_type]');
 			jQuery(li.item).find('.field_name').attr('name', 'fields['+uniq_id+'][field_name]');
 			jQuery(li.item).find('.meta_key').attr('name', 'fields['+uniq_id+'][meta_key]');
@@ -41,7 +41,7 @@ jQuery(document).ready(function(){
 			
 			if(jQuery(li.item).find('.option-wrap').length){
 				jQuery(li.item).find('.option-wrap').each(function(index, element){
-					var option_id = uniqid();
+					var option_id = 'js_' + uniqid();
 					jQuery(element).find('.option_label').attr('name', 'fields['+uniq_id+'][row]['+option_id+'][label]');
 					jQuery(element).find('.default_value').attr('name', 'fields['+uniq_id+'][default_value]');
 					if(field == 'checkbox'){
@@ -101,6 +101,41 @@ jQuery(document).ready(function(){
 	});
 });
 
+function add_option(element){
+	var label = '';
+	var parent = jQuery(element).closest('.x2board-fields-sortable.connected-sortable').length;
+	var parent_id = jQuery(element).closest('li').find('.parent_id').val();
+	var uniq_id = uniqid();
+	var field_type = 'radio';
+	var name = jQuery(element).closest('li').find('.field_data.field_type').val();
+	var value = uniq_id;
+
+	if(parent){
+		label = 'fields['+parent_id+'][row]['+uniq_id+'][label]';
+		name = 'fields['+parent_id+'][default_value]';
+	}
+	
+	if(jQuery(element).closest('li').find('.field_data.field_type').val() == 'checkbox'){
+		field_type = 'checkbox';
+		name = 'fields['+parent_id+'][row]['+uniq_id+'][default_value]';
+		value = '1';
+	}
+	
+	jQuery(element).closest('.attr-row').after('<div class="attr-row option-wrap">'+
+		'<div class="attr-name option"><label for="'+uniq_id+'_label">라벨</label></div>'+
+		'<div class="attr-value">'+
+		'<input type="text" name="'+label+'" id="'+uniq_id+'_label" class="field_data option_label"> '+
+		'<button type="button" class="'+field_type+'" onclick="add_option(this)">+</button> '+
+		'<button type="button" class="'+field_type+'" onclick="remove_option(this)">-</button> '+
+		'<label><input type="'+field_type+'" name="'+name+'" class="field_data default_value" value="'+value+'"> 기본값'+
+		'</label></div></div>'
+	);
+}
+function remove_option(element){
+	if(jQuery(element).closest('li').find('.attr-row.option-wrap').length == 1) return false;
+	jQuery(element).parents('.attr-row').remove();
+}
+
 function x2board_fields_toggle(element, active){
 	if(jQuery(element).closest('li').hasClass(active)){
 		jQuery(element).closest('li').removeClass(active);
@@ -109,3 +144,20 @@ function x2board_fields_toggle(element, active){
 		jQuery(element).closest('li').addClass(active);
 	}
 }
+
+function x2board_fields_permission_roles_view(element){
+	if(jQuery(element).val() == 'roles'){
+		jQuery(element).siblings('.x2board-permission-read-roles-view').removeClass('x2board-hide');
+	}
+	else{
+		jQuery(element).siblings('.x2board-permission-read-roles-view').addClass('x2board-hide');
+	}
+}
+
+/**
+ * JavaScript alternative of PHP uniqid()
+ * original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+ * revised by: Kankrelune (http://www.webfaktory.info/)
+ * more: https://gist.github.com/ain/5638966
+ */
+function uniqid(prefix,more_entropy){if(typeof prefix==='undefined'){prefix=""}var retId;var formatSeed=function(seed,reqWidth){seed=parseInt(seed,10).toString(16);if(reqWidth<seed.length){return seed.slice(seed.length-reqWidth)}if(reqWidth>seed.length){return Array(1+(reqWidth-seed.length)).join('0')+seed}return seed};if(!this.php_js){this.php_js={}}if(!this.php_js.uniqidSeed){this.php_js.uniqidSeed=Math.floor(Math.random()*0x75bcd15)}this.php_js.uniqidSeed++;retId=prefix;retId+=formatSeed(parseInt(new Date().getTime()/1000,10),8);retId+=formatSeed(this.php_js.uniqidSeed,5);if(more_entropy){retId+=(Math.random()*10).toFixed(8).toString()}return retId}

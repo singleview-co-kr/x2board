@@ -19,6 +19,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorView')) {
 		private $_default_fields = array();  // get_default_user_input_fields();
 		private $_extends_fields = array();
 
+		// 스킨에서 사용 할 사용자 정의 옵션 input, textarea, select 이름의 prefix를 정의한다.
+		const SKIN_OPTION_PREFIX = 'x2board_option_';
+
 		function __construct() {
 // var_dump('editor view class __construct');
 		}
@@ -33,10 +36,22 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorView')) {
 		 * editor 스킨의 사용자 입력 field 출력
 		 */
 		public function write_post_prepare_single_user_field() { 
+			// require_once X2B_PATH . 'includes\modules\post\post.admin.model.php';
+			// $o_post_admin_model = new \X2board\Includes\Modules\Post\postAdminModel();
+			// $this->_default_fields = $o_post_admin_model->get_default_fields();  // get_default_user_input_fields();
+			// $this->_extends_fields = $o_post_admin_model->get_extended_fields();  // get_extended_user_input_fields();
+			// unset($o_post_admin_model);
+
 			$o_post_model = \X2board\Includes\getModel('post');
-			$this->_default_fields = $o_post_model->default_fields;  // get_default_user_input_fields();
-			$this->_extends_fields = $o_post_model->extends_fields;  // get_extended_user_input_fields();
+			$this->_default_fields = $o_post_model->get_default_fields();  // get_default_user_input_fields();
+			$this->_extends_fields = $o_post_model->get_extended_fields();  // get_extended_user_input_fields();
+			$a_user_input_field = $o_post_model->get_user_define_fields();
 			unset($o_post_model);
+			\X2board\Includes\Classes\Context::set('field', $a_user_input_field);
+
+// var_dump( plugin_dir_url( __FILE__ ).'js/user_define_field.js');	
+			wp_enqueue_script('x2board-user-define-fields', plugin_dir_url( __FILE__ ).'js/user_define_field.js', ['jquery'], X2B_VERSION, true);
+
 		}
 
 		/**
@@ -88,35 +103,38 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorView')) {
 			$roles = (isset($field['roles']) && $field['roles']) ? $field['roles'] : '';
 			$meta_key = (isset($field['meta_key']) && $field['meta_key']) ? sanitize_key($field['meta_key']) : '';
 			
-			if(!$this->_is_available_user_field($permission, $roles) && $meta_key){
-				return;
-			}
+			// if(!$this->_is_available_user_field($permission, $roles) && $meta_key){
+			// 	return;
+			// }
 			// if(!$content){
 				// $content = new KBContent();
 			// }
 
 			// $field = apply_filters('kboard_get_template_field_data', $field); //, $content, $this->board);
 
-			$field_name = (isset($field['field_name']) && $field['field_name']) ? $field['field_name'] : $this->_get_field_label($field);
+			$field_name = strlen($field['field_name']) > 0 ? $field['field_name'] : $this->_get_field_label($field);
 			$required = (isset($field['required']) && $field['required']) ? 'required' : '';
 			$placeholder = (isset($field['placeholder']) && $field['placeholder']) ? $field['placeholder'] : '';
 			$wordpress_search = '';
 			$default_value = (isset($field['default_value']) && $field['default_value']) ? $field['default_value'] : '';
 			$html = (isset($field['html']) && $field['html']) ? $field['html'] : '';
 			$shortcode = (isset($field['shortcode']) && $field['shortcode']) ? $field['shortcode'] : '';
-			$row = false;
-
-			// $content = new \stdClass();
-			// $content->title = '';
-			// $content->nick_name = '';
-			// $content->content = '';
-			// $content->getCategoryList = array();
-			// $content->search = false;
 			
-			// $board = new \stdClass(); 
-			// $board->viewUsernameField = true;
-			// $board->useCAPTCHA = false;
-			// $board->use_editor = '';
+			$has_default_values = false;
+			$a_default_value = array();
+			if(isset($field['row']) && $field['row']){
+				foreach($field['row'] as $item){
+					if(isset($item['label']) && $item['label']){
+						$has_default_values = true;
+						if(isset($item['default_value']) && $item['default_value']){
+							$a_default_value[] = $item['label'];
+						}
+					}
+				}
+			}
+			if($a_default_value){
+				$default_value = $a_default_value;
+			}
 			
 			if($field['field_type'] == 'content'){
 				$o_editor_conf = new \stdClass();
@@ -147,23 +165,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorView')) {
 				wp_enqueue_script('x2board-fileupload-caller', X2B_URL . '/assets/jquery.fileupload/file-upload.js', ['jquery'], X2B_VERSION, true);
 			}
 
-			$post = \X2board\Includes\Classes\Context::get('post');
-			
-			// $default_value_list = array();
-			// if(isset($field['row']) && $field['row']){
-			// 	foreach($field['row'] as $item){
-			// 		if(isset($item['label']) && $item['label']){
-			// 			$row = true;
-			// 			if(isset($item['default_value']) && $item['default_value']){
-			// 				$default_value_list[] = $item['label'];
-			// 			}
-			// 		}
-			// 	}
-			// }
-			
-			// if($default_value_list){
-			// 	$default_value = $default_value_list;
-			// }
+			$post = \X2board\Includes\Classes\Context::get('post');	
 			
 			// if($field['field_type'] == 'search'){
 			// 	if($content->search){
@@ -272,6 +274,33 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorView')) {
 		}
 
 		/**
+		 * 입력 필드 이름을 반환한다.
+		 * @param string $name
+		 * @return string
+		 */
+		// public function getOptionFieldName($name){
+		public function get_option_field_name( $s_name ) {
+			return $this->SKIN_OPTION_PREFIX . sanitize_key($s_name);
+		}
+
+		/**
+		 * 기본값이나 저장된 값이 있는지 확인한다.
+		 * @param array|string $value
+		 * @param string $label
+		 * @return boolean
+		 */
+		// public function isSavedOption($value, $label){
+		public function is_saved_option($value, $label) {
+			if(is_array($value) && in_array($label, $value)){
+				return true;
+			}
+			else if($value == $label){
+				return true;
+			}
+			return false;
+		}
+
+		/**
 		 * /includes/no_namespace.helper.php::x2b_write_post_hidden_fields()를 통해서
 		 * editor스킨의 hidden field 출력
 		 */
@@ -349,7 +378,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorView')) {
 		 * @return boolean
 		 */
 		// public function isUseFields($permission, $roles){
-		private function _is_available_user_field($permission, $roles) {
+		/*private function _is_available_user_field($permission, $roles) {
 			// $board = $this->board;
 			// if($board->isAdmin()){
 			// 	return true;
@@ -374,7 +403,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorView')) {
 				default: 
 					return true;
 			}
-		}
+		}*/
 
 		/**
 		 * 번역된 필드의 레이블을 반환한다.

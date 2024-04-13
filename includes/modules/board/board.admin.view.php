@@ -141,10 +141,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 			switch( $column_name ) {
 				case 'wp_page_id':
 					$o_post = get_post(intval($item->wp_page_id)); 
-					return '<A HREF='.$o_post->guid.' target="_blank">'.$o_post->post_title.' '.__('Visit the page', 'x2board').'</A>';
+					return '<A HREF='.$o_post->guid.' target="_blank">'.__('Visit the page', 'x2board').' - '.$o_post->post_title.'</A>';
 				case 'board_name':
 					$o_post = get_post(intval($item->wp_page_id)); 
-					return '<A HREF='.admin_url( 'admin.php?page='.X2B_CMD_ADMIN_VIEW_BOARD_UPDATE.'&board_id='.$o_post->ID ).'>'.$item->board_title.' '.__('Configure the board', 'x2board').'</A>';
+					return '<A HREF='.admin_url( 'admin.php?page='.X2B_CMD_ADMIN_VIEW_BOARD_UPDATE.'&board_id='.$o_post->ID ).'>'.__('Configure the board', 'x2board').' - '.$item->board_title.'</A>';
 				case 'create_date':
 					return $item->$column_name;
 				default:
@@ -167,8 +167,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 			require_once X2B_PATH . 'includes\admin\tpl\default-settings.php';
 			require_once X2B_PATH . 'includes\admin\tpl\register-settings.php';
 			require_once X2B_PATH . 'includes\modules\category\category.admin.model.php';
-			// require_once X2B_PATH . 'includes/classes/BaseObject.class.php';
-			// require_once X2B_PATH . 'includes\modules\post\post.class.php';
 			require_once X2B_PATH . 'includes\modules\post\post.admin.model.php';
 	
 			\X2board\Includes\Admin\Tpl\x2b_register_settings();

@@ -58,12 +58,34 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 		public function proc_update_board() {
 			check_admin_referer( X2B_CMD_ADMIN_PROC_UPDATE_BOARD );  // check nounce
 
-			// require_once X2B_PATH . 'includes\admin\tpl\settings-page.php';
 			require_once X2B_PATH . 'includes\admin\tpl\default-settings.php';
 			require_once X2B_PATH . 'includes\admin\tpl\register-settings.php';
 
+			// begin - remove unnecessary params
+			unset( $_POST['_wpnonce']);
+			unset( $_POST['_wp_http_referer']);
+			unset( $_POST['action']);
+			unset( $_POST['submit']);
+			// end - remove unnecessary params
+			
+			// begin - do not handle category related params
+			unset($_POST['update_category_name']);
+			unset($_POST['current_category_name']);
+			unset($_POST['category_id']);
+			unset($_POST['parent_id']);
+			unset($_POST['new_category']);
+			unset($_POST['tree_category']);
+			// end - do not handle category related params
+
 			$_POST = stripslashes_deep($_POST);
+
+			// handle [fields] specially
+			if( isset($_POST['fields'] ) ) {
+				$this->_proc_user_define_fields();
+				unset( $_POST['fields']);
+			}
 // var_dump($_POST);
+// exit;
 			$n_board_id = intval(sanitize_text_field($_POST['board_id'] ));
 			$o_rst = \X2board\Includes\Admin\Tpl\x2b_load_settings( $n_board_id );
 
@@ -91,15 +113,17 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 				wp_update_post( $a_update_page );
 				unset( $a_update_page );
 			}
+
+			// handle [fields] specially
+			// if( isset($_POST['fields'] ) ) {
+			// 	$this->_proc_user_define_fields();
+			// 	unset( $_POST['fields']);
+			// }
 			
-			// do not save keys below
-			unset( $_POST['_wpnonce']);
-			unset( $_POST['_wp_http_referer']);
-			unset( $_POST['action']);
+			// do not save params below
 			unset( $_POST['board_id']);
 			unset( $_POST['board_title']);
 			unset( $_POST['wp_page_title']);
-			unset( $_POST['submit']);
 			$s_board_use_rewrite = $_POST['board_use_rewrite'];
 			unset( $_POST['board_use_rewrite']);
 			update_option( $o_rst->s_x2b_setting_title, $_POST );
@@ -122,6 +146,77 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 // exit;
 			wp_redirect(admin_url('admin.php?page=x2b_disp_board_update&board_id=' . $n_board_id ));
 		}
+
+		/**
+		 * @brief proc user define fields 
+		 * admin: 'field_name' => db: var_name  관리자 화면에서 [필드 레이블] 입력란은 field_name에 저장함
+		 * admin: 'field_type' => db: var_type
+		 * admin: 'meta_key' => db: eid
+		 * admin: 'default_value' => db: var_default
+		 * admin: 'description' => db: var_desc
+		 * admin: 'required' => db: var_is_required
+		 * 
+		 * admin: 'field_label' => db: ??  관리자 화면에서 용도 불명, 사용자 화면에서 기본 필드명 표시위한 용도
+		 **/
+		private function _proc_user_define_fields() {
+			global $wpdb;
+			$n_board_id = intval(sanitize_text_field($_POST['board_id'] ));
+			// reset board user define keys
+			$result = $wpdb->delete(
+				$wpdb->prefix . 'x2b_user_define_keys',  // table name with dynamic prefix
+				array('board_id' => $n_board_id = $n_board_id),  // which id need to delete
+				array('%d'), 							// make sure the id format
+			);
+			if( $result < 0 || $result === false ){
+				wp_die($wpdb->last_error );
+			}
+			// save field information
+			$n_var_seq = 1;
+			foreach( $_POST['fields'] as $s_uid => $a_field) {
+// var_dump($s_uid);
+// var_dump($a_field);
+
+				// build extra param for json
+				$a_tmp_field = $a_field;
+				unset($a_tmp_field['field_label']);
+				unset($a_tmp_field['field_type']);
+				unset($a_tmp_field['field_name']);
+				unset($a_tmp_field['meta_key']);
+				unset($a_tmp_field['default_value']);
+				unset($a_tmp_field['description']);
+				unset($a_tmp_field['required']);
+				$s_json_param = serialize($a_tmp_field);
+
+				if( isset($a_field['description']) ) {
+					$s_description = strlen($a_field['description']) ? $a_field['description'] : null;
+				}
+				else {
+					$s_description = null;
+				}
+			
+				$result = $wpdb->insert(
+					"{$wpdb->prefix}x2b_user_define_keys",
+					array(
+						'board_id'   => $n_board_id,
+						'var_idx'   => $n_var_seq++,
+						'var_name'   => strlen($a_field['field_name']) ? $a_field['field_name'] : $a_field['field_label'],
+						'var_type'  => $a_field['field_type'],
+						// 'eid'  => strlen($a_field['field_name']) ? $a_field['field_name'] : 'php_'.uniqid(),  // $a_field['field_name'],
+						'eid'  => strlen($a_field['meta_key']) ? $a_field['meta_key'] : $s_uid,  // $a_field['meta_key'],
+						'var_default'  => isset($a_field['default_value']) ? $a_field['default_value'] : null,  // $a_field['default_value'],
+						'var_desc'  => $s_description,  // $a_field['description'],
+						'var_is_required'  => isset($a_field['required']) ? $a_field['required'] : 'N',
+						'json_param'  => serialize($a_tmp_field)
+					),
+					array('%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')
+				);
+				if( $result < 0 || $result === false ){
+					wp_die($wpdb->last_error );
+				}
+			}
+// var_dump($result);
+// exit;			
+		}		
 
 		/**
 		 * @brief insert board
@@ -161,8 +256,8 @@ exit;
 exit();			
 			if ( $n_page_id ) {
 				wp_redirect(admin_url('admin.php?page='.X2B_CMD_ADMIN_VIEW_BOARD_UPDATE.'&board_id='.$n_page_id));
-				exit;    
-			}    
+				exit;
+			}
 			
 			exit();
 			

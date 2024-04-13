@@ -11,10 +11,14 @@ if (!defined('ABSPATH')) {
 } // Exit if accessed directly
 
 if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postAdminModel')) {
+	
+	require_once X2B_PATH . 'includes\modules\post\post.extravars.php';
 
 	class postAdminModel {
+		private $_n_board_id = null;
 		private $_a_default_fields = array();
 		private $_a_extends_fields = array();
+		private $_a_user_define_fields = array();
 
 		/**
 		 * @brief constructor
@@ -28,320 +32,38 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postAdminModel')) {
 			}
 			unset($o_current_user);
 
-			$this->_a_default_fields = array(
-				'title' => array(
-					'field_type' => 'title',
-					'field_label' => __('Title', 'x2board'),
-					'field_name' => '',
-					'class' => 'kboard-attr-title',
-					'meta_key' => 'title',
-					'permission' => 'all',
-					'roles' => array(),
-					'default_value' => '',
-					'placeholder' => '',
-					'description' => '',
-					'close_button' => ''
-				),
-				'option' => array(
-					'field_type' => 'option',
-					'field_label' => __('Options', 'x2board'),
-					'field_name' => '',
-					'class' => 'kboard-attr-option',
-					'meta_key' => 'option',
-					'secret_permission' => '',
-					'secret' => array(),
-					'notice_permission' => 'roles',
-					'notice'=> array('administrator'),
-					'allow_comment_permission' => 'roles',
-					'allow_comment'=> array('administrator'),
-					'description' => '',
-					'close_button' => 'yes'
-				),
-				'nick_name' => array(
-					'field_type' => 'nick_name',
-					'field_label' => __('Nickname', 'x2board'),
-					'field_name' => '',
-					'class' => 'kboard-attr-nick-name',
-					'meta_key' => 'nick_name',
-					'permission' => '',
-					'default_value' => '',
-					'placeholder' => '',
-					'description' => '',
-					'close_button' => ''
-				),
-				'category' => array(
-					'field_type' => 'category',
-					'field_label' => __('Category', 'x2board'),
-					'field_name' => '',
-					'class' => 'kboard-attr-tree-category',
-					'meta_key' => 'category',
-					'permission' => '',
-					'roles' => array(),
-					'option_field' => true,
-					'description' => '',
-					'close_button' => 'yes'
-				),
-				'captcha' => array(
-					'field_type' => 'captcha',
-					'field_label' => __('Captcha', 'x2board'),
-					'class' => 'kboard-attr-captcha',
-					'meta_key' => 'captcha',
-					'description' => '',
-					'close_button' => 'yes'
-				),
-				'content' => array(
-					'field_type' => 'content',
-					'field_label' => __('Content', 'x2board'),
-					'field_name' => '',
-					'class' => 'kboard-attr-content',
-					'meta_key' => 'content',
-					'placeholder' => '',
-					'description' => '',
-					'required' => '',
-					'close_button' => 'yes'
-				),
-				'attach' => array(
-					'field_type' => 'attach',
-					'field_label' => __('Attachment', 'x2board'),
-					'field_name' => '',
-					'class' => 'kboard-attr-attach',
-					'meta_key' => 'attach',
-					'permission' => '',
-					'roles' => array(),
-					'description' => '',
-					'close_button' => 'yes'
-				),
-				'search' => array(
-					'field_type' => 'search',
-					'field_label' => __('WP Search', 'x2board'),
-					'field_name' => '',
-					'class' => 'kboard-attr-search',
-					'meta_key' => 'search',
-					'permission' => '',
-					'roles' => array(),
-					'default_value' => '',
-					'description' => '',
-					'hidden' => '',
-					'close_button' => ''
-				)
-			);
+			$o_post_extra_vars = new \X2board\Includes\Modules\Post\postExtraVars();
+			$this->_a_default_fields = $o_post_extra_vars->get_default_fields();
+			$this->_a_extends_fields = $o_post_extra_vars->get_extended_fields();
+			unset($o_post_extra_vars);
 
-			$this->_a_extends_fields = array(
-				'text' => array(
-					'field_type' => 'text',
-					'field_label' => __('Text/Hidden', 'x2board'),
-					'field_name' => '',
-					'class' => 'kboard-attr-text',
-					'custom_class' => '',
-					'meta_key' => '',
-					'permission' => '',
-					'roles' => array(),
-					'default_value' => '',
-					'placeholder' => '',
-					'description' => '',
-					'required' => '',
-					'show_document' => '',
-					'hidden' => '',
-					'close_button' => 'yes'
-				),
-				'select' => array(
-					'field_type' => 'select',
-					'field_label' => __('Select Box', 'x2board'),
-					'field_name' => '',
-					'class' => 'kboard-attr-select',
-					'custom_class' => '',
-					'meta_key' => '',
-					'row' => array(),
-					'default_value' => '',
-					'permission' => '',
-					'roles' => array(),
-					'description' => '',
-					'required' => '',
-					'show_document' => '',
-					'close_button' => 'yes'
-				),
-				'radio' => array(
-					'field_type' => 'radio',
-					'field_label' => __('Radio Button', 'x2board'),
-					'field_name' => '',
-					'class' => 'kboard-attr-radio',
-					'custom_class' => '',
-					'meta_key' => '',
-					'row' => array(),
-					'default_value' => '',
-					'permission' => '',
-					'roles' => array(),
-					'description' => '',
-					'required' => '',
-					'show_document' => '',
-					'close_button' => 'yes'
-				),
-				'checkbox' => array(
-					'field_type' => 'checkbox',
-					'field_label' => __('Checkbox', 'x2board'),
-					'field_name' => '',
-					'class' => 'kboard-attr-checkbox',
-					'custom_class' => '',
-					'meta_key' => '',
-					'row' => array(),
-					'permission' => '',
-					'roles' => array(),
-					'description' => '',
-					'required' => '',
-					'show_document' => '',
-					'close_button' => 'yes'
-				),
-				'textarea' => array(
-					'field_type' => 'textarea',
-					'field_label' => __('Textarea', 'x2board'),
-					'field_name' => '',
-					'class' => 'kboard-attr-textarea',
-					'custom_class' => '',
-					'meta_key' => '',
-					'permission' => '',
-					'roles' => array(),
-					'default_value' => '',
-					'placeholder' => '',
-					'required' => '',
-					'show_document' => '',
-					'description' => '',
-					'close_button' => 'yes'
-				),
-				'wp_editor' => array(
-					'field_type' => 'wp_editor',
-					'field_label' => __('WP Editor', 'x2board'),
-					'field_name' => '',
-					'class' => 'kboard-attr-wp-editor',
-					'custom_class' => '',
-					'meta_key' => '',
-					'permission' => '',
-					'roles' => array(),
-					'default_value' => '',
-					'placeholder' => '',
-					'required' => '',
-					'show_document' => '',
-					'description' => '',
-					'close_button' => 'yes'
-				),
-				'html' => array(
-					'field_type' => 'html',
-					'field_label' => __('HTML', 'x2board'),
-					'field_name' => '',
-					'class' => 'kboard-attr-html',
-					'custom_class' => '',
-					'meta_key' => '',
-					'permission' => '',
-					'roles' => array(),
-					'default_value' => '',
-					'show_document' => '',
-					'description' => '',
-					'close_button' => 'yes',
-					'html' => ''
-				),
-				'shortcode' => array(
-					'field_type' => 'shortcode',
-					'field_label' => __('Shortcode', 'x2board'),
-					'field_name' => '',
-					'class' => 'kboard-attr-shortcode',
-					'custom_class' => '',
-					'meta_key' => '',
-					'permission' => '',
-					'roles' => array(),
-					'default_value' => '',
-					'show_document' => '',
-					'description' => '',
-					'close_button' => 'yes',
-					'shortcode' => ''
-				),
-				'date' => array(
-					'field_type' => 'date',
-					'field_label' => __('Date Select', 'x2board'),
-					'field_name' => '',
-					'class' => 'kboard-attr-date',
-					'custom_class' => '',
-					'meta_key' => '',
-					'permission' => '',
-					'roles' => array(),
-					'default_value' => '',
-					'placeholder' => '',
-					'required' => '',
-					'show_document' => '',
-					'description' => '',
-					'close_button' => 'yes'
-				),
-				'time' => array(
-					'field_type' => 'time',
-					'field_label' => __('Time Select', 'x2board'),
-					'field_name' => '',
-					'class' => 'kboard-attr-time',
-					'custom_class' => '',
-					'meta_key' => '',
-					'permission' => '',
-					'roles' => array(),
-					'default_value' => '',
-					'placeholder' => '',
-					'required' => '',
-					'show_document' => '',
-					'description' => '',
-					'close_button' => 'yes'
-				),
-				'email' => array(
-					'field_type' => 'email',
-					'field_label' => __('Email', 'x2board'),
-					'field_name' => '',
-					'class' => 'kboard-attr-email',
-					'custom_class' => '',
-					'meta_key' => '',
-					'permission' => '',
-					'roles' => array(),
-					'default_value' => '',
-					'placeholder' => '',
-					'required' => '',
-					'show_document' => '',
-					'description' => '',
-					'hidden' => '',
-					'close_button' => 'yes'
-				),
-				'address' => array(
-					'field_type' => 'address',
-					'field_label' => __('Address', 'x2board'),
-					'field_name' => '',
-					'class' => 'kboard-attr-address',
-					'custom_class' => '',
-					'meta_key' => '',
-					'permission' => '',
-					'roles' => array(),
-					'default_value' => '',
-					'placeholder' => '',
-					'required' => '',
-					'show_document' => '',
-					'description' => '',
-					'close_button' => 'yes'
-				),
-				/*
-				'color' => array(
-					'field_type' => 'color',
-					'field_label' => __('Color Select', 'x2board'),
-					'field_name' => '',
-					'class' => 'kboard-attr-color',
-					'meta_key' => '',
-					'permission' => '',
-					'roles' => array(),
-					'default_value' => '',
-					'description' => '',
-					'show_document' => '',
-					'close_button' => 'yes'
-				)
-				*/
-			);
+			$this->_set_user_define_fields();
 		}
 
 		/**
-		 * 설정된 사용자 입력 필드를 반환한다.
+		 * 게시판 관리자의 사용자 정의 필드 목록 화면용 필드 정뵤 반환
 		 * @return array
 		 */
-		public function get_user_define_fields() {
-			return $this->_a_default_fields;
+		// getDefaultFields() {
+		public function get_default_fields() {
+			$a_default_fields = $this->_a_default_fields;
+			if(empty($this->_a_user_define_fields)) { // all default fields are selected if init case
+				return array();
+			}
+			foreach($a_default_fields as $key=>$value) {
+// var_dump($key);
+				if($this->_a_user_define_fields) {
+					if(isset($this->_a_user_define_fields[$key])){
+						unset($a_default_fields[$key]);
+					}
+				}
+				// else {
+				// 	if(!isset($value['kboard_extends'])) {
+						;//unset($a_default_fields[$key]);  ??????????????????
+				// 	}
+				// }
+			}
+			return $a_default_fields;
 		}
 
 		/**
@@ -350,6 +72,70 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postAdminModel')) {
 		 */
 		public function get_extended_fields() {
 			return $this->_a_extends_fields;
+		}
+
+		/**
+		 * 관리자가 설정한 입력 필드를 반환한다.
+		 * @return array
+		 */
+		// getSkinFields() {
+		public function get_user_define_fields() {
+			$a_fields = array();
+			if($this->_a_user_define_fields) {
+				$a_fields = $this->_a_user_define_fields;
+			}
+			else {
+				$a_fields = $this->_a_default_fields;
+				// foreach($a_fields as $key=>$value) {
+				// 	if(isset($value['x2board_extends'])){
+				// 		unset($a_fields[$key]);
+				// 	}
+				// }
+			}
+			return $a_fields;
+		}
+
+		/**
+		 * retrieve user define fields from DB
+		 * admin: 'field_name' => db: var_name  관리자 화면에서 [필드 레이블] 입력란은 field_name에 저장함
+		 * admin: 'field_type' => db: var_type
+		 * admin: 'meta_key' => db: eid
+		 * admin: 'default_value' => db: var_default
+		 * admin: 'description' => db: var_desc
+		 * admin: 'required' => db: var_is_required
+		 * 
+		 * admin: 'field_label' => db: ??  관리자 화면에서 용도 불명, 사용자 화면에서 기본 필드명 표시위한 용도
+		 */
+		private function _set_user_define_fields() { //$skin_fields){
+			if( !empty($this->_a_user_define_fields ) ){
+				return;
+			}
+// var_dump($_GET['board_id']);
+			$this->_n_board_id = intval(sanitize_text_field($_GET['board_id'] ));
+			$s_columns = '`var_name`, `var_type`, `var_is_required`, `var_search`, `var_default`, `var_desc`, `eid`, `json_param`';  // , `meta_key`
+			global $wpdb;
+			$a_temp = $wpdb->get_results("SELECT {$s_columns} FROM `{$wpdb->prefix}x2b_user_define_keys` WHERE `board_id` = '{$this->_n_board_id}' ORDER BY `var_idx` ASC");
+// var_dump($a_temp);
+			
+			foreach( $a_temp as $_ => $o_field ) {
+				$a_other_field = unserialize($o_field->json_param);
+
+				$a_single_field['field_type'] = $o_field->var_type;
+				// $a_single_field['field_label'] = $o_field->var_name;
+				$a_single_field['field_name'] = $o_field->var_name;
+				$a_single_field['meta_key'] = $o_field->eid;
+				$a_single_field['default_value'] = $o_field->var_default;
+				$a_single_field['description'] = $o_field->var_desc;
+				$a_single_field['required'] = $o_field->var_is_required;
+
+				$a_single_field = array_merge($a_single_field, $a_other_field);
+				$this->_a_user_define_fields[$o_field->eid] = $a_single_field;
+
+				unset($a_single_field);
+				unset($a_other_field);
+			}
+			unset($a_temp);
+// var_dump($this->_a_user_define_fields);
 		}
 
 		/**
@@ -362,6 +148,54 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postAdminModel')) {
 			// $multi_line_fields = apply_filters('kboard_multi_line_fields_fields', array('html', 'shortcode'), $this->board);
 			if(in_array($s_fields_type, array('html', 'shortcode'))){
 				return true;
+			}
+			return false;
+		}
+
+		/**
+		 * 기본 필드인지 확인한다.
+		 * @param string $fields_type
+		 * @return string
+		 */
+		// public function isDefaultFields($fields_type) {
+		public function is_default_field($fields_type) {
+			// $default_fields = apply_filters('kboard_admin_default_fields', $this->default_fields, $this->board);
+			if(isset($this->_a_default_fields[$fields_type])) {
+				return 'default';
+			}
+			return 'extends';
+		}
+
+		/**
+		 * 번역된 필드의 레이블을 반환한다.
+		 * @param array $field
+		 * @return string
+		 */
+		// public function getFieldLabel($field){
+		public function get_field_label($a_field_info){
+			$s_field_type = $a_field_info['field_type'];
+			// $fields = apply_filters('kboard_admin_default_fields', $this->default_fields, $this->board);
+			if(isset($this->_a_default_fields[$s_field_type])){
+				return $this->_a_default_fields[$s_field_type]['field_label'];
+			}
+			// $fields = apply_filters('kboard_admin_extends_fields', $this->extends_fields, $this->board);
+			if(isset($this->_a_extends_fields[$s_field_type])){
+				return $this->_a_extends_fields[$s_field_type]['field_label'];
+			}
+			return $a_field_info['field_label'];
+		}
+
+		/**
+		 * 저장된 값이 있는지 체크한다.
+		 * @param array $row
+		 * @return boolean
+		 */
+		// public function valueExists($row){
+		public function is_value_exists($row) {
+			foreach($row as $key=>$item) {
+				if(isset($item['label']) && $item['label']) {
+					return true;
+				}
 			}
 			return false;
 		}

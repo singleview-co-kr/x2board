@@ -703,7 +703,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			// $oDocumentController->addXmlJsFilter($this->module_info->module_srl);
 
 			// if the post exists, then setup extra variabels on context
-			if($o_post->is_exists() && !$savedDoc) {
+			if($o_post->is_exists() && !$savedDoc) { // 포스트 수정 혹은 임시 저장 포스트의 확장 변수 가져오기
 				\X2board\Includes\Classes\Context::set('extra_keys', $o_post->get_extra_vars());
 			}
 			
@@ -719,22 +719,14 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			\X2board\Includes\Classes\Context::set('post', $o_post);
 			unset($o_post);
 
-			$o_post_model = \X2board\Includes\getModel('post');
-			$a_user_input_field = $o_post_model->get_user_define_fields();
-			unset($o_post_model);
-			\X2board\Includes\Classes\Context::set('field', $a_user_input_field);
+			// $o_post_model = \X2board\Includes\getModel('post');
+			// $a_user_input_field = $o_post_model->get_user_define_fields();
+			// unset($o_post_model);
+			// \X2board\Includes\Classes\Context::set('field', $a_user_input_field);
 			// begin - for editor.view.php module usage	
-			\X2board\Includes\Classes\Context::set('skin_path_abs', $this->skin_path);  
-			\X2board\Includes\Classes\Context::set('module_info', $this->module_info);  
+			\X2board\Includes\Classes\Context::set('skin_path_abs', $this->skin_path);
+			\X2board\Includes\Classes\Context::set('module_info', $this->module_info);
 			// end - for editor.view.php module usage	
-
-			// wp_localize_script(X2B_JS_HANDLER_USER, 'x2board_common_info', array(
-			// 	'board_id'      => \X2board\Includes\Classes\Context::get('board_id'),
-				// 'post_id'       => \X2board\Includes\Classes\Context::get('post_id'),
-				// 'tree_category'     => '',//unserialize($this->meta->tree_category),
-				// 'cmd'               => \X2board\Includes\Classes\Context::get('cmd'), //$this->mod,
-				// 'use_editor' => ''  //$this->board->use_editor,
-			// ));
 
 			// setup the skin file
 			echo $this->render_skin_file('editor_post');

@@ -531,10 +531,7 @@ function x2b_wpsortableui_callback( $args ) {
  * @return void
  */
 function x2b_wpuserfieldui_callback( $args ) {
-	$o_post_admin_model = new \X2board\Includes\Modules\Post\postAdminModel();
-	$a_user_default_fields = $o_post_admin_model->get_user_define_fields();
-	$a_extended_fields = $o_post_admin_model->get_extended_fields();
-
+	
 	$html = '<div class="x2board-fields-wrap">
 				<!---div class="x2board-fields-message">
 					일부 스킨에서는 입력필드 설정이 적용되지 않습니다.
@@ -549,157 +546,160 @@ function x2b_wpuserfieldui_callback( $args ) {
 								<span class="fields-down">▼</span>
 							</button>
 							<ul class="x2board-fields-list x2board-fields-content">';
+	
+	// $n_board_id = isset($_GET['board_id'])?esc_attr($_GET['board_id']):'';
+	$o_post_admin_model = new \X2board\Includes\Modules\Post\postAdminModel();
+	// $o_post_admin_model->set_board_id($n_board_id);
+	$a_user_default_fields = $o_post_admin_model->get_default_fields();
 	foreach($a_user_default_fields as $key=>$item)	{
-// var_dump($key);								
 ////////////////////////
-							$html .= '<li class="default '.$key.'">';
-							$html .= '<input type="hidden" class="field_data class" value="'.$item['class'].'">';
-							$s_value = isset($item['close_button'])?$item['close_button']:'';
-							$html .= '<input type="hidden" class="field_data close_button" value="'.$s_value.'">';
-							$html .= '<div class="x2board-extends-fields">
+		$html .= 				'<li class="default '.$key.'">';
+		$html .= 					'<input type="hidden" class="field_data class" value="'.$item['class'].'">';
+		$s_value = isset($item['close_button'])?$item['close_button']:'';
+		$html .= 					'<input type="hidden" class="field_data close_button" value="'.$s_value.'">';
+		$html .= 					'<div class="x2board-extends-fields">
 										<div class="x2board-fields-title toggle x2board-field-handle">
 											<button type="button">';
-							$html .= 		esc_html($item['field_label']);
-							$html .= 		'<span class="fields-up">▲</span>
+		$html .=					 		esc_html($item['field_label']);
+		$html .= 							'<span class="fields-up">▲</span>
 												<span class="fields-down">▼</span>
 											</button>
 										</div>
 										<div class="x2board-fields-toggle">';
-							$html .= 	'<button type="button" class="fields-remove" title="'.__('Remove', 'x2board').'">X</button>
+		$html .= 							'<button type="button" class="fields-remove" title="'.__('Remove', 'x2board').'">X</button>
 										</div>
 									</div>
 									<div class="x2board-fields-content">';
-							$html .=	'<input type="hidden" class="field_data field_type" value="'.esc_attr($item['field_type']).'">';
-							$html .= 	'<input type="hidden" class="field_data field_label" value="'.esc_attr($item['field_label']).'">';
-							if(isset($item['option_field'])){
-								$html .= 	'<input type="hidden" class="field_data option_field" value="'.esc_attr($item['option_field']).'">';
-							}
-							$html .= 	'<div class="attr-row">';
-							$html .= 		'<label class="attr-name" for="'.$key.'_field_label">'.__('Field Label', 'x2board').'</label>
+		$html .=						'<input type="hidden" class="field_data field_type" value="'.esc_attr($item['field_type']).'">';
+		$html .= 						'<input type="hidden" class="field_data field_label" value="'.esc_attr($item['field_label']).'">';
+		if(isset($item['option_field'])){
+			$html .= 					'<input type="hidden" class="field_data option_field" value="'.esc_attr($item['option_field']).'">';
+		}
+		$html .=					 	'<div class="attr-row">';
+		$html .= 							'<label class="attr-name" for="'.$key.'_field_label">'.__('Field Label', 'x2board').'</label>
 											<div class="attr-value">';
-							$html .= 			'<input type="text" id="'.$key.'_field_label" class="field_data field_name" placeholder="'.esc_attr($item['field_label']).'">';
-							$html .= 		'</div>
+		$html .= 								'<input type="text" id="'.$key.'_field_label" class="field_data field_name" placeholder="'.esc_attr($item['field_label']).'">';
+		$html .= 							'</div>
 										</div>';
-							if(isset($item['roles'])){
-								$html .= 	'<div class="attr-row">';
-								$html .= 		'<label class="attr-name" for="'.$key.'_roles">'.__('Whom to display', 'x2board').'</label>
-												<div class="attr-value">';
-								$html .= 			'<select id="'.$key.'_roles" class="field_data roles" onchange="x2board_fields_permission_roles_view(this)">
-														<option value="all" selected>'.__('All', 'x2board').'</option>
-														<option value="author">'.__('Loggedin user', 'x2board').'</option>
-														<option value="roles">'.__('Choose below', 'x2board').'</option>
-													</select>
-													<div class="x2board-permission-read-roles-view x2board-hide">';
-								foreach(get_editable_roles() as $roles_key=>$roles_value) {
-									$s_mandatory = $roles_key=='administrator' ? 'onclick="return false" checked' : '';
-									$html .=			'<label><input type="checkbox" class="field_data roles_checkbox" value="'.$roles_key.'" '.$s_mandatory.'> '. _x($roles_value['name'], 'User role').'</label>';
-								}
-														
-								$html .=			'</div>
-												</div>
-											</div>';
-							}
-							if(isset($item['secret_permission'])) {
-								$html .=	'<div class="attr-row">';
-								$html .=		'<label class="attr-name" for="'.$key.'_secret">'.__('Secret post', 'x2board').'</label>';
-								$html .=		'<div class="attr-value">';
-								$html .=			'<select id="'.$key.'_secret" class="field_data secret-roles" onchange="x2board_fields_permission_roles_view(this)">
+		if(isset($item['roles'])){
+			$html .= 					'<div class="attr-row">';
+			$html .= 						'<label class="attr-name" for="'.$key.'_roles">'.__('Whom to display', 'x2board').'</label>
+											<div class="attr-value">';
+			$html .= 							'<select id="'.$key.'_roles" class="field_data roles" onchange="x2board_fields_permission_roles_view(this)">
+													<option value="all" selected>'.__('All', 'x2board').'</option>
+													<option value="author">'.__('Loggedin user', 'x2board').'</option>
+													<option value="roles">'.__('Choose below', 'x2board').'</option>
+												</select>
+												<div class="x2board-permission-read-roles-view x2board-hide">';
+			foreach(get_editable_roles() as $roles_key=>$roles_value) {
+				$s_mandatory = $roles_key=='administrator' ? 'onclick="return false" checked' : '';
+				$html .=							'<label><input type="checkbox" class="field_data roles_checkbox" value="'.$roles_key.'" '.$s_mandatory.'> '. _x($roles_value['name'], 'User role').'</label>';
+			}
+			$html .=							'</div>
+											</div>
+										</div>';
+		}
+		if(isset($item['secret_permission'])) {
+			$html .=					'<div class="attr-row">';
+			$html .=						'<label class="attr-name" for="'.$key.'_secret">'.__('Secret post', 'x2board').'</label>';
+			$html .=						'<div class="attr-value">';
+			$html .=							'<select id="'.$key.'_secret" class="field_data secret-roles" onchange="x2board_fields_permission_roles_view(this)">
 													<option value="all">'.__('All', 'x2board').'</option>';
-								$s_selected = $item['secret_permission'] == 'author' ? 'selected' : '';
-								$html .=			'<option value="author" '.$s_selected.'  >'.__('Loggedin user', 'x2board').'</option>';
-								$s_selected = $item['secret_permission'] == 'roles' ? 'selected' : '';
-								$html .=			'<option value="roles" '.$s_selected.'>'.__('Choose below', 'x2board').'</option>
-													</select>';
-								$s_hide = $item['secret_permission'] != 'roles' ? 'x2board-hide' : '';
-								$html .=			'<div class="x2board-permission-read-roles-view '.$s_hide.'">';
-								foreach(get_editable_roles() as $roles_key=>$roles_value) {
-									$s_mandatory = $roles_key=='administrator' ? 'onclick="return false" checked' : '';
-									$html .=			'<label><input type="checkbox" class="field_data secret_checkbox" value="'.$roles_key.'" '.$s_mandatory.'> '._x($roles_value['name'], 'User role').'</label>';
-								}
-								$html .=			'</div>
-												</div>
-											</div>';
+			$s_selected = $item['secret_permission'] == 'author' ? 'selected' : '';
+			$html .=								'<option value="author" '.$s_selected.'  >'.__('Loggedin user', 'x2board').'</option>';
+			$s_selected = $item['secret_permission'] == 'roles' ? 'selected' : '';
+			$html .=								'<option value="roles" '.$s_selected.'>'.__('Choose below', 'x2board').'</option>
+												</select>';
+			$s_hide = $item['secret_permission'] != 'roles' ? 'x2board-hide' : '';
+			$html .=							'<div class="x2board-permission-read-roles-view '.$s_hide.'">';
+			foreach(get_editable_roles() as $roles_key=>$roles_value) {
+				$s_mandatory = $roles_key=='administrator' ? 'onclick="return false" checked' : '';
+				$html .=							'<label><input type="checkbox" class="field_data secret_checkbox" value="'.$roles_key.'" '.$s_mandatory.'> '._x($roles_value['name'], 'User role').'</label>';
+			}
+			$html .=							'</div>
+											</div>
+										</div>';
+		}
+		if(isset($item['notice_permission'])) {
+			$html .=					'<div class="attr-row">
+											<label class="attr-name" for="'.$key.'-notice">'.__('Notice', 'x2board').'</label>';
+			$html .=						'<div class="attr-value">';
+			$html .=							'<select id="'.$key.'-notice" class="field_data notice-roles" onchange="x2board_fields_permission_roles_view(this)">
+													<option value="all">'.__('All', 'x2board').'</option>';
+			$s_selected = $item['notice_permission'] == 'author' ? 'selected' : '';
+			$html .=								'<option value="author" '.$s_selected.'>'.__('Loggedin user', 'x2board').'</option>';
+			$s_selected = $item['notice_permission'] == 'roles' ? 'selected' : '';
+			$html .=								'<option value="roles" '.$s_selected.'>'.__('Choose below', 'x2board').'</option>
+												</select>';
+			$s_hide = $item['notice_permission'] != 'roles' ? 'x2board-hide' : '';
+			$html .=							'<div class="x2board-permission-read-roles-view '.$s_hide.'">';
+			foreach(get_editable_roles() as $roles_key=>$roles_value) {
+				$s_mandatory = $roles_key=='administrator' ? 'onclick="return false"' : '';
+				$s_checked = ( $roles_key=='administrator' || in_array($roles_key, $item['notice'])) ? 'checked' : '';
+				$html .=							'<label><input type="checkbox" class="field_data notice_checkbox" value="'.$roles_key.'" '.$s_mandatory.' '.$s_checked.'> '. _x($roles_value['name'], 'User role').'</label>';
+			}
+			$html .=							'</div>
+											</div>
+										</div>';
+		}
+		if(isset($item['default_value'])) {
+			$html .=					'<div class="attr-row">';
+			$html .=						'<label class="attr-name" for="'.$key.'_default_value">'.__('Defaul value', 'x2board').'</label>
+											<div class="attr-value">';
+			if($item['field_type'] == 'search') {
+				$html .=						'<select id="'.$key.'_default_value" class="field_data default_value">
+													<option value="1">'.__('Title and content', 'x2board').'</option>
+													<option value="2">'.__('Title (secret post)', 'x2board').'</option>
+													<option value="3">'.__('Hide from search', 'x2board').'</option>
+												</select>';
+			}
+			else {
+				$html .=						'<input type="text" class="field_data default_value">';
+			}
+			$html .=						'</div>
+										</div>';
+		}
+		if(isset($item['placeholder'])) {
+			$html .=					'<div class="attr-row">
+											<label class="attr-name" for="'.$key.'_placeholder">Placeholder</label>';
+			$s_placeholder = (isset($item['placeholder']) && $item['placeholder']) ? $item['placeholder'] : '';
+			$html .=						'<div class="attr-value"><input type="text" id="'.$key.'_placeholder" class="field_data placeholder" value="'.$s_placeholder.'"></div>
+										</div>';
+		}
+		if(isset($item['description'])) {
+			$html .=					'<div class="attr-row">
+											<label class="attr-name" for="'.$key.'_description">설명</label>
+											<div class="attr-value">
+												<input type="text" id="'.$key.'_description" class="field_data field_description" value="'.$item['description'].'">
+											</div>
+										</div>';
+		}
+		if(isset($item['required']) || isset($item['show_document']) || isset($item['hidden'])) {
+			$html .=					'<div class="attr-row">';
+			if(isset($item['required'])) {
+				$s_checked = $item['required'] ? 'checked' : '';
+				$html .=					'<label>
+												<input type="hidden" class="field_data required" value="">
+												<input type="checkbox" class="field_data required" value="1" '.$s_checked.'>'.__('Required', 'x2board').'
+											</label>';
+			}
+			if(isset($item['show_document'])) {
+				$s_checked = $item['show_document'] ?  'checked' : '';
+				$html .=					'<label>
+												<input type="hidden" class="field_data show_document" value="">
+												<input type="checkbox" class="field_data show_document" value="1" '.$s_checked.'>'.__('Display on post content', 'x2board').'
+											</label>';
+			}
+			if(isset($item['hidden'])) {
+				$s_checked = isset($item['show_document']) ?  'checked' : '';
+				$html .=					'<label>
+												<input type="hidden" class="field_data hidden" value="">
+												<input type="checkbox" class="field_data hidden" value="1" '.$s_checked.'>'.__('Hiding', 'x2board').'
+											</label>';
+			}
+			$html .=					'</div>';
 							}
-							if(isset($item['notice_permission'])) {
-								$html .=	'<div class="attr-row">
-												<label class="attr-name" for="'.$key.'-notice">'.__('Notice', 'x2board').'</label>';
-								$html .=		'<div class="attr-value">';
-								$html .=			'<select id="<?php echo $key?>-notice" class="field_data notice-roles" onchange="x2board_fields_permission_roles_view(this)">
-														<option value="all">'.__('All', 'x2board').'</option>';
-								$s_selected = $item['notice_permission'] == 'author' ? 'selected' : '';
-								$html .=				'<option value="author" '.$s_selected.'>'.__('Loggedin user', 'x2board').'</option>';
-								$s_selected = $item['notice_permission'] == 'roles' ? 'selected' : '';
-								$html .=				'<option value="roles" '.$s_selected.'>'.__('Choose below', 'x2board').'</option>
-													</select>';
-								$s_hide = $item['notice_permission'] != 'roles' ? 'x2board-hide' : '';
-								$html .=			'<div class="x2board-permission-read-roles-view '.$s_hide.'">';
-								foreach(get_editable_roles() as $roles_key=>$roles_value) {
-									$s_mandatory = $roles_key=='administrator' ? 'onclick="return false"' : '';
-									$s_checked = ( $roles_key=='administrator' || in_array($roles_key, $item['notice'])) ? 'checked' : '';
-									$html .=			'<label><input type="checkbox" class="field_data notice_checkbox" value="'.$roles_key.'" '.$s_mandatory.' '.$s_checked.'> '. _x($roles_value['name'], 'User role').'</label>';
-								}
-								$html .=			'</div>
-												</div>
-											</div>';
-							}
-							if(isset($item['default_value'])){
-								$html .=	'<div class="attr-row">';
-								$html .=		'<label class="attr-name" for="'.$key.'_default_value">'.__('Defaul value', 'x2board').'</label>
-												<div class="attr-value">';
-								if($item['field_type'] == 'search'){
-									$html .=		'<select id="'.$key.'_default_value" class="field_data default_value">
-														<option value="1">'.__('Title and content', 'x2board').'</option>
-														<option value="2">'.__('Title (secret post)', 'x2board').'</option>
-														<option value="3">'.__('Hide from search', 'x2board').'</option>
-													</select>';
-								}
-								else {
-									$html .=		'<input type="text" class="field_data default_value">';
-								}
-								$html .=		'</div>
-											</div>';
-							}
-							if(isset($item['placeholder'])) {
-								$html .=	'<div class="attr-row">
-												<label class="attr-name" for="'.$key.'_placeholder">Placeholder</label>';
-								$s_placeholder = (isset($item['placeholder']) && $item['placeholder']) ? $item['placeholder'] : '';
-								$html .=	'<div class="attr-value"><input type="text" id="'.$key.'_placeholder" class="field_data placeholder" value="'.$s_placeholder.'"></div>
-											</div>';
-							}
-							if(isset($item['description'])){
-								$html .=	'<div class="attr-row">
-												<label class="attr-name" for="'.$key.'_description">설명</label>
-												<div class="attr-value">
-													<input type="text" id="'.$key.'_description" class="field_data field_description" value="'.$item['description'].'">
-												</div>
-											</div>';
-							}
-							if(isset($item['required']) || isset($item['show_document']) || isset($item['hidden'])) {
-								$html .=	'<div class="attr-row">';
-								if(isset($item['required'])) {
-									$s_checked = $item['required'] ? 'checked' : '';
-									$html .=	'<label>
-													<input type="hidden" class="field_data required" value="">
-													<input type="checkbox" class="field_data required" value="1" '.$s_checked.'>'.__('Required', 'x2board').'
-												</label>';
-								}
-								if(isset($item['show_document'])) {
-									$s_checked = $item['show_document'] ?  'checked' : '';
-									$html .=	'<label>
-													<input type="hidden" class="field_data show_document" value="">
-													<input type="checkbox" class="field_data show_document" value="1" '.$s_checked.'>'.__('Display on post content', 'x2board').'
-												</label>';
-								}
-								if(isset($item['hidden'])) {
-									$s_checked = isset($item['show_document']) ?  'checked' : '';
-									$html .=	'<label>
-													<input type="hidden" class="field_data hidden" value="">
-													<input type="checkbox" class="field_data hidden" value="1" '.$s_checked.'>'.__('Hiding', 'x2board').'
-												</label>';
-								}
-								$html .=	'</div>';
-							}
-							$html .=	'</div>
+			$html .=					'</div>
 									</li>';
 //////////////////////////
 	}
@@ -713,19 +713,20 @@ function x2b_wpuserfieldui_callback( $args ) {
 								<span class="fields-down">▼</span>
 							</button>
 							<ul class="x2board-fields-list x2board-fields-content">';
+	$a_extended_fields = $o_post_admin_model->get_extended_fields();
 	if($a_extended_fields) {
 		foreach($a_extended_fields as $key=>$item) {
 ////////////////////////////////
-								$html .= '<li class="extends '.$key.'">';
-								$html .= 	'<input type="hidden" value="'.$item['class'].'" class="field_data class">';
-								$s_value = isset($item['close_button']) ? $item['close_button'] : '';
-								$html .= 	'<input type="hidden" class="field_data close_button" value="'.$s_value.'">
+			$html .=			'<li class="extends '.$key.'">';
+			$html .= 				'<input type="hidden" value="'.$item['class'].'" class="field_data class">';
+			$s_value = isset($item['close_button']) ? $item['close_button'] : '';
+			$html .= 				'<input type="hidden" class="field_data close_button" value="'.$s_value.'">
 									<div class="x2board-extends-fields">
 										<div class="x2board-fields-title toggle x2board-field-handle">
 											<button type="button">';
-								$html .= 	esc_html($item['field_label']);
-								$html .= 		'<span class="fields-up">▲</span>
-												<span class="fields-down">▼</span>
+			$html .=					 	esc_html($item['field_label']);
+			$html .=				 		'<span class="fields-up">▲</span>
+											<span class="fields-down">▼</span>
 											</button>
 										</div>
 										<div class="x2board-fields-toggle">
@@ -733,137 +734,137 @@ function x2b_wpuserfieldui_callback( $args ) {
 										</div>
 									</div>
 									<div class="x2board-fields-content">';
-								$html .= '<input type="hidden" class="field_data field_type" value="'.esc_attr($item['field_type']).'">';
-								$html .= '<input type="hidden" class="field_data field_label" value="'.esc_attr($item['field_label']).'">';
-								if( $o_post_admin_model->is_multiline_fields($item['field_type']) ) {
-									$html .= '<div class="attr-row">
-												<label class="attr-name">'.__('Field label', 'x2board').'</label>
-												<div class="attr-value"><input type="text" class="field_data field_name" placeholder="'.esc_attr($item['field_label']).'"></div>
-											</div>';
-									if(isset($item['meta_key'])){
-										$html .= '<div class="attr-row">
-														<label class="attr-name">'.__('Meta key', 'x2board').'</label>
-														<div class="attr-value"><input type="text" class="field_data meta_key" placeholder="meta_key"></div>
-														<div class="description">※ 입력하지 않으면 자동으로 설정되며 저장 이후에는 값을 변경할 수 없습니다.</div>
-													</div>';
-									}
-									$html .= '<div class="attr-row">
-												<label class="attr-name">'.$item['field_label'].'</label>
-												<div class="attr-value">';
-									if($item['field_type'] == 'html'){
-										$html .= '<textarea class="field_data html" rows="5"></textarea>';
-									}
-									elseif($item['field_type'] == 'shortcode'){
-										$html .= '<textarea class="field_data shortcode" rows="5"></textarea>';
-									}
-									$html .= '</div>
-											</div>';
-									if(isset($item['show_document'])) {
-										$html .= '<input type="hidden" class="field_data show_document" value="">
-													<label><input type="checkbox" class="field_data show_document" value="1">'.__('Display on post content', 'x2board').'</label>';
-									}
-								}
-								else {
-									$html .= '<div class="attr-row">
-												<label class="attr-name">'.__('Field label', 'x2board').'</label>
-												<div class="attr-value"><input type="text" class="field_data field_name" placeholder="'.esc_attr($item['field_label']).'"></div>
-											</div>';
-									if(isset($item['meta_key'])) {
-										$html .= '<div class="attr-row">
-													<label class="attr-name">'.__('Meta key', 'x2board').'</label>
-													<div class="attr-value"><input type="text" class="field_data meta_key" placeholder="meta_key"></div>
-													<div class="description">※ 입력하지 않으면 자동으로 설정되며 저장 이후에는 값을 변경할 수 없습니다.</div>
-												</div>';
-									}
-									if(isset($item['row'])) {
-										$uniq_id = 'uniqid from settings-page.php';
-										$html .= '<div class="x2board-radio-reset">
-													<div class="attr-row option-wrap">
-														<div class="attr-name option">
-															<label for="'.$uniq_id.'">'.__('Label', 'x2board').'</label>
-														</div>
-														<div class="attr-value">
-															<input type="text" id="'.$uniq_id.'" class="field_data option_label">
-															<button type="button" class="'.$item['field_type'].'" onclick="add_option(this)">+</button>
-															<button type="button" class="'.$item['field_type'].'" onclick="remove_option(this)">-</button>
-															<label>';
-										if($item['field_type'] == 'checkbox') {
-											$html .= 		'<input type="checkbox" name="'.$item['field_type'].'" class="field_data default_value" value="1">';
-										}
-										else {
-											$html .= 		'<input type="radio" name="'.$item['field_type'].'" class="field_data default_value" value="1">';
-										}
-										$html .= 			__('Default value', 'x2board');
-										$html .= 			'</label>';
-										if($item['field_type'] == 'radio' || $item['field_type'] == 'select') {
-											$html .= 		'<span style="vertical-align:middle;cursor:pointer;" onclick="x2board_radio_reset(this)">· '.__('Reset', 'x2board').'</span>';
-										}
-										$html .= 		'</div>
-													</div>
-												</div>';
-									}
-									if(isset($item['roles'])) {
-										$html .= '<div class="attr-row">
-													<label class="attr-name">'.__('Whom to diplay', 'x2board').'</label>
-													<div class="attr-value">
-														<select class="field_data roles" onchange="x2board_fields_permission_roles_view(this)">
-															<option value="all" selected>'.__('All', 'x2board').'</option>
-															<option value="author">'.__('Loggedin user', 'x2board').'</option>
-															<option value="roles">'.__('Choose below', 'x2board').'</option>
-														</select>
-														<div class="x2board-permission-read-roles-view x2board-hide">';
-										foreach(get_editable_roles() as $roles_key=>$roles_value) {
-											$s_mandatory = $roles_key=='administrator' ? 'onclick="return false" checked' : '';
-											$html .= '	<label><input type="checkbox" class="field_data roles_checkbox" value="'.$roles_key.'" '.$s_mandatory.'  > '. _x($roles_value['name'], 'User role').'</label>';
-										}
-										$html .= 		'</div>
-													</div>
-												</div>';
-									}
-									if(isset($item['default_value']) && !isset($item['row'])) {
-										$html .= '<div class="attr-row">
-													<label class="attr-name">'.__('Default value', 'x2board').'</label>
-													<div class="attr-value"><input type="text" class="field_data default_value"></div>
-												</div>';
-									}
-									if(isset($item['placeholder'])) {
-										$html .= '<div class="attr-row">
-													<label class="attr-name">Placeholder</label>
-													<div class="attr-value"><input type="text" class="field_data placeholder"></div>
-												</div>';
-									}
-									if(isset($item['description'])) {
-										$html .= '<div class="attr-row">
-													<label class="attr-name">'.__('Description', 'x2board').'</label>
-													<div class="attr-value">
-														<input type="text" class="field_data field_description" value="'.$item['description'].'">';
-										$html .= 	'</div>
-												</div>';
-									}
-									if(isset($item['custom_class'])) {
-										$html .= '<div class="attr-row">
-													<label class="attr-name">'.__('CSS class', 'x2board').'</label>
-													<div class="attr-value"><input type="text" class="field_data custom_class"></div>
-												</div>';
-									}
-									$html .= '<div class="attr-row">';
-									if(isset($item['required'])) {
-										$html .= '<input type="hidden" class="field_data required" value="">
-												<label><input type="checkbox" class="field_data required" value="1">'.__('Required', 'x2board').'</label>';
-									}
-									if(isset($item['show_document'])) {
-										$html .= '<input type="hidden" class="field_data show_document" value="">
-												<label><input type="checkbox" class="field_data show_document" value="1">'.__('Display on post content', 'x2board').'</label>';
-									}
-									if(isset($item['hidden'])) {
-										$s_hidden_filed_notifier = $item['field_type'] == 'text' ? '(hidden)' : '';
-										$html .= '<input type="hidden" class="field_data hidden" value="">
-												<label><input type="checkbox" class="field_data hidden" value="1">'.__('Hiding', 'x2board').''.$s_hidden_filed_notifier.'</label>';
-									}
-									$html .= '</div>';
-								}
-								$html .= '</div>
-									</li>';
+			$html .= 					'<input type="hidden" class="field_data field_type" value="'.esc_attr($item['field_type']).'">';
+			$html .= 					'<input type="hidden" class="field_data field_label" value="'.esc_attr($item['field_label']).'">';
+			if( $o_post_admin_model->is_multiline_fields($item['field_type']) ) {
+				$html .=				 '<div class="attr-row">
+											<label class="attr-name">'.__('Field label', 'x2board').'</label>
+											<div class="attr-value"><input type="text" class="field_data field_name" placeholder="'.esc_attr($item['field_label']).'"></div>
+										</div>';
+				if(isset($item['meta_key'])){
+					$html .= 			'<div class="attr-row">
+											<label class="attr-name">'.__('Meta key', 'x2board').'</label>
+											<div class="attr-value"><input type="text" class="field_data meta_key" placeholder="meta_key"></div>
+											<div class="description">※ 입력하지 않으면 자동으로 설정되며 저장 이후에는 값을 변경할 수 없습니다.</div>
+										</div>';
+				}
+				$html .= '<div class="attr-row">
+							<label class="attr-name">'.$item['field_label'].'</label>
+							<div class="attr-value">';
+				if($item['field_type'] == 'html'){
+					$html .= '<textarea class="field_data html" rows="5"></textarea>';
+				}
+				elseif($item['field_type'] == 'shortcode'){
+					$html .= '<textarea class="field_data shortcode" rows="5"></textarea>';
+				}
+				$html .= '</div>
+						</div>';
+				if(isset($item['show_document'])) {
+					$html .= '<input type="hidden" class="field_data show_document" value="">
+							<label><input type="checkbox" class="field_data show_document" value="1">'.__('Display on post content', 'x2board').'</label>';
+				}
+			}
+			else {
+				$html .= '<div class="attr-row">
+							<label class="attr-name">'.__('Field label', 'x2board').'</label>
+							<div class="attr-value"><input type="text" class="field_data field_name" placeholder="'.esc_attr($item['field_label']).'"></div>
+						</div>';
+				if(isset($item['meta_key'])) {
+					$html .= '<div class="attr-row">
+								<label class="attr-name">'.__('Meta key', 'x2board').'</label>
+								<div class="attr-value"><input type="text" class="field_data meta_key" placeholder="meta_key"></div>
+								<div class="description">※ 입력하지 않으면 자동으로 설정되며 저장 이후에는 값을 변경할 수 없습니다.</div>
+							</div>';
+				}
+				if(isset($item['row'])) {
+					$uniq_id = 'php_'.uniqid();
+					$html .= '<div class="x2board-radio-reset">
+								<div class="attr-row option-wrap">
+									<div class="attr-name option">
+										<label for="'.$uniq_id.'">'.__('Label', 'x2board').'</label>
+									</div>
+									<div class="attr-value">
+										<input type="text" id="'.$uniq_id.'" class="field_data option_label">
+										<button type="button" class="'.$item['field_type'].'" onclick="add_option(this)">+</button>
+										<button type="button" class="'.$item['field_type'].'" onclick="remove_option(this)">-</button>
+										<label>';
+					if($item['field_type'] == 'checkbox') {
+						$html .= 			'<input type="checkbox" name="'.$item['field_type'].'" class="field_data default_value" value="1">';
+					}
+					else {
+						$html .= 			'<input type="radio" name="'.$item['field_type'].'" class="field_data default_value" value="1">';
+					}
+					$html .= 			__('Default value', 'x2board');
+					$html .= 			'</label>';
+					if($item['field_type'] == 'radio' || $item['field_type'] == 'select') {
+						$html .= 		'<span style="vertical-align:middle;cursor:pointer;" onclick="x2board_radio_reset(this)">· '.__('Reset', 'x2board').'</span>';
+					}
+					$html .= 		'</div>
+									</div>
+								</div>';
+				}
+				if(isset($item['roles'])) {
+					$html .=	 '<div class="attr-row">
+									<label class="attr-name">'.__('Whom to diplay', 'x2board').'</label>
+									<div class="attr-value">
+										<select class="field_data roles" onchange="x2board_fields_permission_roles_view(this)">
+											<option value="all" selected>'.__('All', 'x2board').'</option>
+											<option value="author">'.__('Loggedin user', 'x2board').'</option>
+											<option value="roles">'.__('Choose below', 'x2board').'</option>
+										</select>
+										<div class="x2board-permission-read-roles-view x2board-hide">';
+					foreach(get_editable_roles() as $roles_key=>$roles_value) {
+						$s_mandatory = $roles_key=='administrator' ? 'onclick="return false" checked' : '';
+						$html .= '	<label><input type="checkbox" class="field_data roles_checkbox" value="'.$roles_key.'" '.$s_mandatory.'  > '. _x($roles_value['name'], 'User role').'</label>';
+					}
+					$html .=	'</div>
+								</div>
+							</div>';
+				}
+				if(isset($item['default_value']) && !isset($item['row'])) {
+					$html .= '<div class="attr-row">
+								<label class="attr-name">'.__('Default value', 'x2board').'</label>
+								<div class="attr-value"><input type="text" class="field_data default_value"></div>
+							</div>';
+				}
+				if(isset($item['placeholder'])) {
+					$html .= '<div class="attr-row">
+								<label class="attr-name">Placeholder</label>
+								<div class="attr-value"><input type="text" class="field_data placeholder"></div>
+							</div>';
+				}
+				if(isset($item['description'])) {
+					$html .= '<div class="attr-row">
+								<label class="attr-name">'.__('Description', 'x2board').'</label>
+								<div class="attr-value">
+									<input type="text" class="field_data field_description" value="'.$item['description'].'">';
+					$html .= 	'</div>
+							</div>';
+				}
+				if(isset($item['custom_class'])) {
+					$html .= '<div class="attr-row">
+								<label class="attr-name">'.__('CSS class', 'x2board').'</label>
+								<div class="attr-value"><input type="text" class="field_data custom_class"></div>
+							</div>';
+				}
+				$html .= '<div class="attr-row">';
+				if(isset($item['required'])) {
+					$html .= '<input type="hidden" class="field_data required" value="">
+							<label><input type="checkbox" class="field_data required" value="1">'.__('Required', 'x2board').'</label>';
+				}
+				if(isset($item['show_document'])) {
+					$html .= '<input type="hidden" class="field_data show_document" value="">
+							<label><input type="checkbox" class="field_data show_document" value="1">'.__('Display on post content', 'x2board').'</label>';
+				}
+				if(isset($item['hidden'])) {
+					$s_hidden_filed_notifier = $item['field_type'] == 'text' ? '(hidden)' : '';
+					$html .= '<input type="hidden" class="field_data hidden" value="">
+							<label><input type="checkbox" class="field_data hidden" value="1">'.__('Hiding', 'x2board').''.$s_hidden_filed_notifier.'</label>';
+				}
+				$html .= '</div>';
+			}
+			$html .= '</div>
+					</li>';
 ////////////////////////////////
 		}
 	}
@@ -876,10 +877,372 @@ function x2b_wpuserfieldui_callback( $args ) {
 				<div class="x2board-fields x2board-sortable-fields">
 					<h3 class="x2board-fields-h3">입력 필드 구조</h3>
 					<div class="description">왼쪽 열에서 필드를 드래그 앤 드롭으로 추가하세요.</div>
-					<ul class="x2board-skin-fields x2board-fields-sortable connected-sortable">
-						
-					</ul>
-					<div class="description">에러가 나거나 설정이 잘못됐다면 <button type="button" class="button button-small" onclick="x2board_skin_fields_reset()">초기화</button> 해주세요.</div>
+					<ul class="x2board-skin-fields x2board-fields-sortable connected-sortable">';
+	$a_user_define_fields = $o_post_admin_model->get_user_define_fields();
+	foreach($a_user_define_fields as $key=>$item) {
+		$meta_key = isset($item['meta_key']) && $item['meta_key'] ? $item['meta_key'] : $key;
+		$field_label = $o_post_admin_model->get_field_label($item);
+		$html .= 		'<li class="'.$o_post_admin_model->is_default_field($item['field_type']).' '.esc_attr($meta_key).' '.esc_attr($item['field_type']).'">';
+		$html .= 			'<input type="hidden" class="parent_id" value="'.esc_attr($meta_key).'">';
+		$html .= 			'<input type="hidden" name="fields['.esc_attr($meta_key).'][class]" class="field_data class" value="'.$item['class'].'">';
+		$s_clos_btn = isset($item['close_button']) ? $item['close_button'] : '';
+		$html .= 			'<input type="hidden" name="fields['.esc_attr($meta_key).'][close_button]" class="field_data close_button" value="'.$s_clos_btn.'">';
+		$html .= 				'<div class="x2board-saved-fields-header">';
+		$s_clos_btn = !(isset($item['close_button']) && $item['close_button'] == 'yes') ? 'only-toggle' : '';
+		$html .= 					'<div class="x2board-fields-title toggle x2board-field-handle '.$s_clos_btn.'">
+										<button type="button">';
+		$html .= 							esc_html($field_label);
+		if(isset($item['field_name']) && $item['field_name']) {
+			$html .= ' : ' . esc_html($item['field_name']);
+		}
+		$html .= 							'<span class="fields-up">▲</span>
+											<span class="fields-down">▼</span>
+										</button>
+									</div>';
+		if(isset($item['close_button']) && $item['close_button'] == 'yes') {
+			$html .= 				'<div class="x2board-fields-toggle">
+										<button type="button" class="fields-remove" title="'.__('Remove', 'x2board').'">X</button>
+									</div>';
+		}
+		$html .= 				'</div>
+								<div class="x2board-fields-content">';
+		$html .= 					'<input type="hidden" name="fields['.esc_attr($meta_key).'][field_type]" class="field_data field_type" value="'.esc_attr($item['field_type']).'">';
+		// 입력란의 [필드 레이블]에 해당하는 변수가 field_name 변수, field_name이 공란일 때 [필드 레이블]의 기본값
+		$html .= 					'<input type="hidden" name="fields['.esc_attr($meta_key).'][field_label]" class="field_data field_label" value="'.esc_attr($field_label).'">';
+		if(isset($item['option_field'])) {
+			$html .= 				'<input type="hidden" name="fields['.esc_attr($meta_key).'][option_field]" class="field_data option_field" value="1">';
+		}
+		if(isset($item['hidden'])) {
+			$html .= 				'<input type="text" name="fields['.esc_attr($meta_key).'][hidden]" class="field_data hidden" value="1">';
+		}
+		if($item['field_type'] == 'title') {
+			$html .= 				'<div class="attr-row">
+										<div class="description">※ 제목은 항상 필수로 입력해야 합니다.</div>
+										<input type="hidden" name="fields[title][permission]" value="all">
+									</div>';
+		}							
+		elseif($item['field_type'] == 'author') {
+			$html .= 				'<div class="attr-row">
+										<div class="description">※ 비회원은 비밀번호를 항상 필수로 입력해야 합니다.</div>
+									</div>';
+		}
+		elseif($item['field_type'] == '____attach') {
+			$html .= 				'<div class="attr-row">
+										<label class="attr-name" for="max_each_file_size_mb">첨부파일 당 최대 용량(Mb)</label>
+										<div class="attr-value">';
+			$html .= 						'<input type="text" id="max_each_file_size_mb" name="max_each_file_size_mb" value="'.esc_attr($meta->max_each_file_size_mb ).'" placeholder="Mb 단위 입력">
+										</div>
+									</div>';
+			$html .= 				'<div class="attr-row">
+										<label class="attr-name" for="max_attached_count">게시글당 최대 첨부파일 개수</label>
+										<div class="attr-value">
+											<select name="max_attached_count" id="max_attached_count">
+												<option value="">없음</option>
+												<option value="1" selected>1개</option>
+											</select>
+											<!-- <p class="description">일부 스킨에서는 적용되지 않습니다.</p> -->
+										</div>
+									</div>';
+		}
+		elseif($item['field_type'] == 'address') {
+			$html .= 				'<div class="attr-row">
+										<div class="description">※ 개인 정보이므로 게시글 본문에 표시를 선택하면 관리자에게 계속, 글 작성자에게 세션 시간 동안만 표시됩니다.</div>
+									</div>';
+		}
+									
+		if(isset($item['field_name'])) {
+			$html .= 				'<div class="attr-row">
+										<label class="attr-name" for="'.esc_attr($meta_key).'-field-label">필드 레이블</label>
+										<div class="attr-value">
+											<input type="text" id="'.esc_attr($meta_key).'-field-label" name="fields['.esc_attr($meta_key).'][field_name]" class="field_data field_name" value="'.esc_attr($item['field_name']).'" placeholder="'.esc_attr($field_label).'">
+										</div>
+									</div>';
+		}
+		$s_readonly = isset($meta_key) ? 'readonly' : '';
+		$html .= 					'<div class="attr-row">
+										<label class="attr-name" for="'.esc_attr($meta_key).'">메타키</label>
+										<div class="attr-value">
+											<input type="text" name="fields['.esc_attr($meta_key).'][meta_key]" id="'.esc_attr($meta_key).'" class="field_data meta_key" value="'.$meta_key.'" '.$s_readonly.' placeholder="meta_key">
+										</div>
+										<div class="description">※ 입력하지 않으면 자동으로 설정되며 저장 이후에는 값을 변경할 수 없습니다.</div>
+									</div>';
+		if(isset($item['row'])) {
+			if($o_post_admin_model->is_value_exists($item['row'])) {
+				$already_echo = false;
+				$html .= 			'<div class="x2board-radio-reset">';
+				foreach($item['row'] as $option_key=>$option_value) {
+					if(isset($option_value['label']) && $option_value['label']) {
+						$html .= 		'<div class="attr-row option-wrap">
+											<div class="attr-name option">
+												<label for="'.esc_attr($option_key).'_label">라벨</label>
+											</div>
+											<div class="attr-value">
+												<input type="text" id="'.esc_attr($option_key).'_label" name="fields['.esc_attr($meta_key).'][row]['.esc_attr($option_key).'][label]" id="'.esc_attr($meta_key).'" class="field_data option_label" value="'.esc_attr($option_value['label']).'">
+												<button type="button" class="'.esc_attr($item['field_type']).'" onclick="add_option(this)">+</button>
+												<button type="button" class="'.esc_attr($item['field_type']).'" onclick="remove_option(this)">-</button>
+												<label>';
+						if($item['field_type'] == 'checkbox') {
+							$s_default_value = (isset($option_value['default_value']) && $option_value['default_value'] == '1') ? 'checked' : '';
+							$html .= 			'<input type="checkbox" name="fields['.esc_attr($meta_key).'][row]['.esc_attr($option_key).'][default_value]" class="field_data default_value" '.$s_default_value.' value="1">';
+						}
+						else {
+							$s_checked = (isset($item['default_value']) && $item['default_value']==$option_key) ? 'checked' : '';
+							$html .= 			'<input type="radio" name="fields['.esc_attr($meta_key).'][default_value]" class="field_data default_value"        value="'.esc_attr($option_key).'">';
+						}
+						$html .= 				'기본값
+												</label>';
+						if($item['field_type'] == 'radio' || $item['field_type'] == 'select') {
+							if(!$already_echo) {
+								$html .= 		'<span style="vertical-align:middle;cursor:pointer;" onclick="x2board_radio_reset(this)">· '.__('Reset', 'x2board').'</span>';
+								$already_echo=true;
+							}
+						}
+						$html .= 			'</div>
+										</div>';
+					}
+				}
+				$html .= '</div>';
+			}
+			else {
+				$uniq_id = 'php_'.uniqid();
+				$html .= '<div class="attr-row option-wrap">
+							<div class="attr-name option">
+								<label for="'.esc_attr($meta_key).'_label">라벨</label>
+							</div>
+							<div class="attr-value">
+								<input type="text" id="'.esc_attr($meta_key).'_label" name="fields['.esc_attr($meta_key).'][row]['.$uniq_id.'][label]" class="field_data option_label" value="">
+								<button type="button" class="'.esc_attr($item['field_type']).'" onclick="add_option(this)">+</button>
+								<button type="button" class="'.esc_attr($item['field_type']).'" onclick="remove_option(this)">-</button>
+								<label>';
+				if($item['field_type'] == 'checkbox') {
+					$html .= '<input type="checkbox" name="fields['.esc_attr($meta_key).'][row]['.$uniq_id.'][default_value]" class="field_data default_value" value="">';
+				}
+				else {
+					$html .= '<input type="radio" name="fields['.esc_attr($meta_key).'][default_value]" class="field_data default_value" value="">';
+				}
+				$html .= 	'기본값
+								</label>
+							</div>
+						</div>';
+			}
+		}
+		if(isset($item['permission']) && $item['field_type'] != 'title') {
+			$html .= 	'<div class="attr-row">
+							<label class="attr-name" for="'.esc_attr($meta_key).'_permission">표시할 권한</label>
+							<div class="attr-value">';
+			if($item['field_type'] == 'author') {
+				$html .= 		'<select id="'.esc_attr($meta_key).'_permission" name="fields['.esc_attr($meta_key).'][permission]" class="field_data roles">
+									<option value="">비회원일때만 표시</option>';
+				$s_selected = $item['permission'] == 'always_visible' ? 'selected' : '';
+				$html .= 			'<option value="always_visible" '.$s_selected.'  >항상 표시</option>';
+				$s_selected = $item['permission'] == 'always_hide' ? 'selected' : '';
+				$html .= 			'<option value="always_hide" '.$s_selected.' >항상 숨김</option>
+								</select>';
+			}
+			else {
+				$html .= 		'<select id="'.esc_attr($meta_key).'_permission" name="fields['.esc_attr($meta_key).'][permission]" class="field_data roles" onchange="x2board_fields_permission_roles_view(this)">';
+				$s_selected = $item['permission'] == 'all' ? 'selected' : '';
+				$html .= 			'<option value="all" '.$s_selected.' >제한없음</option>';
+				$s_selected = $item['permission'] == 'author' ? 'selected' : '';
+				$html .= 			'<option value="author" '.$s_selected.'>로그인 사용자</option>';
+				$s_selected = $item['permission'] == 'roles' ? 'selected' : '';
+				$html .=	 		'<option value="roles" '.$s_selected.'>직접선택</option>
+								</select>';
+				$s_hide = $item['permission'] != 'roles' ? 'x2board-hide' : '';
+				$html .= 		'<div class="x2board-permission-read-roles-view '.$s_hide.'">';
+				foreach(get_editable_roles() as $roles_key=>$roles_value) {
+					$s_mandatory = $roles_key=='administrator' ? 'onclick="return false"' : '';
+					if( isset($item['roles'])) {
+						$s_checked = ($roles_key=='administrator' || in_array($roles_key, $item['roles'])) ? 'checked' : '';
+					}
+					else {
+						$s_checked = '';
+					}
+					$html .= 		'<label><input type="checkbox" name="fields['.esc_attr($meta_key).'][roles][]" class="field_data" value="'.$roles_key.'" '.$s_mandatory.' '.$s_checked.'> '._x($roles_value['name'], 'User role').'</label>';
+				}
+				$html .= 		'</div>';
+			}
+			$html .= 		'</div>
+						</div>';
+		}
+		if(isset($item['secret_permission'])) {
+			$html .= 	'<div class="attr-row">
+										<label class="attr-name" for="'.esc_attr($meta_key).'_secret">비밀글</label>
+										<div class="attr-value">
+											<select id="'.esc_attr($meta_key).'_secret" name="fields[option][secret_permission]" class="field_data roles" onchange="x2board_fields_permission_roles_view(this)">';
+			$s_selected = $item['secret_permission'] == 'all' ? 'selected' : '';
+			$html .= 							'<option value="all" '.$s_selected.'>제한없음</option>';
+			$s_selected = $item['secret_permission'] == 'author' ? 'selected' : '';
+			$html .= 							'<option value="author" '.$s_selected.'>로그인 사용자</option>';
+			$s_selected = $item['secret_permission'] == 'roles' ? 'selected' : '';
+			$html .= 							'<option value="roles" '.$s_selected.'>직접선택</option>';
+			$html .= 						'</select>';
+			$s_hile = $item['secret_permission'] != 'roles' ? 'x2board-hide' : '';
+			$html .= 						'<div class="x2board-permission-read-roles-view '.$s_hile.'">';
+			foreach(get_editable_roles() as $roles_key=>$roles_value) {
+				$s_mandatory = $roles_key=='administrator' ? 'onclick="return false"' : '';
+				$s_checked = ($roles_key=='administrator' || in_array($roles_key, $item['secret'])) ? 'checked' : '';
+				$html .= 						'<label><input type="checkbox" name="fields[option][secret][]" class="field_data" value="'.$roles_key.'" '.$s_mandatory.' '.$s_checked.'> '. _x($roles_value['name'], 'User role').'</label>';
+			}
+			$html .=	 					'</div>
+										</div>
+									</div>';
+		}
+		if(isset($item['notice_permission'])) {
+			$html .=	 			'<div class="attr-row">
+										<label class="attr-name" for="'.esc_attr($meta_key).'_notice">공지사항</label>
+										<div class="attr-value">
+											<select id="'.esc_attr($meta_key).'_notice" name="fields[option][notice_permission]" class="field_data roles" onchange="x2board_fields_permission_roles_view(this)">';
+			$s_selected = $item['notice_permission'] == 'all' ? 'selected' : '';
+			$html .=	 						'<option value="all" '.$s_selected.'>제한없음</option>';
+			$s_selected = $item['notice_permission'] == 'author' ? 'selected' : '';
+			$html .=	 						'<option value="author" '.$s_selected.'>로그인 사용자</option>';
+			$s_selected = $item['notice_permission'] == 'roles' ? 'selected' : '';
+			$html .=	 						'<option value="roles" '.$s_selected.'>직접선택</option>
+											</select>';
+			$s_hide = $item['notice_permission'] != 'roles' ? 'x2board-hide' : '';
+			$html .=	 					'<div class="x2board-permission-read-roles-view '.$s_hide.' ">';
+			foreach(get_editable_roles() as $roles_key=>$roles_value) {
+				$s_mandatory = $roles_key=='administrator' ? 'onclick="return false"' : '';
+				$s_checked = ($roles_key=='administrator' || in_array($roles_key, $item['notice'])) ? 'checked' : '';
+				$html .=	 					'<label><input type="checkbox" name="fields[option][notice][]" class="field_data" value="'.$roles_key.'" '.$s_mandatory.' '.$s_checked.'> '. _x($roles_value['name'], 'User role').'</label>';
+			}
+			$html .=	 					'</div>
+										</div>
+									</div>';
+		}
+		if(isset($item['allow_comment_permission'])) {
+			$html .=	 			'<div class="attr-row">
+										<label class="attr-name" for="'.esc_attr($meta_key).'_allow_comment">개별글 댓글 허용</label>
+										<div class="attr-value">
+											<select id="'.esc_attr($meta_key).'_allow_comment" name="fields[option][allow_comment_permission]" class="field_data roles" onchange="x2board_fields_permission_roles_view(this)">';
+			$s_selected = $item['allow_comment_permission'] == 'all' ? 'selected' : '';
+			$html .=	 						'<option value="all" '.$s_selected.' >제한없음</option>';
+			$s_selected = $item['allow_comment_permission'] == 'author' ? 'selected' : '';
+			$html .=	 						'<option value="author" '.$s_selected.'>로그인 사용자</option>';
+			$s_selected = $item['allow_comment_permission'] == 'roles' ? 'selected' : '';
+			$html .=	 						'<option value="roles" '.$s_selected.'>직접선택</option>';
+			$html .=	 					'</select>';
+			$s_hide = $item['allow_comment_permission'] != 'roles' ? 'x2board-hide' : '';
+			$html .=	 					'<div class="x2board-permission-read-roles-view '.$s_hide.' ">';
+			foreach(get_editable_roles() as $roles_key=>$roles_value) {
+				$s_mandatory = $roles_key=='administrator' ? 'onclick="return false"' : '';
+				$s_checked = ($roles_key=='administrator' || in_array($roles_key, $item['allow_comment'])) ? 'checked' : '';
+				$html .=	 					'<label><input type="checkbox" name="fields[option][allow_comment][]" class="field_data" value="'.$roles_key.'" '.$s_mandatory.'  '.$s_checked.'> '. _x($roles_value['name'], 'User role').'</label>';
+			}
+			$html .=	 					'</div>
+										</div>
+									</div>';
+		}
+		if(isset($item['default_value']) && $item['field_type'] != 'checkbox' && $item['field_type'] != 'radio' && $item['field_type'] != 'select') {
+			$html .=	 			'<div class="attr-row">
+										<label class="attr-name" for="'.esc_attr($meta_key).'_default_value">기본값</label>
+										<div class="attr-value">';
+			if($item['field_type'] == 'search') {
+				$html .=	 				'<select id="'.esc_attr($meta_key).'_default_value" name="fields[search][default_value]" class="field_data default_value">';
+				$s_selected = $item['default_value'] == '1' ? 'selected' : '';
+				$html .=			 			'<option value="1" '.$s_selected.'  >제목과 내용 검색허용</option>';
+				$s_selected = $item['default_value'] == '2' ? 'selected' : '';
+				$html .=			 			'<option value="2" '.$s_selected.'>제목만 검색허용 (비밀글)</option>';
+				$s_selected = $item['default_value'] == '3' ? 'selected' : '';
+				$html .=			 			'<option value="3" '.$s_selected.'>통합검색 제외</option>
+											</select>';
+			}
+			else {
+				$html .=			 		'<input type="text" id="'.esc_attr($meta_key).'_default_value" name="fields['.esc_attr($meta_key).'][default_value]" class="field_data default_value" value="'.$item['default_value'].'">';
+			}
+			$html .=			 		'</div>
+									</div>';
+		}
+		if($o_post_admin_model->is_multiline_fields($item['field_type'])) {
+			$html .=			 	'<div class="attr-row">';
+			if($item['field_type'] == 'html') {
+				$html .=			 	'<label class="attr-name" for="'.esc_attr($meta_key).'_html">'.$item['field_name'].'</label>
+										<div class="attr-value">
+											<textarea id="'.esc_attr($meta_key).'_html" name="fields['.esc_attr($meta_key).'][html]" class="field_data html" rows="5">'.$item['html'].'</textarea>
+										</div>';
+			}
+			elseif($item['field_type'] == 'shortcode') {
+				$html .=			 	'<label class="attr-name" for="'.esc_attr($meta_key).'_shortcode">'.$item['field_name'].'</label>
+										<div class="attr-value">
+											<textarea id="'.esc_attr($meta_key).'_shortcode" name="fields['.esc_attr($meta_key).'][shortcode]" class="field_data shortcode" rows="5">'.$item['shortcode'].'</textarea>
+										</div>';
+			}
+			$html .=			 	'</div>';
+		}
+		if(isset($item['placeholder'])) {
+			$html .=			 	'<div class="attr-row">
+										<label class="attr-name" for="'.esc_attr($meta_key).'_placeholder">Placeholder</label>
+										<div class="attr-value"><input type="text" id="'.esc_attr($meta_key).'_placeholder" name="fields['.esc_attr($meta_key).'][placeholder]" class="field_data placeholder" value="'.esc_attr($item['placeholder']).'"></div>
+									</div>';
+		}
+		if(isset($item['description'])) {
+			$html .=			 	'<div class="attr-row">
+										<label class="attr-name" for="'.esc_attr($meta_key).'_description">설명</label>
+										<div class="attr-value">
+											<input type="text" id="'.esc_attr($meta_key).'_description" name="fields['.esc_attr($meta_key).'][description]" class="field_data field_description" value="'.esc_attr($item['description']).'">
+										</div>
+									</div>';
+		}
+		if(isset($item['custom_class'])) {
+			$html .=			 	'<div class="attr-row">
+										<label class="attr-name" for="'.esc_attr($meta_key).'_custom_class">CSS 클래스</label>
+										<div class="attr-value"><input type="text" id="'.esc_attr($meta_key).'_custom_class" name="fields['.esc_attr($meta_key).'][custom_class]" class="field_data custom_class" value="'.esc_attr($item['custom_class']).'"></div>
+									</div>';
+		}
+		if(isset($item['show_document']) && !$o_post_admin_model->is_multiline_fields($item['field_type'])) {
+			$html .=			 	'<div class="attr-row">
+										<label class="attr-name">스킨 출력 예제</label>
+										<div class="attr-value">
+											<div class="example">';
+			if($o_post_admin_model->is_default_field($item['field_type']) == 'extends' || (isset($item['option_field']) && $item['option_field'])) {
+				if($item['field_type'] == 'file') {
+					$print_code = '<?php echo $content->attach->{\'' . $meta_key . '\'}[1]?>';
+				}
+				else if($item['field_type'] == 'checkbox') {
+					$print_code = '<?php echo implode(\', \', $content->option->{\'' . $meta_key . '\'})?>';
+				}
+				else {
+					$print_code = '<?php echo $content->option->{\'' . $meta_key . '\'}?>';
+				}
+			}
+			$html .= esc_html($print_code);
+			$html .=			 		'</div>
+										</div>
+									</div>';
+		}
+		if(isset($item['required']) || isset($item['show_document']) || isset($item['hidden'])) {
+			$html .=			 	'<div class="attr-row">';
+			if(isset($item['required'])){
+				$s_checked = $item['required'] ? 'checked' : '';
+				$html .=			 	'<label>
+											<input type="hidden" name="fields['.esc_attr($meta_key).'][required]" class="field_data required" value="">
+											<input type="checkbox" name="fields['.esc_attr($meta_key).'][required]" class="field_data required" value="1" '.$s_checked.' >필수
+										</label>';
+			}
+			if(isset($item['show_document'])) {
+				$s_checked = $item['show_document'] ? 'checked' : '';
+				$html .=			 	'<label>
+											<input type="hidden" name="fields['.esc_attr($meta_key).'][show_document]" class="field_data show_document" value="">
+											<input type="checkbox" name="fields['.esc_attr($meta_key).'][show_document]" class="field_data show_document" value="1" '.$s_checked.' >게시글 본문에 표시
+										</label>';
+			}
+			if(isset($item['hidden'])) {
+				$s_checked = $item['hidden'] ? 'checked' : '';
+				$s_hidden = $item['field_type'] == 'text' ? '(hidden)' : '';
+				$html .=			 	'<label>
+											<input type="hidden" name="fields['.esc_attr($meta_key).'][hidden]" class="field_data hidden" value="">
+											<input type="checkbox" name="fields['.esc_attr($meta_key).'][hidden]" class="field_data hidden" value="1" '.$s_checked.' >숨김'.$s_hidden.'
+										</label>';
+			}
+			$html .=			 	'</div>';
+		}
+		$html .=			 	'</div>
+							</li>';
+	}
+	unset($a_user_define_fields);			
+	$html .= 		'</ul>
+					<div class="description"><button type="button" class="button button-small" onclick="x2board_skin_fields_reset()">설정 초기화</button></div>
 				</div>
 			</div>
 		</div>';	

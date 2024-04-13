@@ -235,3 +235,17 @@ PRIMARY KEY (`category_id`),
 KEY `idx_board_id` (`board_id`),
 KEY `idx_regdate_dt` (`regdate_dt`)
 ) {$charset_collate};");
+
+dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_user_define_keys` (
+`board_id` bigint(11) NOT NULL,
+`var_idx` bigint(11) NOT NULL,
+`var_name` varchar(250) NOT NULL,
+`var_type` varchar(50) NOT NULL,
+`var_is_required` char(1) NOT NULL DEFAULT 'N',
+`var_search` char(1) NOT NULL DEFAULT 'N',
+`var_default` text,
+`var_desc` text,
+`eid` varchar(40) DEFAULT NULL,
+`json_param` text DEFAULT NULL,
+UNIQUE KEY `unique_board_keys` (`board_id`,`var_idx`)
+) {$charset_collate};");

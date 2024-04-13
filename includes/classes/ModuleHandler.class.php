@@ -434,10 +434,14 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleHandler')) {
 				$a_file_info = explode( '.', basename( $s_filename ) );
 				$s_module_name = $a_file_info[0];
 
+				if( end($a_file_info) != 'php' ) { // exclude non php file
+					continue;
+				}
+
 				if( !isset($a_requested_modules[$s_module_name]) ) {
 					$a_requested_modules[$s_module_name] = array();
 				}
-				end($a_file_info);
+				
 				$s_module_type = prev($a_file_info);
 
 				$s_admin_type = prev($a_file_info);
@@ -450,6 +454,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleHandler')) {
 			}
 			// validate module components
 			$a_valid_modules = array();
+
 			foreach( $a_requested_modules as $s_module_name => $a_module_info ) {
 				if( isset($a_module_info['class'] ) ) {
 					$a_valid_modules[$s_module_name] = $a_module_info;

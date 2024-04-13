@@ -15,14 +15,14 @@ if ( !defined( 'ABSPATH' ) ) {
 
 if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 
+	require_once X2B_PATH . 'includes\modules\post\post.extravars.php';
+
 	class postModel extends post {
-		// private $_a_default_fields = array();
-		// private $_a_extends_fields = array();
-		private $_a_skin_fields = array();
+		private $_a_default_fields = array();
+		private $_a_extends_fields = array();
+		private $_a_user_define_fields = array();
 
 		// private $documentConfig = NULL;
-		// private $_n_list_count = 20;
-		// private $_n_page_count = 10;
 		
 		/**
 		 * constructor
@@ -35,312 +35,11 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 				$G_X2B_CACHE['EXTRA_VARS'] = array();
 			}
 
-			// $this->_a_default_fields = array(
-			// 	'title' => array(
-			// 		'field_type' => 'title',
-			// 		'field_label' => __('Title', 'x2board'),
-			// 		'field_name' => '',
-			// 		'class' => 'kboard-attr-title',
-			// 		'meta_key' => 'title',
-			// 		'permission' => 'all',
-			// 		'roles' => array(),
-			// 		'default_value' => '',
-			// 		'placeholder' => '',
-			// 		'description' => '',
-			// 		'close_button' => ''
-			// 	),
-			// 	'option' => array(
-			// 		'field_type' => 'option',
-			// 		'field_label' => __('Options', 'x2board'),
-			// 		'field_name' => '',
-			// 		'class' => 'kboard-attr-option',
-			// 		'meta_key' => 'option',
-			// 		'secret_permission' => '',
-			// 		'secret' => array(),
-			// 		'notice_permission' => 'roles',
-			// 		'notice'=> array('administrator'),
-			// 		'allow_comment_permission' => 'roles',
-			// 		'allow_comment'=> array('administrator'),
-			// 		'description' => '',
-			// 		'close_button' => 'yes'
-			// 	),
-			// 	'nick_name' => array(
-			// 		'field_type' => 'nick_name',
-			// 		'field_label' => __('Nickname', 'x2board'),
-			// 		'field_name' => '',
-			// 		'class' => 'kboard-attr-nick-name',
-			// 		'meta_key' => 'nick_name',
-			// 		'permission' => '',
-			// 		'default_value' => '',
-			// 		'placeholder' => '',
-			// 		'description' => '',
-			// 		'close_button' => ''
-			// 	),
-			// 	'category' => array(
-			// 		'field_type' => 'category',
-			// 		'field_label' => __('Category', 'x2board'),
-			// 		'field_name' => '',
-			// 		'class' => 'kboard-attr-tree-category',
-			// 		'meta_key' => 'category',
-			// 		'permission' => '',
-			// 		'roles' => array(),
-			// 		'option_field' => true,
-			// 		'description' => '',
-			// 		'close_button' => 'yes'
-			// 	),
-			// 	'captcha' => array(
-			// 		'field_type' => 'captcha',
-			// 		'field_label' => __('Captcha', 'x2board'),
-			// 		'class' => 'kboard-attr-captcha',
-			// 		'meta_key' => 'captcha',
-			// 		'description' => '',
-			// 		'close_button' => 'yes'
-			// 	),
-			// 	'content' => array(
-			// 		'field_type' => 'content',
-			// 		'field_label' => __('Content', 'x2board'),
-			// 		'field_name' => '',
-			// 		'class' => 'kboard-attr-content',
-			// 		'meta_key' => 'content',
-			// 		'placeholder' => '',
-			// 		'description' => '',
-			// 		'required' => '',
-			// 		'close_button' => 'yes'
-			// 	),
-			// 	'attach' => array(
-			// 		'field_type' => 'attach',
-			// 		'field_label' => __('Attachment', 'x2board'),
-			// 		'field_name' => '',
-			// 		'class' => 'kboard-attr-attach',
-			// 		'meta_key' => 'attach',
-			// 		'permission' => '',
-			// 		'roles' => array(),
-			// 		'description' => '',
-			// 		'close_button' => 'yes'
-			// 	),
-			// 	'search' => array(
-			// 		'field_type' => 'search',
-			// 		'field_label' => __('WP Search', 'x2board'),
-			// 		'field_name' => '',
-			// 		'class' => 'kboard-attr-search',
-			// 		'meta_key' => 'search',
-			// 		'permission' => '',
-			// 		'roles' => array(),
-			// 		'default_value' => '',
-			// 		'description' => '',
-			// 		'hidden' => '',
-			// 		'close_button' => ''
-			// 	)
-			// );
-
-			// $this->_a_extends_fields = array(
-			// 	'text' => array(
-			// 		'field_type' => 'text',
-			// 		'field_label' => __('Text/Hidden', 'x2board'),
-			// 		'field_name' => '',
-			// 		'class' => 'kboard-attr-text',
-			// 		'custom_class' => '',
-			// 		'meta_key' => '',
-			// 		'permission' => '',
-			// 		'roles' => array(),
-			// 		'default_value' => '',
-			// 		'placeholder' => '',
-			// 		'description' => '',
-			// 		'required' => '',
-			// 		'show_document' => '',
-			// 		'hidden' => '',
-			// 		'close_button' => 'yes'
-			// 	),
-			// 	'select' => array(
-			// 		'field_type' => 'select',
-			// 		'field_label' => __('Select Box', 'x2board'),
-			// 		'field_name' => '',
-			// 		'class' => 'kboard-attr-select',
-			// 		'custom_class' => '',
-			// 		'meta_key' => '',
-			// 		'row' => array(),
-			// 		'default_value' => '',
-			// 		'permission' => '',
-			// 		'roles' => array(),
-			// 		'description' => '',
-			// 		'required' => '',
-			// 		'show_document' => '',
-			// 		'close_button' => 'yes'
-			// 	),
-			// 	'radio' => array(
-			// 		'field_type' => 'radio',
-			// 		'field_label' => __('Radio Button', 'x2board'),
-			// 		'field_name' => '',
-			// 		'class' => 'kboard-attr-radio',
-			// 		'custom_class' => '',
-			// 		'meta_key' => '',
-			// 		'row' => array(),
-			// 		'default_value' => '',
-			// 		'permission' => '',
-			// 		'roles' => array(),
-			// 		'description' => '',
-			// 		'required' => '',
-			// 		'show_document' => '',
-			// 		'close_button' => 'yes'
-			// 	),
-			// 	'checkbox' => array(
-			// 		'field_type' => 'checkbox',
-			// 		'field_label' => __('Checkbox', 'x2board'),
-			// 		'field_name' => '',
-			// 		'class' => 'kboard-attr-checkbox',
-			// 		'custom_class' => '',
-			// 		'meta_key' => '',
-			// 		'row' => array(),
-			// 		'permission' => '',
-			// 		'roles' => array(),
-			// 		'description' => '',
-			// 		'required' => '',
-			// 		'show_document' => '',
-			// 		'close_button' => 'yes'
-			// 	),
-			// 	'textarea' => array(
-			// 		'field_type' => 'textarea',
-			// 		'field_label' => __('Textarea', 'x2board'),
-			// 		'field_name' => '',
-			// 		'class' => 'kboard-attr-textarea',
-			// 		'custom_class' => '',
-			// 		'meta_key' => '',
-			// 		'permission' => '',
-			// 		'roles' => array(),
-			// 		'default_value' => '',
-			// 		'placeholder' => '',
-			// 		'required' => '',
-			// 		'show_document' => '',
-			// 		'description' => '',
-			// 		'close_button' => 'yes'
-			// 	),
-			// 	'wp_editor' => array(
-			// 		'field_type' => 'wp_editor',
-			// 		'field_label' => __('WP Editor', 'x2board'),
-			// 		'field_name' => '',
-			// 		'class' => 'kboard-attr-wp-editor',
-			// 		'custom_class' => '',
-			// 		'meta_key' => '',
-			// 		'permission' => '',
-			// 		'roles' => array(),
-			// 		'default_value' => '',
-			// 		'placeholder' => '',
-			// 		'required' => '',
-			// 		'show_document' => '',
-			// 		'description' => '',
-			// 		'close_button' => 'yes'
-			// 	),
-			// 	'html' => array(
-			// 		'field_type' => 'html',
-			// 		'field_label' => __('HTML', 'x2board'),
-			// 		'field_name' => '',
-			// 		'class' => 'kboard-attr-html',
-			// 		'custom_class' => '',
-			// 		'meta_key' => '',
-			// 		'permission' => '',
-			// 		'roles' => array(),
-			// 		'default_value' => '',
-			// 		'show_document' => '',
-			// 		'description' => '',
-			// 		'close_button' => 'yes',
-			// 		'html' => ''
-			// 	),
-			// 	'shortcode' => array(
-			// 		'field_type' => 'shortcode',
-			// 		'field_label' => __('Shortcode', 'x2board'),
-			// 		'field_name' => '',
-			// 		'class' => 'kboard-attr-shortcode',
-			// 		'custom_class' => '',
-			// 		'meta_key' => '',
-			// 		'permission' => '',
-			// 		'roles' => array(),
-			// 		'default_value' => '',
-			// 		'show_document' => '',
-			// 		'description' => '',
-			// 		'close_button' => 'yes',
-			// 		'shortcode' => ''
-			// 	),
-			// 	'date' => array(
-			// 		'field_type' => 'date',
-			// 		'field_label' => __('Date Select', 'x2board'),
-			// 		'field_name' => '',
-			// 		'class' => 'kboard-attr-date',
-			// 		'custom_class' => '',
-			// 		'meta_key' => '',
-			// 		'permission' => '',
-			// 		'roles' => array(),
-			// 		'default_value' => '',
-			// 		'placeholder' => '',
-			// 		'required' => '',
-			// 		'show_document' => '',
-			// 		'description' => '',
-			// 		'close_button' => 'yes'
-			// 	),
-			// 	'time' => array(
-			// 		'field_type' => 'time',
-			// 		'field_label' => __('Time Select', 'x2board'),
-			// 		'field_name' => '',
-			// 		'class' => 'kboard-attr-time',
-			// 		'custom_class' => '',
-			// 		'meta_key' => '',
-			// 		'permission' => '',
-			// 		'roles' => array(),
-			// 		'default_value' => '',
-			// 		'placeholder' => '',
-			// 		'required' => '',
-			// 		'show_document' => '',
-			// 		'description' => '',
-			// 		'close_button' => 'yes'
-			// 	),
-			// 	'email' => array(
-			// 		'field_type' => 'email',
-			// 		'field_label' => __('Email', 'x2board'),
-			// 		'field_name' => '',
-			// 		'class' => 'kboard-attr-email',
-			// 		'custom_class' => '',
-			// 		'meta_key' => '',
-			// 		'permission' => '',
-			// 		'roles' => array(),
-			// 		'default_value' => '',
-			// 		'placeholder' => '',
-			// 		'required' => '',
-			// 		'show_document' => '',
-			// 		'description' => '',
-			// 		'hidden' => '',
-			// 		'close_button' => 'yes'
-			// 	),
-			// 	'address' => array(
-			// 		'field_type' => 'address',
-			// 		'field_label' => __('Address', 'x2board'),
-			// 		'field_name' => '',
-			// 		'class' => 'kboard-attr-address',
-			// 		'custom_class' => '',
-			// 		'meta_key' => '',
-			// 		'permission' => '',
-			// 		'roles' => array(),
-			// 		'default_value' => '',
-			// 		'placeholder' => '',
-			// 		'required' => '',
-			// 		'show_document' => '',
-			// 		'description' => '',
-			// 		'close_button' => 'yes'
-			// 	),
-			// 	/*
-			// 	'color' => array(
-			// 		'field_type' => 'color',
-			// 		'field_label' => __('Color Select', 'x2board'),
-			// 		'field_name' => '',
-			// 		'class' => 'kboard-attr-color',
-			// 		'meta_key' => '',
-			// 		'permission' => '',
-			// 		'roles' => array(),
-			// 		'default_value' => '',
-			// 		'description' => '',
-			// 		'show_document' => '',
-			// 		'close_button' => 'yes'
-			// 	)
-			// 	*/
-			// );
+			$o_post_extra_vars = new \X2board\Includes\Modules\Post\postExtraVars();
+			$this->_a_default_fields = $o_post_extra_vars->get_default_fields();
+			$this->_a_extends_fields = $o_post_extra_vars->get_extended_fields();
+			unset($o_post_extra_vars);
+			$this->_set_user_define_fields();
 		}
 
 		/**
@@ -543,30 +242,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 		}
 
 		/**
-		 * 설정된 사용자 입력 필드를 반환한다.
-		 * @return array
-		 */
-		// public function getSkinFields() {
-		public function get_user_define_fields() {
-			if($this->_a_skin_fields){
-				$a_fields = $this->skin_fields;
-			}
-			else{
-				require_once X2B_PATH . 'includes\modules\post\post.admin.model.php';
-				$o_post_admin_model = new \X2board\Includes\Modules\Post\postAdminModel();
-				$a_fields = $o_post_admin_model->get_user_define_fields();
-				unset($o_post_admin_model);
-				// $fields = $this->_a_default_fields;
-				foreach($a_fields as $key=>$value){
-					if(isset($value['x2board_extends'])){
-						unset($a_fields[$key]);
-					}
-				}
-			}
-			return $a_fields;
-		}
-
-		/**
 		 * Import post
 		 * @param int $post_id
 		 * @param bool $is_admin
@@ -599,28 +274,146 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 		}
 
 		/**
+		 * 게시판 사용자 포스트 작성 화면용 필드 정뵤 반환
+		 * @return array
+		 */
+		public function get_default_fields() {
+			// $this->_set_user_define_fields();
+			$a_default_fields = $this->_a_default_fields;
+			foreach($a_default_fields as $key=>$value) {
+				if($this->_a_user_define_fields) {
+					if(isset($this->_a_user_define_fields[$key])){
+						unset($a_default_fields[$key]);
+					}
+				}
+			}
+			return $a_default_fields;
+		}
+
+		/**
+		 * 확장 필드를 반환한다.
+		 * @return array
+		 */
+		public function get_extended_fields() {
+			return $this->_a_extends_fields;
+		}
+
+		/**
+		 * retrieve user define fields from DB
+		 * admin: 'field_name' => db: var_name  관리자 화면에서 [필드 레이블] 입력란은 field_name에 저장함
+		 * admin: 'field_type' => db: var_type
+		 * admin: 'meta_key' => db: eid
+		 * admin: 'default_value' => db: var_default
+		 * admin: 'description' => db: var_desc
+		 * admin: 'required' => db: var_is_required
+		 * 
+		 * admin: 'field_label' => db: ??  관리자 화면에서 용도 불명, 사용자 화면에서 기본 필드명 표시위한 용도
+		 */
+		private function _set_user_define_fields() { //$skin_fields){
+			if( !empty($this->_a_user_define_fields ) ){
+				return;
+			}
+// var_dump($_GET['board_id']);
+			// $this->_n_board_id = intval(sanitize_text_field($_GET['board_id'] ));
+			$n_board_id = \X2board\Includes\Classes\Context::get('board_id');
+			$s_columns = '`var_name`, `var_type`, `var_is_required`, `var_search`, `var_default`, `var_desc`, `eid`, `json_param`';
+			global $wpdb;
+			$a_temp = $wpdb->get_results("SELECT {$s_columns} FROM `{$wpdb->prefix}x2b_user_define_keys` WHERE `board_id` = '{$n_board_id}' ORDER BY `var_idx` ASC");
+// var_dump($a_temp);
+			
+			foreach( $a_temp as $_ => $o_field ) {
+				$a_other_field = unserialize($o_field->json_param);
+
+				$a_single_field['field_type'] = $o_field->var_type;
+				// $a_single_field['field_label'] = $o_field->var_name;
+				$a_single_field['field_name'] = $o_field->var_name;
+				$a_single_field['meta_key'] = $o_field->eid;
+				$a_single_field['default_value'] = $o_field->var_default;
+				$a_single_field['description'] = $o_field->var_desc;
+				$a_single_field['required'] = $o_field->var_is_required;
+
+				$a_single_field = array_merge($a_single_field, $a_other_field);
+				$this->_a_user_define_fields[$o_field->eid] = $a_single_field;
+
+				unset($a_single_field);
+				unset($a_other_field);
+			}
+			unset($a_temp);
+// var_dump($this->_a_user_define_fields);
+		}
+
+		/**
+		 * 관리자가 설정한 입력 필드를 반환한다.
+		 * @return array
+		 */
+		// getSkinFields() {
+		public function get_user_define_fields() {
+			$a_fields = array();
+			if($this->_a_user_define_fields) {
+				$a_fields = $this->_a_user_define_fields;
+			}
+			else {
+				$a_fields = $this->_a_default_fields;
+				// foreach($a_fields as $key=>$value) {
+				// 	if(isset($value['x2board_extends'])){
+				// 		unset($a_fields[$key]);
+				// 	}
+				// }
+			}
+			return $a_fields;
+		}
+	
+
+		/**
+		 * 설정된 사용자 입력 필드를 반환한다.
+		 * @return array
+		 */
+		// public function getSkinFields() {
+		/*public function get_user_define1111_fields() {
+			if($this->_a_skin_fields){
+				$a_fields = $this->skin_fields;
+			}
+			else{
+				require_once X2B_PATH . 'includes\modules\post\post.admin.model.php';
+				$o_post_admin_model = new \X2board\Includes\Modules\Post\postAdminModel();
+				$n_board_id = \X2board\Includes\Classes\Context::get('board_id');
+				$o_post_admin_model->set_board_id($n_board_id);
+				$a_fields = $o_post_admin_model->get_user_define_fields();
+// var_dump($a_fields);		
+				unset($o_post_admin_model);
+				// $fields = $this->_a_default_fields;
+				foreach($a_fields as $key=>$value){
+					if(isset($value['x2board_extends'])){
+						unset($a_fields[$key]);
+					}
+				}
+			}
+			return $a_fields;
+		}*/
+
+		/**
 		 * A particular document to get the value of the extra variable function
 		 * @param int $module_srl
 		 * @param int $document_srl
 		 * @return array
 		 */
 		// function getExtraVars($module_srl, $document_srl)
-		public function get_extra_vars( $board_id, $post_id ) {
+		public function get_extra_vars( $post_id ) {
 			global $G_X2B_CACHE;
-			if(!isset($G_X2B_CACHE['EXTRA_VARS'][$board_id])) {
+			if(!isset($G_X2B_CACHE['EXTRA_VARS'][$post_id])) {
 				// Extended to extract the values of variables set
 				// $o_post = $this->getDocument($board_id, false);
-				$G_X2B_CACHE['POST_LIST'][$board_id] = $this->get_post($board_id, false); //$o_post;
+				$G_X2B_CACHE['POST_LIST'][$post_id] = $this->get_post($post_id, false); //$o_post;
 				$this->_set_to_all_post_extra_vars();
 			}
-			if(isset($G_X2B_CACHE['EXTRA_VARS'][$board_id])) {
-				if(is_array($G_X2B_CACHE['EXTRA_VARS'][$board_id])) {
-					ksort($G_X2B_CACHE['EXTRA_VARS'][$board_id]);
+			if(isset($G_X2B_CACHE['EXTRA_VARS'][$post_id])) {
+				if(is_array($G_X2B_CACHE['EXTRA_VARS'][$post_id])) {
+					ksort($G_X2B_CACHE['EXTRA_VARS'][$post_id]);
 				} 
-				return $G_X2B_CACHE['EXTRA_VARS'][$board_id];
+				return $G_X2B_CACHE['EXTRA_VARS'][$post_id];
 			}
 			return null;
-		}
+		}	
 
 		/**
 		 * Extra variables for each article will not be processed bulk select and apply the macro city
@@ -629,76 +422,78 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 		// function setToAllDocumentExtraVars()
 		private function _set_to_all_post_extra_vars() {
 			global $G_X2B_CACHE;
-			static $checked_documents = array();
-			$_post_list = &$G_X2B_CACHE['POST_LIST'];
+// var_dump('_set_to_all_post_extra_vars');			
+			// $G_X2B_CACHE['EXTRA_VARS'][$post_id]
+// 			static $checked_documents = array();
+// 			$_post_list = &$G_X2B_CACHE['POST_LIST'];
 
-			// X2B POST_LIST all posts that the object referred to the global variable settings
-			if(count($_post_list) <= 0) {
-				return;
-			}
+// 			// X2B POST_LIST all posts that the object referred to the global variable settings
+// 			if(count($_post_list) <= 0) {
+// 				return;
+// 			}
 
-			// Find all called the document object variable has been set extension
-			$post_ids = array();
-			foreach($_post_list as $key => $val) {
-				if(!$val->document_srl || $checked_documents[$val->document_srl]) {
-					continue;
-				}
-				$checked_documents[$val->document_srl] = true;
-				$post_ids[] = $val->document_srl;
-			}
+// 			// Find all called the document object variable has been set extension
+// 			$post_ids = array();
+// 			foreach($_post_list as $key => $val) {
+// 				if(!$val->document_srl || $checked_documents[$val->document_srl]) {
+// 					continue;
+// 				}
+// 				$checked_documents[$val->document_srl] = true;
+// 				$post_ids[] = $val->document_srl;
+// 			}
 				
-			// If the document number, return detected
-			if(!count($post_ids)) {
-				return;
-			}
-			// Expand variables mijijeongdoen article about a current visitor to the extension of the language code, the search variable
-			//$obj->document_srl = implode(',',$post_ids);
-			$output = $this->getDocumentExtraVarsFromDB($post_ids);
-			if($output->toBool() && $output->data) {
-				foreach($output->data as $key => $val) {
-					if(!isset($val->value)) {
-						continue;
-					}
-					if(!$extra_vars[$val->module_srl][$val->document_srl][$val->var_idx][0]) {
-						$extra_vars[$val->module_srl][$val->document_srl][$val->var_idx][0] = trim($val->value);
-					}
-					$extra_vars[$val->document_srl][$val->var_idx][$val->lang_code] = trim($val->value);
-				}
-			}
+// 			// If the document number, return detected
+// 			if(!count($post_ids)) {
+// 				return;
+// 			}
+// 			// Expand variables mijijeongdoen article about a current visitor to the extension of the language code, the search variable
+// 			//$obj->document_srl = implode(',',$post_ids);
+// 			$output = $this->getDocumentExtraVarsFromDB($post_ids);
+// 			if($output->toBool() && $output->data) {
+// 				foreach($output->data as $key => $val) {
+// 					if(!isset($val->value)) {
+// 						continue;
+// 					}
+// 					if(!$extra_vars[$val->module_srl][$val->document_srl][$val->var_idx][0]) {
+// 						$extra_vars[$val->module_srl][$val->document_srl][$val->var_idx][0] = trim($val->value);
+// 					}
+// 					$extra_vars[$val->document_srl][$val->var_idx][$val->lang_code] = trim($val->value);
+// 				}
+// 			}
 
-			$user_lang_code = Context::getLangType();
-			for($i=0,$c=count($post_ids);$i<$c;$i++)
-			{
-				$document_srl = $post_ids[$i];
-				unset($vars);
+// 			$user_lang_code = Context::getLangType();
+// 			for($i=0,$c=count($post_ids);$i<$c;$i++)
+// 			{
+// 				$document_srl = $post_ids[$i];
+// 				unset($vars);
 
-				if(!$_post_list[$document_srl] || !is_object($_post_list[$document_srl]) || !$_post_list[$document_srl]->isExists()) continue;
-				$module_srl = $_post_list[$document_srl]->get('module_srl');
-				$extra_keys = $this->getExtraKeys($module_srl);
-				$vars = $extra_vars[$document_srl];
-				$document_lang_code = $_post_list[$document_srl]->get('lang_code');
-				// Expand the variable processing
-				if(count($extra_keys))
-				{
-					foreach($extra_keys as $idx => $key)
-					{
-						$extra_keys[$idx] = clone($key);
-						$val = $vars[$idx];
-						if(isset($val[$user_lang_code])) $v = $val[$user_lang_code];
-						else if(isset($val[$document_lang_code])) $v = $val[$document_lang_code];
-						else if(isset($val[0])) $v = $val[0];
-						else $v = null;
-						$extra_keys[$idx]->value = $v;
-					}
-				}
+// 				if(!$_post_list[$document_srl] || !is_object($_post_list[$document_srl]) || !$_post_list[$document_srl]->isExists()) continue;
+// 				$module_srl = $_post_list[$document_srl]->get('module_srl');
+// 				$extra_keys = $this->getExtraKeys($module_srl);
+// 				$vars = $extra_vars[$document_srl];
+// 				$document_lang_code = $_post_list[$document_srl]->get('lang_code');
+// 				// Expand the variable processing
+// 				if(count($extra_keys))
+// 				{
+// 					foreach($extra_keys as $idx => $key)
+// 					{
+// 						$extra_keys[$idx] = clone($key);
+// 						$val = $vars[$idx];
+// 						if(isset($val[$user_lang_code])) $v = $val[$user_lang_code];
+// 						else if(isset($val[$document_lang_code])) $v = $val[$document_lang_code];
+// 						else if(isset($val[0])) $v = $val[0];
+// 						else $v = null;
+// 						$extra_keys[$idx]->value = $v;
+// 					}
+// 				}
 
-				unset($evars);
-				$evars = new ExtraVar($module_srl);
-				$evars->setExtraVarKeys($extra_keys);
-				// Title Processing
-				if($vars[-1][$user_lang_code]) $_post_list[$document_srl]->add('title',$vars[-1][$user_lang_code]);
-				// Information processing
-				if($vars[-2][$user_lang_code]) $_post_list[$document_srl]->add('content',$vars[-2][$user_lang_code]);
+// 				unset($evars);
+// 				$evars = new ExtraVar($module_srl);
+// 				$evars->setExtraVarKeys($extra_keys);
+// 				// Title Processing
+// 				if($vars[-1][$user_lang_code]) $_post_list[$document_srl]->add('title',$vars[-1][$user_lang_code]);
+// 				// Information processing
+// 				if($vars[-2][$user_lang_code]) $_post_list[$document_srl]->add('content',$vars[-2][$user_lang_code]);
 				
 				// static 데이터를 갱신해주기 위해 들어간 코드같으나 어차피 언어 변경 자체는 페이지 전환이 일어나면서 발생하는게 대부분이라 효용이 없음. 또한 예기치않게 권한이 없는 다국어 문서 내용을 보여주는 부효과가 일어남		
 				/*		
@@ -708,8 +503,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 				}
 				*/
 
-				$G_X2B_CACHE['EXTRA_VARS'][$document_srl] = $evars->getExtraVars();
-			}
+			// 	$G_X2B_CACHE['EXTRA_VARS'][$document_srl] = $evars->getExtraVars();
+			// }
 		}
 
 		/**
@@ -1132,6 +927,8 @@ var_dump('plz define category search');
 			}
 			return $lang->status_name_list;
 		}
+
+		
 
 
 
