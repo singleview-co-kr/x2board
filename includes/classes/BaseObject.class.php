@@ -10,237 +10,240 @@ if ( !defined( 'ABSPATH' ) ) {
     exit;  // Exit if accessed directly.
 }
 
-class BaseObject
-{
-	/**
-	 * Error code. If `0`, it is not an error.
-	 * @var int
-	 */
-	var $error = 0;
+if (!class_exists('\\X2board\\Includes\\Classes\\BaseObject')) {
 
-	/**
-	 * Error message. If `success`, it is not an error.
-	 * @var string
-	 */
-	var $message = 'success';
+	class BaseObject
+	{
+		/**
+		 * Error code. If `0`, it is not an error.
+		 * @var int
+		 */
+		var $error = 0;
 
-	/**
-	 * An additional variable
-	 * @var array
-	 */
-	var $variables = array();
+		/**
+		 * Error message. If `success`, it is not an error.
+		 * @var string
+		 */
+		var $message = 'success';
 
-	/**
-	 * http status code.
-	 * @var int
-	 */
-	// var $httpStatusCode = NULL;
+		/**
+		 * An additional variable
+		 * @var array
+		 */
+		var $variables = array();
 
-	/**
-	 * Constructor
-	 *
-	 * @param int $error Error code
-	 * @param string $message Error message
-	 * @return void
-	 */
-	public function __construct($error = 0, $message = 'success') {
-		$this->setError($error);
-		$this->setMessage($message);
-	}
+		/**
+		 * http status code.
+		 * @var int
+		 */
+		// var $httpStatusCode = NULL;
 
-	/**
-	 * Setter to set error code
-	 *
-	 * @param int $error error code
-	 * @return void
-	 */
-	public function setError($error = 0) {
-		$this->error = $error;
-	}
-
-	/**
-	 * Getter to retrieve error code
-	 *
-	 * @return int Returns an error code
-	 */
-	public function getError() {
-		return $this->error;
-	}
-
-	/**
-	 * Setter to set set the error message
-	 *
-	 * @param string $message Error message
-	 * @return bool Alaways returns true.
-	 */
-	public function setMessage($message = 'success', $type = NULL) {
-		// if($str = Context::getLang($message))
-		// {
-		// 	$this->message = $str;
-		// }
-		// else
-		// {
-			$this->message = $message;
-		// }
-
-		// TODO This method always returns True. We'd better remove it
-		return TRUE;
-	}
-
-	/**
-	 * Getter to retrieve an error message
-	 *
-	 * @return string Returns message
-	 */
-	public function getMessage() {
-		return $this->message;
-	}
-
-	/**
-	 * Setter to set a key/value pair as an additional variable
-	 *
-	 * @param string $key A variable name
-	 * @param mixed $val A value for the variable
-	 * @return void
-	 */
-// 	public function __set($key, $val) {
-// 		$this->variables[$key] = $val;
-// if($key=='data'){
-// 	var_dump($this->variables);
-// }
-// 	}
-
-	/**
-	 * Setter to set a key/value pair as an additional variable
-	 *
-	 * @param string $key A variable name
-	 * @param mixed $val A value for the variable
-	 * @return void
-	 */
-	public function add($key, $val)	{
-		$this->variables[$key] = $val;
-	}
-
-	/**
-	 * Method to set multiple key/value pairs as an additional variables
-	 *
-	 * @param BaseObject|array $object Either object or array containg key/value pairs to be added
-	 * @return void
-	 */
-	public function adds($object) {
-		if(is_object($object)) {
-			$object = get_object_vars($object);
+		/**
+		 * Constructor
+		 *
+		 * @param int $error Error code
+		 * @param string $message Error message
+		 * @return void
+		 */
+		public function __construct($error = 0, $message = 'success') {
+			$this->setError($error);
+			$this->setMessage($message);
 		}
 
-		if(is_array($object)) {
-			foreach($object as $key => $val) {
-				$this->variables[$key] = $val;
+		/**
+		 * Setter to set error code
+		 *
+		 * @param int $error error code
+		 * @return void
+		 */
+		public function setError($error = 0) {
+			$this->error = $error;
+		}
+
+		/**
+		 * Getter to retrieve error code
+		 *
+		 * @return int Returns an error code
+		 */
+		public function getError() {
+			return $this->error;
+		}
+
+		/**
+		 * Setter to set set the error message
+		 *
+		 * @param string $message Error message
+		 * @return bool Alaways returns true.
+		 */
+		public function setMessage($message = 'success', $type = NULL) {
+			// if($str = Context::getLang($message))
+			// {
+			// 	$this->message = $str;
+			// }
+			// else
+			// {
+				$this->message = $message;
+			// }
+
+			// TODO This method always returns True. We'd better remove it
+			return TRUE;
+		}
+
+		/**
+		 * Getter to retrieve an error message
+		 *
+		 * @return string Returns message
+		 */
+		public function getMessage() {
+			return $this->message;
+		}
+
+		/**
+		 * Setter to set a key/value pair as an additional variable
+		 *
+		 * @param string $key A variable name
+		 * @param mixed $val A value for the variable
+		 * @return void
+		 */
+	// 	public function __set($key, $val) {
+	// 		$this->variables[$key] = $val;
+	// if($key=='data'){
+	// 	var_dump($this->variables);
+	// }
+	// 	}
+
+		/**
+		 * Setter to set a key/value pair as an additional variable
+		 *
+		 * @param string $key A variable name
+		 * @param mixed $val A value for the variable
+		 * @return void
+		 */
+		public function add($key, $val)	{
+			$this->variables[$key] = $val;
+		}
+
+		/**
+		 * Method to set multiple key/value pairs as an additional variables
+		 *
+		 * @param BaseObject|array $object Either object or array containg key/value pairs to be added
+		 * @return void
+		 */
+		public function adds($object) {
+			if(is_object($object)) {
+				$object = get_object_vars($object);
+			}
+
+			if(is_array($object)) {
+				foreach($object as $key => $val) {
+					$this->variables[$key] = $val;
+				}
 			}
 		}
-	}
 
-	/**
-	 * Method to retrieve a corresponding value to a given key
-	 *
-	 * @param string $key
-	 * @return string Returns value to a given key
-	 */
-	public function __get($key) {
-		return $this->get($key);
-		// return $this->variables[$key];
-	}
-
-	/**
-	 * Method to retrieve a corresponding value to a given key
-	 *
-	 * @param string $key
-	 * @return string Returns value to a given key
-	 */
-	public function get($key) {
-		if( isset( $this->variables[$key] )) {
-			return $this->variables[$key];
+		/**
+		 * Method to retrieve a corresponding value to a given key
+		 *
+		 * @param string $key
+		 * @return string Returns value to a given key
+		 */
+		public function __get($key) {
+			return $this->get($key);
+			// return $this->variables[$key];
 		}
-		return null;
-	}
 
-	/**
-	 * Method to retrieve an object containing a key/value pairs
-	 *
-	 * @return BaseObject Returns an object containing key/value pairs
-	 */
-	public function gets() {
-		$args = func_get_args();
-		$output = new \stdClass();
-		foreach($args as $arg)
-		{
-			$output->{$arg} = $this->get($arg);
+		/**
+		 * Method to retrieve a corresponding value to a given key
+		 *
+		 * @param string $key
+		 * @return string Returns value to a given key
+		 */
+		public function get($key) {
+			if( isset( $this->variables[$key] )) {
+				return $this->variables[$key];
+			}
+			return null;
 		}
-		return $output;
+
+		/**
+		 * Method to retrieve an object containing a key/value pairs
+		 *
+		 * @return BaseObject Returns an object containing key/value pairs
+		 */
+		public function gets() {
+			$args = func_get_args();
+			$output = new \stdClass();
+			foreach($args as $arg)
+			{
+				$output->{$arg} = $this->get($arg);
+			}
+			return $output;
+		}
+
+		/**
+		 * Method to retrieve an array of key/value pairs
+		 *
+		 * @return array
+		 */
+		public function getVariables() {
+			return $this->variables;
+		}
+
+		/**
+		 * Method to retrieve an object of key/value pairs
+		 *
+		 * @return BaseObject
+		 */
+		// public function getObjectVars()	{
+		// 	$output = new stdClass();
+		// 	foreach($this->variables as $key => $val)
+		// 	{
+		// 		$output->{$key} = $val;
+		// 	}
+		// 	return $output;
+		// }
+
+		/**
+		 * Method to return either true or false depnding on the value in a 'error' variable
+		 *
+		 * @return bool Retruns true : error isn't 0 or false : otherwise.
+		 */
+		function toBool() {
+			// TODO This method is misleading in that it returns true if error is 0, which should be true in boolean representation.
+			return ($this->error == 0);
+		}
+		
+		/**
+		 * Setter to set HTTP status code
+		 *
+		 * @param int $code HTTP status code. Default value is `200` that means successful
+		 * @return void
+		 */
+		// function setHttpStatusCode($code = '200')
+		// {
+		// 	$this->httpStatusCode = $code;
+		// }
+
+		/**
+		 * Getter to retrieve HTTP status code
+		 *
+		 * @return int Returns HTTP status code
+		 */
+		// function getHttpStatusCode()
+		// {
+		// 	return $this->httpStatusCode;
+		// }
+
+		/**
+		 * Method to return either true or false depnding on the value in a 'error' variable
+		 *
+		 * @return bool
+		 */
+		// function toBoolean()
+		// {
+		// 	return $this->toBool();
+		// }
 	}
-
-	/**
-	 * Method to retrieve an array of key/value pairs
-	 *
-	 * @return array
-	 */
-	public function getVariables() {
-		return $this->variables;
-	}
-
-	/**
-	 * Method to retrieve an object of key/value pairs
-	 *
-	 * @return BaseObject
-	 */
-	// public function getObjectVars()	{
-	// 	$output = new stdClass();
-	// 	foreach($this->variables as $key => $val)
-	// 	{
-	// 		$output->{$key} = $val;
-	// 	}
-	// 	return $output;
-	// }
-
-	/**
-	 * Method to return either true or false depnding on the value in a 'error' variable
-	 *
-	 * @return bool Retruns true : error isn't 0 or false : otherwise.
-	 */
-	function toBool() {
-		// TODO This method is misleading in that it returns true if error is 0, which should be true in boolean representation.
-		return ($this->error == 0);
-	}
-	
-	/**
-	 * Setter to set HTTP status code
-	 *
-	 * @param int $code HTTP status code. Default value is `200` that means successful
-	 * @return void
-	 */
-	// function setHttpStatusCode($code = '200')
-	// {
-	// 	$this->httpStatusCode = $code;
-	// }
-
-	/**
-	 * Getter to retrieve HTTP status code
-	 *
-	 * @return int Returns HTTP status code
-	 */
-	// function getHttpStatusCode()
-	// {
-	// 	return $this->httpStatusCode;
-	// }
-
-	/**
-	 * Method to return either true or false depnding on the value in a 'error' variable
-	 *
-	 * @return bool
-	 */
-	// function toBoolean()
-	// {
-	// 	return $this->toBool();
-	// }
 }
 
 if(version_compare(PHP_VERSION, '7.2', '<') && !class_exists('Object', false)) {

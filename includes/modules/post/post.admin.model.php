@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 
 if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postAdminModel')) {
 	
-	require_once X2B_PATH . 'includes\modules\post\post.extravars.php';
+	require_once X2B_PATH . 'includes\classes\UserDefineFields.class.php';
 
 	class postAdminModel {
 		private $_n_board_id = null;
@@ -32,10 +32,11 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postAdminModel')) {
 			}
 			unset($o_current_user);
 
-			$o_post_extra_vars = new \X2board\Includes\Modules\Post\postExtraVars();
-			$this->_a_default_fields = $o_post_extra_vars->get_default_fields();
-			$this->_a_extends_fields = $o_post_extra_vars->get_extended_fields();
-			unset($o_post_extra_vars);
+			// $o_post_extra_vars = new \X2board\Includes\Modules\Post\postExtraVars();
+			$o_post_user_define_fields = new \X2board\Includes\Classes\UserDefineFields();
+			$this->_a_default_fields = $o_post_user_define_fields->get_default_fields();
+			$this->_a_extends_fields = $o_post_user_define_fields->get_extended_fields();
+			unset($o_post_user_define_fields);
 
 			$this->_set_user_define_fields();
 		}

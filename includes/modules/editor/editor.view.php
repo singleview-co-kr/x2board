@@ -36,12 +36,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorView')) {
 		 * editor 스킨의 사용자 입력 field 출력
 		 */
 		public function write_post_prepare_single_user_field() { 
-			// require_once X2B_PATH . 'includes\modules\post\post.admin.model.php';
-			// $o_post_admin_model = new \X2board\Includes\Modules\Post\postAdminModel();
-			// $this->_default_fields = $o_post_admin_model->get_default_fields();  // get_default_user_input_fields();
-			// $this->_extends_fields = $o_post_admin_model->get_extended_fields();  // get_extended_user_input_fields();
-			// unset($o_post_admin_model);
-
 			$o_post_model = \X2board\Includes\getModel('post');
 			$this->_default_fields = $o_post_model->get_default_fields();  // get_default_user_input_fields();
 			$this->_extends_fields = $o_post_model->get_extended_fields();  // get_extended_user_input_fields();

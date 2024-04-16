@@ -231,6 +231,8 @@ function _launch_x2b($s_cmd_type) {
 	require_once X2B_PATH . 'includes/classes/ModuleHandler.class.php';
 	require_once X2B_PATH . 'includes/classes/DB.class.php';
 	require_once X2B_PATH . 'includes/classes/PageHandler.class.php';
+	require_once X2B_PATH . 'includes/classes/cache/CacheHandler.class.php';
+	require_once X2B_PATH . 'includes/classes/UserDefineFields.class.php';
 	require_once X2B_PATH . 'includes/classes/security/Password.class.php';
 	require_once X2B_PATH . 'includes/classes/security/IpFilter.class.php';
 	require_once X2B_PATH . 'includes/no_namespace.helper.php';  // shorten command for skin usage

@@ -123,13 +123,59 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 			// $logged_info = Context::get('logged_info');
 
 			// setup variables
-			$obj = \X2board\Includes\Classes\Context::gets('board_id', 'post_id', 'title', 'content', 'status', 'is_secret', 'is_notice', 'password', 'nick_name', 'comment_status', 'category_id', 'allow_search');
+			$obj = \X2board\Includes\Classes\Context::gets('board_id', 'post_id', 'title', 'content', 'status', 
+															'is_secret', // for XE board skin compatible
+															'secret',  // for Kboard skin compatible 
+															'is_notice',   // for XE board skin compatible
+															'notice',  // for Kboard skin compatible 
+															'password', 
+															'category_id',
+															'nick_name', 
+															'status',  // for XE board skin compatible
+															'allow_search',  // for Kboard skin compatible 
+															'comment_status',  // for XE board skin compatible
+															'allow_comment',  // for Kboard skin compatible 
+														);
 			if(is_null($obj->board_id) || intval($obj->board_id) <= 0) {
 				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', 'x2board') );
 			}
+
+			// keep is_notice only, kill noice
+			if( !is_null($obj->notice) ) {
+				$obj->is_notice = $obj->notice == 'true' ? 'Y' : '';
+				\X2board\Includes\Classes\Context::set('is_notice', $obj->is_notice);
+				\X2board\Includes\Classes\Context::set('notice', null);
+				unset($obj->notice);
+			}
+			// keep is_secret only, kill secret
+			if( !is_null($obj->secret) ) {
+				$obj->is_secret = $obj->secret == 'true' ? 'Y' : '';
+				\X2board\Includes\Classes\Context::set('is_secret', $obj->is_secret);
+				\X2board\Includes\Classes\Context::set('secret', null);
+				unset($obj->secret);
+			}
+			// keep comment_status only, kill allow_comment
+			if( !is_null($obj->allow_comment) ) {
+				$obj->comment_status = $obj->allow_comment == 'true' ? 'ALLOW' : 'DENY';
+				\X2board\Includes\Classes\Context::set('comment_status', $obj->comment_status);
+				\X2board\Includes\Classes\Context::set('allow_comment', null);
+				unset($obj->allow_comment);
+			}
+			else {
+				unset($obj->allow_comment);
+			}
+			// translate allow_search to status
+			if( !is_null($obj->allow_search) ) {
+				$o_post_class = \X2board\Includes\getClass('post');
+				$obj->status = $o_post_class->convert_kb_allow_search_2_xe_status($obj->allow_search);
+				unset($o_post_class);
+
+				\X2board\Includes\Classes\Context::set('status', $obj->status);
+				// \X2board\Includes\Classes\Context::set('allow_search', null);
+				// unset($obj->allow_search);
+			}
 // var_dump($_REQUEST); 
-// var_dump($obj);
-// exit;
+// var_dump($this->module_info->excerpted_title_length);
 			$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
 
 			/////////// tmporary test block begin /////////////
@@ -139,6 +185,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 			// $obj->is_secret = '';
 			if( !isset($obj->status)){
 				$obj->status = 'PUBLIC'; // PUBLIC SECRET TEMP
+			}
+
+			if( !$obj->comment_status ) {
+				$obj->comment_status = 'DENY';
 			}
 			// $obj->comment_status = ''; // DENY ALLOW
 			// $obj->email_address = '';
@@ -150,14 +200,14 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 				$obj->is_notice = 'N';
 			}
 			// $obj->commentStatus = $obj->comment_status;
-
+// var_dump($obj);
+// exit;
 			// $oModuleModel = getModel('module');
 			// $module_config = $oModuleModel->getModuleInfoByModuleSrl($obj->module_srl);
 
 			/////////// tmporary test block begin /////////////
 			$module_config = new \stdClass();
 			$module_config->mobile_use_editor = 'Y';
-			$module_config->subject_len_count = null; ////////////////////////
 			/////////// tmporary test block end /////////////
 
 			if($module_config->mobile_use_editor === 'Y') {
@@ -170,11 +220,11 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 			}
 
 			settype($obj->title, "string");
-			$nAutoSubjectLen = $module_config->subject_len_count ? (int)$module_config->subject_len_count : 20;
+			$n_excerpted_title_length = $this->module_info->excerpted_title_length ? (int)$this->module_info->excerpted_title_length : 20;
 			if($obj->title == '') {
-				$obj->title = cut_str(trim(strip_tags(nl2br($obj->content))),$nAutoSubjectLen,'...');
+				$obj->title = cut_str(trim(strip_tags(nl2br($obj->content))),$n_excerpted_title_length,'...');
 			}
-			//setup dpcument title tp 'Untitled'
+			//setup post title to 'Untitled'
 			if($obj->title == '') {
 				$obj->title = __('Untitled', 'x2board'); //'Untitled';
 			}

@@ -249,3 +249,14 @@ dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_user_define_keys` (
 `json_param` text DEFAULT NULL,
 UNIQUE KEY `unique_board_keys` (`board_id`,`var_idx`)
 ) {$charset_collate};");
+
+dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_user_define_vars` (
+`board_id` bigint(11) NOT NULL,
+`post_id` bigint(11) NOT NULL,
+`var_idx` bigint(11) NOT NULL,
+`lang_code` varchar(10) NOT NULL,
+`value` longtext DEFAULT NULL,
+`eid` varchar(40) DEFAULT NULL,
+UNIQUE KEY `unique_extra_vars` (`board_id`,`post_id`,`var_idx`),
+KEY `idx_post_list_order` (`post_id`,`board_id`,`var_idx`)
+) {$charset_collate};");

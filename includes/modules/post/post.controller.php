@@ -62,9 +62,9 @@ var_dump('post controller init()');
 			// $oDB = &DB::getInstance();
 			// $oDB->begin();
 			// List variables
-			if(!$obj->comment_status) {
-				$obj->comment_status = 'DENY';
-			}
+			// if(!$obj->comment_status) {
+			// 	$obj->comment_status = 'DENY';
+			// }
 			// if($obj->comment_status) {
 			// 	$obj->commentStatus = $obj->comment_status;
 			// }
@@ -245,6 +245,7 @@ var_dump('post controller init()');
 				
 			$a_new_post['allow_search'] = isset($obj->allow_search)?intval(($obj->allow_search && $obj->allow_search == '1' ) ? '2' : $obj->allow_search ): '1';
 			$a_new_post['status'] = sanitize_text_field($obj->status); //isset($data['status'])?sanitize_key($data['status']):'';
+			$a_new_post['comment_status'] = sanitize_text_field($obj->comment_status); 
 			// add user agent
 			$a_new_post['ua'] = wp_is_mobile() ? 'M' : 'P';
 			$a_new_post['ipaddress'] = \X2board\Includes\get_remote_ip();
@@ -291,7 +292,8 @@ var_dump('post controller init()');
 				$a_insert_key[] = "`$key`";
 				$a_insert_val[] = "'$value'";
 			}
-			
+// var_dump($a_new_post);
+// exit;
 			// $board = $this->getBoard();
 			// $board_total = $board->getTotal();
 			// $board_list_total = $board->getListTotal();
@@ -304,45 +306,65 @@ var_dump('post controller init()');
 			// 	$board->meta->total = $board_total + 1;
 			// }
 			global $wpdb;
-			$query = "INSERT LOW_PRIORITY INTO `{$wpdb->prefix}x2b_posts` (".implode(',', $a_insert_key).") VALUES (".implode(',', $a_insert_val).")";
-			if ($wpdb->query($query) === FALSE) {
-				return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error);
-			} 
+/////// 이거 반드시 재활성화			
+			// $query = "INSERT LOW_PRIORITY INTO `{$wpdb->prefix}x2b_posts` (".implode(',', $a_insert_key).") VALUES (".implode(',', $a_insert_val).")";
+			// if ($wpdb->query($query) === FALSE) {
+			// 	return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error);
+			// }
+/////// 이거 반드시 재활성화			
 			
-			// $n_new_post_id = $wpdb->insert_id;
 			unset($a_insert_key);
 			unset($a_insert_data);
 
-			// if(!$output->toBool()) {
-			// 	// $oDB->rollback();
-			// 	return $output;
-			// }
-			
 			// Insert extra variables if the document successfully inserted.
-			/*$o_post_model = \X2board\Includes\getModel('post');
-			$extra_keys = $o_post_model->getExtraKeys($obj->module_srl);
-			if(count($extra_keys)) {
-				foreach($extra_keys as $idx => $extra_item) {
-					$value = NULL;
-					if(isset($obj->{'extra_vars'.$idx})) {
-						$tmp = $obj->{'extra_vars'.$idx};
-						if(is_array($tmp))
-							$value = implode('|@|', $tmp);
-						else
-							$value = trim($tmp);
-					}
-					else if(isset($obj->{$extra_item->name})) {
-						$value = trim($obj->{$extra_item->name});
-					}
-					if($value == NULL) {
-						continue;
+			$o_post_model = \X2board\Includes\getModel('post');
+			// $extra_keys = $o_post_model->getExtraKeys($obj->module_srl);
+			$a_user_define_keys = $o_post_model->get_user_define_keys($a_new_post['board_id']);
+			unset($o_post_model);
+			
+			// do not store default field into tbl::x2b_user_define_vars
+			$o_post_user_define_fields = new \X2board\Includes\Classes\UserDefineFields();
+			$a_default_fields = $o_post_user_define_fields->get_default_fields();
+			unset($o_post_user_define_fields);
+
+			$a_ignore_field_type = array_keys($a_default_fields);
+var_dump( $a_ignore_field_type);
+
+			if(count($a_user_define_keys)) {
+				foreach($a_user_define_keys as $idx => $o_user_define_item) {
+					if(in_array($o_user_define_item->type, $a_ignore_field_type)) {
+						continue;  // do not store default field
 					}
 
-					$this->insertDocumentExtraVar($obj->module_srl, $obj->document_srl, $idx, $value, $extra_item->eid);
+					// $value = NULL;
+					$o_user_input_value = \X2board\Includes\Classes\Context::get($o_user_define_item->eid);
+
+					// if( !is_null($o_user_input_value) ) {
+					// 	if(is_array($o_user_input_value))
+					// 		$value = implode('|@|', sanitize_text_field($o_user_input_value));
+					// 	else
+					// 		$value = sanitize_text_field(trim($o_user_input_value));
+					// }
+
+					// if(isset($obj->{'extra_vars'.$idx})) {
+					// 	$tmp = $obj->{'extra_vars'.$idx};
+					// 	if(is_array($tmp))
+					// 		$value = implode('|@|', $tmp);
+					// 	else
+					// 		$value = trim($tmp);
+					// }
+					// else if(isset($obj->{$o_user_define_item->name})) {
+					// 	$value = trim($obj->{$o_user_define_item->name});
+					// }
+					if($o_user_input_value == NULL) {
+						continue;
+					}
+var_dump($o_user_input_value);					
+					$this->_insert_user_defined_value($a_new_post['board_id'], $a_new_post['post_id'], $idx, $o_user_input_value, $o_user_define_item->eid);
 				}
 			}
-			unset($o_post_model);
-			*/
+exit;		
+			
 			// Update the category if the category_srl exists.
 			if($obj->category_id) {
 				// $this->updateCategoryCount($obj->board_id, $obj->category_id);
@@ -378,6 +400,53 @@ var_dump('post controller init()');
 // var_dump('insert_post finished without redirection');
 // exit;
 			return $o_rst;
+		}
+
+		/**
+		 * Insert extra vaiable to the documents table
+		 * @param int $n_board_id
+		 * @param int $n_post_id
+		 * @param int $var_idx
+		 * @param mixed $value
+		 * @param int $eid
+		 * @param string $lang_code
+		 * @return BaseObject|void
+		 */
+		// function insertDocumentExtraVar($module_srl, $document_srl, $var_idx, $value, $eid = null, $lang_code = '')
+		private function _insert_user_defined_value($n_board_id, $n_post_id, $var_idx, $o_user_input_value, $eid = null, $lang_code = '') {
+			if(!$n_board_id || !$n_post_id || !$var_idx || !isset($o_user_input_value)) {
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request1', 'x2board') );
+			}
+			// if(!$lang_code) $lang_code = Context::getLangType();
+		
+			if(is_array($o_user_input_value))
+				$value = implode('|@|', sanitize_text_field($o_user_input_value));
+			else
+				$value = sanitize_text_field(trim($o_user_input_value));
+
+			// $obj = new stdClass;
+			// $obj->module_srl = $board_id;
+			// $obj->document_srl = $document_srl;
+			// $obj->var_idx = $var_idx;
+			// $obj->value = $value;
+			// $obj->lang_code = ''; //$lang_code;
+			// $obj->eid = $eid;
+			// executeQuery('document.insertDocumentExtraVar', $obj);
+			$a_new_field = array();
+			$a_new_field['board_id'] = $n_board_id;
+			$a_new_field['post_id'] = $n_post_id;
+			$a_new_field['var_idx'] = $var_idx;
+			$a_new_field['value'] = $value;
+			$a_new_field['lang_code'] = '';
+			$a_new_field['eid'] = $eid;
+			global $wpdb;
+			$result = $wpdb->insert("{$wpdb->prefix}x2b_user_define_vars", $a_new_field);
+			if( $result < 0 || $result === false ){
+				unset($a_new_field);
+				unset($result);
+				return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error );
+			}
+			unset($result);
 		}
 
 		/**
@@ -1332,32 +1401,6 @@ var_dump('post controller init()');
 			}
 
 			return new BaseObject();
-		}
-
-		/**
-		 * Insert extra vaiable to the documents table
-		 * @param int $module_srl
-		 * @param int $document_srl
-		 * @param int $var_idx
-		 * @param mixed $value
-		 * @param int $eid
-		 * @param string $lang_code
-		 * @return BaseObject|void
-		 */
-		function insertDocumentExtraVar($module_srl, $document_srl, $var_idx, $value, $eid = null, $lang_code = '')
-		{
-			if(!$module_srl || !$document_srl || !$var_idx || !isset($value)) return new BaseObject(-1,'msg_invalid_request');
-			if(!$lang_code) $lang_code = Context::getLangType();
-
-			$obj = new stdClass;
-			$obj->module_srl = $module_srl;
-			$obj->document_srl = $document_srl;
-			$obj->var_idx = $var_idx;
-			$obj->value = $value;
-			$obj->lang_code = $lang_code;
-			$obj->eid = $eid;
-
-			executeQuery('document.insertDocumentExtraVar', $obj);
 		}
 
 		/**

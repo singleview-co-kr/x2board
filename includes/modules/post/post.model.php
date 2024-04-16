@@ -15,8 +15,6 @@ if ( !defined( 'ABSPATH' ) ) {
 
 if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 
-	require_once X2B_PATH . 'includes\modules\post\post.extravars.php';
-
 	class postModel extends post {
 		private $_a_default_fields = array();
 		private $_a_extends_fields = array();
@@ -35,10 +33,14 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 				$G_X2B_CACHE['EXTRA_VARS'] = array();
 			}
 
-			$o_post_extra_vars = new \X2board\Includes\Modules\Post\postExtraVars();
-			$this->_a_default_fields = $o_post_extra_vars->get_default_fields();
-			$this->_a_extends_fields = $o_post_extra_vars->get_extended_fields();
-			unset($o_post_extra_vars);
+			if(!isset($G_X2B_CACHE['X2B_USER_DEFINE_KEYS'])) {
+				$G_X2B_CACHE['X2B_USER_DEFINE_KEYS'] = array();
+			}
+
+			$o_post_user_define_fields = new \X2board\Includes\Classes\UserDefineFields();
+			$this->_a_default_fields = $o_post_user_define_fields->get_default_fields();
+			$this->_a_extends_fields = $o_post_user_define_fields->get_extended_fields();
+			unset($o_post_user_define_fields);
 			$this->_set_user_define_fields();
 		}
 
@@ -363,36 +365,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			return $a_fields;
 		}
 	
-
 		/**
-		 * 설정된 사용자 입력 필드를 반환한다.
-		 * @return array
-		 */
-		// public function getSkinFields() {
-		/*public function get_user_define1111_fields() {
-			if($this->_a_skin_fields){
-				$a_fields = $this->skin_fields;
-			}
-			else{
-				require_once X2B_PATH . 'includes\modules\post\post.admin.model.php';
-				$o_post_admin_model = new \X2board\Includes\Modules\Post\postAdminModel();
-				$n_board_id = \X2board\Includes\Classes\Context::get('board_id');
-				$o_post_admin_model->set_board_id($n_board_id);
-				$a_fields = $o_post_admin_model->get_user_define_fields();
-// var_dump($a_fields);		
-				unset($o_post_admin_model);
-				// $fields = $this->_a_default_fields;
-				foreach($a_fields as $key=>$value){
-					if(isset($value['x2board_extends'])){
-						unset($a_fields[$key]);
-					}
-				}
-			}
-			return $a_fields;
-		}*/
-
-		/**
-		 * A particular document to get the value of the extra variable function
+		 * A particular post to get the value of the extra variable function
 		 * @param int $module_srl
 		 * @param int $document_srl
 		 * @return array
@@ -928,6 +902,89 @@ var_dump('plz define category search');
 			return $lang->status_name_list;
 		}
 
+		/**
+		 * Function to retrieve the key values of the extended variable document
+		 * $Form_include: writing articles whether to add the necessary extensions of the variable input form
+		 * @param int $board_id
+		 * @return array
+		 */
+		// function getExtraKeys($module_srl)
+		public function get_user_define_keys($n_board_id) {
+			global $G_X2B_CACHE;
+			if(!isset($G_X2B_CACHE['X2B_USER_DEFINE_KEYS'][$n_board_id])) {
+				$a_keys = false;
+				$o_cache_handler = \X2board\Includes\Classes\CacheHandler::getInstance('object', null, true);
+				if($o_cache_handler->isSupport()) {
+					// $object_key = 'module_document_extra_keys:' . $n_board_id;
+					$object_key = 'module_post_user_define_keys:' . $n_board_id;
+					$cache_key = $o_cache_handler->getGroupKey('site_and_module', $object_key);
+					$a_keys = $o_cache_handler->get($cache_key);
+				}
+				// $o_user_define_fields = \X2board\Includes\Classes\UserDefineFields::getInstance($n_board_id); // 호출 효율성 위해서 아래로 이동
+
+				if($a_keys === false) {  // _set_user_define_fields()과 동일한 DB 호출  -> 캐쉬화해야 함
+					$s_columns = '`board_id` as `board_id`, `var_idx` as `idx`, `var_name` as `name`, `var_type` as `type`, `var_is_required` as `is_required`, `var_search` as `search`, `var_default` as `default`, `var_desc` as `desc`, `eid` as `eid`  ';
+					global $wpdb;
+					$a_temp = $wpdb->get_results("SELECT {$s_columns} FROM `{$wpdb->prefix}x2b_user_define_keys` WHERE `board_id` = '{$n_board_id}' ORDER BY `var_idx` ASC");
+
+					// correcting index order
+					// DB에서 가져온 첫번째 var_idx가 1보다 클 때 idx를 수정함
+					// XE는 변수 순서를 바꿀 때마다 ajax 갱신해서 문제가 될 수 있지만
+					// WP는 변경된 순서를 일괄 컴파일해서 저장하므로 문제가 될 가능성이 낮음
+					/*$isFixed = FALSE;
+					if(is_array($a_temp)) {
+						$prevIdx = 0;
+						foreach($a_temp as $no => $value) {
+							// case first
+							if($prevIdx == 0 && $value->idx != 1) {
+								// $args = new stdClass();
+								// $args->module_srl = $n_board_id;
+								// $args->var_idx = $value->idx;
+								// $args->new_idx = 1;
+								// executeQuery('document.updateDocumentExtraKeyIdx', $args);
+								// executeQuery('document.updateDocumentExtraVarIdx', $args);
+								$prevIdx = 1;
+								$isFixed = TRUE;
+								continue;
+							}
+
+							// case others
+							if($prevIdx > 0 && $prevIdx + 1 != $value->idx) {
+								// $args = new stdClass();
+								// $args->module_srl = $module_srl;
+								// $args->var_idx = $value->idx;
+								// $args->new_idx = $prevIdx + 1;
+								// executeQuery('document.updateDocumentExtraKeyIdx', $args);
+								// executeQuery('document.updateDocumentExtraVarIdx', $args);
+								$prevIdx += 1;
+								$isFixed = TRUE;
+								continue;
+							}
+							$prevIdx = $value->idx;
+						}
+					}
+					if($isFixed) {
+						$output = executeQueryArray('document.getDocumentExtraKeys', $obj);
+					}*/
+
+					$o_user_define_fields = \X2board\Includes\Classes\UserDefineFields::getInstance($n_board_id);
+					$o_user_define_fields->set_user_define_keys($a_temp);
+					$a_keys = $o_user_define_fields->get_user_define_vars();
+					unset($o_user_define_fields);
+					if(!$a_keys) {
+						$a_keys = array();
+					}
+
+					if($o_cache_handler->isSupport()) {
+						$o_cache_handler->put($cache_key, $a_keys);
+					}
+				}
+				$G_X2B_CACHE['X2B_USER_DEFINE_KEYS'][$n_board_id] = $a_keys;
+			}
+			return $G_X2B_CACHE['X2B_USER_DEFINE_KEYS'][$n_board_id];
+		}
+
+
 		
 
 
@@ -1014,96 +1071,6 @@ var_dump('plz define category search');
 			}
 
 			return $output;
-		}
-
-		/**
-		 * Function to retrieve the key values of the extended variable document
-		 * $Form_include: writing articles whether to add the necessary extensions of the variable input form
-		 * @param int $module_srl
-		 * @return array
-		 */
-		function getExtraKeys($module_srl)
-		{
-			if(!isset($GLOBALS['XE_EXTRA_KEYS'][$module_srl]))
-			{
-				$keys = false;
-				$oCacheHandler = CacheHandler::getInstance('object', null, true);
-				if($oCacheHandler->isSupport())
-				{
-					$object_key = 'module_document_extra_keys:' . $module_srl;
-					$cache_key = $oCacheHandler->getGroupKey('site_and_module', $object_key);
-					$keys = $oCacheHandler->get($cache_key);
-				}
-
-				$oExtraVar = ExtraVar::getInstance($module_srl);
-
-				if($keys === false)
-				{
-					$obj = new stdClass();
-					$obj->module_srl = $module_srl;
-					$obj->sort_index = 'var_idx';
-					$obj->order = 'asc';
-					$output = executeQueryArray('document.getDocumentExtraKeys', $obj);
-
-					// correcting index order
-					$isFixed = FALSE;
-					if(is_array($output->data))
-					{
-						$prevIdx = 0;
-						foreach($output->data as $no => $value)
-						{
-							// case first
-							if($prevIdx == 0 && $value->idx != 1)
-							{
-								$args = new stdClass();
-								$args->module_srl = $module_srl;
-								$args->var_idx = $value->idx;
-								$args->new_idx = 1;
-								executeQuery('document.updateDocumentExtraKeyIdx', $args);
-								executeQuery('document.updateDocumentExtraVarIdx', $args);
-								$prevIdx = 1;
-								$isFixed = TRUE;
-								continue;
-							}
-
-							// case others
-							if($prevIdx > 0 && $prevIdx + 1 != $value->idx)
-							{
-								$args = new stdClass();
-								$args->module_srl = $module_srl;
-								$args->var_idx = $value->idx;
-								$args->new_idx = $prevIdx + 1;
-								executeQuery('document.updateDocumentExtraKeyIdx', $args);
-								executeQuery('document.updateDocumentExtraVarIdx', $args);
-								$prevIdx += 1;
-								$isFixed = TRUE;
-								continue;
-							}
-
-							$prevIdx = $value->idx;
-						}
-					}
-
-					if($isFixed)
-					{
-						$output = executeQueryArray('document.getDocumentExtraKeys', $obj);
-					}
-
-					$oExtraVar->setExtraVarKeys($output->data);
-					$keys = $oExtraVar->getExtraVars();
-					if(!$keys) $keys = array();
-
-					if($oCacheHandler->isSupport())
-					{
-						$oCacheHandler->put($cache_key, $keys);
-					}
-				}
-
-
-				$GLOBALS['XE_EXTRA_KEYS'][$module_srl] = $keys;
-			}
-
-			return $GLOBALS['XE_EXTRA_KEYS'][$module_srl];
 		}
 
 		/**

@@ -126,7 +126,7 @@
 			<div class="attr-value">
 				<select id="kboard-select-wordpress-search" name="allow_search">
 					<option value="1"<?php if($post->allow_search == '1'):?> selected<?php endif?>><?php echo __('Public', 'x2board')?></option>
-					<option value="2"<?php if($post->allow_search == '2'):?> selected<?php endif?>><?php echo __('Only title (secret document)', 'x2board')?></option>
+					<option value="2"<?php if($post->allow_search == '2'):?> selected<?php endif?>><?php echo __('Only title (secret post)', 'x2board')?></option>
 					<option value="3"<?php if($post->allow_search == '3'):?> selected<?php endif?>><?php echo __('Exclusion', 'x2board')?></option>
 				</select>
 				<?php if(isset($field['description']) && $field['description']):?><div class="description"><?php echo esc_html($field['description'])?></div><?php endif?>

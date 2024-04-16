@@ -21,10 +21,17 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\post')) {
 		 */
 		var $search_option = array('title','content','title_content','user_name',); // /< Search options
 		/**
-		 * Status list
+		 * XE Status list
 		 * @var array
 		 */
 		var $statusList = array('private'=>'PRIVATE', 'public'=>'PUBLIC', 'secret'=>'SECRET', 'temp'=>'TEMP');
+
+		/**
+		 * KBoard allow search list
+		 * @var array
+		 */
+		var $allowSearchKboard = array('1'=>'PUBLIC', '2'=>'SECRET', '3'=>'PRIVATE');
+		// 1 -> 'Public', 2 -> 'Only title (secret post)', 3 -> 'Exclusion'
 
 		function __construct() {
 // var_dump('post claas');
@@ -48,7 +55,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\post')) {
 		}
 
 		/**
-		 * Document Status List
+		 * Post Status List
 		 * @return array
 		 */
 		// function getStatusList()
@@ -62,8 +69,21 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\post')) {
 		 */
 		// function getConfigStatus($key)
 		public function get_config_status($key) {
-			if(array_key_exists(strtolower($key), $this->statusList)) return $this->statusList[$key];
-			else $this->get_default_status();
+			if(array_key_exists(strtolower($key), $this->statusList)) {
+				return $this->statusList[$key];
+			}
+			return $this->get_default_status();
+		}
+
+		/**
+		 * Return status by key
+		 * @return string
+		 */
+		public function convert_kb_allow_search_2_xe_status($key) {
+			if(array_key_exists(strtolower($key), $this->allowSearchKboard)) {
+				return $this->allowSearchKboard[$key];
+			}
+			return false;
 		}
 	}
 }
