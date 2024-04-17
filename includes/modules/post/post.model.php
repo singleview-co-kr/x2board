@@ -372,19 +372,23 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 		 * @return array
 		 */
 		// function getExtraVars($module_srl, $document_srl)
-		public function get_extra_vars( $post_id ) {
+		public function get_extra_vars( $n_post_id ) {
 			global $G_X2B_CACHE;
-			if(!isset($G_X2B_CACHE['EXTRA_VARS'][$post_id])) {
+			if(!isset($G_X2B_CACHE['EXTRA_VARS'][$n_post_id])) {
 				// Extended to extract the values of variables set
 				// $o_post = $this->getDocument($board_id, false);
-				$G_X2B_CACHE['POST_LIST'][$post_id] = $this->get_post($post_id, false); //$o_post;
+				$G_X2B_CACHE['POST_LIST'][$n_post_id] = $this->get_post($n_post_id, false); //$o_post;
 				$this->_set_to_all_post_extra_vars();
 			}
-			if(isset($G_X2B_CACHE['EXTRA_VARS'][$post_id])) {
-				if(is_array($G_X2B_CACHE['EXTRA_VARS'][$post_id])) {
-					ksort($G_X2B_CACHE['EXTRA_VARS'][$post_id]);
+			global $G_X2B_CACHE;
+// var_dump($n_post_id);
+// var_dump($G_X2B_CACHE['EXTRA_VARS'][$n_post_id]);			
+			if(isset($G_X2B_CACHE['EXTRA_VARS'][$n_post_id])) {
+
+				if(is_array($G_X2B_CACHE['EXTRA_VARS'][$n_post_id])) {
+					ksort($G_X2B_CACHE['EXTRA_VARS'][$n_post_id]);
 				} 
-				return $G_X2B_CACHE['EXTRA_VARS'][$post_id];
+				return $G_X2B_CACHE['EXTRA_VARS'][$n_post_id];
 			}
 			return null;
 		}	
@@ -396,89 +400,131 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 		// function setToAllDocumentExtraVars()
 		private function _set_to_all_post_extra_vars() {
 			global $G_X2B_CACHE;
+			static $checked_posts = array();
+			$_post_list = &$G_X2B_CACHE['POST_LIST'];
+
+			// X2B POST_LIST all posts that the object referred to the global variable settings
+			if(count($_post_list) <= 0) {
+				return;
+			}
 // var_dump('_set_to_all_post_extra_vars');			
-			// $G_X2B_CACHE['EXTRA_VARS'][$post_id]
-// 			static $checked_documents = array();
-// 			$_post_list = &$G_X2B_CACHE['POST_LIST'];
-
-// 			// X2B POST_LIST all posts that the object referred to the global variable settings
-// 			if(count($_post_list) <= 0) {
-// 				return;
-// 			}
-
-// 			// Find all called the document object variable has been set extension
-// 			$post_ids = array();
-// 			foreach($_post_list as $key => $val) {
-// 				if(!$val->document_srl || $checked_documents[$val->document_srl]) {
-// 					continue;
-// 				}
-// 				$checked_documents[$val->document_srl] = true;
-// 				$post_ids[] = $val->document_srl;
-// 			}
-				
-// 			// If the document number, return detected
-// 			if(!count($post_ids)) {
-// 				return;
-// 			}
-// 			// Expand variables mijijeongdoen article about a current visitor to the extension of the language code, the search variable
-// 			//$obj->document_srl = implode(',',$post_ids);
-// 			$output = $this->getDocumentExtraVarsFromDB($post_ids);
-// 			if($output->toBool() && $output->data) {
-// 				foreach($output->data as $key => $val) {
-// 					if(!isset($val->value)) {
-// 						continue;
-// 					}
-// 					if(!$extra_vars[$val->module_srl][$val->document_srl][$val->var_idx][0]) {
-// 						$extra_vars[$val->module_srl][$val->document_srl][$val->var_idx][0] = trim($val->value);
-// 					}
-// 					$extra_vars[$val->document_srl][$val->var_idx][$val->lang_code] = trim($val->value);
-// 				}
-// 			}
-
-// 			$user_lang_code = Context::getLangType();
-// 			for($i=0,$c=count($post_ids);$i<$c;$i++)
-// 			{
-// 				$document_srl = $post_ids[$i];
-// 				unset($vars);
-
-// 				if(!$_post_list[$document_srl] || !is_object($_post_list[$document_srl]) || !$_post_list[$document_srl]->isExists()) continue;
-// 				$module_srl = $_post_list[$document_srl]->get('module_srl');
-// 				$extra_keys = $this->getExtraKeys($module_srl);
-// 				$vars = $extra_vars[$document_srl];
-// 				$document_lang_code = $_post_list[$document_srl]->get('lang_code');
-// 				// Expand the variable processing
-// 				if(count($extra_keys))
-// 				{
-// 					foreach($extra_keys as $idx => $key)
-// 					{
-// 						$extra_keys[$idx] = clone($key);
-// 						$val = $vars[$idx];
-// 						if(isset($val[$user_lang_code])) $v = $val[$user_lang_code];
-// 						else if(isset($val[$document_lang_code])) $v = $val[$document_lang_code];
-// 						else if(isset($val[0])) $v = $val[0];
-// 						else $v = null;
-// 						$extra_keys[$idx]->value = $v;
-// 					}
-// 				}
-
-// 				unset($evars);
-// 				$evars = new ExtraVar($module_srl);
-// 				$evars->setExtraVarKeys($extra_keys);
-// 				// Title Processing
-// 				if($vars[-1][$user_lang_code]) $_post_list[$document_srl]->add('title',$vars[-1][$user_lang_code]);
-// 				// Information processing
-// 				if($vars[-2][$user_lang_code]) $_post_list[$document_srl]->add('content',$vars[-2][$user_lang_code]);
-				
-				// static 데이터를 갱신해주기 위해 들어간 코드같으나 어차피 언어 변경 자체는 페이지 전환이 일어나면서 발생하는게 대부분이라 효용이 없음. 또한 예기치않게 권한이 없는 다국어 문서 내용을 보여주는 부효과가 일어남		
-				/*		
-				if($vars[-1][$user_lang_code] || $vars[-2][$user_lang_code])
-				{
-					unset($checked_documents[$document_srl]);
+			// Find all called the document object variable has been set extension
+			$post_ids = array();
+			foreach($_post_list as $key => $val) {
+// var_dump($key);
+// var_dump($val);
+				if(!$val->post_id || isset($checked_posts[$val->post_id])) {
+					continue;
 				}
-				*/
+				$checked_posts[$val->post_id] = true;
+				$post_ids[] = $val->post_id;
+			}
+			// If the document number, return detected
+			if(!count($post_ids)) {
+				return;
+			}
 
-			// 	$G_X2B_CACHE['EXTRA_VARS'][$document_srl] = $evars->getExtraVars();
-			// }
+			// Expand variables mijijeongdoen article about a current visitor to the extension of the language code, the search variable
+			$a_rst = $this->_get_post_user_define_vars_from_DB($post_ids);
+			// unset($post_ids);
+
+			$extra_vars = array();
+			if($a_rst !== false && $a_rst) {
+				foreach($a_rst as $_ => $o_val) {
+					if(!isset($o_val->value)) {
+						continue;
+					}
+					if(!isset($extra_vars[$o_val->board_id][$o_val->post_id][$o_val->var_idx][0])) {
+						$extra_vars[$o_val->board_id][$o_val->post_id][$o_val->var_idx][0] = trim($o_val->value);
+					}
+					$o_val->lang_code = 'ko';
+					$extra_vars[$o_val->post_id][$o_val->var_idx][$o_val->lang_code] = trim($o_val->value);
+				}
+			}
+
+			$user_lang_code = 'ko'; //Context::getLangType();
+			for($i=0,$c=count($post_ids);$i<$c;$i++) {
+				$n_post_id = $post_ids[$i];
+				unset($vars);
+				if(!$_post_list[$n_post_id] || !is_object($_post_list[$n_post_id]) || !$_post_list[$n_post_id]->is_exists()) {
+					continue;
+				}
+				$n_board_id = $_post_list[$n_post_id]->get('board_id');
+				$extra_keys = $this->get_user_define_keys($n_board_id);
+				
+				if(isset($extra_vars[$n_post_id])) {
+					$vars = $extra_vars[$n_post_id];  // user define field의 실제 입력값 추출
+					$post_lang_code = 'ko'; //$_post_list[$n_post_id]->get('lang_code');
+					// Expand the variable processing
+					if(count($extra_keys)) {
+						foreach($extra_keys as $n_idx => $key) {
+							$extra_keys[$n_idx] = clone($key);
+							if(isset($vars[$n_idx])) {
+								$val = $vars[$n_idx];
+								// var_dump($val);	
+								if(isset($val[$user_lang_code])) {
+									$v = $val[$user_lang_code];
+								}
+								else if(isset($val[$post_lang_code])) {
+									$v = $val[$post_lang_code];
+								}
+								else if(isset($val[0])) {
+									$v = $val[0];
+								}							
+							}
+							else {
+								$v = null;
+							}
+							$extra_keys[$n_idx]->value = $v;
+						}
+					}
+				}
+				
+				unset($evars);
+				// $evars = new ExtraVar($n_board_id);
+				// $evars->setExtraVarKeys($extra_keys);
+				$evars = new \X2board\Includes\Classes\UserDefineFields($n_board_id);
+				$evars->set_user_define_keys($extra_keys);
+				
+				// Title Processing
+				// if($vars[-1][$user_lang_code]) {
+				// 	$_post_list[$n_post_id]->add('title',$vars[-1][$user_lang_code]);
+				// }
+				// Information processing
+				// if($vars[-2][$user_lang_code]) {
+				// 	$_post_list[$n_post_id]->add('content',$vars[-2][$user_lang_code]);
+				// }
+				// $GLOBALS['EXTRA_VARS'][$n_post_id] = $evars->getExtraVars();
+				$G_X2B_CACHE['EXTRA_VARS'][$n_post_id] = $evars->get_user_define_vars();
+// var_dump($n_post_id);
+// var_dump($G_X2B_CACHE['EXTRA_VARS'][$n_post_id]);
+			}
+		}
+
+		/**
+		 * Return document extra information from database
+		 * @param array $documentSrls
+		 * @return object
+		 */
+		// function getDocumentExtraVarsFromDB($documentSrls)
+		private function _get_post_user_define_vars_from_DB($a_post_id) {
+			if(!is_array($a_post_id) || count($a_post_id) == 0) {
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', 'x2board') );
+			}
+			// $args = new stdClass();
+			// $args->document_srl = $documentSrls;
+			// $output = executeQueryArray('document.getDocumentExtraVars', $args);
+			global $wpdb;
+			$s_tables = '`'.$wpdb->prefix.'x2b_user_define_vars`';
+			$s_where = '`board_id` >= -1 and `post_id` in ('.implode(',', $a_post_id).') and `var_idx` >= -2';
+			$a_temp = $wpdb->get_results("SELECT * FROM {$s_tables} WHERE {$s_where}");
+			if ($a_temp === null) {
+				wp_die($wpdb->last_error);
+			} 
+			else {
+				$wpdb->flush();
+			}
+			return $a_temp;
 		}
 
 		/**
@@ -992,24 +1038,7 @@ var_dump('plz define category search');
 
 
 //////////////////////////////
-		/**
-		 * Return document extra information from database
-		 * @param array $documentSrls
-		 * @return object
-		 */
-		function getDocumentExtraVarsFromDB($documentSrls)
-		{
-			if(!is_array($documentSrls) || count($documentSrls) == 0)
-			{
-				return new BaseObject(-1, 'msg_invalid_request');
-			}
-
-			$args = new stdClass();
-			$args->document_srl = $documentSrls;
-			$output = executeQueryArray('document.getDocumentExtraVars', $args);
-			return $output;
-		}
-
+		
 		/**
 		 * Bringing multiple documents (or paging)
 		 * @param array|string $document_srls

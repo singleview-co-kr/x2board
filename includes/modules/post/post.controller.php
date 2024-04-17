@@ -306,12 +306,10 @@ var_dump('post controller init()');
 			// 	$board->meta->total = $board_total + 1;
 			// }
 			global $wpdb;
-/////// 이거 반드시 재활성화			
-			// $query = "INSERT LOW_PRIORITY INTO `{$wpdb->prefix}x2b_posts` (".implode(',', $a_insert_key).") VALUES (".implode(',', $a_insert_val).")";
-			// if ($wpdb->query($query) === FALSE) {
-			// 	return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error);
-			// }
-/////// 이거 반드시 재활성화			
+			$query = "INSERT LOW_PRIORITY INTO `{$wpdb->prefix}x2b_posts` (".implode(',', $a_insert_key).") VALUES (".implode(',', $a_insert_val).")";
+			if ($wpdb->query($query) === FALSE) {
+				return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error);
+			}
 			
 			unset($a_insert_key);
 			unset($a_insert_data);
@@ -326,9 +324,7 @@ var_dump('post controller init()');
 			$o_post_user_define_fields = new \X2board\Includes\Classes\UserDefineFields();
 			$a_default_fields = $o_post_user_define_fields->get_default_fields();
 			unset($o_post_user_define_fields);
-
 			$a_ignore_field_type = array_keys($a_default_fields);
-var_dump( $a_ignore_field_type);
 
 			if(count($a_user_define_keys)) {
 				foreach($a_user_define_keys as $idx => $o_user_define_item) {

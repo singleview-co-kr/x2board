@@ -531,7 +531,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItem')) {
 					if($value && !preg_match('/^([a-z]+):\/\//i', $value)) {
 						$value = 'http://' . $value;
 					}
-					return escape($value, false);
+					return \X2board\Includes\escape($value, false);
 
 				case 'tel' :
 					if(is_array($value)) {
@@ -546,7 +546,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItem')) {
 
 					$values = array_values($values);
 					for($i = 0, $c = count($values); $i < $c; $i++) {
-						$values[$i] = trim(escape($values[$i], false));
+						$values[$i] = trim(\X2board\Includes\escape($values[$i], false));
 					}
 					return $values;
 
@@ -568,7 +568,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItem')) {
 
 					$values = array_values($values);
 					for($i = 0, $c = count($values); $i < $c; $i++) {
-						$values[$i] = trim(escape($values[$i], false));
+						$values[$i] = trim(\X2board\Includes\escape($values[$i], false));
 					}
 					return $values;
 
@@ -585,7 +585,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItem')) {
 
 					$values = array_values($values);
 					for($i = 0, $c = count($values); $i < $c; $i++) {
-						$values[$i] = trim(escape($values[$i], false));
+						$values[$i] = trim(\X2board\Includes\escape($values[$i], false));
 					}
 					return $values;
 
@@ -594,7 +594,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItem')) {
 				//case 'text' :
 				//case 'textarea' :
 				default :
-					return escape($value, false);
+					return \X2board\Includes\escape($value, false);
 			}
 		}
 
@@ -617,10 +617,10 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItem')) {
 
 			switch($this->type) {
 				case 'homepage' :
-					return ($value) ? (sprintf('<a href="%s" target="_blank">%s</a>', escape($value, false), strlen($value) > 60 ? substr($value, 0, 40) . '...' . substr($value, -10) : $value)) : "";
+					return ($value) ? (sprintf('<a href="%s" target="_blank">%s</a>', \X2board\Includes\escape($value, false), strlen($value) > 60 ? substr($value, 0, 40) . '...' . substr($value, -10) : $value)) : "";
 
 				case 'email_address' :
-					return ($value) ? sprintf('<a href="mailto:%s">%s</a>', escape($value, false), $value) : "";
+					return ($value) ? sprintf('<a href="mailto:%s">%s</a>', \X2board\Includes\escape($value, false), $value) : "";
 
 				case 'tel' :
 					return sprintf('%s-%s-%s', $value[0], $value[1], $value[2]);

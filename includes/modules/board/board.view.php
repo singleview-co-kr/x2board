@@ -659,7 +659,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 
 			if($o_post->is_exists() && $this->module_info->protect_content=="Y" && 
 				$o_post->get('comment_count')>0 && $this->grant->manager==false) {
-				return new BaseObject(-1, __('msg_protect_content', 'x2board') );
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_protect_content', 'x2board') );
 			}
 
 			// if the post is not granted, then back to the password input form
@@ -795,7 +795,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 
 			// if the comment is not existed
 			if(!$n_comment_id) {
-				return new BaseObject(-1, __('msg_invalid_request', 'x2board'));
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', 'x2board'));
 			}
 
 			// get comment information

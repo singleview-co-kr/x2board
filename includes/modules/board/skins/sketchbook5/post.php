@@ -1,6 +1,7 @@
 <?php
 $mi = new \stdClass();
 $mi->use_category = 'Y';
+$mi->et_var = false;
 ?>
 <div class="bd hover_effect" >
 	<div class="rd rd_nav_style2 clear" itemscope itemtype="http://schema.org/Article">
@@ -99,15 +100,26 @@ $mi->use_category = 'Y';
 				</div>
 			</div> -->
 		</div>
-		<div class="rd_body clear" itemprop="description">
-			<table class="et_vars bd_tb">
+		<div class="rd_body clear">
+<?php if( !$mi->et_var && $post->is_user_define_extended_vars_exists() && (!$post->is_secret() || $post->is_granted()) ): ?>			
+			<table class="et_vars bd_tb" style="display: table;">
 				<caption class="blind">Extra Form</caption>
-				<?php echo $post->getDocumentOptionsHTML()?>
+				<tbody>
+<?php $etIdx=1;
+foreach( $post->get_user_define_extended_fields() as $_ => $o_val ):?>					
+					<tr class="bg<?php echo $etIdx%2 ?>">
+						<th scope="row"><?php echo $o_val->name?></th>
+						<td><!-- cond="$val->eid!='rating'" --><?php echo $o_val->getValueHTML()?></td>
+						<!-- <td cond="$val->eid=='rating'" class="rating"><span class="starRating" title="{$o_val->getValueHTML()}{$lang->score}"><span style="width:{$val->getValueHTML()*10}%">{$o_val->getValueHTML()}</span></span></td> -->
+					</tr>
+<?php 
+$etIdx++;
+endforeach ?>
+				</tbody>
 			</table>
+<?php endif?>				
 			<article>
-				<div class="document_289289_0 xe_content">
-					<?php echo $post->get_content()?>
-				</div>
+				<div class="document_296826_0 x2b_content"><?php echo $post->get_content()?></div>
 			</article>
 		</div>
 <?php		

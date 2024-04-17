@@ -199,8 +199,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 
 			$post_item = false;  // $document_item = false;
 			// $cache_put = false;
-			$columnList = array();
-			$this->_a_columnList = array();
+			// $columnList = array();
+			// $this->_a_columnList = array();
 
 			// cache controll
 			// $oCacheHandler = CacheHandler::getInstance('object');
@@ -269,15 +269,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			return $this->grant_cache = false;
 		}
 
-		// function getExtraVars()
-		public function get_extra_vars() {
-			if(!$this->get('board_id') || !$this->_n_wp_post_id) {
-				return null;
-			}
-			$o_post_model = \X2board\Includes\getModel('post');
-			return $o_post_model->get_extra_vars($this->get('board_id'), $this->_n_wp_post_id);
-		}
-
 		// function setGrant()
 		public function set_grant() {
 // var_dump($this->_n_wp_post_id);
@@ -336,27 +327,27 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			else return htmlspecialchars($title, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
 		}
 
-		private function _get_title_text($cut_size = 0, $tail='...')
-		{
-			if(!$this->_n_wp_post_id) return;
-			if($cut_size) $title = cut_str($this->get('title'), $cut_size, $tail);
-			else $title = $this->get('title');
+		private function _get_title_text($cut_size = 0, $tail='...') {
+			if(!$this->_n_wp_post_id) {
+				return;
+			}
+			if($cut_size) {
+				$title = cut_str($this->get('title'), $cut_size, $tail);
+			}
+			else {
+				$title = $this->get('title');
+			}
 			return $title;
 		}
 
-		public function get_ip_addr()	{
+		public function get_ip_addr() {
 			if($this->is_granted()) {
 				return $this->get('ipaddress');
 			}
 			return '*' . strstr($this->get('ipaddress'), '.');
 		}
 
-		public function getDocumentOptionsHTML() {
-			return;
-		}
-
-		public function get_content($add_popup_menu = false, $add_content_info = false, $resource_realpath = false, $add_xe_content_class = false, $stripEmbedTagException = false)
-		{
+		public function get_content($add_popup_menu = false, $add_content_info = false, $resource_realpath = false, $add_xe_content_class = false, $stripEmbedTagException = false) {
 			if(!$this->_n_wp_post_id) {
 				return;
 			}
@@ -512,6 +503,56 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			return $this->_a_uploaded_file[$sortIndex];
 		}
 
+		// function isExtraVarsExists()
+		public function is_user_define_extended_vars_exists() {
+			if(!$this->get('board_id')) {
+				return false;
+			}
+			// $o_post_model = \X2board\Includes\getModel('post');
+			// $extra_keys = $o_post_model->get_user_define_keys($this->get('board_id'));
+
+			$a_user_define_extended_field = $this->get_user_define_extended_fields();
+			return count($a_user_define_extended_field) ? true : false;
+		}
+
+		/**
+		 * for post.php skin usage
+		 * @return object
+		 */
+		// function getExtraVars()
+		public function get_user_define_extended_fields() {
+			if(!$this->get('board_id') || !$this->_n_wp_post_id) {
+				return null;
+			}
+			$o_post_model = \X2board\Includes\getModel('post');
+			$a_skin_fields = $o_post_model->get_extra_vars($this->_n_wp_post_id);
+			unset($o_post_model);
+
+			$o_post_user_define_fields = new \X2board\Includes\Classes\UserDefineFields();
+			$a_default_fields = $o_post_user_define_fields->get_default_fields();
+			unset($o_post_user_define_fields);
+
+			$a_ignore_field_type = array_keys($a_default_fields);
+			unset($a_default_fields);
+			$a_user_define_extended_fields = array();
+			foreach($a_skin_fields as $n_seq=>$o_field){
+				$field_type = (isset($o_field->type) && $o_field->type) ? $o_field->type : '';
+				if(in_array($field_type, $a_ignore_field_type) ){ // ignore default fields
+					continue;
+				}
+				$a_user_define_extended_fields[] = $o_field;
+			}
+			unset($a_skin_fields);
+			unset($a_ignore_field_type);
+// var_dump($a_user_define_extended_fields);			
+			return $a_user_define_extended_fields;
+		}
+		
+
+		
+
+
+
 
 		
 
@@ -646,14 +687,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			return $content;
 		}
 
-		function isExtraVarsExists()
-		{
-			if(!$this->get('module_srl')) return false;
-			$oDocumentModel = getModel('document');
-			$extra_keys = $oDocumentModel->getExtraKeys($this->get('module_srl'));
-			return count($extra_keys)?true:false;
-		}
-
 		function getExtraValue($idx)
 		{
 			$extra_vars = $this->getExtraVars();
@@ -722,18 +755,18 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			}
 		}
 
-		function getExtraVarsValue($key)
-		{
-			$extra_vals = unserialize($this->get('extra_vars'));
-			$val = $extra_vals->$key;
-			return $val;
-		}
-
 		function thumbnailExists($width = 80, $height = 0, $type = '')
 		{
 			if(!$this->_n_wp_post_id) return false;
 			if(!$this->getThumbnail($width, $height, $type)) return false;
 			return true;
+		}
+
+		public function getExtraVarsValue($key)
+		{
+			$extra_vals = unserialize($this->get('extra_vars'));
+			$val = $extra_vals->$key;
+			return $val;
 		}
 
 		function getThumbnail($width = 80, $height = 0, $thumbnail_type = '')
