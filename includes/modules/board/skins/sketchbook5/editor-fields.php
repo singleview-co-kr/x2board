@@ -1,4 +1,7 @@
-<?php if($field['field_type'] == 'content'):?>
+<?php 
+$secret_checked_forced = true;
+$has_default_values = true;
+if($field['field_type'] == 'content'):?>
 	<div class="kboard-attr-row <?php echo esc_attr($field['class'])?> <?php echo esc_attr($required)?>">
 		<label class="attr-name" for="<?php echo esc_attr($meta_key)?>"><span class="field-name"><?php echo esc_html($field_name)?></span><?php if($required):?> <span class="attr-required-text">*</span><?php endif?></label>
 		<div class="kboard-content">
@@ -93,10 +96,10 @@
 		<label class="attr-name" for="<?php echo esc_attr($meta_key)?>"><span class="field-name"><?php echo esc_html($field_name)?></span></label>
 		<div class="attr-value">
 			<?php if(x2b_is_this_accessible($field['secret_permission'], $field['secret'])):?>
-				<label class="attr-value-option"><input type="checkbox" name="secret" value="true" onchange="kboard_toggle_password_field(this)"<?php if($board->meta->secret_checked_forced && !$x2b_is_this_accessible()):?> checked disabled<?php endif?> <?php if($post->secret):?>checked <?php endif?>> <?php echo __('Secret', 'x2board')?></label>
+				<label class="attr-value-option"><input type="checkbox" name="secret" value="true" onchange="kboard_toggle_password_field(this)"<?php if($secret_checked_forced && !x2b_is_this_accessible()):?> checked disabled<?php endif?> <?php if($post->is_secret):?>checked <?php endif?>> <?php echo __('Secret', 'x2board')?></label>
 			<?php endif?>
 			<?php if(x2b_is_this_accessible($field['notice_permission'], $field['notice'])):?>
-				<label class="attr-value-option"><input type="checkbox" name="notice" value="true"<?php if($post->notice):?> checked<?php endif?>> <?php echo __('Notice', 'x2board')?></label>
+				<label class="attr-value-option"><input type="checkbox" name="notice" value="true"<?php if($post->is_notice):?> checked<?php endif?>> <?php echo __('Notice', 'x2board')?></label>
 			<?php endif?>
 			<?php if(x2b_is_this_accessible($field['allow_comment_permission'], $field['allow_comment'])):?>
 				<label class="attr-value-option"><input type="checkbox" name="allow_comment" value="true"<?php if(strlen($post->title) == 0 || $post->allow_comment):?> checked<?php endif?>> <?php echo __('Comment', 'x2board')?></label>
@@ -135,12 +138,12 @@
 	<?php endif?>
 <?php elseif($field['field_type'] == 'text'):?>
 	<?php if(isset($field['hidden']) && $field['hidden']):?>
-		<input type="hidden" id="<?php echo esc_attr($meta_key)?>" class="<?php echo esc_attr($required)?>" name="<?php echo esc_attr($this->get_option_field_name($meta_key))?>" value="<?php echo $post->option->{$meta_key}?esc_attr($post->option->{$meta_key}):esc_attr($default_value)?>">
+		<input type="hidden" id="<?php echo esc_attr($meta_key)?>" class="<?php echo esc_attr($required)?>" name="<?php echo esc_attr($this->get_option_field_name($meta_key))?>" value="<?php echo $post->{$meta_key}?esc_attr($post->{$meta_key}):esc_attr($default_value)?>">
 	<?php else:?>
 	<div class="kboard-attr-row <?php echo esc_attr($field['class'])?> meta-key-<?php echo esc_attr($meta_key)?> <?php echo isset($field['custom_class']) && $field['custom_class'] ? esc_attr($field['custom_class']) : ''?> <?php echo esc_attr($required)?>">
 		<label class="attr-name" for="<?php echo esc_attr($meta_key)?>"><span class="field-name"><?php echo esc_html($field_name)?></span><?php if($required):?> <span class="attr-required-text">*</span><?php endif?></label>
 		<div class="attr-value">
-			<input type="text" id="<?php echo esc_attr($meta_key)?>" class="<?php echo esc_attr($required)?>" name="<?php echo esc_attr($this->get_option_field_name($meta_key))?>" value="<?php echo $post->option->{$meta_key}?esc_attr($post->option->{$meta_key}):esc_attr($default_value)?>"<?php if($placeholder):?> placeholder="<?php echo esc_attr($placeholder)?>"<?php endif?>>
+			<input type="text" id="<?php echo esc_attr($meta_key)?>" class="<?php echo esc_attr($required)?>" name="<?php echo esc_attr($this->get_option_field_name($meta_key))?>" value="<?php echo $post->{$meta_key}?esc_attr($post->{$meta_key}):esc_attr($default_value)?>"<?php if($placeholder):?> placeholder="<?php echo esc_attr($placeholder)?>"<?php endif?>>
 			<?php if(isset($field['description']) && $field['description']):?><div class="description"><?php echo esc_html($field['description'])?></div><?php endif?>
 		</div>
 	</div>
@@ -151,10 +154,12 @@
 		<div class="attr-value">
 			<select id="<?php echo esc_attr($meta_key)?>" name="<?php echo esc_attr($this->get_option_field_name($meta_key))?>"class="<?php echo esc_attr($required)?>">
 				<option value=""><?php echo __('Select', 'x2board')?></option>
-				<?php foreach($field['row'] as $option_key=>$option_value):?>
+				<?php foreach($field['row'] as $option_key=>$option_value):
+// var_dump($option_value);
+					?>
 					<?php if(isset($option_value['label']) && $option_value['label']):?>
-						<?php if(false): //$post->option->{$meta_key}):?>
-							<option value="<?php echo esc_attr($option_value['label'])?>"<?php if($this->is_saved_option($post->option->{$meta_key}, $option_value['label'])):?> selected<?php endif?>><?php echo esc_html($option_value['label'])?></option>
+						<?php if($post->{$meta_key}):?>
+							<option value="<?php echo esc_attr($option_value['label'])?>"<?php if($post->{$meta_key} == $option_value['label']):?> selected<?php endif?>><?php echo esc_html($option_value['label'])?></option>
 						<?php else:?>
 							<option value="<?php echo esc_attr($option_value['label'])?>"<?php if($default_value && $default_value==$option_key):?> selected<?php endif?>><?php echo esc_html($option_value['label'])?></option>
 						<?php endif?>

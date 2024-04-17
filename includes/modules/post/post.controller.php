@@ -314,27 +314,16 @@ var_dump('post controller init()');
 			unset($a_insert_key);
 			unset($a_insert_data);
 
-			// Insert extra variables if the document successfully inserted.
+			// Insert all extended user defined variables if the post successfully inserted.
 			$o_post_model = \X2board\Includes\getModel('post');
-			// $extra_keys = $o_post_model->getExtraKeys($obj->module_srl);
-			$a_user_define_keys = $o_post_model->get_user_define_keys($a_new_post['board_id']);
+			$a_user_define_extended_fields = $o_post_model->get_user_define_extended_fields($a_new_post['board_id']);
 			unset($o_post_model);
-			
+
 			// do not store default field into tbl::x2b_user_define_vars
-			$o_post_user_define_fields = new \X2board\Includes\Classes\UserDefineFields();
-			$a_default_fields = $o_post_user_define_fields->get_default_fields();
-			unset($o_post_user_define_fields);
-			$a_ignore_field_type = array_keys($a_default_fields);
-
-			if(count($a_user_define_keys)) {
-				foreach($a_user_define_keys as $idx => $o_user_define_item) {
-					if(in_array($o_user_define_item->type, $a_ignore_field_type)) {
-						continue;  // do not store default field
-					}
-
-					// $value = NULL;
+			if(count($a_user_define_extended_fields)) {
+				foreach($a_user_define_extended_fields as $idx => $o_user_define_item) {
 					$o_user_input_value = \X2board\Includes\Classes\Context::get($o_user_define_item->eid);
-
+					
 					// if( !is_null($o_user_input_value) ) {
 					// 	if(is_array($o_user_input_value))
 					// 		$value = implode('|@|', sanitize_text_field($o_user_input_value));
@@ -355,11 +344,12 @@ var_dump('post controller init()');
 					if($o_user_input_value == NULL) {
 						continue;
 					}
-var_dump($o_user_input_value);					
+// var_dump($o_user_input_value);					
 					$this->_insert_user_defined_value($a_new_post['board_id'], $a_new_post['post_id'], $idx, $o_user_input_value, $o_user_define_item->eid);
 				}
 			}
-exit;		
+			unset($a_new_post);
+// exit;		
 			
 			// Update the category if the category_srl exists.
 			if($obj->category_id) {
@@ -410,6 +400,11 @@ exit;
 		 */
 		// function insertDocumentExtraVar($module_srl, $document_srl, $var_idx, $value, $eid = null, $lang_code = '')
 		private function _insert_user_defined_value($n_board_id, $n_post_id, $var_idx, $o_user_input_value, $eid = null, $lang_code = '') {
+// var_dump($n_board_id);
+// var_dump($n_post_id);
+// var_dump($var_idx);
+// var_dump($o_user_input_value);
+// var_dump($eid);
 			if(!$n_board_id || !$n_post_id || !$var_idx || !isset($o_user_input_value)) {
 				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request1', 'x2board') );
 			}
@@ -524,7 +519,10 @@ exit;
 			if(!$o_new_obj->status) {
 				$o_new_obj->status = 'PUBLIC';
 			}
-
+			if(isset($o_new_obj->is_secret)) {  // is_secret is not a DB field
+				unset($o_new_obj->is_secret);
+			}
+			
 			// Call a trigger (before)
 			// $output = ModuleHandler::triggerCall('document.updateDocument', 'before', $o_new_obj);
 			// if(!$output->toBool()) return $output;
@@ -715,21 +713,38 @@ exit;
 			$result = $wpdb->update ( "{$wpdb->prefix}x2b_posts", $a_new_post, array ( 'post_id' => esc_sql(intval($a_new_post['post_id'] )) ) );
 			if( $result < 0 || $result === false ){
 // var_dump($wpdb->last_error);					
+// exit;
 				return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error );
 			}
-			
-// var_dump($n_wp_post_id);
-// exit;
 			
 			if( $this->_update_wp_post($a_new_post) === false ) {
 				unset($a_new_post);
 				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_wp_post_update_failed', 'x2board') );
 			}
 			unset($a_ignore_key);
-			unset($a_new_post);
 // exit;
+			// Remove all extended user defined variables
+			$this->_delete_extended_user_defined_vars_all($a_new_post['board_id'], $a_new_post['post_id']); //, null, //Context::getLangType()
 
-			// Remove all extra variables
+			// store all extended user defined variables 
+			$o_post_model = \X2board\Includes\getModel('post');
+			$a_user_define_extended_fields = $o_post_model->get_user_define_extended_fields($a_new_post['board_id']);
+			unset($o_post_model);
+
+			// do not store default field into tbl::x2b_user_define_vars
+			if(count($a_user_define_extended_fields)) {
+				foreach($a_user_define_extended_fields as $idx => $o_user_define_item) {
+					$o_user_input_value = \X2board\Includes\Classes\Context::get($o_user_define_item->eid);
+					if($o_user_input_value == NULL) {
+						continue;
+					}
+// var_dump($o_user_input_value);					
+					$this->_insert_user_defined_value($a_new_post['board_id'], $a_new_post['post_id'], $idx, $o_user_input_value, $o_user_define_item->eid);
+				}
+			}
+			unset($a_new_post);
+// exit;		
+
 			// if(false) //Context::get('act')!='procFileDelete')
 			// {
 			// 	$this->deleteDocumentExtraVars($o_old_post->get('module_srl'), $o_new_obj->document_srl, null, Context::getLangType());
@@ -1048,6 +1063,40 @@ exit;
 		private function _add_grant($n_post_id) {
 			$_SESSION['x2b_own_post'][$n_post_id] = true;
 		}
+
+		/**
+		 * Remove values of extended user defined variable from the post
+		 * @param int $n_board_id
+		 * @param int $n_post_id
+		 * @return 
+		 */
+		// function deleteDocumentExtraVars($module_srl, $document_srl = null, $var_idx = null, $lang_code = null, $eid = null)
+		private function _delete_extended_user_defined_vars_all($n_board_id, $n_post_id) {  // , $var_idx = null, $lang_code = null, $eid = null) {
+			// $obj = new stdClass();
+			// $obj->module_srl = $module_srl;
+			// if(!is_null($document_srl)) $obj->document_srl = $document_srl;
+			// if(!is_null($var_idx)) $obj->var_idx = $var_idx;
+			// if(!is_null($lang_code)) $obj->lang_code = $lang_code;
+			// if(!is_null($eid)) $obj->eid = $eid;
+			// $output = executeQuery('document.deleteDocumentExtraVars', $obj);
+			// return $output;
+			global $wpdb;
+			$result = $wpdb->delete(
+				$wpdb->prefix . 'x2b_user_define_vars',  // table name with dynamic prefix
+				array('board_id' => $n_board_id,
+					  'post_id'  => $n_post_id	),
+				array('%d', '%d'), 						// make sure the id format
+			);
+			if( $result < 0 || $result === false ){
+var_dump($wpdb->last_error);
+				wp_die($wpdb->last_error );
+			}
+
+			// DELETE `document_extra_vars` FROM `xe_document_extra_vars` as `document_extra_vars`  
+			// WHERE `module_srl` = ? and `document_srl` = ? and `lang_code` = ?
+		}
+
+
 
 
 
@@ -1488,28 +1537,6 @@ exit;
 			unset($oRst);
 			return new BaseObject();
 		}
-
-		/**
-		 * Remove values of extra variable from the document
-		 * @param int $module_srl
-		 * @param int $document_srl
-		 * @param int $var_idx
-		 * @param string $lang_code
-		 * @param int $eid
-		 * @return $output
-		 */
-		function deleteDocumentExtraVars($module_srl, $document_srl = null, $var_idx = null, $lang_code = null, $eid = null)
-		{
-			$obj = new stdClass();
-			$obj->module_srl = $module_srl;
-			if(!is_null($document_srl)) $obj->document_srl = $document_srl;
-			if(!is_null($var_idx)) $obj->var_idx = $var_idx;
-			if(!is_null($lang_code)) $obj->lang_code = $lang_code;
-			if(!is_null($eid)) $obj->eid = $eid;
-			$output = executeQuery('document.deleteDocumentExtraVars', $obj);
-			return $output;
-		}
-
 
 		/**
 		 * Increase the number of vote-up of the document

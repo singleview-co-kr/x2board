@@ -703,9 +703,9 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			// $oDocumentController->addXmlJsFilter($this->module_info->module_srl);
 
 			// if the post exists, then setup extra variabels on context
-			if($o_post->is_exists() && !$savedDoc) { // 포스트 수정 혹은 임시 저장 포스트의 확장 변수 가져오기
-				\X2board\Includes\Classes\Context::set('extra_keys', $o_post->get_extra_vars());
-			}
+			// if($o_post->is_exists() && !$savedDoc) { // 포스트 수정 혹은 임시 저장 포스트의 확장 변수 가져오기
+			// 	\X2board\Includes\Classes\Context::set('extra_keys', $o_post->get_extra_vars());
+			// }
 			
 			/**
 			 * add JS filters
@@ -715,14 +715,16 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 
 			// $oSecurity = new Security();
 			// $oSecurity->encodeHTML('category_list.text', 'category_list.title');
-
+// var_dump($o_post);
 			\X2board\Includes\Classes\Context::set('post', $o_post);
 			unset($o_post);
 
 			// $o_post_model = \X2board\Includes\getModel('post');
 			// $a_user_input_field = $o_post_model->get_user_define_fields();
-			// unset($o_post_model);
 			// \X2board\Includes\Classes\Context::set('field', $a_user_input_field);
+
+			unset($o_post_model);
+			
 			// begin - for editor.view.php module usage	
 			\X2board\Includes\Classes\Context::set('skin_path_abs', $this->skin_path);
 			\X2board\Includes\Classes\Context::set('module_info', $this->module_info);

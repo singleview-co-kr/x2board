@@ -164,7 +164,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 			// reset board user define keys
 			$result = $wpdb->delete(
 				$wpdb->prefix . 'x2b_user_define_keys',  // table name with dynamic prefix
-				array('board_id' => $n_board_id = $n_board_id),  // which id need to delete
+				array('board_id' => $n_board_id),  // which id need to delete
 				array('%d'), 							// make sure the id format
 			);
 			if( $result < 0 || $result === false ){

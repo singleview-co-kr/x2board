@@ -60,12 +60,48 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			$this->_n_wp_post_id = $attribute->post_id;
 			// $this->lang_code = $attribute->lang_code;
 			$this->adds($attribute);
-// var_dump($this->get('status'));
+
+			$o_post_model = \X2board\Includes\getModel('post');
+			$s_secret_tag = $o_post_model->get_config_status('secret');
+			unset($o_post_model);
+			
+			// set is_secret as boolean
+			if( $this->get('status') == $s_secret_tag ) {
+				$this->add('is_secret', true);
+			}
+			else {
+				$this->add('is_secret', false);
+			}
+
+			// convert is_notice to boolean
+			if( $this->get('is_notice') == 'Y' ) {
+				$this->add('is_notice', true);
+			}
+			else {
+				$this->add('is_notice', false);
+			}
+
+			// set allow_comment as boolean
+			if( $this->get('comment_status') == 'ALLOW' ) {
+				$this->add('allow_comment', true);
+			}
+			else {
+				$this->add('allow_comment', false);
+			}
+
 			// Tags
 			if($this->get('tags')) {
 				$tag_list = explode(',', $this->get('tags'));
 				$tag_list = array_map('trim', $tag_list);
 				$this->add('tag_list', $tag_list);
+			}
+
+			// append if any extended user field exists
+			$o_post_model = \X2board\Includes\getModel('post');
+			$a_extended_user_field = $o_post_model->get_post_user_define_vars_from_DB(array($this->_n_wp_post_id));
+			unset($o_post_model);
+			foreach( $a_extended_user_field as $_ => $o_user_field) {
+				$this->add($o_user_field->eid, $o_user_field->value);
 			}
 
 			if($this->get('category_id')) {
@@ -448,15 +484,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			return false;
 		}
 
-		// function isLocked()
-		// public function is_locked() {
-		// 	if(!$this->is_exists()) {
-		// 		return false;
-		// 	}
-		// 	return $this->get('comment_status') == 'ALLOW' ? false : true;
-		// 	// return $this->get('allow_comment') == 'Y' ? false : true;
-		// }
-
 		// function allowComment()
 		public function allow_comment()	{
 			// init write, document is not exists. so allow comment status is true ??? 뭔소리?
@@ -503,6 +530,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			return $this->_a_uploaded_file[$sortIndex];
 		}
 
+		/**
+		 * for post.php skin usage
+		 * @return object
+		 */
 		// function isExtraVarsExists()
 		public function is_user_define_extended_vars_exists() {
 			if(!$this->get('board_id')) {
@@ -510,13 +541,14 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			}
 			// $o_post_model = \X2board\Includes\getModel('post');
 			// $extra_keys = $o_post_model->get_user_define_keys($this->get('board_id'));
-
 			$a_user_define_extended_field = $this->get_user_define_extended_fields();
 			return count($a_user_define_extended_field) ? true : false;
 		}
 
 		/**
 		 * for post.php skin usage
+		 * differ with \includes\modules\post\post.model.php::get_user_define_extended_fields()
+		 * this method returns list of the designated post 
 		 * @return object
 		 */
 		// function getExtraVars()
@@ -987,6 +1019,15 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 		{
 			return preg_replace('/src=(["\']?)files/i','src=$1'.Context::getRequestUri().'files', $matches[0]);
 		}
+
+		// function isLocked()
+		// public function is_locked() {
+		// 	if(!$this->is_exists()) {
+		// 		return false;
+		// 	}
+		// 	return $this->get('comment_status') == 'ALLOW' ? false : true;
+		// 	// return $this->get('allow_comment') == 'Y' ? false : true;
+		// }
 
 		// function getRegdateTime()
 		// {

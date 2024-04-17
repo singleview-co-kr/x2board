@@ -108,8 +108,8 @@ $mi->et_var = false;
 <?php $etIdx=1;
 foreach( $post->get_user_define_extended_fields() as $_ => $o_val ):?>					
 					<tr class="bg<?php echo $etIdx%2 ?>">
-						<th scope="row"><?php echo $o_val->name?></th>
-						<td><!-- cond="$val->eid!='rating'" --><?php echo $o_val->getValueHTML()?></td>
+						<th scope="row"><?php echo esc_html($o_val->name)?></th>
+						<td><!-- cond="$val->eid!='rating'" --><?php echo esc_html($o_val->getValueHTML())?></td>
 						<!-- <td cond="$val->eid=='rating'" class="rating"><span class="starRating" title="{$o_val->getValueHTML()}{$lang->score}"><span style="width:{$val->getValueHTML()*10}%">{$o_val->getValueHTML()}</span></span></td> -->
 					</tr>
 <?php 

@@ -301,6 +301,30 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 		}
 
 		/**
+		 * Returns a list of user-defined fields, excluding default fields.
+		 * differ with \includes\modules\post\post.item.php::get_user_define_extended_fields()
+		 * this method returns list of the designated board 
+		 * @return array
+		 */
+		public function get_user_define_extended_fields($n_board_id) {
+			$a_user_define_keys = $this->get_user_define_keys($n_board_id);
+			
+			$o_post_user_define_fields = new \X2board\Includes\Classes\UserDefineFields();
+			$a_default_fields = $o_post_user_define_fields->get_default_fields();
+			unset($o_post_user_define_fields);
+			$a_ignore_field_type = array_keys($a_default_fields);
+			$a_user_define_extended_fields = array();
+			foreach($a_user_define_keys as $n_seq=>$o_field){
+				$field_type = (isset($o_field->type) && $o_field->type) ? $o_field->type : '';
+				if(in_array($field_type, $a_ignore_field_type) ){ // ignore default fields
+					continue;
+				}
+				$a_user_define_extended_fields[$n_seq] = $o_field;
+			}
+			return $a_user_define_extended_fields;
+		}
+
+		/**
 		 * retrieve user define fields from DB
 		 * admin: 'field_name' => db: var_name  관리자 화면에서 [필드 레이블] 입력란은 field_name에 저장함
 		 * admin: 'field_type' => db: var_type
@@ -425,7 +449,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			}
 
 			// Expand variables mijijeongdoen article about a current visitor to the extension of the language code, the search variable
-			$a_rst = $this->_get_post_user_define_vars_from_DB($post_ids);
+			$a_rst = $this->get_post_user_define_vars_from_DB($post_ids);
 			// unset($post_ids);
 
 			$extra_vars = array();
@@ -507,7 +531,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 		 * @return object
 		 */
 		// function getDocumentExtraVarsFromDB($documentSrls)
-		private function _get_post_user_define_vars_from_DB($a_post_id) {
+		public function get_post_user_define_vars_from_DB($a_post_id) {
 			if(!is_array($a_post_id) || count($a_post_id) == 0) {
 				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', 'x2board') );
 			}
