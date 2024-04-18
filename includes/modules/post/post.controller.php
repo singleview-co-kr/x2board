@@ -15,8 +15,10 @@ if ( !defined( 'ABSPATH' ) ) {
 
 if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postController')) {
 
-	class postController extends post
-	{
+	class postController extends post {
+
+		private $_o_wp_filesystem = null;
+
 		function __construct() {
 // var_dump('post controller __construct()');
 			if(!isset($_SESSION['x2b_banned_post'])) {
@@ -28,6 +30,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postController')) {
 			if(!isset($_SESSION['x2b_own_post'])) {
 				$_SESSION['x2b_own_post'] = array();
 			}
+
+			require_once ( ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php' );
+			require_once ( ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php' );
+			$this->_o_wp_filesystem = new \WP_Filesystem_Direct(false);
 		}
 
 		/**
@@ -351,7 +357,7 @@ var_dump('post controller init()');
 			unset($a_new_post);
 // exit;		
 			
-			// Update the category if the category_srl exists.
+			// Update the category if the category_id exists.
 			if($obj->category_id) {
 				// $this->updateCategoryCount($obj->board_id, $obj->category_id);
 				$o_category_controller = \X2board\Includes\getController('category');
@@ -790,11 +796,30 @@ var_dump('post controller init()');
 			}
 			unset($o_logged_info);
 			unset($o_old_post);
+
 			// commit
 			// $oDB->commit();
+
 			// Remove the thumbnail file
 			// FileHandler::removeDir(sprintf('files/thumbnails/%s',getNumberingPath($o_new_obj->document_srl, 3)));
+			$s_post_thumbnail_dir = wp_get_upload_dir()['basedir'].DIRECTORY_SEPARATOR.X2B_DOMAIN.DIRECTORY_SEPARATOR.'thumbnails'.DIRECTORY_SEPARATOR.\X2board\Includes\getNumberingPath($o_new_obj->post_id, 3);
+			$this->_o_wp_filesystem->delete($s_post_thumbnail_dir);
 
+			//remove from cache
+			$o_cache_handler = \X2board\Includes\Classes\CacheHandler::getInstance('object');
+			if($o_cache_handler->isSupport()) {
+				//remove post item from cache
+				$cache_key = 'post_item:'. \X2board\Includes\getNumberingPath($o_new_obj->post_id) . $o_new_obj->post_id;
+				$o_cache_handler->delete($cache_key);
+			}
+			unset($o_cache_handler);
+			// $oCacheHandler = CacheHandler::getInstance('object');
+			// if($oCacheHandler->isSupport())
+			// {
+			// 	//remove document item from cache
+			// 	$cache_key = 'post_item:'. getNumberingPath($o_new_obj->document_srl) . $o_new_obj->document_srl;
+			// 	$oCacheHandler->delete($cache_key);
+			// }
 			$o_rst = new \X2board\Includes\Classes\BaseObject();
 			$o_rst->add('post_id',$o_new_obj->post_id);
 			$o_rst->add('category_id',$o_new_obj->category_id);
@@ -802,17 +827,6 @@ var_dump('post controller init()');
 // var_dump('insert_post finished without redirection');
 // exit;
 			return $o_rst;
-
-			
-			//remove from cache
-			// $oCacheHandler = CacheHandler::getInstance('object');
-			// if($oCacheHandler->isSupport())
-			// {
-			// 	//remove document item from cache
-			// 	$cache_key = 'document_item:'. getNumberingPath($o_new_obj->document_srl) . $o_new_obj->document_srl;
-			// 	$oCacheHandler->delete($cache_key);
-			// }
-			return $output;
 		}
 
 		// public function updateUploaedCount($documentSrlList)
@@ -839,94 +853,170 @@ var_dump('post controller init()');
 		}
 
 		/**
-		 * Deleting Documents
+		 * Deleting post
 		 * @param int $document_srl
 		 * @param bool $is_admin
 		 * @param bool $isEmptyTrash
-		 * @param documentItem $oDocument
+		 * @param postItem $o_post
 		 * @return object
 		 */
-		function deleteDocument($document_srl, $is_admin = false, $isEmptyTrash = false, $oDocument = null)
-		{
+		function delete_post($n_post_id, $is_admin = false, $isEmptyTrash = false, $o_post = null) {
 			// Call a trigger (before)
-			$trigger_obj = new stdClass();
-			$trigger_obj->document_srl = $document_srl;
-			$output = ModuleHandler::triggerCall('document.deleteDocument', 'before', $trigger_obj);
-			if(!$output->toBool()) return $output;
+			// $trigger_obj = new stdClass();
+			// $trigger_obj->document_srl = $n_post_id;
+			// $output = ModuleHandler::triggerCall('document.deleteDocument', 'before', $trigger_obj);
+			// if(!$output->toBool()) return $output;
 
 			// begin transaction
-			$oDB = &DB::getInstance();
-			$oDB->begin();
+			// $oDB = &DB::getInstance();
+			// $oDB->begin();
 
-			if(!$isEmptyTrash)
-			{
+			if(!$isEmptyTrash) {
 				// get model object of the document
-				$oDocumentModel = getModel('document');
+				$o_post_model = \X2board\Includes\getModel('post');
 				// Check if the documnet exists
-				$oDocument = $oDocumentModel->getDocument($document_srl, $is_admin);
+				$o_post = $o_post_model->get_post($n_post_id, $is_admin);
+				unset($o_post_model);
 			}
-			else if($isEmptyTrash && $oDocument == null) return new BaseObject(-1, 'document is not exists');
+			else if($isEmptyTrash && $o_post == null) {
+				return new \X2board\Includes\Classes\BaseObject(-1, __('post is not exists', 'x2board') );
+			}
 
-			if(!$oDocument->isExists() || $oDocument->document_srl != $document_srl) return new BaseObject(-1, 'msg_invalid_document');
+			if(!$o_post->is_exists() || $o_post->post_id != $n_post_id) {
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_post', 'x2board') );
+			}
 			// Check if a permossion is granted
-			if(!$oDocument->isGranted()) return new BaseObject(-1, 'msg_not_permitted');
-
-			//if empty trash, document already deleted, therefore document not delete
-			$args = new stdClass();
-			$args->document_srl = $document_srl;
-			if(!$isEmptyTrash)
-			{
-				// Delete the document
-				$output = executeQuery('document.deleteDocument', $args);
-				if(!$output->toBool())
-				{
-					$oDB->rollback();
-					return $output;
-				}
+			if(!$o_post->is_granted()) {
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', 'x2board') );
 			}
 
-			$this->deleteDocumentAliasByDocument($document_srl);
+			//if empty trash, post already deleted, therefore post not delete
+			if(!$isEmptyTrash) { // Delete the post
+				global $wpdb;
+				$result = $wpdb->delete(
+					$wpdb->prefix . 'x2b_posts',
+					array('post_id'  => $n_post_id ),
+					array('%d'), // make sure the id format
+				);
+				if( $result < 0 || $result === false ){
+// var_dump($wpdb->last_error);
+					wp_die($wpdb->last_error );
+				}				
+			}
+// var_dump($o_post->get('board_id'));
 
-			$this->deleteDocumentHistory(null, $document_srl, null);
-			// Update category information if the category_srl exists.
-			if($oDocument->get('category_srl')) $this->updateCategoryCount($oDocument->get('module_srl'),$oDocument->get('category_srl'));
+			// $this->deleteDocumentAliasByDocument($n_post_id);
+
+			$this->_delete_post_history(null, $n_post_id, null);
+			// Update category information if the category_id exists.
+			$n_board_id = $o_post->get('board_id');
+			$n_category_id = $o_post->get('category_id');
+			if($n_category_id) {
+				// $this->updateCategoryCount($oDocument->get('module_srl'),$oDocument->get('category_srl'));
+				$o_category_controller = \X2board\Includes\getController('category');
+				$o_category_controller->set_board_id($n_board_id);
+				$o_category_controller->update_category_count($n_category_id);
+				unset($o_category_controller);
+			}
+
 			// Delete a declared list
-			executeQuery('document.deleteDeclared', $args);
-			// Delete extra variable
-			$this->deleteDocumentExtraVars($oDocument->get('module_srl'), $oDocument->document_srl);
+			// executeQuery('document.deleteDeclared', $args);
 
-			//this
+			// Delete extended user defined variables
+			// $this->deleteDocumentExtraVars($o_post->get('board_id'), $o_post->post_id);
+			$this->_delete_extended_user_defined_vars_all($n_board_id, $n_post_id);
+
 			// Call a trigger (after)
-			if($output->toBool())
-			{
-				$trigger_obj = $oDocument->getObjectVars();
-				$trigger_output = ModuleHandler::triggerCall('document.deleteDocument', 'after', $trigger_obj);
-				if(!$trigger_output->toBool())
-				{
-					$oDB->rollback();
-					return $trigger_output;
-				}
-			}
-			// declared document, log delete
-			$this->_deleteDeclaredDocuments($args);
-			$this->_deleteDocumentReadedLog($args);
-			$this->_deleteDocumentVotedLog($args);
+			// if($output->toBool())
+			// {
+			// 	$trigger_obj = $oDocument->getObjectVars();
+			// 	$trigger_output = ModuleHandler::triggerCall('document.deleteDocument', 'after', $trigger_obj);
+			// 	if(!$trigger_output->toBool())
+			// 	{
+			// 		$oDB->rollback();
+			// 		return $trigger_output;
+			// 	}
+			// }
+			// declared post, log delete
+			$this->_delete_declared_posts($n_board_id, $n_post_id);
+			$this->_delete_post_readed_log($n_board_id, $n_post_id);
+			$this->_delete_post_voted_log($n_board_id, $n_post_id);
 
 			// Remove the thumbnail file
-			FileHandler::removeDir(sprintf('files/thumbnails/%s',getNumberingPath($document_srl, 3)));
+			// FileHandler::removeDir(sprintf('files/thumbnails/%s', \X2board\Includes\getNumberingPath($n_post_id, 3)));
+			$s_post_thumbnail_dir = wp_get_upload_dir()['basedir'].DIRECTORY_SEPARATOR.X2B_DOMAIN.DIRECTORY_SEPARATOR.'thumbnails'.DIRECTORY_SEPARATOR.\X2board\Includes\getNumberingPath($n_post_id, 3);
+			$this->_o_wp_filesystem->delete($s_post_thumbnail_dir);
 
 			// commit
-			$oDB->commit();
+			// $oDB->commit();
 
 			//remove from cache
-			$oCacheHandler = CacheHandler::getInstance('object');
-			if($oCacheHandler->isSupport())
-			{
-				$cache_key = 'document_item:'. getNumberingPath($document_srl) . $document_srl;
-				$oCacheHandler->delete($cache_key);
+			$o_cache_handler = \X2board\Includes\Classes\CacheHandler::getInstance('object');
+			if($o_cache_handler->isSupport()) {
+				$cache_key = 'post_item:'. \X2board\Includes\getNumberingPath($n_post_id) . $n_post_id;
+				$o_cache_handler->delete($cache_key);
 			}
+			unset($o_cache_handler);
+			// $oCacheHandler = CacheHandler::getInstance('object');
+			// if($oCacheHandler->isSupport()) {
+			// 	$cache_key = 'post_item:'. getNumberingPath($n_post_id) . $n_post_id;
+			// 	$oCacheHandler->delete($cache_key);
+			// }
+			// unset($oCacheHandler);
+			return new \X2board\Includes\Classes\BaseObject();
+		}
 
-			return $output;
+		/**
+		 * Delete post history
+		 * @param int $history_srl
+		 * @param int $n_post_id
+		 * @param int $n_board_id
+		 * @return void
+		 */
+		// function deleteDocumentHistory($history_srl, $document_srl, $module_srl)
+		private function _delete_post_history($n_history_id, $n_post_id, $n_board_id) {
+			// $args = new stdClass();
+			// $args->history_srl = $history_srl;
+			// $args->module_srl = $module_srl;
+			// $args->document_srl = $document_srl;
+			// if(!$args->history_srl && !$args->module_srl && !$args->document_srl) return;
+			// executeQuery("document.deleteHistory", $args);
+			return;
+		}
+
+		/**
+		 * Delete declared post, log
+		 * @param string $post_ids (ex: 1, 2,56, 88)
+		 * @return void
+		 */
+		// function _deleteDeclaredDocuments($documentSrls)
+		private function _delete_declared_posts($post_ids) {
+			error_log(print_r('should activate _delete_declared_posts()', true));
+			return;
+			// executeQuery('document.deleteDeclaredDocuments', $documentSrls);
+			// executeQuery('document.deleteDocumentDeclaredLog', $documentSrls);
+		}
+
+		/**
+		 * Delete readed log
+		 * @param string $post_ids (ex: 1, 2,56, 88)
+		 * @return void
+		 */
+		// function _deleteDocumentReadedLog($documentSrls)
+		private function _delete_post_readed_log($post_ids) {
+			return;
+			// executeQuery('document.deleteDocumentReadedLog', $documentSrls);
+		}
+
+		/**
+		 * Delete voted log
+		 * @param string $post_ids (ex: 1, 2,56, 88)
+		 * @return void
+		 */
+		// function _deleteDocumentVotedLog($documentSrls)
+		private function _delete_post_voted_log($post_ids) {
+			return;
+			// executeQuery('document.deleteDocumentVotedLog', $documentSrls);
 		}
 
 		/**
@@ -995,30 +1085,36 @@ var_dump('post controller init()');
 		}
 
 		/**
-		 * Increase the number of comments in the document
+		 * Increase the number of comments in the post
 		 * Update modified date, modifier, and order with increasing comment count
-		 * @param int $document_srl
+		 * @param int $n_post_id
 		 * @param int $comment_count
-		 * @param string $last_updater
+		 * @param string $s_last_updater
 		 * @param bool $comment_inserted
 		 * @return object
 		 */
 		// function updateCommentCount($document_srl, $comment_count, $last_updater, $comment_inserted = false)
-		public function update_comment_count($n_post_id, $comment_count, $last_updater, $comment_inserted = false) {
+		public function update_comment_count($n_post_id, $comment_count, $s_last_updater, $comment_inserted = false) {
 			// $args = new stdClass();
 			// $args->document_srl = $document_srl;
 			// $args->comment_count = $comment_count;
 			$a_param = array();
-			if($comment_inserted)
-			{
+			if($comment_inserted) {
 				$a_param['update_order'] = -1*\X2board\Includes\getNextSequence();
-				// $a_param['last_updater'] = $last_updater;
+				$a_param['last_updater'] = $s_last_updater;
 
+				$o_cache_handler = \X2board\Includes\Classes\CacheHandler::getInstance('object');
+				if($o_cache_handler->isSupport()) {
+					//remove post item from cache
+					$cache_key = 'post_item:'. \X2board\Includes\getNumberingPath($n_post_id) . $n_post_id;
+					$o_cache_handler->delete($cache_key);
+				}
+				unset($o_cache_handler);
 				// $oCacheHandler = CacheHandler::getInstance('object');
 				// if($oCacheHandler->isSupport())
 				// {
 				// 	//remove document item from cache
-				// 	$cache_key = 'document_item:'. getNumberingPath($document_srl) . $document_srl;
+				// 	$cache_key = 'post_item:'. getNumberingPath($document_srl) . $document_srl;
 				// 	$oCacheHandler->delete($cache_key);
 				// }
 			}
@@ -1026,28 +1122,19 @@ var_dump('post controller init()');
 			$a_param['comment_count'] = $comment_count;
 			$a_param['last_update_dt'] = date('Y-m-d H:i:s', current_time('timestamp'));
 
-			// $a_update_key = array();
-			// $a_update_val = array();
-			// foreach($a_param as $key=>$value){
-			// 	$value = esc_sql($value);
-			// 	$a_update_key[] = "`$key`";
-			// 	$a_update_val[] = "'$value'";
-			// }
-			// unset($a_param);
 			$a_set = array();
 			foreach($a_param as $key=>$value) {
 				$a_set[] = "`$key` = '$value'";
 			}
-// var_dump(implode(',', $a_set));
-// exit;
-			// download_count 증가
+			unset($a_param);
+
+			// increase comment_count
 			global $wpdb;
 			$query = "UPDATE `{$wpdb->prefix}x2b_posts` SET ".implode(',', $a_set)." WHERE `post_id` = $n_post_id";
-			// $query = "INSERT INTO `{$wpdb->prefix}x2b_comments` (".implode(',', $a_insert_key).") VALUES (".implode(',', $a_insert_val).")";
+			unset($a_set);
 			if ($wpdb->query($query) === FALSE) {
 				return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error);
 			} 
-// var_dump('update com cont');
 			// $wpdb->query("UPDATE `{$wpdb->prefix}kboard_board_attached` SET `download_count`=`download_count`+1 WHERE `uid`='{$file_info->uid}'");
 			// return executeQuery('document.updateCommentCount', $args);
 			return new \X2board\Includes\Classes\BaseObject();
@@ -1091,9 +1178,99 @@ var_dump('post controller init()');
 var_dump($wpdb->last_error);
 				wp_die($wpdb->last_error );
 			}
-
 			// DELETE `document_extra_vars` FROM `xe_document_extra_vars` as `document_extra_vars`  
 			// WHERE `module_srl` = ? and `document_srl` = ? and `lang_code` = ?
+		}
+
+		/**
+		 * @brief mask multibyte string
+		 * param 원본문자열, 마스킹하지 않는 전단부 글자수, 마스킹하지 않는 후단부 글자수, 마스킹 마크 최대 표시수, 마스킹마크
+		 * echo _mask_mb_str('abc12234pro', 3, 2); => abc******ro
+		 */	
+		private function _mask_mb_str($str, $len1, $len2=0, $limit=0, $mark='*') {
+			$arr_str = preg_split("//u", $str, -1, PREG_SPLIT_NO_EMPTY);
+			$str_len = count($arr_str);
+
+			$len1 = abs($len1);
+			$len2 = abs($len2);
+			if($str_len <= ($len1 + $len2)) {
+				return $str;
+			}
+
+			$str_head = '';
+			$str_body = '';
+			$str_tail = '';
+
+			$str_head = join('', array_slice($arr_str, 0, $len1));
+			if($len2 > 0) {
+				$str_tail = join('', array_slice($arr_str, $len2 * -1));
+			}
+
+			$arr_body = array_slice($arr_str, $len1, ($str_len - $len1 - $len2));
+
+			if(!empty($arr_body)) {
+				$len_body = count($arr_body);
+				$limit = abs($limit);
+				if($limit > 0 && $len_body > $limit) {
+					$len_body = $limit;
+				}
+				$str_body = str_pad('', $len_body, $mark);
+			}
+			return $str_head.$str_body.$str_tail;
+		}
+		/**
+		 * Secure personal private from an extra variable of the documents
+		 * @param int $module_srl
+		 * @param int $var_idx
+		 * @return BaseObject
+		 */
+		// function secureDocumentExtraVars($nModuleSrl, $nVarIdx, $sBeginYyyymmdd, $sEndYyyymmdd)
+		public function secure_post_user_defined_vars($nModuleSrl, $nVarIdx, $sBeginYyyymmdd, $sEndYyyymmdd) {
+			if(!$nModuleSrl || !$nVarIdx) {
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', 'x2board') );
+			}
+				
+			$oArg = new stdClass();
+			$oArg->module_srl = $nModuleSrl;
+			$oArg->var_idx = $nVarIdx;
+			$oArg->begin_yyyymmdd = $sBeginYyyymmdd.'000001';
+			$oArg->end_yyyymmdd = $sEndYyyymmdd.'235959';
+			$oRst = executeQueryArray('document.getDocumentListWithExtraVarsPeriod', $oArg);
+			unset($oArg);
+			if(!count($oRst->data)) {
+				return new \X2board\Includes\Classes\BaseObject();
+			}
+			
+			foreach($oRst->data as $_ => $oSingleExtraVar) {
+				if(strpos($oSingleExtraVar->value, '|@|')) {
+					$aVal = explode('|@|', $oSingleExtraVar->value);
+					$nCnt = count($aVal);
+					if($nCnt == 3)  // maybe cell phone info
+						$aVal[2] = '*';
+					elseif($nCnt == 4 || $nCnt == 5) { // maybe addr info
+						for($i = 2; $i <= $nCnt; $i++) {
+							$aVal[$i] = '*';
+						}
+					}
+					$oSingleExtraVar->value = implode('|@|', $aVal);
+				}
+				else { // maybe cell phone info
+					$oSingleExtraVar->value = $this->_mask_mb_str($oSingleExtraVar->value, 3, 3);
+				}
+			}
+			$oArg = new stdClass();
+			foreach($oRst->data as $_ => $oSingleExtraVar) {
+				$oArg->module_srl = $oSingleExtraVar->module_srl;
+				$oArg->document_srl = $oSingleExtraVar->document_srl;
+				$oArg->var_idx = $oSingleExtraVar->var_idx;
+				$oArg->value = $oSingleExtraVar->value;
+				$oRst = executeQuery('document.updateDocumentExtraVar', $oArg);
+				if(!$oRst->toBool())
+					return $oRst;
+			}
+			unset($oArg);
+			unset($oRst);
+			return new \X2board\Includes\Classes\BaseObject();
 		}
 
 
@@ -1169,54 +1346,6 @@ var_dump($wpdb->last_error);
 			if(!$document_srl) return new BaseObject(-1, 'msg_invalid_request');
 
 			return $this->declaredDocument($document_srl);
-		}		
-
-		/**
-		 * Delete document history
-		 * @param int $history_srl
-		 * @param int $document_srl
-		 * @param int $module_srl
-		 * @return void
-		 */
-		function deleteDocumentHistory($history_srl, $document_srl, $module_srl)
-		{
-			$args = new stdClass();
-			$args->history_srl = $history_srl;
-			$args->module_srl = $module_srl;
-			$args->document_srl = $document_srl;
-			if(!$args->history_srl && !$args->module_srl && !$args->document_srl) return;
-			executeQuery("document.deleteHistory", $args);
-		}
-
-		/**
-		 * Delete declared document, log
-		 * @param string $documentSrls (ex: 1, 2,56, 88)
-		 * @return void
-		 */
-		function _deleteDeclaredDocuments($documentSrls)
-		{
-			executeQuery('document.deleteDeclaredDocuments', $documentSrls);
-			executeQuery('document.deleteDocumentDeclaredLog', $documentSrls);
-		}
-
-		/**
-		 * Delete readed log
-		 * @param string $documentSrls (ex: 1, 2,56, 88)
-		 * @return void
-		 */
-		function _deleteDocumentReadedLog($documentSrls)
-		{
-			executeQuery('document.deleteDocumentReadedLog', $documentSrls);
-		}
-
-		/**
-		 * Delete voted log
-		 * @param string $documentSrls (ex: 1, 2,56, 88)
-		 * @return void
-		 */
-		function _deleteDocumentVotedLog($documentSrls)
-		{
-			executeQuery('document.deleteDocumentVotedLog', $documentSrls);
 		}
 
 		/**
@@ -1328,214 +1457,11 @@ var_dump($wpdb->last_error);
 			$oCacheHandler = CacheHandler::getInstance('object');
 			if($oCacheHandler->isSupport())
 			{
-				$cache_key = 'document_item:'. getNumberingPath($oDocument->document_srl) . $oDocument->document_srl;
+				$cache_key = 'post_item:'. getNumberingPath($oDocument->document_srl) . $oDocument->document_srl;
 				$oCacheHandler->delete($cache_key);
 			}
 
 			return $output;
-		}
-
-		/**
-		 * Insert extra variables into the document table
-		 * @param int $module_srl
-		 * @param int $var_idx
-		 * @param string $var_name
-		 * @param string $var_type
-		 * @param string $var_is_required
-		 * @param string $var_search
-		 * @param string $var_default
-		 * @param string $var_desc
-		 * @param int $eid
-		 * @return object
-		 */
-		function insertDocumentExtraKey($module_srl, $var_idx, $var_name, $var_type, $var_is_required = 'N', $var_search = 'N', $var_default = '', $var_desc = '', $eid)
-		{
-			if(!$module_srl || !$var_idx || !$var_name || !$var_type || !$eid) return new BaseObject(-1,'msg_invalid_request');
-
-			$obj = new stdClass();
-			$obj->module_srl = $module_srl;
-			$obj->var_idx = $var_idx;
-			$obj->var_name = $var_name;
-			$obj->var_type = $var_type;
-			$obj->var_is_required = $var_is_required=='Y'?'Y':'N';
-			$obj->var_search = $var_search=='Y'?'Y':'N';
-			$obj->var_default = $var_default;
-			$obj->var_desc = $var_desc;
-			$obj->eid = $eid;
-
-			$output = executeQuery('document.getDocumentExtraKeys', $obj);
-			if(!$output->data)
-			{
-				$output = executeQuery('document.insertDocumentExtraKey', $obj);
-			}
-			else
-			{
-				$output = executeQuery('document.updateDocumentExtraKey', $obj);
-				// Update the extra var(eid)
-				$output = executeQuery('document.updateDocumentExtraVar', $obj);
-			}
-
-			$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
-			if($oCacheHandler->isSupport())
-			{
-				$object_key = 'module_document_extra_keys:'.$module_srl;
-				$cache_key = $oCacheHandler->getGroupKey('site_and_module', $object_key);
-				$oCacheHandler->delete($cache_key);
-			}
-
-			return $output;
-		}
-		/**
-		 * Remove the extra variables of the documents
-		 * @param int $module_srl
-		 * @param int $var_idx
-		 * @return BaseObject
-		 */
-		function deleteDocumentExtraKeys($module_srl, $var_idx = null)
-		{
-			if(!$module_srl) return new BaseObject(-1,'msg_invalid_request');
-			$obj = new stdClass();
-			$obj->module_srl = $module_srl;
-			if(!is_null($var_idx)) $obj->var_idx = $var_idx;
-
-			$oDB = DB::getInstance();
-			$oDB->begin();
-
-			$output = $oDB->executeQuery('document.deleteDocumentExtraKeys', $obj);
-			if(!$output->toBool())
-			{
-				$oDB->rollback();
-				return $output;
-			}
-
-			if($var_idx != NULL)
-			{
-				$output = $oDB->executeQuery('document.updateDocumentExtraKeyIdxOrder', $obj);
-				if(!$output->toBool())
-				{
-					$oDB->rollback();
-					return $output;
-				}
-			}
-
-			$output =  executeQuery('document.deleteDocumentExtraVars', $obj);
-			if(!$output->toBool())
-			{
-				$oDB->rollback();
-				return $output;
-			}
-
-			if($var_idx != NULL)
-			{
-				$output = $oDB->executeQuery('document.updateDocumentExtraVarIdxOrder', $obj);
-				if(!$output->toBool())
-				{
-					$oDB->rollback();
-					return $output;
-				}
-			}
-
-			$oDB->commit();
-
-			$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
-			if($oCacheHandler->isSupport())
-			{
-				$object_key = 'module_document_extra_keys:'.$module_srl;
-				$cache_key = $oCacheHandler->getGroupKey('site_and_module', $object_key);
-				$oCacheHandler->delete($cache_key);
-			}
-
-			return new BaseObject();
-		}
-
-		/**
-		 * @brief mask multibyte string
-		 * param 원본문자열, 마스킹하지 않는 전단부 글자수, 마스킹하지 않는 후단부 글자수, 마스킹 마크 최대 표시수, 마스킹마크
-		 * echo _maskMbString('abc12234pro', 3, 2); => abc******ro
-		 */	
-		private function _maskMbString($str, $len1, $len2=0, $limit=0, $mark='*')
-		{
-			$arr_str = preg_split("//u", $str, -1, PREG_SPLIT_NO_EMPTY);
-			$str_len = count($arr_str);
-
-			$len1 = abs($len1);
-			$len2 = abs($len2);
-			if($str_len <= ($len1 + $len2))
-				return $str;
-
-			$str_head = '';
-			$str_body = '';
-			$str_tail = '';
-
-			$str_head = join('', array_slice($arr_str, 0, $len1));
-			if($len2 > 0)
-				$str_tail = join('', array_slice($arr_str, $len2 * -1));
-
-			$arr_body = array_slice($arr_str, $len1, ($str_len - $len1 - $len2));
-
-			if(!empty($arr_body)) 
-			{
-				$len_body = count($arr_body);
-				$limit = abs($limit);
-				if($limit > 0 && $len_body > $limit)
-					$len_body = $limit;
-
-				$str_body = str_pad('', $len_body, $mark);
-			}
-			return $str_head.$str_body.$str_tail;
-		}
-		/**
-		 * Secure personal private from an extra variable of the documents
-		 * @param int $module_srl
-		 * @param int $var_idx
-		 * @return BaseObject
-		 */
-		function secureDocumentExtraVars($nModuleSrl, $nVarIdx, $sBeginYyyymmdd, $sEndYyyymmdd)
-		{
-			if(!$nModuleSrl || !$nVarIdx) 
-				return new BaseObject(-1,'msg_invalid_request');
-			$oArg = new stdClass();
-			$oArg->module_srl = $nModuleSrl;
-			$oArg->var_idx = $nVarIdx;
-			$oArg->begin_yyyymmdd = $sBeginYyyymmdd.'000001';
-			$oArg->end_yyyymmdd = $sEndYyyymmdd.'235959';
-			$oRst = executeQueryArray('document.getDocumentListWithExtraVarsPeriod', $oArg);
-			unset($oArg);
-			if(!count($oRst->data))
-				return new BaseObject();
-
-			foreach($oRst->data as $_ => $oSingleExtraVar)
-			{
-				if(strpos($oSingleExtraVar->value, '|@|'))
-				{
-					$aVal = explode('|@|', $oSingleExtraVar->value);
-					$nCnt = count($aVal);
-					if($nCnt == 3)  // maybe cell phone info
-						$aVal[2] = '*';
-					elseif($nCnt == 4 || $nCnt == 5)  // maybe addr info
-					{
-						for($i = 2; $i <= $nCnt; $i++)
-							$aVal[$i] = '*';
-					}
-					$oSingleExtraVar->value = implode('|@|', $aVal);
-				}
-				else  // maybe cell phone info
-					$oSingleExtraVar->value = $this->_maskMbString($oSingleExtraVar->value, 3, 3);
-			}
-			$oArg = new stdClass();
-			foreach($oRst->data as $_ => $oSingleExtraVar)
-			{
-				$oArg->module_srl = $oSingleExtraVar->module_srl;
-				$oArg->document_srl = $oSingleExtraVar->document_srl;
-				$oArg->var_idx = $oSingleExtraVar->var_idx;
-				$oArg->value = $oSingleExtraVar->value;
-				$oRst = executeQuery('document.updateDocumentExtraVar', $oArg);
-				if(!$oRst->toBool())
-					return $oRst;
-			}
-			unset($oArg);
-			unset($oRst);
-			return new BaseObject();
 		}
 
 		/**
@@ -1648,7 +1574,7 @@ var_dump($wpdb->last_error);
 			if($oCacheHandler->isSupport())
 			{
 				//remove document item from cache
-				$cache_key = 'document_item:'. getNumberingPath($document_srl) . $document_srl;
+				$cache_key = 'post_item:'. getNumberingPath($document_srl) . $document_srl;
 				$oCacheHandler->delete($cache_key);
 			}
 
@@ -1945,7 +1871,7 @@ var_dump($wpdb->last_error);
 				for($i=0;$i<$document_srl_count;$i++)
 				{
 					$document_srl = $document_srl_list[$i];
-					$output = $this->deleteDocument($document_srl, true);
+					$output = $this->delete_post($document_srl, true);
 					if(!$output->toBool()) return new BaseObject(-1, 'fail_to_delete');
 				}
 				$oDB->commit();
@@ -2048,6 +1974,120 @@ var_dump($wpdb->last_error);
 		}
 
 		/**
+		 * Insert extra variables into the document table
+		 * @param int $module_srl
+		 * @param int $var_idx
+		 * @param string $var_name
+		 * @param string $var_type
+		 * @param string $var_is_required
+		 * @param string $var_search
+		 * @param string $var_default
+		 * @param string $var_desc
+		 * @param int $eid
+		 * @return object
+		 */
+		/*function insertDocumentExtraKey($module_srl, $var_idx, $var_name, $var_type, $var_is_required = 'N', $var_search = 'N', $var_default = '', $var_desc = '', $eid)
+		{
+			if(!$module_srl || !$var_idx || !$var_name || !$var_type || !$eid) return new BaseObject(-1,'msg_invalid_request');
+
+			$obj = new stdClass();
+			$obj->module_srl = $module_srl;
+			$obj->var_idx = $var_idx;
+			$obj->var_name = $var_name;
+			$obj->var_type = $var_type;
+			$obj->var_is_required = $var_is_required=='Y'?'Y':'N';
+			$obj->var_search = $var_search=='Y'?'Y':'N';
+			$obj->var_default = $var_default;
+			$obj->var_desc = $var_desc;
+			$obj->eid = $eid;
+
+			$output = executeQuery('document.getDocumentExtraKeys', $obj);
+			if(!$output->data)
+			{
+				$output = executeQuery('document.insertDocumentExtraKey', $obj);
+			}
+			else
+			{
+				$output = executeQuery('document.updateDocumentExtraKey', $obj);
+				// Update the extra var(eid)
+				$output = executeQuery('document.updateDocumentExtraVar', $obj);
+			}
+
+			$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
+			if($oCacheHandler->isSupport())
+			{
+				$object_key = 'module_document_extra_keys:'.$module_srl;
+				$cache_key = $oCacheHandler->getGroupKey('site_and_module', $object_key);
+				$oCacheHandler->delete($cache_key);
+			}
+
+			return $output;
+		}*/
+
+		/**
+		 * Remove the extra variables of the documents
+		 * @param int $module_srl
+		 * @param int $var_idx
+		 * @return BaseObject
+		 */
+		/*function deleteDocumentExtraKeys($module_srl, $var_idx = null)
+		{
+			if(!$module_srl) return new BaseObject(-1,'msg_invalid_request');
+			$obj = new stdClass();
+			$obj->module_srl = $module_srl;
+			if(!is_null($var_idx)) $obj->var_idx = $var_idx;
+
+			$oDB = DB::getInstance();
+			$oDB->begin();
+
+			$output = $oDB->executeQuery('document.deleteDocumentExtraKeys', $obj);
+			if(!$output->toBool())
+			{
+				$oDB->rollback();
+				return $output;
+			}
+
+			if($var_idx != NULL)
+			{
+				$output = $oDB->executeQuery('document.updateDocumentExtraKeyIdxOrder', $obj);
+				if(!$output->toBool())
+				{
+					$oDB->rollback();
+					return $output;
+				}
+			}
+
+			$output =  executeQuery('document.deleteDocumentExtraVars', $obj);
+			if(!$output->toBool())
+			{
+				$oDB->rollback();
+				return $output;
+			}
+
+			if($var_idx != NULL)
+			{
+				$output = $oDB->executeQuery('document.updateDocumentExtraVarIdxOrder', $obj);
+				if(!$output->toBool())
+				{
+					$oDB->rollback();
+					return $output;
+				}
+			}
+
+			$oDB->commit();
+
+			$oCacheHandler = CacheHandler::getInstance('object', NULL, TRUE);
+			if($oCacheHandler->isSupport())
+			{
+				$object_key = 'module_document_extra_keys:'.$module_srl;
+				$cache_key = $oCacheHandler->getGroupKey('site_and_module', $object_key);
+				$oCacheHandler->delete($cache_key);
+			}
+
+			return new BaseObject();
+		}*/
+
+		/**
 		 * insert alias
 		 * @param int $module_srl
 		 * @param int $document_srl
@@ -2106,7 +2146,7 @@ var_dump($wpdb->last_error);
 			if($oCacheHandler->isSupport())
 			{
 				//remove document item from cache
-				$cache_key = 'document_item:'. getNumberingPath($document_srl) . $document_srl;
+				$cache_key = 'post_item:'. getNumberingPath($document_srl) . $document_srl;
 				$oCacheHandler->delete($cache_key);
 			}
 
@@ -2231,7 +2271,7 @@ var_dump($wpdb->last_error);
 					foreach($output->data as $val)
 					{
 						//remove document item from cache
-						$cache_key = 'document_item:'. getNumberingPath($val->document_srl) . $val->document_srl;
+						$cache_key = 'post_item:'. getNumberingPath($val->document_srl) . $val->document_srl;
 						$oCacheHandler->delete($cache_key);
 					}
 				}

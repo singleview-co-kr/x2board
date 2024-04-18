@@ -33,11 +33,14 @@ function plugin_loaded(){
 function init_proc_cmd() {
 	$s_cmd = isset($_REQUEST['cmd']) ? $_REQUEST['cmd'] : '';
 
-	switch($s_cmd){
+	// this cmd comes from wp-content\plugins\x2board\includes\user.php
+	switch($s_cmd) {
 		case X2B_CMD_PROC_WRITE_POST:
 		case X2B_CMD_PROC_MODIFY_POST:
+		case X2B_CMD_PROC_DELETE_POST:
 		case X2B_CMD_PROC_WRITE_COMMENT:
 		case X2B_CMD_PROC_MODIFY_COMMENT:
+		case X2B_CMD_PROC_DELETE_COMMENT:
 		case X2B_CMD_PROC_DOWNLOAD_FILE:
 		case X2B_CMD_PROC_OUTPUT_FILE:
 			_launch_x2b('proc');

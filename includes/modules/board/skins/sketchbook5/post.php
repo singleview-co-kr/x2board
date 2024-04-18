@@ -72,7 +72,7 @@ $mi->et_var = false;
 				<a class="print_doc bubble m_no" onclick="#" title="<?php echo __('Print', 'x2board')?>"><i class="fa fa-print"></i><b class="tx"><?php echo __('Print', 'x2board')?></b></a>
 				<!-- <a class="document_289289 action bubble m_no" href="#popup_menu_area" onclick="return false;" title="이 게시물을"><i class="fa fa-ellipsis-h"></i><b class="tx">이 게시물을</b></a> -->
 				<a class="edit" href="<?php echo esc_url(x2b_get_url('cmd', X2B_CMD_VIEW_MODIFY_POST))?>"><i class="ico_16px write"></i><?php echo __('Edit', 'x2board')?></a> 
-				<a class="edit" href="<?php echo esc_url(x2b_get_url('cmd', X2B_CMD_VIEW_DELETE_POST))?>" onclick="return confirm('<?php echo __('Are you sure you want to delete?', 'x2board')?>');"><i class="ico_16px delete"></i><?php echo __('Delete', 'x2board')?> </a>
+				<a class="edit" href="<?php echo esc_url(x2b_get_url('cmd', X2B_CMD_VIEW_DELETE_POST))?>"><i class="ico_16px delete"></i><?php echo __('Delete', 'x2board')?></a>
 			</div>
 			<!-- <div class="rd_nav_side">
 				<div class="rd_nav img_tx fr m_btn_wrp" style="d11isplay: none;">

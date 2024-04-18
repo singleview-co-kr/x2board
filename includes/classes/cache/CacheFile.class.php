@@ -22,6 +22,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\CacheFile')) {
 		 * @var string
 		 */
 		private $_s_cache_dir = 'store/';
+		private $_o_wp_filesystem = null;
 
 		/**
 		 * Get instance of CacheFile
@@ -46,6 +47,9 @@ if (!class_exists('\\X2board\\Includes\\Classes\\CacheFile')) {
 			if( !file_exists( $this->_s_cache_dir ) ) {
 				wp_mkdir_p( $this->_s_cache_dir );
 			}
+			require_once ( ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php' );
+			require_once ( ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php' );
+			$this->_o_wp_filesystem = new \WP_Filesystem_Direct(false);
 		}
 
 		/**
@@ -88,18 +92,13 @@ if (!class_exists('\\X2board\\Includes\\Classes\\CacheFile')) {
 			$content[] = 'return \'' . $data . '\';';
 
 			// FileHandler::writeFile($cache_file, implode(PHP_EOL, $content));
-			require_once ( ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php' );
-			require_once ( ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php' );
-			$o_wp_filesystem = new \WP_Filesystem_Direct(false);
-
 			// check if directory exists
 			$s_cache_path = str_replace(basename($cache_file), '', $cache_file);
 			if( !file_exists( $s_cache_path ) ) {
 				wp_mkdir_p( $s_cache_path );
 			}
 
-			$o_wp_filesystem->put_contents($cache_file, implode(PHP_EOL, $content));
-			unset($o_wp_filesystem);
+			$this->_o_wp_filesystem->put_contents($cache_file, implode(PHP_EOL, $content));
 			if(function_exists('opcache_invalidate')) {
 				@opcache_invalidate($cache_file, true);
 			}
@@ -117,7 +116,8 @@ if (!class_exists('\\X2board\\Includes\\Classes\\CacheFile')) {
 
 			if(file_exists($cache_file)) {
 				if($modified_time > 0 && filemtime($cache_file) < $modified_time) {
-					FileHandler::removeFile($cache_file);
+					// FileHandler::removeFile($cache_file);
+					$this->_o_wp_filesystem->delete($cache_file);
 					return false;
 				}
 				return true;
@@ -158,7 +158,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\CacheFile')) {
 			if(function_exists('opcache_invalidate')) {
 				@opcache_invalidate($cache_file, true);
 			}
-			FileHandler::removeFile($cache_file);
+			$this->_o_wp_filesystem->delete($cache_file);
 		}
 
 		/**

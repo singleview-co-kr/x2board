@@ -70,6 +70,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 				case X2B_CMD_VIEW_WRITE_POST:
 				case X2B_CMD_VIEW_MODIFY_POST:
 				case X2B_CMD_VIEW_MODIFY_COMMENT:
+				case X2B_CMD_VIEW_DELETE_POST:
 					$s_cmd = '_'.$s_cmd;
 					$this->$s_cmd();
 					break;
@@ -846,345 +847,55 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			}
 			return $resultList;
 		}
-	
-/////////////////////////////////////
-		/**
-		 * /includes/no_namespace.helper.php::x2b_write_post_hidden_fields()를 통해서
-		 * editor스킨의 hidden field 출력
-		 */
-		/*public function write_comment_hidden_fields() {
-			$a_header = array();
-			$a_header['board_id'] = get_the_ID();
-			$a_header['parent_post_id'] = \X2board\Includes\Classes\Context::get('post_id');
-			$o_comment = \X2board\Includes\Classes\Context::get('o_comment');
-// var_dump($o_comment);
-			if($o_comment->comment_id) {  // update a old comment
-				$a_header['cmd'] = X2B_CMD_PROC_MODIFY_COMMENT;
-				$a_header['comment_id'] = $o_comment->comment_id;
-			}
-			else { // write a new comment
-				$a_header['cmd'] = X2B_CMD_PROC_WRITE_COMMENT; 
-			}
-			unset($o_comment);
-			wp_nonce_field('x2b_'.$a_header['cmd'], 'x2b_'.$a_header['cmd'].'_nonce');
-			// $header = apply_filters('x2b_skin_editor_header', $header, $content, $board);
-			foreach( $a_header as $s_field_name => $s_field_value ) {
-				echo '<input type="hidden" name="'.$s_field_name.'" value="'.$s_field_value.'">' . "\n";
-			}
-			unset($a_header);
-			// do_action('x2b_skin_editor_header_after', $content, $board);
-		}*/
 
 		/**
-		 * /includes/no_namespace.helper.php::x2b_write_post_hidden_fields()를 통해서
-		 * editor스킨의 hidden field 출력
-		 */
-		/*public function write_post_hidden_fields() {
-			$a_header = array();
-			$a_header['board_id'] = get_the_ID();
-			$o_post = \X2board\Includes\Classes\Context::get('post');
-			if($o_post->post_id) {  // update a old post
-				$a_header['cmd'] = X2B_CMD_PROC_MODIFY_POST;
-				$a_header['post_id'] = $o_post->post_id;
-				// $a_header['parent_post_id'] = $o_post->parent_post_id;
+		 * @brief display board module deletion form
+		 **/
+		// function dispBoardDelete()
+		private function _view_delete_post() {
+			// check grant
+			if(!$this->grant->write_post) {
+				return $this->_disp_message('msg_not_permitted');
 			}
-			else { // write a new post
-				$a_header['cmd'] = X2B_CMD_PROC_WRITE_POST; 
-				$a_header['post_id'] = \X2board\Includes\getNextSequence(); // reserve new post id for file appending
+
+			// get the post_id from request
+			$n_post_id = \X2board\Includes\Classes\Context::get('post_id');
+
+			// if document exists, get the document information
+			if($n_post_id) {
+				$o_post_model = \X2board\Includes\getModel('post');
+				$o_post = $o_post_model->get_post($n_post_id);
+				unset($o_post_model);
 			}
-			unset($o_post);
-			// }
-			// $product_id = isset($_GET['woocommerce_product_tabs_inside']) ? intval($_GET['woocommerce_product_tabs_inside']) : '';
-			// if($product_id){
-			// 	$header['x2b_option_woocommerce_product_id'] = sprintf('<input type="hidden" name="x2b_option_woocommerce_product_id" value="%d">', $product_id);
-			// }
-			$o_file_controller = \X2board\Includes\getController('file');
-			$o_file_controller->set_upload_info($a_header['post_id'], $a_header['post_id']);
-			unset($o_file_controller);
 
-			wp_nonce_field('x2b_'.$a_header['cmd'], 'x2b_'.$a_header['cmd'].'_nonce');
-			
-			// $header = apply_filters('x2b_skin_editor_header', $header, $content, $board);
-			foreach( $a_header as $s_field_name => $s_field_value ) {
-				echo '<input type="hidden" name="'.$s_field_name.'" value="'.$s_field_value.'">' . "\n";
+			// if the post is not existed, then back to the board content page
+			if(!isset($o_post) || !$o_post->is_exists()) {
+				return $this->dispBoardContent();
 			}
-			unset($a_header);
-			// do_action('x2b_skin_editor_header_after', $content, $board);
-		}*/
 
-		/**
-		 * /includes/no_namespace.helper.php::x2b_write_post_prepare_single_user_field()를 통해서
-		 * editor 스킨의 사용자 입력 field 출력
-		 */
-		/*public function write_post_prepare_single_user_field() { 
-			$o_post_model = \X2board\Includes\getModel('post');
-			$this->_default_fields = $o_post_model->default_fields;  // get_default_user_input_fields();
-			$this->_extends_fields = $o_post_model->extends_fields;  // get_extended_user_input_fields();
-			unset($o_post_model);
-		}*/
-
-		/**
-		 * /includes/no_namespace.helper.php::x2b_write_post_single_user_field()를 통해서
-		 * editor 스킨의 사용자 입력 field 출력
-		 */
-		// public function getTemplate($field, $content='', $boardBuilder=''){
-		/*public function write_post_single_user_field($a_field_info) { 
-			$field = $a_field_info;
-			$template = '';
-			$permission = (isset($field['permission']) && $field['permission']) ? $field['permission'] : '';
-			$roles = (isset($field['roles']) && $field['roles']) ? $field['roles'] : '';
-			$meta_key = (isset($field['meta_key']) && $field['meta_key']) ? sanitize_key($field['meta_key']) : '';
-			
-			if(!$this->_is_available_user_field($permission, $roles) && $meta_key){
+			// if the post is not granted, then back to the password input form
+			if(!$o_post->is_granted()) {
+				// return $this->setTemplateFile('input_password_form');
+				echo $this->render_skin_file('input_password_form');
 				return;
 			}
-			// if(!$content){
-				// $content = new KBContent();
-			// }
 
-			$field = apply_filters('kboard_get_template_field_data', $field); //, $content, $this->board);
-
-			$field_name = (isset($field['field_name']) && $field['field_name']) ? $field['field_name'] : $this->_get_field_label($field);
-			$required = (isset($field['required']) && $field['required']) ? 'required' : '';
-			$placeholder = (isset($field['placeholder']) && $field['placeholder']) ? $field['placeholder'] : '';
-			$wordpress_search = '';
-			$default_value = (isset($field['default_value']) && $field['default_value']) ? $field['default_value'] : '';
-			$html = (isset($field['html']) && $field['html']) ? $field['html'] : '';
-			$shortcode = (isset($field['shortcode']) && $field['shortcode']) ? $field['shortcode'] : '';
-			$row = false;
-
-			// $content = new \stdClass();
-			// $content->title = '';
-			// $content->nick_name = '';
-			// $content->content = '';
-			// $content->getCategoryList = array();
-			// $content->search = false;
-			
-			// $board = new \stdClass(); 
-			// $board->viewUsernameField = true;
-			// $board->useCAPTCHA = false;
-			// $board->use_editor = '';
-			
-			if($field['field_type'] == 'content'){
-				$o_post = \X2board\Includes\Classes\Context::get('post');
-				$editor_html = $this->ob_get_editor_html(array(
-										'use_editor' => '',
-										's_content' => $o_post->content,
-										'required' => $required,
-										'placeholder' => $placeholder,
-										'editor_height' => '400',
-									));
-				unset($o_post);
+			if($this->module_info->protect_content=="Y" && $o_post->get('comment_count')>0 && $this->grant->manager==false) {
+				return $this->_disp_message('msg_protect_content');
 			}
 
-			$post = \X2board\Includes\Classes\Context::get('post');
-			
-			// $default_value_list = array();
-			// if(isset($field['row']) && $field['row']){
-			// 	foreach($field['row'] as $item){
-			// 		if(isset($item['label']) && $item['label']){
-			// 			$row = true;
-			// 			if(isset($item['default_value']) && $item['default_value']){
-			// 				$default_value_list[] = $item['label'];
-			// 			}
-			// 		}
-			// 	}
-			// }
-			
-			// if($default_value_list){
-			// 	$default_value = $default_value_list;
-			// }
-			
-			// if($field['field_type'] == 'search'){
-			// 	if($content->search){
-			// 		$wordpress_search = $content->search;
-			// 	}
-			// 	else if(isset($field['default_value']) && $field['default_value']){
-			// 		$wordpress_search = $field['default_value'];
-			// 	}
-			// }
-			
-			// $order = new KBOrder();
-			// $order->board = $this->board;
-			// $order->board_id = $this->board->id;
-			
-			// $url = new KBUrl();
-			// $url->setBoard($this->board);
-			
-			// $skin = KBoardSkin::getInstance();
-			
-			// if(!$boardBuilder){
-			// 	$boardBuilder = new KBoardBuilder($this->board->id);
-			// 	$boardBuilder->setSkin($this->board->skin);
-			// 	if(wp_is_mobile() && $this->board->meta->mobile_page_rpp){
-			// 		$builder->setRpp($this->board->meta->mobile_page_rpp);
-			// 	}
-			// 	else{
-			// 		$boardBuilder->setRpp($this->board->page_rpp);
-			// 	}
-			// 	$boardBuilder->board = $this->board;
-			// }
-			// var_dump($this->board->skin)			;
-			// if(strpos($html, '#{ESC_ATTR_VALUE}') !== false){
-			// 	$value = $content->option->{$meta_key} ? esc_attr($content->option->{$meta_key}) : esc_attr($default_value);
-			// 	$html = str_replace('#{ESC_ATTR_VALUE}', $value, $html);
-			// }
-			// if(strpos($html, '#{ESC_TEXTAREA_VALUE}') !== false){
-			// 	$value = $content->option->{$meta_key} ? esc_textarea($content->option->{$meta_key}) : esc_textarea($default_value);
-			// 	$html = str_replace('#{ESC_TEXTAREA_VALUE}', $value, $html);
-			// }
-			// if(strpos($html, '#{ESC_HTML_VALUE}') !== false){
-			// 	$value = $content->option->{$meta_key} ? esc_html($content->option->{$meta_key}) : esc_html($default_value);
-			// 	$html = str_replace('#{ESC_HTML_VALUE}', $value, $html);
-			// }
-			
-			// $parent = new KBContent();
-			// $parent->initWithUID($content->parent_uid);
-			
-			// $vars = array(
-			// 	'field' => $field,
-			// 	'meta_key' => $meta_key,
-			// 	'field_name' => $field_name,
-			// 	'required' => $required,
-			// 	'placeholder' => $placeholder,
-			// 	'row' => $row,
-			// 	'wordpress_search' => $wordpress_search,
-			// 	'default_value' => $default_value,
-			// 	'html' => $html,
-			// 	'shortcode' => $shortcode,
-			// 	'board' => $this->board,
-			// 	'content' => $content,
-			// 	'parent' => $parent,
-			// 	// 'fields' => $this,
-			// 	// 'order' => $order,
-			// 	'url' => $url,
-			// 	'skin' => $skin,
-			// 	'skin_path' => $skin->url($this->board->skin),
-			// 	'skin_dir' => $skin->dir($this->board->skin),
-			// 	'boardBuilder' => $boardBuilder
-			// );
-			
-			// ob_start();
-			
-			// do_action('kboard_skin_field_before', $field, $content, $this->board);
-			// do_action("kboard_skin_field_before_{$meta_key}", $field, $content, $this->board);
+			\X2board\Includes\Classes\Context::set('oPost', $o_post);
 
-			// if($skin->fileExists($this->board->skin, "editor-field-{$meta_key}.php")){
-			// 	$field_html = $skin->load($this->board->skin, "editor-field-{$meta_key}.php", $vars);
-			// }
-			// else{
-				// $field_html = $this->render($this->board->skin, 'editor-fields.php', $vars);
-				// $field_html = $this->render('sketchbook5', 'editor-fields.php');
-			// }
-			
-			// if(!$field_html){
-			// 	$field_html = $skin->loadTemplate('editor-fields.php', $vars);
-			// }
-			
-			// $skin_name = 'sketchbook5';
-			// $file = 'editor-fields.php';
-			// $current_file_path = "{$this->merged_list[$skin_name]->dir}/{$file}";
-			// $current_file_path = apply_filters('kboard_skin_file_path', $current_file_path, $skin_name, $file);  //, $vars, $this);
+			/**
+			 * add JS filters
+			 **/
+			// Context::addJsFilter($this->module_path.'tpl/filter', 'delete_document.xml');
+			// $this->setTemplateFile('delete_form');
+			echo $this->render_skin_file('delete_form');
+		}
 
-			// if($current_file_path && file_exists($current_file_path)){
-			// 	include $current_file_path;
-			// }
-			// else{
-			// 	echo sprintf(__('%s file does not exist.', 'x2board'), $file);
-			// }
-
-			// refer to the \Includes\Classes\ModuleObject::render_skin_file()
-			$s_skin_file_abs_path = $this->skin_path . 'editor-fields.php';
-			if( !file_exists( $s_skin_file_abs_path ) ) {
-				echo sprintf(__('%s file does not exist.', 'x2board'), $s_skin_file_abs_path);
-			}
-			$s_skin_file_abs_path = apply_filters('kboard_skin_file_path', $s_skin_file_abs_path ); // , $skin_name, $file, $vars, $this);
-			include $s_skin_file_abs_path;
-		}*/
-
-		/**
-		 * 게시글 본문 에디터 코드를 반환한다.
-		 * @param array $vars
-		 * @return string
-		 */
-		// kboard_content_editor()
-		/*public function ob_get_editor_html($vars=array()){
-			$vars = array_merge(array(
-				'content_field_name' => 'content',
-				'required' => '',
-				'placeholder' => '',
-				'editor_height' => '400',
-			), $vars);
-			// $vars = apply_filters('kboard_content_editor_vars', $vars);
-			extract($vars, EXTR_SKIP);
-			
-			ob_start();
-			if($use_editor == 'yes'){
-				wp_editor($s_content, $content_field_name, array('editor_height'=>$editor_height));
-			}
-			else{
-				echo sprintf('<textarea id="%s" class="editor-textarea %s" name="%s" placeholder="%s">%s</textarea>', esc_attr($content_field_name), esc_attr($required), esc_attr($content_field_name), esc_attr($placeholder), esc_textarea($s_content));
-			}
-			$s_editor_html = ob_get_clean();
-			return apply_filters('x2board_content_editor', $s_editor_html); //, $vars);
-		}*/
-
-		/**
-		 * 입력 필드를 사용할 수 있는 권한인지 확인한다.
-		 * @param string $name
-		 * @return boolean
-		 */
-		// public function isUseFields($permission, $roles){
-		/*private function _is_available_user_field($permission, $roles) {
-			// $board = $this->board;
-			// if($board->isAdmin()){
-			// 	return true;
-			// }
-			$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
-	// var_dump($o_logged_info->roles);		
-			if($o_logged_info->is_admin == 'Y') {
-				return true;
-			}
-			switch($permission){
-				case 'all': 
-					return true;
-				case 'author': 
-					return is_user_logged_in() ? true : false;
-				case 'roles':
-					if(is_user_logged_in()){
-						if(array_intersect($roles, (array)$o_logged_info->roles)){
-							return true;
-						}
-					}
-					return false;
-				default: 
-					return true;
-			}
-		}*/
-
-		/**
-		 * 번역된 필드의 레이블을 반환한다.
-		 * @param array $field
-		 * @return string
-		 */
-		// public function getFieldLabel($field){
-		/*private function _get_field_label($a_field){
-			$field = $a_field;
-			$field_type = $field['field_type'];
-			
-			$fields = apply_filters('kboard_admin_default_fields', $this->_default_fields); //, $this->board);
-			if(isset($fields[$field_type])){
-				return $fields[$field_type]['field_label'];
-			}
-			
-			$fields = apply_filters('kboard_admin_extends_fields', $this->_extends_fields); //, $this->board);
-			if(isset($fields[$field_type])){
-				return $fields[$field_type]['field_label'];
-			}
-			
-			return $field['field_label'];
-		}*/
-
+	
+/////////////////////////////////////
 		/**
 		 * @brief  display the document file list (can be used by API)
 		 **/
@@ -1292,54 +1003,6 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			$oSecurity->encodeHTML('tag_list.');
 
 			$this->setTemplateFile('tag_list');
-		}
-
-		/**
-		 * @brief display board module deletion form
-		 **/
-		function dispBoardDelete()
-		{
-			// check grant
-			if(!$this->grant->write_document)
-			{
-				return $this->_disp_message('msg_not_permitted');
-			}
-
-			// get the document_srl from request
-			$document_srl = Context::get('document_srl');
-
-			// if document exists, get the document information
-			if($document_srl)
-			{
-				$oDocumentModel = getModel('document');
-				$oDocument = $oDocumentModel->getDocument($document_srl);
-			}
-
-			// if the document is not existed, then back to the board content page
-			if(!$oDocument || !$oDocument->isExists())
-			{
-				return $this->dispBoardContent();
-			}
-
-			// if the document is not granted, then back to the password input form
-			if(!$oDocument->isGranted())
-			{
-				return $this->setTemplateFile('input_password_form');
-			}
-
-			if($this->module_info->protect_content=="Y" && $oDocument->get('comment_count')>0 && $this->grant->manager==false)
-			{
-				return $this->_disp_message('msg_protect_content');
-			}
-
-			Context::set('oDocument',$oDocument);
-
-			/**
-			 * add JS filters
-			 **/
-			Context::addJsFilter($this->module_path.'tpl/filter', 'delete_document.xml');
-
-			$this->setTemplateFile('delete_form');
 		}
 
 		/**

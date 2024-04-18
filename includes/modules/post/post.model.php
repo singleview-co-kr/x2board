@@ -990,6 +990,7 @@ var_dump('plz define category search');
 					$cache_key = $o_cache_handler->getGroupKey('site_and_module', $object_key);
 					$a_keys = $o_cache_handler->get($cache_key);
 				}
+				unset($o_cache_handler);
 				// $o_user_define_fields = \X2board\Includes\Classes\UserDefineFields::getInstance($n_board_id); // 호출 효율성 위해서 아래로 이동
 
 				if($a_keys === false) {  // _set_user_define_fields()과 동일한 DB 호출  -> 캐쉬화해야 함

@@ -170,12 +170,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 			if( $result < 0 || $result === false ){
 				wp_die($wpdb->last_error );
 			}
+
 			// save field information
 			$n_var_seq = 1;
 			foreach( $_POST['fields'] as $s_uid => $a_field) {
-// var_dump($s_uid);
-// var_dump($a_field);
-
 				// build extra param for json
 				$a_tmp_field = $a_field;
 				unset($a_tmp_field['field_label']);
@@ -214,6 +212,15 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 					wp_die($wpdb->last_error );
 				}
 			}
+			// delete user defined field cache
+			require_once X2B_PATH . 'includes/classes/cache/CacheHandler.class.php';
+			$o_cache_handler = \X2board\Includes\Classes\CacheHandler::getInstance('object', null, true);
+			if($o_cache_handler->isSupport()) {
+				$object_key = 'module_post_user_define_keys:' . $n_board_id;
+				$cache_key = $o_cache_handler->getGroupKey('site_and_module', $object_key);
+				$o_cache_handler->delete($cache_key);
+			}
+			unset($o_cache_handler);
 // var_dump($result);
 // exit;			
 		}		

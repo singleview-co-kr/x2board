@@ -12,8 +12,7 @@ if ( !defined( 'ABSPATH' ) ) {
 
 if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 
-	class boardController extends board
-	{
+	class boardController extends board {
 		/**
 		 * @brief initialization
 		 **/
@@ -22,6 +21,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 			switch( $s_cmd ) {
 				case X2B_CMD_PROC_WRITE_POST:
 				case X2B_CMD_PROC_MODIFY_POST:
+				case X2B_CMD_PROC_DELETE_POST:
 				case X2B_CMD_PROC_WRITE_COMMENT:
 				case X2B_CMD_PROC_MODIFY_COMMENT:
 				case X2B_CMD_PROC_AJAX_FILE_UPLOAD:
@@ -34,8 +34,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 				default:
 					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_approach', 'x2board') );
 					break;
-// var_dump('exit here');
-// exit;
+var_dump('exit here');
+exit;
 			}	
 		}
 
@@ -482,45 +482,48 @@ var_dump(X2B_CMD_PROC_WRITE_COMMENT);
 		}
 
 		/**
-		 * @brief delete the document
+		 * @brief delete the post
 		 **/
-		function procBoardDeleteDocument()
-		{
-			// get the document_srl
-			$document_srl = Context::get('document_srl');
+		// function procBoardDeleteDocument()
+		private function _proc_delete_post() {
+			// get the post_id
+			$n_post_id = \X2board\Includes\Classes\Context::get('post_id');
 
-			// if the document is not existed
-			if(!$document_srl)
-			{
+			// if the post_id is not existed
+			if(!$n_post_id) {
 				return $this->doError('msg_invalid_document');
 			}
 
-			$oDocumentModel = &getModel('document');
-			$oDocument = $oDocumentModel->getDocument($document_srl);
+			$o_post_model = \X2board\Includes\getModel('post');
+			$o_post = $o_post_model->get_post($n_post_id);
+			unset($o_post_model);
 			// check protect content
-			if($this->module_info->protect_content=="Y" && $oDocument->get('comment_count')>0 && $this->grant->manager==false)
-			{
-				return new BaseObject(-1, 'msg_protect_content');
+			if($this->module_info->protect_content=="Y" && $o_post->get('comment_count')>0 && $this->grant->manager==false) {
+				return new \X2board\Includes\Classes\BaseObject( -1, __('msg_protect_content', 'x2board') );
 			}
 
-			// generate document module controller object
-			$oDocumentController = getController('document');
+			// generate post module controller object
+			$o_post_controller = \X2board\Includes\getController('post');
 
-			// delete the document
-			$output = $oDocumentController->deleteDocument($document_srl, $this->grant->manager);
-			if(!$output->toBool())
-			{
+			// delete the post
+			$output = $o_post_controller->delete_post($n_post_id, $this->grant->manager);
+			unset($o_post_controller);
+			if(!$output->toBool()) {
+				unset($o_post_controller);
 				return $output;
 			}
+			unset($output);
 
 			// alert an message
-			$this->setRedirectUrl(getNotEncodedUrl('', 'mid', Context::get('mid'), 'act', '', 'page', Context::get('page'), 'document_srl', ''));
-			$this->add('mid', Context::get('mid'));
-			$this->add('page', Context::get('page'));
-			if(Context::get('xeVirtualRequestMethod') !== 'xml')
-			{
-				$this->setMessage('success_deleted');
-			}
+			// if s_wp_redirect_url is not added, automatically redirect to home_url
+			$this->add('s_wp_redirect_url', '?'.X2B_CMD_VIEW_POST.'/p/'.\X2board\Includes\Classes\Context::get('page'));
+			// $this->setRedirectUrl(getNotEncodedUrl('', 'mid', Context::get('mid'), 'act', '', 'page', \X2board\Includes\Classes\Context::get('page'), 'document_srl', ''));
+			// $this->add('mid', Context::get('mid'));
+			// $this->add('page', Context::get('page'));
+			// if(Context::get('xeVirtualRequestMethod') !== 'xml')
+			// {
+			// 	$this->setMessage('success_deleted');
+			// }
 		}
 
 		/**

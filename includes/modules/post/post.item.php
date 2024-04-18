@@ -572,6 +572,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 				if(in_array($field_type, $a_ignore_field_type) ){ // ignore default fields
 					continue;
 				}
+				if( is_null($o_field->value) ) {
+					continue;
+				}
 				$a_user_define_extended_fields[] = $o_field;
 			}
 			unset($a_skin_fields);
