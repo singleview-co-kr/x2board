@@ -21,6 +21,29 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileModel')) {
 		function init() {}
 
 		/**
+		 * Return messages for file upload and it depends whether an admin is or not
+		 *
+		 * @param int $attached_size
+		 * @return string
+		 */
+		// function getUploadStatus($attached_size = 0)
+		public function get_upload_status($attached_size = 0) {
+			$file_config = $this->get_upload_config();
+			// Display upload status
+			$upload_status = sprintf(
+				'%s : %s/ %s<br /> %s : %s (%s : %s)',
+				__('allowed_attach_size', 'x2board'), //Context::getLang('allowed_attach_size'),
+				\X2board\Includes\Classes\FileHandler::filesize($attached_size),
+				\X2board\Includes\Classes\FileHandler::filesize($file_config->allowed_attach_size*1024*1024),
+				__('allowed_filesize', 'x2board'), //Context::getLang('allowed_filesize'),
+				\X2board\Includes\Classes\FileHandler::filesize($file_config->allowed_filesize*1024*1024),
+				__('allowed_filetypes', 'x2board'), //Context::getLang('allowed_filetypes'),
+				$file_config->allowed_filetypes
+			);
+			return $upload_status;
+		}
+
+		/**
 		 * Returns a grant of file
 		 *
 		 * @param object $file_info The file information to get grant
@@ -169,6 +192,144 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileModel')) {
 			// }
 		}
 
+		/**
+		 * Return configurations of the attachement (it automatically checks if an administrator is)
+		 *
+		 * @return object Returns a file configuration of current module. If user is admin, returns PHP's max file size and allow all file types.
+		 */
+		// function getUploadConfig()
+		public function get_upload_config() {
+			$n_board_id = \X2board\Includes\Classes\Context::get('board_id');
+			// Get the current board_id if board_id doesn't exist
+			// if(!$n_board_id) {
+			// 	$o_current_board_info = \X2board\Includes\Classes\Context::get('current_module_info');
+			// 	$n_board_id = $o_current_board_info->board_id;
+			// 	unset($o_current_board_info);
+			// }
+			$o_file_config = $this->_get_file_config($n_board_id);
+
+			$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
+			if($o_logged_info->is_admin == 'Y') {
+				$iniPostMaxSize = \X2board\Includes\Classes\FileHandler::returnbytes(ini_get('post_max_size'));
+				$iniUploadMaxSize = \X2board\Includes\Classes\FileHandler::returnbytes(ini_get('upload_max_filesize'));
+				$size = min($iniPostMaxSize, $iniUploadMaxSize) / 1048576;
+				$o_file_config->allowed_attach_size = $size;
+				$o_file_config->allowed_filesize = $size;
+				$o_file_config->allowed_filetypes = '*.*';
+			}
+			return $o_file_config;
+		}
+
+		private function _get_default_config() {
+
+			$o_default_config = new \stdClass();
+			$o_default_config->allowed_filesize = $this->_n_allowed_filesize;
+			$o_default_config->allowed_attach_size = $this->_n_allowed_attach_size;
+			$o_default_config->allowed_filetypes = $this->_s_allowed_filetypes;
+			$o_default_config->allow_outlink = $this->_s_allow_outlink;
+			$o_default_config->allow_outlink_format = $this->_s_allow_outlink_format;
+			$o_default_config->allow_outlink_site = $this->_s_allow_outlink_site;
+			return $o_default_config;
+		}
+
+		/**
+		 * Get file configurations
+		 *
+		 * @param int $n_board_id If set this, returns specific board's configuration. Otherwise returns global configuration.
+		 * @return object Returns configuration.
+		 */
+		// function getFileConfig($module_srl = null)
+		private function _get_file_config($n_board_id = null) {
+			// Get configurations (using module model object)
+			// $oModuleModel = getModel('module');
+
+			$file_module_config = $this->_get_default_config();  // $oModuleModel->getModuleConfig('file');
+
+			$file_config = new \stdClass();
+			// if($module_srl) $file_config = $oModuleModel->getModulePartConfig('file',$module_srl);
+			// if(!$file_config) $file_config = $file_module_config;
+
+			if($n_board_id) {
+				$o_current_board_info = \X2board\Includes\Classes\Context::get('current_module_info');
+// var_Dump($o_current_board_info);
+				$file_config->allowed_filesize = $o_current_board_info->file_allowed_filesize_mb;
+				$file_config->allowed_attach_size = $o_current_board_info->file_allowed_attach_size_mb;
+				$file_config->allowed_filetypes = $o_current_board_info->file_allowed_filetypes;
+				$file_config->download_grant = $o_current_board_info->file_download_grant;
+				$file_config->allow_outlink = $o_current_board_info->file_allow_outlink;
+				$file_config->allow_outlink_site = $o_current_board_info->file_allow_outlink_site;
+				$file_config->allow_outlink_format = $o_current_board_info->file_allow_outlink_format;
+			}
+
+			$config = new \stdClass();
+
+			if($file_config) {
+				$config->allowed_filesize = $file_config->allowed_filesize;
+				$config->allowed_attach_size = $file_config->allowed_attach_size;
+				$config->allowed_filetypes = $file_config->allowed_filetypes;
+				$config->download_grant = $file_config->download_grant;
+				$config->allow_outlink = $file_config->allow_outlink;
+				$config->allow_outlink_site = $file_config->allow_outlink_site;
+				$config->allow_outlink_format = $file_config->allow_outlink_format;
+			}
+			// Property for all files comes first than each property
+			if(!$config->allowed_filesize) {
+				$config->allowed_filesize = $file_module_config->allowed_filesize;
+			}
+			if(!$config->allowed_attach_size) {
+				$config->allowed_attach_size = $file_module_config->allowed_attach_size;
+			}
+			if(!$config->allowed_filetypes) {
+				$config->allowed_filetypes = $file_module_config->allowed_filetypes;
+			}
+			if(!$config->allow_outlink) {
+				$config->allow_outlink = $file_module_config->allow_outlink;
+			}
+			if(!$config->allow_outlink_site) {
+				$config->allow_outlink_site = $file_module_config->allow_outlink_site;
+			}
+			if(!$config->allow_outlink_format) {
+				$config->allow_outlink_format = $file_module_config->allow_outlink_format;
+			}
+			if(!$config->download_grant) {
+				$config->download_grant = $file_module_config->download_grant;
+			}
+			// Default setting if not exists
+			if(!$config->allowed_filesize) {
+				$config->allowed_filesize = '2';
+			}
+			if(!$config->allowed_attach_size) {
+				$config->allowed_attach_size = '3';
+			}
+			if(!$config->allowed_filetypes) {
+				$config->allowed_filetypes = '*.*';
+			}
+			if(!$config->allow_outlink) {
+				$config->allow_outlink = 'Y';
+			}
+			if(!$config->download_grant) {
+				$config->download_grant = array();
+			}
+
+			$size = ini_get('upload_max_filesize');
+			$unit = strtolower($size[strlen($size) - 1]);
+			$size = (float)$size;
+			if($unit == 'g') {
+				$size *= 1024;
+			}
+			if($unit == 'k') {
+				$size /= 1024;
+			}
+
+			if($config->allowed_filesize > $size) {	
+				$config->allowed_filesize = $size;
+			}
+			if($config->allowed_attach_size > $size) {
+				$config->allowed_attach_size = $size;
+			}
+			return $config;
+		}
+
 
 
 		
@@ -277,29 +438,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileModel')) {
 		// }
 
 		/**
-		 * Return messages for file upload and it depends whether an admin is or not
-		 *
-		 * @param int $attached_size
-		 * @return string
-		 */
-		// function getUploadStatus($attached_size = 0)
-		// {
-		// 	$file_config = $this->getUploadConfig();
-		// 	// Display upload status
-		// 	$upload_status = sprintf(
-		// 		'%s : %s/ %s<br /> %s : %s (%s : %s)',
-		// 		Context::getLang('allowed_attach_size'),
-		// 		FileHandler::filesize($attached_size),
-		// 		FileHandler::filesize($file_config->allowed_attach_size*1024*1024),
-		// 		Context::getLang('allowed_filesize'),
-		// 		FileHandler::filesize($file_config->allowed_filesize*1024*1024),
-		// 		Context::getLang('allowed_filetypes'),
-		// 		$file_config->allowed_filetypes
-		// 	);
-		// 	return $upload_status;
-		// }
-
-		/**
 		 * Return file configuration of the module
 		 *
 		 * @param int $module_srl The sequence of module to get configuration
@@ -309,98 +447,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileModel')) {
 		// {
 		// 	return $this->getFileConfig($module_srl);
 		// }
-
-		/**
-		 * Get file configurations
-		 *
-		 * @param int $module_srl If set this, returns specific module's configuration. Otherwise returns global configuration.
-		 * @return object Returns configuration.
-		 */
-		// function getFileConfig($module_srl = null)
-		// {
-		// 	// Get configurations (using module model object)
-		// 	$oModuleModel = getModel('module');
-
-		// 	$file_module_config = $oModuleModel->getModuleConfig('file');
-
-		// 	if($module_srl) $file_config = $oModuleModel->getModulePartConfig('file',$module_srl);
-		// 	if(!$file_config) $file_config = $file_module_config;
-
-		// 	$config = new stdClass();
-
-		// 	if($file_config)
-		// 	{
-		// 		$config->allowed_filesize = $file_config->allowed_filesize;
-		// 		$config->allowed_attach_size = $file_config->allowed_attach_size;
-		// 		$config->allowed_filetypes = $file_config->allowed_filetypes;
-		// 		$config->download_grant = $file_config->download_grant;
-		// 		$config->allow_outlink = $file_config->allow_outlink;
-		// 		$config->allow_outlink_site = $file_config->allow_outlink_site;
-		// 		$config->allow_outlink_format = $file_config->allow_outlink_format;
-		// 	}
-		// 	// Property for all files comes first than each property
-		// 	if(!$config->allowed_filesize) $config->allowed_filesize = $file_module_config->allowed_filesize;
-		// 	if(!$config->allowed_attach_size) $config->allowed_attach_size = $file_module_config->allowed_attach_size;
-		// 	if(!$config->allowed_filetypes) $config->allowed_filetypes = $file_module_config->allowed_filetypes;
-		// 	if(!$config->allow_outlink) $config->allow_outlink = $file_module_config->allow_outlink;
-		// 	if(!$config->allow_outlink_site) $config->allow_outlink_site = $file_module_config->allow_outlink_site;
-		// 	if(!$config->allow_outlink_format) $config->allow_outlink_format = $file_module_config->allow_outlink_format;
-		// 	if(!$config->download_grant) $config->download_grant = $file_module_config->download_grant;
-		// 	// Default setting if not exists
-		// 	if(!$config->allowed_filesize) $config->allowed_filesize = '2';
-		// 	if(!$config->allowed_attach_size) $config->allowed_attach_size = '3';
-		// 	if(!$config->allowed_filetypes) $config->allowed_filetypes = '*.*';
-		// 	if(!$config->allow_outlink) $config->allow_outlink = 'Y';
-		// 	if(!$config->download_grant) $config->download_grant = array();
-
-		// 	$size = ini_get('upload_max_filesize');
-		// 	$unit = strtolower($size[strlen($size) - 1]);
-		// 	$size = (float)$size;
-		// 	if($unit == 'g') $size *= 1024;
-		// 	if($unit == 'k') $size /= 1024;
-
-		// 	if($config->allowed_filesize > $size) 
-		// 	{	
-		// 		$config->allowed_filesize = $size;
-		// 	}
-		// 	if($config->allowed_attach_size > $size) 
-		// 	{
-		// 		$config->allowed_attach_size = $size;
-		// 	}
-			
-		// 	return $config;
-		// }
-		
-		/**
-		 * Return configurations of the attachement (it automatically checks if an administrator is)
-		 *
-		 * @return object Returns a file configuration of current module. If user is admin, returns PHP's max file size and allow all file types.
-		 */
-		// function getUploadConfig()
-		// {
-		// 	$logged_info = Context::get('logged_info');
-
-		// 	$module_srl = Context::get('module_srl');
-		// 	// Get the current module if module_srl doesn't exist
-		// 	if(!$module_srl)
-		// 	{
-		// 		$current_module_info = Context::get('current_module_info');
-		// 		$module_srl = $current_module_info->module_srl;
-		// 	}
-		// 	$file_config = $this->getFileConfig($module_srl);
-
-		// 	if($logged_info->is_admin == 'Y')
-		// 	{
-		// 		$iniPostMaxSize = FileHandler::returnbytes(ini_get('post_max_size'));
-		// 		$iniUploadMaxSize = FileHandler::returnbytes(ini_get('upload_max_filesize'));
-		// 		$size = min($iniPostMaxSize, $iniUploadMaxSize) / 1048576;
-		// 		$file_config->allowed_attach_size = $size;
-		// 		$file_config->allowed_filesize = $size;
-		// 		$file_config->allowed_filetypes = '*.*';
-		// 	}
-		// 	return $file_config;
-		// }
-
 	}
 }
 /* End of file file.model.php */

@@ -117,6 +117,18 @@ if (!class_exists('\\X2board\\Includes\\Classes\\FileHandler')) {
 		}
 
 		/**
+		 * Check file exists.
+		 *
+		 * @param string $filename Target file name
+		 * @return bool Returns FALSE if the file does not exists, or Returns full path file(string).
+		 */
+		public static function exists($s_filename) {
+			$s_filename = self::_getRealPath($s_filename);
+			return file_exists($s_filename) ? $s_filename : FALSE;
+		}
+
+
+		/**
 		 * Copy a directory to target
 		 *
 		 * If target directory does not exist, this function creates it
@@ -1090,18 +1102,6 @@ if (!class_exists('\\X2board\\Includes\\Classes\\FileHandler')) {
 		/*public static function hasContent($filename)
 		{
 			return (is_readable($filename) && (filesize($filename) > 0));
-		}*/
-
-		/**
-		 * Check file exists.
-		 *
-		 * @param string $filename Target file name
-		 * @return bool Returns FALSE if the file does not exists, or Returns full path file(string).
-		 */
-		/*public static function exists($filename)
-		{
-			$filename = self::getRealPath($filename);
-			return file_exists($filename) ? $filename : FALSE;
 		}*/
 
 		/**
