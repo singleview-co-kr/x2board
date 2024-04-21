@@ -39,6 +39,14 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 
 			$this->except_notice = $this->module_info->except_notice == 'N' ? FALSE : TRUE;
 
+			$o_post_model = \X2board\Includes\getModel('post');
+			$a_status = $this->_get_status_name_list($o_post_model);
+			if(isset($a_status['SECRET'])) {
+				$this->module_info->secret = 'Y';  // for notify_message checkbox on post/comment editor
+			}
+			unset($o_post_model);
+			unset($a_status);
+
 			// remove [post_id]_cpage from get_vars
 			$o_args = \X2board\Includes\Classes\Context::getRequestVars();
 // var_dump($o_args);
@@ -69,8 +77,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 					$this->_disp_content();
 				case X2B_CMD_VIEW_WRITE_POST:
 				case X2B_CMD_VIEW_MODIFY_POST:
-				case X2B_CMD_VIEW_MODIFY_COMMENT:
 				case X2B_CMD_VIEW_DELETE_POST:
+				case X2B_CMD_VIEW_MODIFY_COMMENT:
+				case X2B_CMD_VIEW_REPLY_COMMENT:
 					$s_cmd = '_'.$s_cmd;
 					$this->$s_cmd();
 					break;
@@ -894,6 +903,83 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			echo $this->render_skin_file('delete_form');
 		}
 
+		/**
+		 * @brief display comment replies page
+		 **/
+		// function dispBoardReplyComment()
+		private function _view_reply_comment() {
+			// check grant
+			if(!$this->grant->write_comment) {
+				return $this->_disp_message('msg_not_permitted');
+			}
+
+			// get the parent comment ID
+			$parent_comment_id = \X2board\Includes\Classes\Context::get('comment_id');
+			// if the parent comment is not existed
+			if(!$parent_comment_id) {
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', 'x2board') );
+			}
+
+			// get the comment
+			$o_comment_model = \X2board\Includes\getModel('comment');
+			$o_source_comment = $o_comment_model->get_comment($parent_comment_id, $this->grant->manager);
+
+			// if the comment is not existed, opoup an error message
+			if(!$o_source_comment->is_exists()) {
+				return $this->_disp_message('msg_invalid_request');
+			}
+			if( \X2board\Includes\Classes\Context::get('post_id') && 
+				$o_source_comment->get('parent_post_id') != \X2board\Includes\Classes\Context::get('post_id')) {
+				return $this->_disp_message('msg_invalid_request');
+			}
+
+			// Check allow comment
+			$o_post_model = \X2board\Includes\getModel('post');
+			$o_post = $o_post_model->get_post($o_source_comment->get('parent_post_id'));
+			unset($o_post_model);
+			if(!$o_post->allow_comment()) {
+				unset($o_post);
+				return $this->_disp_message('msg_not_allow_comment');
+			}
+
+			// get the comment information
+			$o_child_comment = $o_comment_model->get_comment();
+// var_dump($this->module_info);
+			unset($o_comment_model);
+			$o_child_comment->add('board_id', $o_post->get('board_id'));
+			unset($o_post);
+			$o_child_comment->add('post_id', $o_source_comment->get('parent_post_id'));
+			$o_child_comment->add('parent_comment_id', $parent_comment_id);
+			\X2board\Includes\Classes\Context::set('o_the_comment', $o_child_comment);
+
+			// setup comment variables
+			\X2board\Includes\Classes\Context::set('o_source_comment', $o_source_comment);
+			unset($o_source_comment);
+
+			// setup module variables
+			\X2board\Includes\Classes\Context::set('module_info', $this->module_info);
+
+			$o_editor_view = \X2board\Includes\getView('editor');
+			$o_comment_editor = $o_editor_view->get_comment_editor();
+			unset($o_editor_view);
+			// \X2board\Includes\Classes\Context::set('comment_editor_html', $o_comment_editor->s_comment_editor_html );
+			\X2board\Includes\Classes\Context::set('comment_hidden_field_html', $o_comment_editor->s_comment_hidden_field_html);
+			unset($o_comment_editor);
+
+			/**
+			 * add JS filters
+			 **/
+			// Context::addJsFilter($this->module_path.'tpl/filter', 'insert_comment.xml');
+
+			echo $this->render_skin_file('comment_form');
+			// $this->setTemplateFile('comment_form');
+		}
+
+
+
+
+
+
 	
 /////////////////////////////////////
 		/**
@@ -1003,66 +1089,6 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			$oSecurity->encodeHTML('tag_list.');
 
 			$this->setTemplateFile('tag_list');
-		}
-
-		/**
-		 * @brief display comment replies page
-		 **/
-		function dispBoardReplyComment()
-		{
-			// check grant
-			if(!$this->grant->write_comment)
-			{
-				return $this->_disp_message('msg_not_permitted');
-			}
-
-			// get the parent comment ID
-			$parent_srl = Context::get('comment_srl');
-
-			// if the parent comment is not existed
-			if(!$parent_srl)
-			{
-				return new BaseObject(-1, 'msg_invalid_request');
-			}
-
-			// get the comment
-			$oCommentModel = getModel('comment');
-			$oSourceComment = $oCommentModel->getComment($parent_srl, $this->grant->manager);
-
-			// if the comment is not existed, opoup an error message
-			if(!$oSourceComment->isExists())
-			{
-				return $this->_disp_message('msg_invalid_request');
-			}
-			if(Context::get('document_srl') && $oSourceComment->get('document_srl') != Context::get('document_srl'))
-			{
-				return $this->_disp_message('msg_invalid_request');
-			}
-
-			// Check allow comment
-			$oDocumentModel = getModel('document');
-			$oDocument = $oDocumentModel->getDocument($oSourceComment->get('document_srl'));
-			if(!$oDocument->allowComment())
-			{
-				return $this->_disp_message('msg_not_allow_comment');
-			}
-
-			// get the comment information
-			$oComment = $oCommentModel->getComment();
-			$oComment->add('parent_srl', $parent_srl);
-			$oComment->add('document_srl', $oSourceComment->get('document_srl'));
-
-			// setup comment variables
-			Context::set('oSourceComment',$oSourceComment);
-			Context::set('oComment',$oComment);
-			Context::set('module_srl',$this->module_info->module_srl);
-
-			/**
-			 * add JS filters
-			 **/
-			Context::addJsFilter($this->module_path.'tpl/filter', 'insert_comment.xml');
-
-			$this->setTemplateFile('comment_form');
 		}
 
 		/**

@@ -21,9 +21,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 		 * Initialization
 		 * @return void
 		 */
-		function init()	{
-var_dump('commentController::init()');
-		 }
+		function init()	{ }
 
 		/**
 		 * Enter comments
@@ -192,6 +190,7 @@ var_dump('commentController::init()');
 			$list_args->board_id = $obj->board_id;
 			$list_args->regdate_dt = $obj->regdate_dt;
 
+			global $wpdb;
 			// If parent comment doesn't exist, set data directly
 			if(!$obj->parent_comment_id) {  // parent comment
 				$list_args->head = $list_args->arrange = $obj->comment_id;
@@ -200,43 +199,79 @@ var_dump('commentController::init()');
 			}
 			else {  // child comment
 				// get information of the parent comment posting
-				$parent_args = new \stdClass();
-				$parent_args->comment_id = $obj->parent_comment_id;
-				$parent_output = executeQuery('comment.getCommentListItem', $parent_args);
-
+				// $parent_args = new \stdClass();
+				// $parent_args->comment_id = $obj->parent_comment_id;
+				// $parent_output = executeQuery('comment.getCommentListItem', $parent_args);
 				// return if no parent comment exists
-				if(!$parent_output->toBool() || !$parent_output->data) {
+				// if(!$parent_output->toBool() || !$parent_output->data) {
+				// 	return;
+				// }
+				$s_columns = "`comments`.`parent_post_id`, `comments_list`.*";
+				$s_from = "`{$wpdb->prefix}x2b_comments` as `comments` , `{$wpdb->prefix}x2b_comments_list` as `comments_list`";
+				$s_where = "`comments`.`comment_id` = {$obj->parent_comment_id} and `comments`.`comment_id` = `comments_list`.`comment_id`";
+				$s_query = "SELECT {$s_columns} FROM {$s_from} WHERE {$s_where}";
+				if ($wpdb->query($s_query) === FALSE) {  // return if no parent comment exists
 					return;
+				} 
+				else {
+					$a_result = $wpdb->get_results($s_query);
+					$wpdb->flush();
 				}
-
-				$parent = $parent_output->data;
+							
+				$parent = $a_result[0];  // $parent_output->data;
 
 				$list_args->head = $parent->head;
 				$list_args->depth = $parent->depth + 1;
 
 				// if the depth of comments is less than 2, execute insert.
-				if($list_args->depth < 2) {
+				if($list_args->depth < 2) {  // if the depth of comments is greater than 2, execute update.
 					$list_args->arrange = $obj->comment_id;
-					// if the depth of comments is greater than 2, execute update.
 				}
-				else {
-					// get the top listed comment among those in lower depth and same head with parent's.
-					$p_args = new stdClass();
-					$p_args->head = $parent->head;
-					$p_args->arrange = $parent->arrange;
-					$p_args->depth = $parent->depth;
-					$output = executeQuery('comment.getCommentParentNextSibling', $p_args);
+				else {  // get the top listed comment among those in lower depth and same head with parent's.
+					// $p_args = new stdClass();
+					// $p_args->head = $parent->head;
+					// $p_args->arrange = $parent->arrange;
+					// $p_args->depth = $parent->depth;
+					// $output = executeQuery('comment.getCommentParentNextSibling', $p_args);
+					// SELECT min(`comments_list`.`arrange`) as `arrange`  FROM `xe_comments_list` as `comments_list`   WHERE `comments_list`.`head` = ? and `comments_list`.`arrange` > ? and `comments_list`.`depth`
 
-					if($output->data->arrange) {
-						$list_args->arrange = $output->data->arrange;
-						$output = executeQuery('comment.updateCommentListArrange', $list_args);
+					$s_columns = "min(`comments_list`.`arrange`) as `arrange`";
+					$s_from = "`{$wpdb->prefix}x2b_comments_list` as `comments_list`";
+					$s_where = "`comments_list`.`head` = {$parent->head} and `comments_list`.`arrange` > {$parent->arrange} and `comments_list`.`depth`";
+					$s_query = "SELECT {$s_columns} FROM {$s_from} WHERE {$s_where}";
+					if ($wpdb->query($s_query) === FALSE) {  // return if no parent comment exists
+						return;
+					} 
+					else {
+						$a_rst = $wpdb->get_results($s_query);
+						$wpdb->flush();
+					}
+
+					if($a_rst[0]->arrange) {
+						$list_args->arrange = $a_rst[0]->arrange;
+						// $output = executeQuery('comment.updateCommentListArrange', $list_args);
+						// "UPDATE  `xe_comments_list` as `comments_list`  SET `arrange` = `arrange` + ?  WHERE `parent_post_id` = ? and `head` = ? and `arrange` >= ?"
+						$result = $wpdb->update ( "{$wpdb->prefix}x2b_comments_list", 
+												  array( 'arrange' => 'arrange' + 1 ),
+												  array( 'parent_post_id' => esc_sql(intval($list_args->parent_post_id)),
+												  		 'head' => esc_sql(intval($list_args->head)),
+														 'arrange' => esc_sql(intval($list_args->arrange)) ) 
+												);
+// var_dump($result);												
+						if( $result < 0 || $result === false ){
+// var_dump($a_rst[0]->arrange);
+// 
+// exit;							
+							return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error );
+						}
 					}
 					else {
 						$list_args->arrange = $obj->comment_id;
 					}
 				}
 			}
-
+// var_dump($list_args);
+// exit;	
 			$a_new_comment_list = array();
 			$a_new_comment_list['comment_id'] = $list_args->comment_id;
 			$a_new_comment_list['parent_post_id'] = $list_args->parent_post_id;
@@ -256,7 +291,6 @@ var_dump('commentController::init()');
 			}
 			unset($a_new_comment);
 
-			global $wpdb;
 			$query = "INSERT INTO `{$wpdb->prefix}x2b_comments_list` (".implode(',', $a_insert_key).") VALUES (".implode(',', $a_insert_val).")";
 			if ($wpdb->query($query) === FALSE) {
 				return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error);

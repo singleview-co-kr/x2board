@@ -1191,6 +1191,20 @@ error_log(print_r($domain, true));
 			return $url[$ssl_mode][$domain_key];
 		}
 
+		/**
+		 * Get lang_type
+		 *
+		 * @return string Language type
+		 */
+		public static function getLangType() {
+			$a_locale = array('ko_KR' => 'ko', 'en_GB'=>'en');
+			if( !isset($a_locale[get_locale()]) ) {
+				wp_die(__('undefined locale', 'x2board'));
+			}
+			return $a_locale[get_locale()];
+			// $self = self::getInstance();
+			// return $self->lang_type;
+		}
 
 		/**
 		 * Load the database information
@@ -1739,17 +1753,6 @@ error_log(print_r($domain, true));
 		// 	$self->set('lang_type', $lang_type);
 
 		// 	$_SESSION['lang_type'] = $lang_type;
-		// }
-
-		/**
-		 * Get lang_type
-		 *
-		 * @return string Language type
-		 */
-		// public static function getLangType()
-		// {
-		// 	$self = self::getInstance();
-		// 	return $self->lang_type;
 		// }
 
 		/**

@@ -348,7 +348,15 @@ exit;
 		}
 
 		/**
-		 * @brief insert comments
+		 * @brief reply comment
+		 **/
+		// function procBoardInsertComment()
+		private function _proc_reply_comment() {
+			$this->_proc_write_comment();
+		}
+
+		/**
+		 * @brief modify comment
 		 **/
 		// function procBoardInsertComment()
 		private function _proc_modify_comment() {
@@ -356,13 +364,12 @@ exit;
 		}
 
 		/**
-		 * @brief insert comments
+		 * @brief insert comment
 		 **/
 		// function procBoardInsertComment()
 		private function _proc_write_comment() {
 var_dump(X2B_CMD_PROC_WRITE_COMMENT);
 
-// var_dump($this->grant->write_comment);
 			// check grant
 			if(!$this->grant->write_comment) {
 				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', 'x2board') );
@@ -372,7 +379,9 @@ var_dump(X2B_CMD_PROC_WRITE_COMMENT);
 			// get the relevant data for inserting comment
 			// $obj = Context::getRequestVars();
 			// $obj->module_srl = $this->module_srl;
-			$obj = \X2board\Includes\Classes\Context::gets( 'board_id', 'parent_post_id', 'comment_content', 
+			$obj = \X2board\Includes\Classes\Context::gets( 'board_id', 'parent_post_id', 
+															'content',
+															'comment_content',  // will be deprecated 
 															'parent_comment_id', 'comment_id', 'is_secret',
 															'use_editor', 'use_html', 'password' );
 
@@ -382,6 +391,11 @@ var_dump(X2B_CMD_PROC_WRITE_COMMENT);
 			// if(!is_array($this->module_info->use_status)) {
 			// 	$this->module_info->use_status = explode('|@|', $this->module_info->use_status);
 			// }
+
+			if(is_null($obj->comment_content) && strlen($obj->content) ) {  // ckeditor case
+				$obj->comment_content = $obj->content;
+				unset($obj->content);
+			}
 
 			if(in_array('SECRET', $this->module_info->use_status)) {
 				$this->module_info->secret = 'Y';
@@ -408,7 +422,9 @@ var_dump(X2B_CMD_PROC_WRITE_COMMENT);
 				}
 			}
 // var_dump($this->module_info);
-			// check if the doument is existed
+// var_dump($obj);
+// exit;
+			// check if the post is existed
 			$o_post_model = \X2board\Includes\getModel('post');
 			$o_post = $o_post_model->get_post($obj->parent_post_id);
 			if(!$o_post->is_exists()) {
@@ -440,18 +456,22 @@ var_dump(X2B_CMD_PROC_WRITE_COMMENT);
 			// if the comment is not existed, then generate a new sequence
 			if(!$obj->comment_id) {
 				$obj->comment_id = \X2board\Includes\getNextSequence();
+				$o_comment = new \stdClass();
+				$o_comment->comment_id = -1;  // means non-existing comment
 			} else {
 				$o_comment = $o_comment_model->get_comment($obj->comment_id, $this->grant->manager);
 			}
-// var_dump($bAnonymous);		
+// var_dump($obj);	
 			// if comment_id is not existed, then insert the comment
-			if( isset( $o_comment->comment_id ) != $obj->comment_id ) {
+			if( $o_comment->comment_id != $obj->comment_id ) {
 				if( $obj->parent_comment_id ) {  // parent_comment_id is existed
 					$o_parent_comment = $o_comment_model->get_comment($obj->parent_comment_id);
 					if(!$o_parent_comment->comment_id) {
 						return new \X2board\Includes\Classes\BaseObject( -1, __('msg_invalid_request', 'x2board') );
 					}
 					$output = $o_comment_controller->insert_comment($obj, $bAnonymous);
+// var_dump($output);		
+// exit;								
 				} 
 				else {  // parent_comment_id is not existed
 					$output = $o_comment_controller->insert_comment($obj, $bAnonymous);

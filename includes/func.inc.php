@@ -38,7 +38,7 @@ function init_proc_cmd() {
 		case X2B_CMD_PROC_WRITE_POST:
 		case X2B_CMD_PROC_MODIFY_POST:
 		case X2B_CMD_PROC_DELETE_POST:
-		case X2B_CMD_PROC_WRITE_COMMENT:
+		case X2B_CMD_PROC_WRITE_COMMENT:  // include X2B_CMD_PROC_REPLY_COMMENT
 		case X2B_CMD_PROC_MODIFY_COMMENT:
 		case X2B_CMD_PROC_DELETE_COMMENT:
 		case X2B_CMD_PROC_DOWNLOAD_FILE:
@@ -234,6 +234,7 @@ function _launch_x2b($s_cmd_type) {
 	require_once X2B_PATH . 'includes/classes/ModuleHandler.class.php';
 	require_once X2B_PATH . 'includes/classes/DB.class.php';
 	require_once X2B_PATH . 'includes/classes/PageHandler.class.php';
+	require_once X2B_PATH . 'includes/classes/FileHandler.class.php';
 	require_once X2B_PATH . 'includes/classes/cache/CacheHandler.class.php';
 	require_once X2B_PATH . 'includes/classes/UserDefineFields.class.php';
 	require_once X2B_PATH . 'includes/classes/security/Password.class.php';

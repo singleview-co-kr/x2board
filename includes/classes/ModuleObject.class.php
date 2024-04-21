@@ -107,6 +107,10 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 				$this->module_info->$s_key = $o_val;
 			}
 			unset($o_rst);
+
+			// for \includes\modules\file\file.model.php::get_upload_config() usage
+			$this->module_info->board_id = $n_board_id; 
+			Context::set('current_module_info', $this->module_info);
 			// $this->module_info = (object)$o_rst->a_board_settings;
 // var_dump($this->module_info);
 // exit;
@@ -116,29 +120,29 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 			// $this->xml_info = $xml_info;
 			
 			// validate certificate info and permission settings necessary in Web-services
-			$is_logged = Context::get('is_logged');
+			
 			// $logged_info = Context::get('logged_info');
 			// module model create an object
 			// $oModuleModel = getModel('module');
 			// permission settings. access, manager(== is_admin) are fixed and privilege name in XE
 			// $module_srl = Context::get('module_srl');
 			// if(!$module_info->mid && !is_array($module_srl) && preg_match('/^([0-9]+)$/', $module_srl))
-			{
+			// {
 				// $request_module = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
 				// if($request_module->module_srl == $module_srl)
 				// {
 				// 	$grant = $oModuleModel->getGrant($request_module, $logged_info);
 				// }
-			}
+			// }
 			// else
-			{
+			// {
 				// $grant = $oModuleModel->getGrant($module_info, $logged_info); //, $xml_info);
 				// have at least access grant
 				// if(substr_count($this->act, 'Member') || substr_count($this->act, 'Communication'))
 				// {
 				// 	$grant->access = 1;
 				// }
-			}
+			// }
 			// $grant = new \stdClass();
 			// $grant->access = true;
 			// display no permission if the current module doesn't have an access privilege
@@ -162,8 +166,8 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 						$this->stop('msg_is_not_administrator');
 						return;
 					case 'member' :
-						if(!$is_logged)
-						{
+						$is_logged = Context::get('is_logged');
+						if(!$is_logged) {
 							$this->stop('msg_not_permitted_act');
 							return;
 						}

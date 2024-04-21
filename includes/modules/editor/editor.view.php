@@ -422,15 +422,26 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorView')) {
 		private function _ob_get_comment_hidden_fields() { 
 			ob_start();
 			wp_nonce_field('x2b_'.X2B_CMD_PROC_WRITE_COMMENT, 'x2b_'.X2B_CMD_PROC_WRITE_COMMENT.'_nonce');
-			$o_post = \X2board\Includes\Classes\Context::get('post');
 
 			$header = array();
 			$a_header['cmd'] = X2B_CMD_PROC_WRITE_COMMENT;
 			$a_header['board_id'] = get_the_ID();
-			if($o_post->post_id) {  // this is mandatory
-				$a_header['parent_post_id'] = $o_post->post_id;
-			}			
-			unset($o_post);
+
+			$o_post = \X2board\Includes\Classes\Context::get('post');
+			if(isset($o_post)) {  // insert a root comment
+				if($o_post->post_id) {  // this is mandatory
+					$a_header['parent_post_id'] = $o_post->post_id;
+				}			
+				unset($o_post);
+			}
+			else {  // insert a child comment
+				$o_the_comment = \X2board\Includes\Classes\Context::get('o_the_comment');
+				$a_header['parent_post_id'] = $o_the_comment->get('post_id');
+				$a_header['parent_comment_id'] = $o_the_comment->get('parent_comment_id');
+				$a_header['comment_id'] = $o_the_comment->get('comment_id');
+				$a_header['content'] = htmlspecialchars($o_the_comment->get('content'));
+			}
+			
 			foreach( $a_header as $s_field_name => $s_field_value ) {
 				echo '<input type="hidden" name="'.$s_field_name.'" value="'.$s_field_value.'">' . "\n";
 			}

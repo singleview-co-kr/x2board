@@ -87,8 +87,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentItem')) {
 		}
 
 		// function isGranted()
-		public function is_granted()
-		{
+		public function is_granted() {
 			if(isset($_SESSION['x2b_own_comment'][$this->comment_id])) {
 				return TRUE;
 			}
@@ -193,6 +192,22 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentItem')) {
 			\X2board\Includes\stripEmbedTagForAdmin($s_content, $this->get('comment_author'));
 			return wpautop($s_content);
 		}
+
+		/**
+		 * Return the editor html
+		 * used in skins/comment_form.php
+		 * @return string
+		 */
+		// function getEditor()
+		public function get_editor() {
+			$n_board_id = $this->get('board_id');
+			if(!$n_board_id) {
+				$n_board_id = \X2board\Includes\Classes\Context::get('board_id');
+			}
+			$o_editor_model = \X2board\Includes\getModel('editor');
+			return $o_editor_model->get_board_editor('comment', $n_board_id, $this->comment_id, 'comment_id', 'content');
+		}
+
 
 
 
@@ -343,21 +358,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentItem')) {
 			$oFileModel = getModel('file');
 			$file_list = $oFileModel->getFiles($this->comment_srl, array(), 'file_srl', TRUE);
 			return $file_list;
-		}
-
-		/**
-		 * Return the editor html
-		 * @return string
-		 */
-		function getEditor()
-		{
-			$module_srl = $this->get('module_srl');
-			if(!$module_srl)
-			{
-				$module_srl = Context::get('module_srl');
-			}
-			$oEditorModel = getModel('editor');
-			return $oEditorModel->getModuleEditor('comment', $module_srl, $this->comment_srl, 'comment_srl', 'content');
 		}
 
 		/**

@@ -27,7 +27,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 		 *
 		 * @return void
 		 */
-		function __construct() {
+		public function __construct() {
 			global $G_X2B_CACHE;
 			if(!isset($G_X2B_CACHE['EXTRA_VARS'])) {
 				$G_X2B_CACHE['EXTRA_VARS'] = array();
