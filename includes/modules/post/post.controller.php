@@ -354,7 +354,6 @@ var_dump('post controller init()');
 					$this->_insert_user_defined_value($a_new_post['board_id'], $a_new_post['post_id'], $idx, $o_user_input_value, $o_user_define_item->eid);
 				}
 			}
-			unset($a_new_post);
 // exit;		
 			
 			// Update the category if the category_id exists.
