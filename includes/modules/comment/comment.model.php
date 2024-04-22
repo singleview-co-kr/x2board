@@ -47,8 +47,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 		 * @return int
 		 */
 		// function getCommentCount($document_srl)
-		public function get_comment_count($n_parent_post_id)
-		{
+		public function get_comment_count($n_parent_post_id) {
 			// $args = new stdClass();
 			// $args->document_srl = $n_parent_post_id;
 // var_dump($n_parent_post_id);
@@ -228,6 +227,30 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 			return $o_comment_config;
 		}
 
+		/**
+		 * Returns the number of child comments
+		 * @param int $comment_id
+		 * @return int
+		 */
+		// function getChildComments($comment_srl)
+		function get_child_comments($n_comment_id)	{
+			global $wpdb;
+			$s_query = "SELECT `comment_id`, `comment_author` FROM ".$wpdb->prefix."x2b_comments WHERE `parent_comment_id`=".$n_comment_id;
+			if ($wpdb->query($s_query) === FALSE) {
+				return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error);
+			} 
+			else {
+				$a_result = $wpdb->get_results($s_query);
+				$wpdb->flush();
+			}
+			return $a_result;
+			// $args = new stdClass();
+			// $args->comment_srl = $comment_srl;
+			// $output = executeQueryArray('comment.getChildComments', $args, NULL, 'master');
+			// return $output->data;
+		}
+
+
 
 
 //////////////////////////
@@ -255,19 +278,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 			$args->comment_srl = $comment_srl;
 			$output = executeQuery('comment.getChildCommentCount', $args, NULL, 'master');
 			return (int) $output->data->count;
-		}
-
-		/**
-		 * Returns the number of child comments
-		 * @param int $comment_srl
-		 * @return int
-		 */
-		function getChildComments($comment_srl)
-		{
-			$args = new stdClass();
-			$args->comment_srl = $comment_srl;
-			$output = executeQueryArray('comment.getChildComments', $args, NULL, 'master');
-			return $output->data;
 		}
 
 		/**

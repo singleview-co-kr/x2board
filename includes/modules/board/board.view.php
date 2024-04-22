@@ -80,6 +80,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 				case X2B_CMD_VIEW_DELETE_POST:
 				case X2B_CMD_VIEW_MODIFY_COMMENT:
 				case X2B_CMD_VIEW_REPLY_COMMENT:
+				case X2B_CMD_VIEW_DELETE_COMMENT:
 					$s_cmd = '_'.$s_cmd;
 					$this->$s_cmd();
 					break;
@@ -202,16 +203,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 		// 	if( $this->module_info->allow_session_value_skin == 'Y' )
 		// 		Context::set('session', $_SESSION );
 		// }
-
-		/**
-		 * @brief display board message
-		 **/
-		// function dispBoardMessage($s_msg) {
-		private function _disp_message($s_msg) {
-			\X2board\Includes\Classes\Context::set('message', $s_msg);
-			// setup the skin file
-			echo $this->render_skin_file('message');
-		}
 
 		/**
 		 * @brief display board contents
@@ -879,7 +870,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 
 			// if the post is not existed, then back to the board content page
 			if(!isset($o_post) || !$o_post->is_exists()) {
-				return $this->dispBoardContent();
+				return $this->_disp_content();
 			}
 
 			// if the post is not granted, then back to the password input form
@@ -975,78 +966,45 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			// $this->setTemplateFile('comment_form');
 		}
 
-
-
-
-
-
-	
-/////////////////////////////////////
 		/**
-		 * @brief  display the document file list (can be used by API)
+		 * @brief display the delete comment  form
 		 **/
-		function dispBoardContentFileList(){
-			/**
-			 * check the access grant (all the grant has been set by the module object)
-			 **/
-			if(!$this->grant->access)
-			{
+		// function dispBoardDeleteComment()
+		public function _view_delete_comment() {
+			// check grant
+			if(!$this->grant->write_comment) {
 				return $this->_disp_message('msg_not_permitted');
 			}
 
-			// check document view grant
-			$this->dispBoardContentView();
+			// get the comment_srl to be deleted
+			$n_comment_id = \X2board\Includes\Classes\Context::get('comment_id');
 
-			// Check if a permission for file download is granted
-			// Get configurations (using module model object)
-			$oModuleModel = getModel('module');
-			$file_module_config = $oModuleModel->getModulePartConfig('file',$this->module_srl);
-			
-			$downloadGrantCount = 0;
-			if(is_array($file_module_config->download_grant))
-			{
-				foreach($file_module_config->download_grant AS $value)
-					if($value) $downloadGrantCount++;
+			// if the comment exists, then get the comment information
+			if($n_comment_id) {
+				$o_comment_model = \X2board\Includes\getModel('comment');
+				$o_comment = $o_comment_model->get_comment($n_comment_id, $this->grant->manager);
+				unset($o_comment_model);
 			}
 
-			if(is_array($file_module_config->download_grant) && $downloadGrantCount>0)
-			{
-				if(!Context::get('is_logged')) return $this->stop('msg_not_permitted_download');
-				$logged_info = Context::get('logged_info');
-				if($logged_info->is_admin != 'Y')
-				{
-					$oModuleModel =& getModel('module');
-					$columnList = array('module_srl', 'site_srl');
-					$module_info = $oModuleModel->getModuleInfoByModuleSrl($this->module_srl, $columnList);
-
-					if(!$oModuleModel->isSiteAdmin($logged_info, $module_info->site_srl))
-					{
-						$oMemberModel =& getModel('member');
-						$member_groups = $oMemberModel->getMemberGroups($logged_info->member_srl, $module_info->site_srl);
-
-						$is_permitted = false;
-						for($i=0;$i<count($file_module_config->download_grant);$i++)
-						{
-							$group_srl = $file_module_config->download_grant[$i];
-							if($member_groups[$group_srl])
-							{
-								$is_permitted = true;
-								break;
-							}
-						}
-						if(!$is_permitted) return $this->stop('msg_not_permitted_download');
-					}
-				}
+			// if the comment is not existed, then back to the board content page
+			if(!$o_comment->is_exists() ) {
+				return $this->_disp_content();
 			}
 
-			$oDocumentModel = getModel('document');
-			$document_srl = Context::get('document_srl');
-			$oDocument = $oDocumentModel->getDocument($document_srl);
-			Context::set('oDocument', $oDocument);
-			Context::set('file_list',$oDocument->getUploadedFiles());
+			// if the comment is not granted, then back to the password input form
+			if(!$o_comment->is_granted()) {
+				return $this->setTemplateFile('input_password_form');
+			}
 
-			$oSecurity = new Security();
-			$oSecurity->encodeHTML('file_list..source_filename');
+			\X2board\Includes\Classes\Context::set('o_comment',$o_comment);
+
+			/**
+			 * add JS filters
+			 **/
+			// Context::addJsFilter($this->module_path.'tpl/filter', 'delete_comment.xml');
+
+			echo $this->render_skin_file('delete_comment_form');
+			// $this->setTemplateFile('delete_comment_form');
 		}
 
 		/**
@@ -1092,46 +1050,13 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 		}
 
 		/**
-		 * @brief display the delete comment  form
+		 * @brief display board message
 		 **/
-		function dispBoardDeleteComment()
-		{
-			// check grant
-			if(!$this->grant->write_comment)
-			{
-				return $this->_disp_message('msg_not_permitted');
-			}
-
-			// get the comment_srl to be deleted
-			$comment_srl = Context::get('comment_srl');
-
-			// if the comment exists, then get the comment information
-			if($comment_srl)
-			{
-				$oCommentModel = getModel('comment');
-				$oComment = $oCommentModel->getComment($comment_srl, $this->grant->manager);
-			}
-
-			// if the comment is not existed, then back to the board content page
-			if(!$oComment->isExists() )
-			{
-				return $this->dispBoardContent();
-			}
-
-			// if the comment is not granted, then back to the password input form
-			if(!$oComment->isGranted())
-			{
-				return $this->setTemplateFile('input_password_form');
-			}
-
-			Context::set('oComment',$oComment);
-
-			/**
-			 * add JS filters
-			 **/
-			Context::addJsFilter($this->module_path.'tpl/filter', 'delete_comment.xml');
-
-			$this->setTemplateFile('delete_comment_form');
+		// function dispBoardMessage($s_msg) {
+		private function _disp_message($s_msg) {
+			\X2board\Includes\Classes\Context::set('message', $s_msg);
+			// setup the skin file
+			echo $this->render_skin_file('message');
 		}
 
 		/**
@@ -1141,6 +1066,78 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 		private function _alert_message($s_message) {
 			echo sprintf('<script> jQuery(function(){ alert("%s"); } );</script>', $s_message);
 		}
+
+
+
+
+	
+/////////////////////////////////////
+		/**
+		 * @brief  display the document file list (can be used by API)
+		 **/
+		// function dispBoardContentFileList(){
+		// 	/**
+		// 	 * check the access grant (all the grant has been set by the module object)
+		// 	 **/
+		// 	if(!$this->grant->access)
+		// 	{
+		// 		return $this->_disp_message('msg_not_permitted');
+		// 	}
+
+		// 	// check document view grant
+		// 	$this->dispBoardContentView();
+
+		// 	// Check if a permission for file download is granted
+		// 	// Get configurations (using module model object)
+		// 	$oModuleModel = getModel('module');
+		// 	$file_module_config = $oModuleModel->getModulePartConfig('file',$this->module_srl);
+			
+		// 	$downloadGrantCount = 0;
+		// 	if(is_array($file_module_config->download_grant))
+		// 	{
+		// 		foreach($file_module_config->download_grant AS $value)
+		// 			if($value) $downloadGrantCount++;
+		// 	}
+
+		// 	if(is_array($file_module_config->download_grant) && $downloadGrantCount>0)
+		// 	{
+		// 		if(!Context::get('is_logged')) return $this->stop('msg_not_permitted_download');
+		// 		$logged_info = Context::get('logged_info');
+		// 		if($logged_info->is_admin != 'Y')
+		// 		{
+		// 			$oModuleModel =& getModel('module');
+		// 			$columnList = array('module_srl', 'site_srl');
+		// 			$module_info = $oModuleModel->getModuleInfoByModuleSrl($this->module_srl, $columnList);
+
+		// 			if(!$oModuleModel->isSiteAdmin($logged_info, $module_info->site_srl))
+		// 			{
+		// 				$oMemberModel =& getModel('member');
+		// 				$member_groups = $oMemberModel->getMemberGroups($logged_info->member_srl, $module_info->site_srl);
+
+		// 				$is_permitted = false;
+		// 				for($i=0;$i<count($file_module_config->download_grant);$i++)
+		// 				{
+		// 					$group_srl = $file_module_config->download_grant[$i];
+		// 					if($member_groups[$group_srl])
+		// 					{
+		// 						$is_permitted = true;
+		// 						break;
+		// 					}
+		// 				}
+		// 				if(!$is_permitted) return $this->stop('msg_not_permitted_download');
+		// 			}
+		// 		}
+		// 	}
+
+		// 	$oDocumentModel = getModel('document');
+		// 	$document_srl = Context::get('document_srl');
+		// 	$oDocument = $oDocumentModel->getDocument($document_srl);
+		// 	Context::set('oDocument', $oDocument);
+		// 	Context::set('file_list',$oDocument->getUploadedFiles());
+
+		// 	$oSecurity = new Security();
+		// 	$oSecurity->encodeHTML('file_list..source_filename');
+		// }
 
 		/**
 		 * @brief display the document comment list (can be used by API)

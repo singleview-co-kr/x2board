@@ -24,6 +24,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 				case X2B_CMD_PROC_DELETE_POST:
 				case X2B_CMD_PROC_WRITE_COMMENT:
 				case X2B_CMD_PROC_MODIFY_COMMENT:
+				case X2B_CMD_PROC_DELETE_COMMENT:
 				case X2B_CMD_PROC_AJAX_FILE_UPLOAD:
 				case X2B_CMD_PROC_AJAX_FILE_DELETE:
 				case X2B_CMD_PROC_DOWNLOAD_FILE:
@@ -547,6 +548,37 @@ var_dump(X2B_CMD_PROC_WRITE_COMMENT);
 		}
 
 		/**
+		 * @brief delete the comment
+		 **/
+		// function procBoardDeleteComment()
+		private function _proc_delete_comment() {
+			// get the comment_id
+			$n_comment_id = \X2board\Includes\Classes\Context::get('comment_id');
+			if(!$n_comment_id) {
+				return $this->doError('msg_invalid_request');
+			}
+
+			// generate comment controller object
+			$o_comment_controller = \X2board\Includes\getController('comment');
+			$output = $o_comment_controller->delete_comment($n_comment_id, $this->grant->manager);
+			unset($o_comment_controller);
+			if(!$output->toBool()) {
+				return $output;
+			}
+
+			// $this->add('mid', \X2board\Includes\Classes\Context::get('mid'));
+			// $this->add('page', \X2board\Includes\Classes\Context::get('page'));
+			// $this->add('post_id', $output->get('post_id'));
+			$this->add('s_wp_redirect_url', '?'.X2B_CMD_VIEW_POST.'/'.$output->get('post_id'));
+			// $this->add('s_wp_redirect_url', '?'.X2B_CMD_VIEW_POST.'/'.$obj->parent_post_id.'#comment_id-'.$obj->comment_id);
+			// if(Context::get('xeVirtualRequestMethod') !== 'xml')
+			// {
+			// 	$this->setMessage('success_deleted');
+			// }
+		}
+
+
+		/**
 		 * @brief vote
 		 **/
 		function procBoardVoteDocument()
@@ -556,36 +588,6 @@ var_dump(X2B_CMD_PROC_WRITE_COMMENT);
 
 			$document_srl = Context::get('document_srl');
 			return $oDocumentController->updateVotedCount($document_srl);
-		}
-
-		/**
-		 * @brief delete the comment
-		 **/
-		function procBoardDeleteComment()
-		{
-			// get the comment_srl
-			$comment_srl = Context::get('comment_srl');
-			if(!$comment_srl)
-			{
-				return $this->doError('msg_invalid_request');
-			}
-
-			// generate comment  controller object
-			$oCommentController = getController('comment');
-
-			$output = $oCommentController->deleteComment($comment_srl, $this->grant->manager);
-			if(!$output->toBool())
-			{
-				return $output;
-			}
-
-			$this->add('mid', Context::get('mid'));
-			$this->add('page', Context::get('page'));
-			$this->add('document_srl', $output->get('document_srl'));
-			if(Context::get('xeVirtualRequestMethod') !== 'xml')
-			{
-				$this->setMessage('success_deleted');
-			}
 		}
 
 		/**

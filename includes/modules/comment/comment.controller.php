@@ -34,10 +34,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 			if(!$manual_inserted) {  // check WP nonce if a guest inserts a new post
 				$wp_verify_nonce = \X2board\Includes\Classes\Context::get('x2b_'.X2B_CMD_PROC_WRITE_COMMENT.'_nonce');
 				if( is_null( $wp_verify_nonce ) ){
-					return new \X2board\Includes\Classes\BaseObject(-1, 'msg_invalid_request1');
+					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request1', 'x2board') );
 				}
 				if( !wp_verify_nonce($wp_verify_nonce, 'x2b_'.X2B_CMD_PROC_WRITE_COMMENT) ){
-					return new \X2board\Includes\Classes\BaseObject(-1, 'msg_invalid_request2');
+					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request2', 'x2board') );
 				}
 			}
 
@@ -429,10 +429,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 			if(!$manual_updated) {  // check WP nonce if a guest inserts a new post
 				$wp_verify_nonce = \X2board\Includes\Classes\Context::get('x2b_'.X2B_CMD_PROC_MODIFY_COMMENT.'_nonce');
 				if( is_null( $wp_verify_nonce ) ){
-					return new \X2board\Includes\Classes\BaseObject(-1, 'msg_invalid_request1');
+					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request1', 'x2board') );
 				}
 				if( !wp_verify_nonce($wp_verify_nonce, 'x2b_'.X2B_CMD_PROC_MODIFY_COMMENT) ){
-					return new \X2board\Includes\Classes\BaseObject(-1, 'msg_invalid_request2');
+					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request2', 'x2board') );
 				}
 			}
 
@@ -467,7 +467,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 
 			// check if permission is granted
 			if(!$is_admin && !$o_source_comment->isGranted()) {
-				return new \X2board\Includes\Classes\BaseObject(-1, 'msg_not_permitted');
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', 'x2board') );
 			}
 
 			if($obj->password) {
@@ -609,11 +609,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 			$_SESSION['own_comment'][$comment_id] = TRUE;
 		}
 
-		
-
-/////////////////////////////////////////
-
-
 		/**
 		 * Delete comment
 		 * @param int $comment_srl
@@ -621,62 +616,55 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 		 * @param bool $isMoveToTrash
 		 * @return object
 		 */
-		function deleteComment($comment_srl, $is_admin = FALSE, $isMoveToTrash = FALSE)
-		{
+		// function deleteComment($comment_srl, $is_admin = FALSE, $isMoveToTrash = FALSE)
+		public function delete_comment($n_comment_id, $is_admin = FALSE, $isMoveToTrash = FALSE) {
 			// create the comment model object
-			$oCommentModel = getModel('comment');
+			$o_comment_model = \X2board\Includes\getModel('comment');
 
 			// check if comment already exists
-			$comment = $oCommentModel->getComment($comment_srl);
-			if($comment->comment_srl != $comment_srl)
-			{
-				return new BaseObject(-1, 'msg_invalid_request');
+			$o_comment = $o_comment_model->get_comment($n_comment_id);
+			if($o_comment->comment_id != $n_comment_id) {
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', 'x2board') );
 			}
 
-			$document_srl = $comment->document_srl;
+			$n_parent_post_id = $o_comment->parent_post_id;
 
 			// call a trigger (before)
-			$output = ModuleHandler::triggerCall('comment.deleteComment', 'before', $comment);
-			if(!$output->toBool())
-			{
-				return $output;
-			}
+			// $output = ModuleHandler::triggerCall('comment.deleteComment', 'before', $comment);
+			// if(!$output->toBool())
+			// {
+			// 	return $output;
+			// }
 
 			// check if permission is granted
-			if(!$is_admin && !$comment->isGranted())
-			{
-				return new BaseObject(-1, 'msg_not_permitted');
+			if(!$is_admin && !$o_comment->is_granted()) {
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', 'x2board') );
 			}
 
 			// check if child comment exists on the comment
-			$childs = $oCommentModel->getChildComments($comment_srl);
-			if(count($childs) > 0)
-			{
+			$childs = $o_comment_model->get_child_comments($n_comment_id);
+// var_dump($childs);
+// exit;
+			if(count((Array)$childs) > 0) {
 				$deleteAllComment = TRUE;
-				if(!$is_admin)
-				{
-					$logged_info = Context::get('logged_info');
-					foreach($childs as $val)
-					{
-						if($val->member_srl != $logged_info->member_srl)
-						{
+				if(!$is_admin) {
+					$logged_info = \X2board\Includes\Classes\Context::get('logged_info');
+					foreach($childs as $val) {
+						if($val->comment_author != $logged_info->ID) {
 							$deleteAllComment = FALSE;
 							break;
 						}
 					}
+					unset($logged_info);
 				}
 
-				if(!$deleteAllComment)
-				{
-					return new BaseObject(-1, 'fail_to_delete_have_children');
+				if(!$deleteAllComment) {
+					return new \X2board\Includes\Classes\BaseObject(-1, __('fail_to_delete_have_children', 'x2board') );
 				}
-				else
-				{
-					foreach($childs as $val)
-					{
-						$output = $this->deleteComment($val->comment_srl, $is_admin, $isMoveToTrash);
-						if(!$output->toBool())
-						{
+				else {
+					foreach($childs as $val) {
+						$output = $this->delete_comment($val->comment_id, $is_admin, $isMoveToTrash); // recursive
+						if(!$output->toBool()) {
 							return $output;
 						}
 					}
@@ -684,72 +672,124 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 			}
 
 			// begin transaction
-			$oDB = DB::getInstance();
-			$oDB->begin();
+			// $oDB = DB::getInstance();
+			// $oDB->begin();
 
 			// Delete
-			$args = new stdClass();
-			$args->comment_srl = $comment_srl;
-			$output = executeQuery('comment.deleteComment', $args);
-			if(!$output->toBool())
-			{
-				$oDB->rollback();
-				return $output;
-			}
+			// $args = new stdClass();
+			// $args->comment_srl = $n_comment_id;
+			// $output = executeQuery('comment.deleteComment', $args);
+			// if(!$output->toBool()) {
+			// 	$oDB->rollback();
+			// 	return $output;
+			// }
 
-			$output = executeQuery('comment.deleteCommentList', $args);
+			// DELETE `comments` FROM `xe_comments` as `comments`  WHERE `comment_srl` = ?
+			global $wpdb;
+			$result = $wpdb->delete(
+				$wpdb->prefix . 'x2b_comments',
+				array('comment_id'  => $n_comment_id ),
+				array('%d'), // make sure the id format
+			);
+			if( $result < 0 || $result === false ){
+// var_dump($wpdb->last_error);
+				wp_die($wpdb->last_error );
+			}			
+
+			// $output = executeQuery('comment.deleteCommentList', $args);
+			// DELETE `comments_list` FROM `xe_comments_list` as `comments_list`  WHERE `comment_srl` = ?
+			$result = $wpdb->delete(
+				$wpdb->prefix . 'x2b_comments_list',
+				array('comment_id'  => $n_comment_id ),
+				array('%d'), // make sure the id format
+			);
+			if( $result < 0 || $result === false ){
+// var_dump($wpdb->last_error);
+				wp_die($wpdb->last_error );
+			}	
 
 			// update the number of comments
-			$comment_count = $oCommentModel->getCommentCount($document_srl);
-
+			$comment_count = $o_comment_model->get_comment_count($n_parent_post_id);									
+			unset($o_comment_model);
 			// only document is exists
-			if(isset($comment_count))
-			{
+			if(isset($comment_count)) {
 				// create the controller object of the document
-				$oDocumentController = getController('document');
-
+				$o_post_controller = \X2board\Includes\getController('post');
 				// update comment count of the article posting
-				$output = $oDocumentController->updateCommentCount($document_srl, $comment_count, NULL, FALSE);
-				if(!$output->toBool())
-				{
-					$oDB->rollback();
+				$output = $o_post_controller->update_comment_count($n_parent_post_id, $comment_count, NULL, FALSE);
+				unset($o_post_controller);
+				if(!$output->toBool()) {
+					// $oDB->rollback();
 					return $output;
 				}
 			}
-
+// var_Dump($isMoveToTrash);
+// exit;	
 			// call a trigger (after)
-			if($output->toBool())
-			{
-				$comment->isMoveToTrash = $isMoveToTrash;
-				$trigger_output = ModuleHandler::triggerCall('comment.deleteComment', 'after', $comment);
-				if(!$trigger_output->toBool())
-				{
-					$oDB->rollback();
-					return $trigger_output;
-				}
-				unset($comment->isMoveToTrash);
-			}
+			// if($output->toBool())
+			// {
+			// 	$comment->isMoveToTrash = $isMoveToTrash;
+			// 	$trigger_output = ModuleHandler::triggerCall('comment.deleteComment', 'after', $comment);
+			// 	if(!$trigger_output->toBool())
+			// 	{
+			// 		$oDB->rollback();
+			// 		return $trigger_output;
+			// 	}
+			// 	unset($comment->isMoveToTrash);
+			// }
 
-			if(!$isMoveToTrash)
-			{
-				$this->_deleteDeclaredComments($args);
-				$this->_deleteVotedComments($args);
+			if(!$isMoveToTrash) {
+				$this->_delete_declared_comments($n_comment_id);
+				$this->_delete_voted_comments($n_comment_id);
 			} 
-			else 
-			{
-				$args = new stdClass();
-				$args->upload_target_srl = $comment_srl;
-				$args->isvalid = 'N';
-				$output = executeQuery('file.updateFileValid', $args);
+			else {
+				// $args = new stdClass();
+				// $args->upload_target_srl = $n_comment_id;
+				// $args->isvalid = 'N';
+				// $output = executeQuery('file.updateFileValid', $args);
+				// UPDATE  `xe_files` as `files`  SET `isvalid` = ?  WHERE `upload_target_srl` = ?
+				$result = $wpdb->update( "{$wpdb->prefix}x2b_files", 
+										  array( 'isvalid' => 'N' ),
+										  array( 'upload_target_id' => esc_sql(intval($n_comment_id))) 
+										);
 			}
 
 			// commit
-			$oDB->commit();
-
-			$output->add('document_srl', $document_srl);
-
+			// $oDB->commit();
+			$output = new \X2board\Includes\Classes\BaseObject();
+			$output->add('post_id', $n_parent_post_id);
 			return $output;
 		}
+
+		/**
+		 * delete declared comment, log
+		 * @param array|string $commentSrls : srls string (ex: 1, 2,56, 88)
+		 * @return void
+		 */
+		// function _deleteDeclaredComments($commentSrls)
+		private function _delete_declared_comments($commentSrls) {
+			// executeQuery('comment.deleteDeclaredComments', $commentSrls);
+			// DELETE `comment_declared` FROM `xe_comment_declared` as `comment_declared`  WHERE `comment_srl` in (?)
+			// executeQuery('comment.deleteCommentDeclaredLog', $commentSrls);
+			// DELETE `comment_declared_log` FROM `xe_comment_declared_log` as `comment_declared_log`  WHERE `comment_srl` in (?)
+		}
+
+		/**
+		 * delete voted comment log
+		 * @param array|string $commentSrls : srls string (ex: 1, 2,56, 88)
+		 * @return void
+		 */
+		// function _deleteVotedComments($commentSrls)
+		function _delete_voted_comments($commentSrls) {
+			// executeQuery('comment.deleteCommentVotedLog', $commentSrls);
+			// DELETE `comment_voted_log` FROM `xe_comment_voted_log` as `comment_voted_log`  WHERE `comment_srl` in (?)
+		}
+
+
+
+		
+
+/////////////////////////////////////////
 
 		/**
 		 * Remove all comment relation log
