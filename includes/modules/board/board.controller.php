@@ -13,10 +13,24 @@ if ( !defined( 'ABSPATH' ) ) {
 if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 
 	class boardController extends board {
+
+		private $_s_wp_post_guid = null;
+
 		/**
 		 * @brief initialization
 		 **/
 		function init()	{
+
+			// begin - define redirect url root
+			$n_board_id = \X2board\Includes\Classes\Context::get('board_id');
+			$o_post = get_post(intval($n_board_id));
+			if( is_null($o_post) ) {
+				wp_die(__('weird error occured in boardController::init()', 'x2board'));
+			}
+			$this->_s_wp_post_guid = $o_post->guid;
+			unset($o_post);
+			// end - define redirect url root
+
 			$s_cmd = \X2board\Includes\Classes\Context::get('cmd');
 			switch( $s_cmd ) {
 				case X2B_CMD_PROC_WRITE_POST:
@@ -339,12 +353,11 @@ exit;
 					// }
 				}
 			}
-			
 			if(!$output->toBool()) {  // if there is an error
-				$this->add('s_wp_redirect_url', '?cmd='.X2B_CMD_VIEW_MESSAGE.'&message='.$output->getMessage());
+				$this->add('s_wp_redirect_url', $this->_s_wp_post_guid.'?cmd='.X2B_CMD_VIEW_MESSAGE.'&message='.$output->getMessage());
 			}
 			else { // if s_wp_redirect_url is not added, automatically redirect to home_url
-				$this->add('s_wp_redirect_url', '?'.X2B_CMD_VIEW_POST.'/'.$output->get('post_id'));
+				$this->add('s_wp_redirect_url', $this->_s_wp_post_guid.'?'.X2B_CMD_VIEW_POST.'/'.$output->get('post_id'));
 			}
 		}
 
@@ -499,7 +512,7 @@ var_dump(X2B_CMD_PROC_WRITE_COMMENT);
 			// $this->add('comment_id', $obj->comment_id);
 			
 			// if s_wp_redirect_url is not added, automatically redirect to home_url
-			$this->add('s_wp_redirect_url', '?'.X2B_CMD_VIEW_POST.'/'.$obj->parent_post_id.'#comment_id-'.$obj->comment_id);
+			$this->add('s_wp_redirect_url', $this->_s_wp_post_guid.'?'.X2B_CMD_VIEW_POST.'/'.$obj->parent_post_id.'#comment_id-'.$obj->comment_id);
 		}
 
 		/**
@@ -537,7 +550,7 @@ var_dump(X2B_CMD_PROC_WRITE_COMMENT);
 
 			// alert an message
 			// if s_wp_redirect_url is not added, automatically redirect to home_url
-			$this->add('s_wp_redirect_url', '?'.X2B_CMD_VIEW_POST.'/p/'.\X2board\Includes\Classes\Context::get('page'));
+			$this->add('s_wp_redirect_url', $this->_s_wp_post_guid.'?'.X2B_CMD_VIEW_POST.'/p/'.\X2board\Includes\Classes\Context::get('page'));
 			// $this->setRedirectUrl(getNotEncodedUrl('', 'mid', Context::get('mid'), 'act', '', 'page', \X2board\Includes\Classes\Context::get('page'), 'document_srl', ''));
 			// $this->add('mid', Context::get('mid'));
 			// $this->add('page', Context::get('page'));
@@ -557,10 +570,12 @@ var_dump(X2B_CMD_PROC_WRITE_COMMENT);
 			if(!$n_comment_id) {
 				return $this->doError('msg_invalid_request');
 			}
-
+// var_dump($n_comment_id);
+// exit;
 			// generate comment controller object
 			$o_comment_controller = \X2board\Includes\getController('comment');
 			$output = $o_comment_controller->delete_comment($n_comment_id, $this->grant->manager);
+			
 			unset($o_comment_controller);
 			if(!$output->toBool()) {
 				return $output;
@@ -569,8 +584,7 @@ var_dump(X2B_CMD_PROC_WRITE_COMMENT);
 			// $this->add('mid', \X2board\Includes\Classes\Context::get('mid'));
 			// $this->add('page', \X2board\Includes\Classes\Context::get('page'));
 			// $this->add('post_id', $output->get('post_id'));
-			$this->add('s_wp_redirect_url', '?'.X2B_CMD_VIEW_POST.'/'.$output->get('post_id'));
-			// $this->add('s_wp_redirect_url', '?'.X2B_CMD_VIEW_POST.'/'.$obj->parent_post_id.'#comment_id-'.$obj->comment_id);
+			$this->add('s_wp_redirect_url', $this->_s_wp_post_guid.'?'.X2B_CMD_VIEW_POST.'/'.$output->get('post_id'));
 			// if(Context::get('xeVirtualRequestMethod') !== 'xml')
 			// {
 			// 	$this->setMessage('success_deleted');
