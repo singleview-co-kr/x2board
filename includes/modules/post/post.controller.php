@@ -859,7 +859,7 @@ var_dump('post controller init()');
 		 * @param postItem $o_post
 		 * @return object
 		 */
-		function delete_post($n_post_id, $is_admin = false, $isEmptyTrash = false, $o_post = null) {
+		public function delete_post($n_post_id, $is_admin = false, $isEmptyTrash = false, $o_post = null) {
 			// Call a trigger (before)
 			// $trigger_obj = new stdClass();
 			// $trigger_obj->document_srl = $n_post_id;
@@ -903,6 +903,8 @@ var_dump('post controller init()');
 				}				
 			}
 // var_dump($o_post->get('board_id'));
+			
+			$this->_delete_wp_post($n_post_id);
 
 			// $this->deleteDocumentAliasByDocument($n_post_id);
 
@@ -968,6 +970,7 @@ var_dump('post controller init()');
 			// 	$oCacheHandler->delete($cache_key);
 			// }
 			// unset($oCacheHandler);
+			
 			return new \X2board\Includes\Classes\BaseObject();
 		}
 
@@ -1033,7 +1036,7 @@ var_dump('post controller init()');
 				$a_params = array(
 					'post_author'   => $a_post_param['post_author'],
 					'post_title'    => $a_post_param['title'],
-					'post_content'  => ( $a_post_param['status'] == 'SECRET' || $a_post_param['status'] == '2' ) ? '' : $a_post_param['content'], 
+					'post_content'  => ( $a_post_param['status'] == 'SECRET' || $a_post_param['status'] == '2' ) ? '' : strip_tags( $a_post_param['content'] ), 
 					//($this->secret || $this->search==2)?'':$this->content,
 					'post_status'   => 'publish',
 					'comment_status'=> 'closed',
@@ -1057,6 +1060,19 @@ var_dump('post controller init()');
 		}
 
 		/**
+		 * get WP post ID that matches x2b post
+		 */
+		private function _get_wp_post_id($n_x2b_post_id) {
+			global $wpdb;
+			$n_x2b_post_id = esc_sql( $n_x2b_post_id );
+			$n_wp_post_id = $wpdb->get_var("SELECT `ID` FROM `{$wpdb->prefix}posts` WHERE `post_name`='$n_x2b_post_id' AND `post_type`='".X2B_DOMAIN."'");
+			if(!$n_wp_post_id){
+				$n_wp_post_id = $wpdb->get_var("SELECT `ID` FROM `{$wpdb->prefix}posts` WHERE `post_name`='{$n_x2b_post_id}__trashed' AND `post_type`='".X2B_DOMAIN."'");
+			}
+			return intval($n_wp_post_id);
+		}
+
+		/**
 		 * x2b post를 WP post에 수정함
 		 * @param int $a_post_param
 		 */
@@ -1065,7 +1081,7 @@ var_dump('post controller init()');
 			$o_post = get_post( intval($n_wp_post_id) );
 			$o_post->post_content = $a_post_param['post_author'];
 			$o_post->post_title = $a_post_param['title'];
-			$o_post->post_content = ( $a_post_param['status'] == 'SECRET' || $a_post_param['status'] == '2' ) ? '' : $a_post_param['content'];
+			$o_post->post_content = ( $a_post_param['status'] == 'SECRET' || $a_post_param['status'] == '2' ) ? '' : strip_tags( $a_post_param['content'] );
 			$result = wp_update_post($o_post);
 // var_dump($result);
 			if( is_wp_error( $result ) ) {
@@ -1077,16 +1093,17 @@ var_dump('post controller init()');
 		}
 
 		/**
-		 * wp_posts 테이블에 등록된 x2b_posts의 ID 값을 가져온다.
+		 * delete from WP post 
+		 * @param int $n_post_id
 		 */
-		private function _get_wp_post_id($n_x2b_post_id) {
-			global $wpdb;
-			$n_x2b_post_id = esc_sql( $n_x2b_post_id );
-			$n_wp_post_id = $wpdb->get_var("SELECT `ID` FROM `{$wpdb->prefix}posts` WHERE `post_name`='$n_x2b_post_id' AND `post_type`='".X2B_DOMAIN."'");
-			if(!$n_wp_post_id){
-				$n_wp_post_id = $wpdb->get_var("SELECT `ID` FROM `{$wpdb->prefix}posts` WHERE `post_name`='{$n_x2b_post_id}__trashed' AND `post_type`='".X2B_DOMAIN."'");
+		private function _delete_wp_post($n_x2b_post_id) {
+			$n_wp_post_id = $this->_get_wp_post_id( $n_x2b_post_id );
+			if(has_post_thumbnail($n_wp_post_id)) {
+				$n_attachment_id = get_post_thumbnail_id($n_wp_post_id);
+				wp_delete_attachment($n_attachment_id, true);
+				delete_post_thumbnail($n_wp_post_id);
 			}
-			return intval($n_wp_post_id);
+			wp_delete_post($n_wp_post_id);
 		}
 
 		/**
