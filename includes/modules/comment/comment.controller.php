@@ -610,6 +610,118 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 		}
 
 		/**
+		 * Trigger to delete its comments together with post deleted
+		 * @return BaseObject
+		 */
+		// function triggerDeleteDocumentComments(&$obj)
+		public function trigger_after_delete_post_comments($n_post_id) {
+			if(!$n_post_id) {
+				return new \X2board\Includes\Classes\BaseObject();
+			}
+			return $this->_delete_comments($n_post_id);
+		}
+
+		/**
+		 * Remove all comments of the article
+		 * @param int $document_srl
+		 * @return object
+		 */
+		// function deleteComments($document_srl, $obj = NULL)
+		private function _delete_comments($n_post_id, $obj = NULL) {
+			if(is_object($obj)) {
+				$o_post = new \X2board\Includes\Modules\Post\postItem();
+				$o_post->set_attr($obj);
+			}
+			else {
+				$o_post_model = \X2board\Includes\getModel('post');
+				$o_post = $o_post_model->get_post($n_post_id);
+				unset($o_post_model);
+			}
+						
+			if(!$o_post->is_exists() || !$o_post->is_granted()) {
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', 'x2board') );
+			}
+
+			// get a list of comments and then execute a trigger(way to reduce the processing cost for delete all)
+			// $args = new stdClass();
+			// $args->document_srl = $n_post_id;
+			// $comments = executeQueryArray('comment.getAllComments', $args);
+			// SELECT `comment_id`, `board_id`, `comment_author`, `parent_post_id`  FROM `xe_comments` as `comments`   WHERE `document_srl` in (?)    
+			global $wpdb;
+			$s_columns = "`comment_id`"; //, `board_id`, `comment_author`, `parent_post_id`";
+			$s_from = "`{$wpdb->prefix}x2b_comments`";
+			$s_where = "`parent_post_id` = {$n_post_id}";
+			$s_query = "SELECT {$s_columns} FROM {$s_from} WHERE {$s_where}";
+			if ($wpdb->query($s_query) === FALSE) {  // return if no parent comment exists
+				wp_die('weird error occured in \includes\modules\comment\comment.controller.php::_delete_comments()');
+			} 
+			else {
+				$a_result = $wpdb->get_results($s_query);
+				$wpdb->flush();
+			}
+
+			if(count((array)$a_result)) {
+				$commentSrlList = array();
+				foreach($a_result as $comment) {
+					$commentSrlList[] = $comment->comment_id;
+					// call a trigger (before)
+					// $output = ModuleHandler::triggerCall('comment.deleteComment', 'before', $comment);
+					// if(!$output->toBool()) {
+					// 	continue;
+					// }
+					// call a trigger (after)
+					// $output = ModuleHandler::triggerCall('comment.deleteComment', 'after', $comment);
+					// if(!$output->toBool()) {
+					// 	continue;
+					// }
+				}
+			}
+
+			// delete the comment
+			// DELETE `comments` FROM `xe_comments` as `comments`  WHERE `document_srl` = ?
+			$result = $wpdb->delete(
+				$wpdb->prefix . 'x2b_comments',
+				array('parent_post_id'  => $n_post_id ),
+				array('%d'), // make sure the id format
+			);
+			if( $result < 0 || $result === false ){
+var_dump($wpdb->last_error);
+				wp_die($wpdb->last_error );
+			}
+
+			// $args->document_srl = $n_post_id;
+			// $output = executeQuery('comment.deleteComments', $args);
+			// if(!$output->toBool()) {
+			// 	return $output;
+			// }
+
+			// Delete a list of comments
+			// DELETE `comments_list` FROM `xe_comments_list` as `comments_list`  WHERE `document_srl` = ?
+			$result = $wpdb->delete(
+				$wpdb->prefix . 'x2b_comments_list',
+				array('parent_post_id'  => $n_post_id ),
+				array('%d'), // make sure the id format
+			);
+			if( $result < 0 || $result === false ){
+var_dump($wpdb->last_error);
+				wp_die($wpdb->last_error );
+			}
+			// $output = executeQuery('comment.deleteCommentsList', $args);
+
+			//delete declared, declared_log, voted_log
+			if(is_array($commentSrlList) && count($commentSrlList) > 0) {
+				// $args = new stdClass();
+				// $args->comment_srl = join(',', $commentSrlList);
+				$args = join(',', $commentSrlList);
+				$this->_delete_declared_comments($args);
+				$this->_delete_voted_comments($args);
+			}
+// exit;			
+			return new \X2board\Includes\Classes\BaseObject(); // $output;
+		}
+
+
+		/**
 		 * Delete comment
 		 * @param int $comment_srl
 		 * @param bool $is_admin
@@ -694,7 +806,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 			if( $result < 0 || $result === false ){
 // var_dump($wpdb->last_error);
 				wp_die($wpdb->last_error );
-			}			
+			}
 
 			// $output = executeQuery('comment.deleteCommentList', $args);
 			// DELETE `comments_list` FROM `xe_comments_list` as `comments_list`  WHERE `comment_srl` = ?
@@ -800,83 +912,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 			$this->_deleteDeclaredComments($args);
 			$this->_deleteVotedComments($args);
 			return new BaseObject(0, 'success');
-		}
-
-		/**
-		 * Remove all comments of the article
-		 * @param int $document_srl
-		 * @return object
-		 */
-		function deleteComments($document_srl, $obj = NULL)
-		{
-			// create the document model object
-			$oDocumentModel = getModel('document');
-			$oCommentModel = getModel('comment');
-
-			// check if permission is granted
-			if(is_object($obj))
-			{
-				$oDocument = new documentItem();
-				$oDocument->setAttribute($obj);
-			}
-			else
-			{
-				$oDocument = $oDocumentModel->getDocument($document_srl);
-			}
-
-			if(!$oDocument->isExists() || !$oDocument->isGranted())
-			{
-				return new BaseObject(-1, 'msg_not_permitted');
-			}
-
-			// get a list of comments and then execute a trigger(way to reduce the processing cost for delete all)
-			$args = new stdClass();
-			$args->document_srl = $document_srl;
-			$comments = executeQueryArray('comment.getAllComments', $args);
-			if($comments->data)
-			{
-				$commentSrlList = array();
-				foreach($comments->data as $comment)
-				{
-					$commentSrlList[] = $comment->comment_srl;
-
-					// call a trigger (before)
-					$output = ModuleHandler::triggerCall('comment.deleteComment', 'before', $comment);
-					if(!$output->toBool())
-					{
-						continue;
-					}
-
-					// call a trigger (after)
-					$output = ModuleHandler::triggerCall('comment.deleteComment', 'after', $comment);
-					if(!$output->toBool())
-					{
-						continue;
-					}
-				}
-			}
-
-			// delete the comment
-			$args->document_srl = $document_srl;
-			$output = executeQuery('comment.deleteComments', $args);
-			if(!$output->toBool())
-			{
-				return $output;
-			}
-
-			// Delete a list of comments
-			$output = executeQuery('comment.deleteCommentsList', $args);
-
-			//delete declared, declared_log, voted_log
-			if(is_array($commentSrlList) && count($commentSrlList) > 0)
-			{
-				$args = new stdClass();
-				$args->comment_srl = join(',', $commentSrlList);
-				$this->_deleteDeclaredComments($args);
-				$this->_deleteVotedComments($args);
-			}
-
-			return $output;
 		}
 
 		/**

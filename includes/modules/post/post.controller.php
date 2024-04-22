@@ -926,6 +926,12 @@ var_dump('post controller init()');
 			$this->_delete_extended_user_defined_vars_all($n_board_id, $n_post_id);
 
 			// Call a trigger (after)
+			$o_comment_controller = \X2board\Includes\getController('comment');
+			$o_rst = $o_comment_controller->trigger_after_delete_post_comments($n_post_id);
+			if(!$o_rst->toBool()) {
+				wp_die('weird error occured in \includes\modules\comment\comment.controller.php::trigger_after_delete_post_comments()');
+			}
+			unset($o_comment_controller);
 			// if($output->toBool())
 			// {
 			// 	$trigger_obj = $oDocument->getObjectVars();
