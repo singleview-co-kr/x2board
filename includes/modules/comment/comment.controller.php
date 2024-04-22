@@ -333,7 +333,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 				$a_insert_key[] = "`$key`";
 				$a_insert_val[] = "'$value'";
 			}
-			unset($a_new_comment);
+			// unset($a_new_comment);
 
 			// insert comment
 			$query = "INSERT INTO `{$wpdb->prefix}x2b_comments` (".implode(',', $a_insert_key).") VALUES (".implode(',', $a_insert_val).")";
@@ -401,6 +401,18 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 			// 		}
 			// 	}
 			// }
+			
+			// add x2b comment to wp comment
+			$n_wp_comment_id = $this->_insert_wp_comment($a_new_comment);
+
+			// register wp comment id into x2b comment
+			$result = $wpdb->update ( "{$wpdb->prefix}x2b_comments",
+									  array( 'wp_comment_id' => $n_wp_comment_id), 
+									  array( 'comment_id' => esc_sql(intval($a_new_comment['comment_id'] )) ) );
+			if( $result < 0 || $result === false ){
+				return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error );
+			}
+			unset($a_new_comment);
 
 			// $this->sendEmailToAdminAfterInsertComment($obj);
 			//////////////////////////////////////////
@@ -462,11 +474,11 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 				$obj->user_name = $o_source_comment->get('user_name');
 				$obj->nick_name = $o_source_comment->get('nick_name');
 				$obj->email_address = $o_source_comment->get('email_address');
-				$obj->homepage = $o_source_comment->get('homepage');
+				// $obj->homepage = $o_source_comment->get('homepage');
 			}
 
 			// check if permission is granted
-			if(!$is_admin && !$o_source_comment->isGranted()) {
+			if(!$is_admin && !$o_source_comment->is_granted()) {
 				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', 'x2board') );
 			}
 
@@ -546,6 +558,12 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 			if( $result < 0 || $result === false ){
 				return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error );
 			}
+// var_dump($o_source_comment);
+// exit;	
+			// add wp_comment_id to update wp comment
+			$a_new_comment['wp_comment_id'] = $o_source_comment->wp_comment_id;
+			$this->_update_wp_comment($a_new_comment);
+			unset($o_source_comment);
 			unset($a_new_comment);
 			unset($a_ignore_key);
 			// $output = executeQuery('comment.updateComment', $obj);
@@ -622,8 +640,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 		}
 
 		/**
-		 * Remove all comments of the article
+		 * Remove all comments of the post
 		 * @param int $document_srl
+		 * do not execute $this->_delete_wp_comment() as wp_delete_post() deletes all belonged wp comments automatically
 		 * @return object
 		 */
 		// function deleteComments($document_srl, $obj = NULL)
@@ -720,7 +739,6 @@ var_dump($wpdb->last_error);
 			return new \X2board\Includes\Classes\BaseObject(); // $output;
 		}
 
-
 		/**
 		 * Delete comment
 		 * @param int $comment_srl
@@ -735,6 +753,8 @@ var_dump($wpdb->last_error);
 
 			// check if comment already exists
 			$o_comment = $o_comment_model->get_comment($n_comment_id);
+// var_dump($o_comment);
+// exit;
 			if($o_comment->comment_id != $n_comment_id) {
 				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', 'x2board') );
 			}
@@ -865,7 +885,10 @@ var_dump($wpdb->last_error);
 										  array( 'upload_target_id' => esc_sql(intval($n_comment_id))) 
 										);
 			}
-
+			// delete a matching WP comment
+			$this->_delete_wp_comment($o_comment->wp_comment_id);
+			unset($o_comment);
+			
 			// commit
 			// $oDB->commit();
 			$output = new \X2board\Includes\Classes\BaseObject();
@@ -892,9 +915,74 @@ var_dump($wpdb->last_error);
 		 * @return void
 		 */
 		// function _deleteVotedComments($commentSrls)
-		function _delete_voted_comments($commentSrls) {
+		private function _delete_voted_comments($commentSrls) {
 			// executeQuery('comment.deleteCommentVotedLog', $commentSrls);
 			// DELETE `comment_voted_log` FROM `xe_comment_voted_log` as `comment_voted_log`  WHERE `comment_srl` in (?)
+		}
+
+		/**
+		 * x2b comment를 WP comment에 복제함
+		 * @param int $a_comment_param
+		 */
+		private function _insert_wp_comment($a_comment_param){
+
+			$a_comment = array(
+				'comment_post_ID' => \X2board\Includes\get_wp_post_id_by_x2b_post_id($a_comment_param['parent_post_id']),
+				'comment_author_email' => $a_comment_param['email_address'],  //'dave@domain.com',
+				'comment_author_url' => '',
+				'comment_content' => strip_tags( $a_comment_param['content'] ), // 'Lorem ipsum dolor sit amet...',
+				'comment_author_IP' => $a_comment_param['ipaddress'],  //'127.3.1.1',
+				'comment_agent' => $a_comment_param['ua'], //$_SERVER['HTTP_USER_AGENT'],
+				// 'comment_type'  => '',
+				'comment_date' => $a_comment_param['regdate_dt'], // date('Y-m-d H:i:s'),
+				'comment_date_gmt' => $a_comment_param['regdate_dt'], // date('Y-m-d H:i:s'),
+				'comment_approved' => 1,
+			);
+
+			if(\X2board\Includes\Classes\Context::get('is_logged')) {
+				$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
+				$a_comment['user_id'] = $o_logged_info->ID;
+				$a_comment['comment_author'] = $o_logged_info->user_login;
+			}
+
+			$result = wp_insert_comment($a_comment, true);
+			unset($a_comment);
+			if( is_wp_error( $result ) ) {
+				wp_die( $result->get_error_message() );
+				return false;
+			}
+			return $result; // new WP comment ID
+		}
+
+		/**
+		 * x2b comment를 WP comment에 수정함
+		 * @param int $a_comment_param
+		 */
+		private function _update_wp_comment($a_comment_param) {
+			$a_comment = array(
+				'comment_ID' => $a_comment_param['wp_comment_id'],
+				'comment_content' => strip_tags( $a_comment_param['content'] ), // 'Lorem ipsum dolor sit amet...',
+				// 'comment_author_IP' => $a_comment_param['ipaddress'],  //'127.3.1.1',
+				// 'comment_agent' => $a_comment_param['ua'], //$_SERVER['HTTP_USER_AGENT'],
+				// 'comment_type'  => '',
+				'comment_date' => $a_comment_param['last_update_dt'],
+				'comment_date_gmt' => $a_comment_param['last_update_dt'],
+			);
+			$result = wp_update_comment($a_comment);
+			unset($a_comment);
+			if( is_wp_error( $result ) ) {
+				wp_die( $result->get_error_message() );
+				return false;
+			}
+			return $result;
+		}
+
+		/**
+		 * delete from WP comment 
+		 * @param int $n_wp_comment_id
+		 */
+		private function _delete_wp_comment($n_wp_comment_id) {
+			wp_delete_comment($n_wp_comment_id, true); // true means enforce to delete, no trash
 		}
 
 

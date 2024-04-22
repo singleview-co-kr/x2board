@@ -61,7 +61,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentItem')) {
 				$a_result = $wpdb->get_results($s_query);
 				$wpdb->flush();
 			}
-			$this->set_attr($a_result[0]);
+			if( count((array)$a_result) ){
+				$this->set_attr($a_result[0]);
+			}
 		}
 
 		/**

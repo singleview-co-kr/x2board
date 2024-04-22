@@ -1051,7 +1051,7 @@ var_dump('post controller init()');
 				// }
 				$result = wp_insert_post($a_params, true);
 				if( is_wp_error( $result ) ) {
-					echo $result->get_error_message();
+					wp_die( $result->get_error_message() );
 					return false;
 				}
 				return $result; // new WP post ID
@@ -1062,22 +1062,22 @@ var_dump('post controller init()');
 		/**
 		 * get WP post ID that matches x2b post
 		 */
-		private function _get_wp_post_id($n_x2b_post_id) {
-			global $wpdb;
-			$n_x2b_post_id = esc_sql( $n_x2b_post_id );
-			$n_wp_post_id = $wpdb->get_var("SELECT `ID` FROM `{$wpdb->prefix}posts` WHERE `post_name`='$n_x2b_post_id' AND `post_type`='".X2B_DOMAIN."'");
-			if(!$n_wp_post_id){
-				$n_wp_post_id = $wpdb->get_var("SELECT `ID` FROM `{$wpdb->prefix}posts` WHERE `post_name`='{$n_x2b_post_id}__trashed' AND `post_type`='".X2B_DOMAIN."'");
-			}
-			return intval($n_wp_post_id);
-		}
+		// private function _get_wp_post_id($n_x2b_post_id) {
+		// 	global $wpdb;
+		// 	$n_x2b_post_id = esc_sql( $n_x2b_post_id );
+		// 	$n_wp_post_id = $wpdb->get_var("SELECT `ID` FROM `{$wpdb->prefix}posts` WHERE `post_name`='$n_x2b_post_id' AND `post_type`='".X2B_DOMAIN."'");
+		// 	if(!$n_wp_post_id){
+		// 		$n_wp_post_id = $wpdb->get_var("SELECT `ID` FROM `{$wpdb->prefix}posts` WHERE `post_name`='{$n_x2b_post_id}__trashed' AND `post_type`='".X2B_DOMAIN."'");
+		// 	}
+		// 	return intval($n_wp_post_id);
+		// }
 
 		/**
 		 * x2b post를 WP post에 수정함
 		 * @param int $a_post_param
 		 */
 		private function _update_wp_post($a_post_param){
-			$n_wp_post_id = $this->_get_wp_post_id( $a_post_param['post_id'] );
+			$n_wp_post_id = \X2board\Includes\get_wp_post_id_by_x2b_post_id( $a_post_param['post_id'] );
 			$o_post = get_post( intval($n_wp_post_id) );
 			$o_post->post_content = $a_post_param['post_author'];
 			$o_post->post_title = $a_post_param['title'];
@@ -1085,7 +1085,7 @@ var_dump('post controller init()');
 			$result = wp_update_post($o_post);
 // var_dump($result);
 			if( is_wp_error( $result ) ) {
-				echo $result->get_error_message();
+				wp_die( $result->get_error_message() );
 				return false;
 			}
 			return $result; // old WP post ID
@@ -1097,7 +1097,7 @@ var_dump('post controller init()');
 		 * @param int $n_post_id
 		 */
 		private function _delete_wp_post($n_x2b_post_id) {
-			$n_wp_post_id = $this->_get_wp_post_id( $n_x2b_post_id );
+			$n_wp_post_id = \X2board\Includes\get_wp_post_id_by_x2b_post_id( $n_x2b_post_id );
 			if(has_post_thumbnail($n_wp_post_id)) {
 				$n_attachment_id = get_post_thumbnail_id($n_wp_post_id);
 				wp_delete_attachment($n_attachment_id, true);

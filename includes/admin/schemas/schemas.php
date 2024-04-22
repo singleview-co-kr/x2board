@@ -134,6 +134,7 @@ dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_comments` (
 `board_id` bigint(11) NOT NULL DEFAULT 0,
 `parent_post_id` bigint(11) NOT NULL DEFAULT 0,
 `parent_comment_id` bigint(11) NOT NULL DEFAULT 0,
+`wp_comment_id` bigint(11) NOT NULL DEFAULT 0,
 `is_secret` char(1) NOT NULL DEFAULT 'N',
 `content` longtext NOT NULL,
 `voted_count` bigint(11) NOT NULL DEFAULT 0,

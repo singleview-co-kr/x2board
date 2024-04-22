@@ -921,6 +921,19 @@ function is_crawler($agent = NULL) {
 // }
 
 /**
+ * get WP post ID that matches x2b post
+ */
+function get_wp_post_id_by_x2b_post_id($n_x2b_post_id) {
+	global $wpdb;
+	$n_x2b_post_id = esc_sql( $n_x2b_post_id );
+	$n_wp_post_id = $wpdb->get_var("SELECT `ID` FROM `{$wpdb->prefix}posts` WHERE `post_name`='$n_x2b_post_id' AND `post_type`='".X2B_DOMAIN."'");
+	if(!$n_wp_post_id){
+		$n_wp_post_id = $wpdb->get_var("SELECT `ID` FROM `{$wpdb->prefix}posts` WHERE `post_name`='{$n_x2b_post_id}__trashed' AND `post_type`='".X2B_DOMAIN."'");
+	}
+	return intval($n_wp_post_id);
+}
+
+/**
  * Return the requested script path
  *
  * @return string
