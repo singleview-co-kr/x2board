@@ -47,6 +47,7 @@ function x2b_get_registered_settings() {
 }
 
 
+
 /**
  * Retrieve the array of General settings
  *
@@ -76,10 +77,7 @@ function x2b_settings_general() {
 			'name'    => esc_html__( 'Board skin', 'x2board' ),
 			'desc'    => esc_html__( 'Select the board skin', 'x2board' ),
 			'type'    => 'select',
-			'options' => array(
-				'default'            => esc_html__( 'default', 'x2board' ),
-				'sketchbook5'        => esc_html__( 'sketchbook5', 'x2board' ),
-			),
+			'options' => x2b_get_board_skins(),
 		),
 		'board_list_count'		      => array(
 			'id'      => 'board_list_count',
@@ -325,7 +323,6 @@ function x2b_settings_category() {
 }
 
 
-
 /**
  * Retrieve the array of user define field settings
  *
@@ -347,7 +344,6 @@ function x2b_settings_user_define_field() {
 				'unchecked'   => 'N',
 			),
 		),
-		
 	);
 
 	/**
@@ -372,100 +368,75 @@ function x2b_settings_permission() {
 
 	$settings = array(
 		'board_admin_emails'      => array(
-				'id'      => 'board_admin_emails',
-				'name'    => esc_html__( 'Board admin email', 'x2board' ),
-				'desc'    => esc_html__( 'Comma separated admin email addresses', 'x2board' ),
-				'type'    => 'text',
-				// 'options' => CRP_PLUGIN_URL . 'default.png',
-				'size'    => 'large',
-			),
-		'board_access_default'					=> array(
+			'id'      => 'board_admin_emails',
+			'name'    => esc_html__( 'Board admin email', 'x2board' ),
+			'desc'    => esc_html__( 'Comma separated admin email addresses', 'x2board' ),
+			'type'    => 'text',
+			// 'options' => CRP_PLUGIN_URL . 'default.png',
+			'size'    => 'large',
+		),
+		'board_access_default'               => array(
 			'id'      => 'board_access_default',
 			'name'    => esc_html__( 'Access permission', 'x2board' ),
-			'desc'    => esc_html__( '가입한 사용자는 분양형 가상 사이트에 가입한 로그인 사용자를 의미합니다.', 'x2board' ),
-			'type'    => 'select',
-			'options' => array(
-				'0'            => esc_html__( 'All users', 'x2board' ),
-				'-1'        => esc_html__( 'Loggedin users', 'x2board' ),
-				// '-2'        => esc_html__( 'Registerred users', 'x2board' ),
-				'-3'        => esc_html__( 'Managers', 'x2board' ),
-				'selected'        => esc_html__( 'Selected groups', 'x2board' ),
-			),
+			// 'desc'    => esc_html__( '가입한 사용자는 분양형 가상 사이트에 가입한 로그인 사용자를 의미합니다.', 'x2board' ),
+			'type'    => 'multicheck',
+			'default' => array(	'admin' => 'admin',),
+			'options' => x2b_get_editable_roles(),
+			// 'options' => array(
+			// 	'0'            => esc_html__( 'All users', 'x2board' ),
+			// 	'-1'        => esc_html__( 'Loggedin users', 'x2board' ),
+			// 	'-2'        => esc_html__( 'Registerred users', 'x2board' ),
+			// 	'-3'        => esc_html__( 'Managers', 'x2board' ),
+			// 	'selected'        => esc_html__( 'Selected groups', 'x2board' ),
+			// ),
 		),
-		'board_list_default'					=> array(
+		'board_list_default'               => array(
 			'id'      => 'board_list_default',
 			'name'    => esc_html__( 'list permission', 'x2board' ),
 			// 'desc'    => esc_html__( '', 'x2board' ),
-			'type'    => 'select',
-			'options' => array(
-				'0'            => esc_html__( 'All users', 'x2board' ),
-				'-1'        => esc_html__( 'Loggedin users', 'x2board' ),
-				// '-2'        => esc_html__( 'Registerred users', 'x2board' ),
-				'-3'        => esc_html__( 'Managers', 'x2board' ),
-				'selected'        => esc_html__( 'Selected groups', 'x2board' ),
-			),
+			'type'    => 'multicheck',
+			'default' => array(	'admin' => 'admin',),
+			'options' => x2b_get_editable_roles(),
 		),
-		'board_view_default'					=> array(
+		'board_view_default'               => array(
 			'id'      => 'board_view_default',
 			'name'    => esc_html__( 'view permission', 'x2board' ),
 			// 'desc'    => esc_html__( '', 'x2board' ),
-			'type'    => 'select',
-			'options' => array(
-				'0'            => esc_html__( 'All users', 'x2board' ),
-				'-1'        => esc_html__( 'Loggedin users', 'x2board' ),
-				// '-2'        => esc_html__( 'Registerred users', 'x2board' ),
-				'-3'        => esc_html__( 'Managers', 'x2board' ),
-				'selected'        => esc_html__( 'Selected groups', 'x2board' ),
-			),
+			'type'    => 'multicheck',
+			'default' => array(	'admin' => 'admin',),
+			'options' => x2b_get_editable_roles(),
 		),
-		'board_write_post_default'					=> array(
+		'board_write_post_default'               => array(
 			'id'      => 'board_write_post_default',
 			'name'    => esc_html__( 'write post permission', 'x2board' ),
 			// 'desc'    => esc_html__( '', 'x2board' ),
-			'type'    => 'select',
-			'options' => array(
-				'0'            => esc_html__( 'All users', 'x2board' ),
-				'-1'        => esc_html__( 'Loggedin users', 'x2board' ),
-				// '-2'        => esc_html__( 'Registerred users', 'x2board' ),
-				'-3'        => esc_html__( 'Managers', 'x2board' ),
-				'selected'        => esc_html__( 'Selected groups', 'x2board' ),
-			),
+			'type'    => 'multicheck',
+			'default' => array(	'admin' => 'admin',),
+			'options' => x2b_get_editable_roles(),
 		),
-		'board_write_comment_default'					=> array(
+		'board_write_comment_default'               => array(
 			'id'      => 'board_write_comment_default',
 			'name'    => esc_html__( 'write comment permission', 'x2board' ),
 			// 'desc'    => esc_html__( '', 'x2board' ),
-			'type'    => 'select',
-			'options' => array(
-				'0'            => esc_html__( 'All users', 'x2board' ),
-				'-1'        => esc_html__( 'Loggedin users', 'x2board' ),
-				// '-2'        => esc_html__( 'Registerred users', 'x2board' ),
-				'-3'        => esc_html__( 'Managers', 'x2board' ),
-				'selected'        => esc_html__( 'Selected groups', 'x2board' ),
-			),
+			'type'    => 'multicheck',
+			'default' => array(	'admin' => 'admin',),
+			'options' => x2b_get_editable_roles(),
 		),
-		'board_consultation_read_default'					=> array(
+		'board_consultation_read_default'               => array(
 			'id'      => 'board_consultation_read_default',
 			'name'    => esc_html__( 'Consultation read permission', 'x2board' ),
 			// 'desc'    => esc_html__( '', 'x2board' ),
-			'type'    => 'select',
-			'options' => array(
-				'0'            => esc_html__( 'All users', 'x2board' ),
-				'-1'        => esc_html__( 'Loggedin users', 'x2board' ),
-				// '-2'        => esc_html__( 'Registerred users', 'x2board' ),
-				'-3'        => esc_html__( 'Managers', 'x2board' ),
-				'selected'        => esc_html__( 'Selected groups', 'x2board' ),
-			),
+			'type'    => 'multicheck',
+			'default' => array(	'admin' => 'admin',),
+			'options' => x2b_get_editable_roles(),
 		),
-		'board_manager_default'					=> array(
+		'board_manager_default'               => array(
 			'id'      => 'board_manager_default',
 			'name'    => esc_html__( 'Manager permission', 'x2board' ),
 			// 'desc'    => esc_html__( '', 'x2board' ),
-			'type'    => 'select',
-			'options' => array(
-				'0'            => esc_html__( 'All users', 'x2board' ),
-				'selected'        => esc_html__( 'Selected groups', 'x2board' ),
-			),
+			'type'    => 'multicheck',
+			'default' => array(	'admin' => 'admin',),
+			'options' => x2b_get_editable_roles(),
 		),
 	);
 
@@ -477,6 +448,36 @@ function x2b_settings_permission() {
 	 * @param array $settings Thumbnail settings array
 	 */
 	return apply_filters( 'x2b_settings_permission', $settings );
+}
+
+
+/**
+ * Get the various skins.
+ *
+ * @since 2.6.0
+ * @return array Style options.
+ */
+function x2b_get_editable_roles() {
+
+	if (!function_exists('get_editable_roles')) {
+		require_once(ABSPATH . '/wp-admin/includes/user.php');
+	}
+
+	$a_roles = array();
+	$a_roles['all'] = esc_html__( 'All users', 'x2board' );
+	// $a_roles['loggedin_user'] = esc_html__( 'Loggedin users', 'x2board' ); // maybe subscribers of WP
+	foreach(get_editable_roles() as $roles_key=>$roles_value) {
+		$a_roles[$roles_key] = esc_html__( $roles_value['name'], 'x2board' );
+	}	
+
+	/**
+	 * Filter the array to allow privilege
+	 *
+	 * @since 2.6.0
+	 *
+	 * @param array $roles Different roles.
+	 */
+	return apply_filters( 'x2b_get_editable_roles', $a_roles );
 }
 
 
@@ -540,6 +541,121 @@ function x2b_settings_extra() {
 				'Y'            => esc_html__( 'Activate', 'x2board' ),  // 사용
 			),
 		),
+		'post_editor_setup_header'					=> array(
+			'id'      => 'post_editor_setup_header',
+			// 'name'    => esc_html__( 'Advanced setup', 'x2board' ),
+			'desc'    => esc_html__( 'Post wysiwyg editor', 'x2board' ),
+			'type'    => 'header',
+			'options' => false,
+		),
+		'post_editor_skin'					=> array(
+			'id'      => 'post_editor_skin',
+			'name'    => esc_html__( 'Editor skin', 'x2board' ),
+			'desc'    => esc_html__( 'Select the edtor skin', 'x2board' ),
+			'type'    => 'select',
+			'options' => x2b_get_editors(),
+		),
+		'post_editor_height'		    => array(
+			'id'      => 'post_editor_height',
+			'name'    => esc_html__( 'Editor height', 'x2board' ),
+			'desc'    => esc_html__( 'Specify the editor height (default 500)', 'x2board' ),
+			'type'    => 'number',
+			'options' => '500',
+		),
+		'enable_html_grant'               => array(
+			'id'      => 'enable_html_grant',
+			'name'    => esc_html__( 'Allow post HTML edit', 'x2board' ),
+			'desc'    => esc_html__( 'Allow post HTML to whom', 'x2board' ),
+			'type'    => 'multicheck',
+			'default' => false,
+			'options' => x2b_get_editable_roles(),
+		),
+		'upload_file_grant'               => array(
+			'id'      => 'upload_file_grant',
+			'name'    => esc_html__( 'Allow post upload file', 'x2board' ),
+			'desc'    => esc_html__( 'Allow post upload file to whom', 'x2board' ),
+			'type'    => 'multicheck',
+			'default' => false,
+			'options' => x2b_get_editable_roles(),
+		),
+		'comment_editor_setup_header'					=> array(
+			'id'      => 'comment_editor_setup_header',
+			// 'name'    => esc_html__( 'Advanced setup', 'x2board' ),
+			'desc'    => esc_html__( 'Comment wysiwyg editor', 'x2board' ),
+			'type'    => 'header',
+			'options' => false,
+		),
+		'comment_editor_skin'					=> array(
+			'id'      => 'comment_editor_skin',
+			'name'    => esc_html__( 'Comment editor skin', 'x2board' ),
+			'desc'    => esc_html__( 'Select the edtor skin', 'x2board' ),
+			'type'    => 'select',
+			'options' => x2b_get_editors(),
+		),
+		'comment_editor_height'		    => array(
+			'id'      => 'comment_editor_height',
+			'name'    => esc_html__( 'Comment editor height', 'x2board' ),
+			'desc'    => esc_html__( 'Specify the editor height (default 500)', 'x2board' ),
+			'type'    => 'number',
+			'options' => '500',
+		),
+		'enable_comment_html_grant'               => array(
+			'id'      => 'enable_comment_html_grant',
+			'name'    => esc_html__( 'Allow comment HTML edit', 'x2board' ),
+			'desc'    => esc_html__( 'Allow comment HTML to whom', 'x2board' ),
+			'type'    => 'multicheck',
+			'default' => false,
+			'options' => x2b_get_editable_roles(),
+		),
+		'comment_upload_file_grant'               => array(
+			'id'      => 'comment_upload_file_grant',
+			'name'    => esc_html__( 'Allow comment upload file', 'x2board' ),
+			'desc'    => esc_html__( 'Allow comment upload file to whom', 'x2board' ),
+			'type'    => 'multicheck',
+			'default' => false,
+			'options' => x2b_get_editable_roles(),
+		),
+		'common_editor_setup_header'					=> array(
+			'id'      => 'common_editor_setup_header',
+			// 'name'    => esc_html__( 'Advanced setup', 'x2board' ),
+			'desc'    => esc_html__( 'Common wysiwyg editor', 'x2board' ),
+			'type'    => 'header',
+			'options' => false,
+		),
+		'content_style'					=> array(
+			'id'      => 'content_style',
+			'name'    => esc_html__( 'content style', 'x2board' ),
+			'desc'    => esc_html__( 'Select the content style', 'x2board' ),
+			'type'    => 'select',
+			'options' => x2b_get_content_styles(),
+		),
+		'content_font'					=> array(
+			'id'      => 'content_font',
+			'name'    => esc_html__( 'Content font', 'x2board' ),
+			'desc'    => esc_html__( 'Comma separated value. Ex) Tahoma, Geneva, sans-serif', 'x2board' ),
+			'type'    => 'text',
+			'options' => false,
+		),
+		'content_font_size'		    => array(
+			'id'      => 'content_font_size',
+			'name'    => esc_html__( 'Content font size', 'x2board' ),
+			'desc'    => esc_html__( 'Please include the units. Ex) 12px, 1em', 'x2board' ),
+			'type'    => 'number',
+			'options' => false,
+		),
+		'enable_autosave'  => array(
+			'id'      => 'enable_autosave',
+			'name'    => esc_html__( 'Enable autosave', 'x2board' ),
+			'desc'    => esc_html__( 'Enable autosave', 'x2board' ),
+			'type'    => 'checkbox',
+			'options' => false,
+			'default' => array(	'Y' => 'Y',),
+			'checked_value' => array(
+				'checked' => 'Y',
+				'unchecked'   => 'N',
+			),
+		),
+		
 		'file_attachment_setup_header'	=> array(
 			'id'      => 'file_attachment_setup_header',
 			// 'name'    => esc_html__( 'Advanced setup', 'x2board' ),
@@ -606,11 +722,7 @@ function x2b_settings_extra() {
 			'desc'    => sprintf( esc_html__( 'Allow download for selected group only, No choice no restriction', 'x2board' ) ),
 			'type'    => 'multicheck',
 			'default' => false, // array(	'single' => 'single',),
-			'options' => array(
-				'admin'            => esc_html__( 'Admin', 'x2board' ),
-				'manager'              => esc_html__( 'Manager', 'x2board' ),
-				'other'    => esc_html__( 'Other', 'x2board' ),
-			),
+			'options' => x2b_get_editable_roles(),
 		),
 	);
 
@@ -659,77 +771,86 @@ function x2b_upgrade_settings() {
 }
 
 
+
 /**
- * Get the various styles.
+ * Get the various skins.
+ *
+ * @since 2.6.0
+ * @return array skins options.
+ */
+function x2b_get_board_skins() {
+
+	$s_skin_path_abs = X2B_PATH.DIRECTORY_SEPARATOR.'includes'.DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.'board'.DIRECTORY_SEPARATOR.'skins';
+	$a_skins = \X2board\Includes\Classes\FileHandler::readDir($s_skin_path_abs);
+
+	$a_skin_info = array();
+	foreach($a_skins as $_ => $s_skin_name) {
+		$a_skin_info[$s_skin_name] = esc_html__( $s_skin_name, 'x2board' );
+	}
+	unset($a_skins);
+
+	/**
+	 * Filter the array containing the skins to add your own.
+	 *
+	 * @since 2.6.0
+	 *
+	 * @param array $skins Different skins.
+	 */
+	return apply_filters( 'x2b_get_board_skins', $a_skin_info );
+}
+
+
+
+/**
+ * Get the various skins.
  *
  * @since 2.6.0
  * @return array Style options.
  */
-function x2b_get_styles() {
+function x2b_get_editors() {
 
-	$styles = array(
-		array(
-			'id'          => 'no_style',
-			'name'        => esc_html__( 'No styles', 'x2board' ),
-			'description' => esc_html__( 'Select this option if you plan to add your own styles', 'x2board' ) . '<br />',
-		),
-		array(
-			'id'          => 'text_only',
-			'name'        => esc_html__( 'Text only', 'x2board' ),
-			'description' => esc_html__( 'Disable thumbnails and no longer include the default style sheet', 'x2board' ) . '<br />',
-		),
-		array(
-			'id'          => 'rounded_thumbs',
-			'name'        => esc_html__( 'Rounded thumbnails', 'x2board' ),
-			'description' => '<br /><img src="' . esc_url( plugins_url( 'includes/admin/images/rounded-thumbs.png', CRP_PLUGIN_FILE ) ) . '" width="500" /> <br />' . esc_html__( 'Enabling this option will turn on the thumbnails. It will also turn off the display of the author, excerpt and date if already enabled. Disabling this option will not revert any settings.', 'x2board' ) . '<br />',
-		),
-		array(
-			'id'          => 'masonry',
-			'name'        => esc_html__( 'Masonry', 'x2board' ),
-			'description' => '<br /><img src="' . esc_url( plugins_url( 'includes/admin/images/masonry.png', CRP_PLUGIN_FILE ) ) . '" width="500" /> <br />' . esc_html__( 'Enables a masonry style layout similar to one made famous by Pinterest.', 'x2board' ) . '<br />',
-		),
-		array(
-			'id'          => 'grid',
-			'name'        => esc_html__( 'Grid', 'x2board' ),
-			'description' => '<br /><img src="' . esc_url( plugins_url( 'includes/admin/images/grid.png', CRP_PLUGIN_FILE ) ) . '" width="500" /> <br />' . esc_html__( 'Uses CSS Grid for display. Might not work on older browsers.', 'x2board' ) . '<br />',
-		),
-		array(
-			'id'          => 'thumbs_grid',
-			'name'        => esc_html__( 'Rounded thumbnails with CSS grid', 'x2board' ),
-			'description' => '<br /><img src="' . esc_url( plugins_url( 'includes/admin/images/thumbs-grid.png', CRP_PLUGIN_FILE ) ) . '" width="500" /> <br />' . esc_html__( 'Uses CSS grid. It will also turn off the display of the author, excerpt and date if already enabled. Disabling this option will not revert any settings.', 'x2board' ) . '<br />',
-		),
-	);
+	$s_skin_path_abs = X2B_PATH.DIRECTORY_SEPARATOR.'includes'.DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.'editor'.DIRECTORY_SEPARATOR.'skins';
+	$a_skins = \X2board\Includes\Classes\FileHandler::readDir($s_skin_path_abs);
+
+	$a_skin_info = array();
+	foreach($a_skins as $_ => $s_skin_name) {
+		$a_skin_info[$s_skin_name] = esc_html__( $s_skin_name, 'x2board' );
+	}
+	unset($a_skins);
 
 	/**
-	 * Filter the array containing the styles to add your own.
+	 * Filter the array containing the skins to add your own.
 	 *
 	 * @since 2.6.0
 	 *
-	 * @param array $styles Different styles.
+	 * @param array $skins Different skins.
 	 */
-	return apply_filters( 'x2b_get_styles', $styles );
+	return apply_filters( 'x2b_get_editors', $a_skin_info );
 }
 
 /**
- * Get the various order settings.
+ * Get the various content styles.
  *
- * @since 2.8.0
- * @return array Order settings.
+ * @since 2.6.0
+ * @return array Style options.
  */
-function x2b_get_orderings() {
+function x2b_get_content_styles() {
 
-	$orderings = array(
-		'relevance' => esc_html__( 'By relevance', 'x2board' ),
-		'random'    => esc_html__( 'Randomly', 'x2board' ),
-		'date'      => esc_html__( 'By date', 'x2board' ),
-	);
+	$s_style_path_abs = X2B_PATH.DIRECTORY_SEPARATOR.'includes'.DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.'editor'.DIRECTORY_SEPARATOR.'styles';
+	$a_styles = \X2board\Includes\Classes\FileHandler::readDir($s_style_path_abs);
+
+	$a_style_info = array();
+	foreach($a_styles as $_ => $s_style_name) {
+		$a_style_info[$s_style_name] = esc_html__( $s_style_name, 'x2board' );
+	}
+	unset($a_styles);
 
 	/**
-	 * Filter the array containing the order settings.
+	 * Filter the array containing the skins to add your own.
 	 *
-	 * @since 2.8.0
+	 * @since 2.6.0
 	 *
-	 * @param array $orderings Order settings.
+	 * @param array $skins Different skins.
 	 */
-	return apply_filters( 'x2b_get_orderings', $orderings );
+	return apply_filters( 'x2b_get_content_styles', $a_style_info );
 }

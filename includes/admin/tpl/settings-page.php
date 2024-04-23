@@ -138,12 +138,12 @@ wp_nonce_field($s_action);
  */
 function x2b_get_settings_sections() {
 	$x2b_settings_sections = array(
-		'general'   => __( 'Board info', 'x2board' ),
-		'category'      => __( 'Category info', 'x2board' ),
-		'user_define_field'    => __( 'User define field', 'x2board' ),
-		'permission' => __( 'Permission info', 'x2board' ),
-		'extra'    => __( 'Extra info', 'x2board' ),
-		'skin_vars'      => __( 'Skin info', 'x2board' ),
+		'general'           => __( 'Board info', 'x2board' ),
+		'category'          => __( 'Category info', 'x2board' ),
+		'user_define_field' => __( 'User define field', 'x2board' ),
+		'permission'        => __( 'Permission info', 'x2board' ),
+		'extra'             => __( 'Extra info', 'x2board' ),
+		'skin_vars'         => __( 'Skin info', 'x2board' ),
 	);
 
 	/**
@@ -279,7 +279,7 @@ function x2b_checkbox_callback( $args ) {
 	// First, we read the options collection.
 	global $A_X2B_ADMIN_BOARD_SETTINGS;
 	$default = isset( $args['options'] ) ? $args['options'] : '';
-	$set     = isset( $A_X2B_ADMIN_BOARD_SETTINGS[ $args['id'] ] ) ? $A_X2B_ADMIN_BOARD_SETTINGS[ $args['id'] ] : crp_get_default_option( $args['id'] );
+	$set     = isset( $A_X2B_ADMIN_BOARD_SETTINGS[ $args['id'] ] ) ? $A_X2B_ADMIN_BOARD_SETTINGS[ $args['id'] ] : x2b_get_default_option( $args['id'] );
 	
 	if( isset( $args['checked_value'] ) ) {
 		$s_checked_value = isset( $args['checked_value']['checked'] ) ? $args['checked_value']['checked'] : '1';

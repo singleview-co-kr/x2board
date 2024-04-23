@@ -163,6 +163,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 		 * @brief display the board insert form
 		 **/
 		public function disp_board_insert() {
+			require_once X2B_PATH . 'includes\classes\FileHandler.class.php';
 			require_once X2B_PATH . 'includes\admin\tpl\settings-page.php';
 			require_once X2B_PATH . 'includes\admin\tpl\default-settings.php';
 			require_once X2B_PATH . 'includes\admin\tpl\register-settings.php';
