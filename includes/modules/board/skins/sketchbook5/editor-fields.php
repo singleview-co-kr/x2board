@@ -2,12 +2,12 @@
 $secret_checked_forced = true;
 $has_default_values = true;
 if($field['field_type'] == 'content'):?>
-	<div class="kboard-attr-row <?php echo esc_attr($field['class'])?> <?php echo esc_attr($required)?>">
-		<label class="attr-name" for="<?php echo esc_attr($meta_key)?>"><span class="field-name"><?php echo esc_html($field_name)?></span><?php if($required):?> <span class="attr-required-text">*</span><?php endif?></label>
-		<div class="kboard-content">
+	<!-- <div class="kboard-attr-row <?php //echo esc_attr($field['class'])?> <?php //echo esc_attr($required)?>">
+		<label class="attr-name" for="<?php //echo esc_attr($meta_key)?>"><span class="field-name"><?php //echo esc_html($field_name)?></span><?php if($required):?> <span class="attr-required-text">*</span><?php endif?></label>
+		<div class="kboard-content"> -->
 			<?php echo $editor_html ?>
-		</div>
-	</div>
+		<!-- </div>
+	</div> -->
 <?php elseif($field['field_type'] == 'nick_name'):?>
 	<?php if(!x2b_is_this_accessible()): //if($field['permission'] == 'always_visible' || (!$field['permission'] && $board->viewUsernameField)): ?>
 		<div class="kboard-attr-row <?php echo esc_attr($field['class'])?> required">

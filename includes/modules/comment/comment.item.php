@@ -192,6 +192,34 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentItem')) {
 			}
 			$s_content = $this->get('content');
 			\X2board\Includes\stripEmbedTagForAdmin($s_content, $this->get('comment_author'));
+
+			// when displaying the comment on the pop-up menu
+			// if($add_popup_menu && Context::get('is_logged')) {
+			// 	$content = sprintf(
+			// 			'%s<div class="comment_popup_menu"><a href="#popup_menu_area" class="comment_%d" onclick="return false">%s</a></div>', $content, $this->comment_srl, Context::getLang('cmd_comment_do')
+			// 	);
+			// }
+
+			// if additional information which can access contents is set
+			// if($add_content_info) {
+				$n_comment_author_id = $this->get('comment_author');
+				if($n_comment_author_id < 0) {
+					$n_comment_author_id = 0;
+				}
+				$s_content = sprintf(
+					'<!--BeforeComment(%d,%d)--><div class="comment_%d_%d x2b_content">%s</div><!--AfterComment(%d,%d)-->', 
+					$this->comment_id, $n_comment_author_id, 
+					$this->comment_id, $n_comment_author_id, 
+					$s_content, 
+					$this->comment_id, $n_comment_author_id
+				);
+				// x2b_content class name should be specified although content access is not necessary.
+			// }
+			// else {
+			// 	if($add_xe_content_class) {
+			// 		$content = sprintf('<div class="xe_content">%s</div>', $content);
+			// 	}
+			// }
 			return wpautop($s_content);
 		}
 
@@ -201,14 +229,14 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentItem')) {
 		 * @return string
 		 */
 		// function getEditor()
-		public function get_editor() {
-			$n_board_id = $this->get('board_id');
-			if(!$n_board_id) {
-				$n_board_id = \X2board\Includes\Classes\Context::get('board_id');
-			}
+		/*public function get_editor() {
+			// $n_board_id = $this->get('board_id');
+			// if(!$n_board_id) {
+			// 	$n_board_id = \X2board\Includes\Classes\Context::get('board_id');
+			// }
 			$o_editor_model = \X2board\Includes\getModel('editor');
-			return $o_editor_model->get_board_editor('comment', $n_board_id, $this->comment_id, 'comment_id', 'content');
-		}
+			return $o_editor_model->get_board_editor('comment', $this->comment_id, 'comment_id', 'content');  // $n_board_id, 
+		}*/
 
 
 

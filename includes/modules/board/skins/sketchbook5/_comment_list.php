@@ -43,7 +43,6 @@
 					</div>
 					<?php endif?>
 				</div>
-				<div class="comment_<?php echo $comment->comment_id?>_4 xe_content" itemprop="description">
 				<?php if($comment->is_accessible()):?>
 					<?php echo $comment->get_content()?>
 				<?php else:?>
@@ -55,7 +54,6 @@
 						<div class="you_do_not_have_permission"><?php echo __('You do not have permission to read this comment.', 'x2board')?></div>
 					<?php endif?>
 				<?php endif?>
-				</div>
 				<div class="fdb_nav img_tx">
 					<!-- <a class="comment_<?php echo $comment->comment_id?> m_no" href="#popup_menu_area" onclick="return false"><i class="fa fa-ellipsis-h"></i>이 댓글을</a> -->
 					<a href="<?php echo x2b_get_url('cmd', X2B_CMD_VIEW_MODIFY_COMMENT, 'comment_id',$comment->comment_id)?>"><i class="fa fa-pencil"></i><?php echo __('Edit', 'x2board')?></a>

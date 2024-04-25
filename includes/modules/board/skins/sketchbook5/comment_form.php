@@ -11,8 +11,8 @@
 <div class="feedback">
     <!-- onsubmit="return procFilter(this, insert_comment)" -->
 	<form action="<?php echo esc_url(x2b_get_url('cmd', '', 'post_id', ''))?>" method="post" class="write_comment">
-		<?php echo $comment_hidden_field_html ?>
-        <?php echo $o_the_comment->get_editor()?>
+		<?php x2b_write_comment_hidden_fields(); ?>
+        <?php x2b_write_comment_editor(); ?>
 		<div class="write_author">
 
 <?php if(!$is_logged): ?>
@@ -35,7 +35,7 @@
 			<input type="checkbox" name="notify_message" value="Y" <?php echo $s_checked?> id="notify_message" class="iCheck" />
 			<label for="notify_message"><?php echo __('notify', 'x2board')?></label>
 <?php endif?>
-<?php if($module_info->secret=='Y'):
+<?php if($current_module_info->secret=='Y'):
 	$s_checked = $o_the_comment->get('is_secret') == 'Y' ? 'checked="checked"' : '';
 ?>
 			<input type="checkbox" name="is_secret" value="Y" id="is_secret" <?php echo $s_checked?> class="iCheck" />

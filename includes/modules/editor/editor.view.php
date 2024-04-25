@@ -16,12 +16,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorView')) {
 
 	class editorView extends editor	{
 
-		private $_default_fields = array();  // get_default_user_input_fields();
-		private $_extends_fields = array();
-
-		// 스킨에서 사용 할 사용자 정의 옵션 input, textarea, select 이름의 prefix를 정의한다.
-		const SKIN_OPTION_PREFIX = 'x2board_option_';
-
 		function __construct() {
 // var_dump('editor view class __construct');
 		}
@@ -30,252 +24,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorView')) {
 		 * @brief Initialization
 		 */
 		function init() {}
-
-		/**
-		 * /includes/no_namespace.helper.php::x2b_write_post_prepare_single_user_field()를 통해서
-		 * editor 스킨의 사용자 입력 field 출력
-		 */
-		public function write_post_prepare_single_user_field() { 
-			$o_post_model = \X2board\Includes\getModel('post');
-			$this->_default_fields = $o_post_model->get_default_fields();  // get_default_user_input_fields();
-			$this->_extends_fields = $o_post_model->get_extended_fields();  // get_extended_user_input_fields();
-			$a_user_input_field = $o_post_model->get_user_define_fields();
-			unset($o_post_model);
-			\X2board\Includes\Classes\Context::set('field', $a_user_input_field);
-
-// var_dump( plugin_dir_url( __FILE__ ).'js/user_define_field.js');	
-			wp_enqueue_script('x2board-user-define-fields', plugin_dir_url( __FILE__ ).'js/user_define_field.js', ['jquery'], X2B_VERSION, true);
-
-		}
-
-		/**
-		 * /includes/no_namespace.helper.php::x2b_write_post_hidden_fields()를 통해서
-		 * editor스킨의 hidden field 출력
-		 */
-		public function write_post_hidden_fields() {
-			$a_header = array();
-			$a_header['board_id'] = get_the_ID();
-			$o_post = \X2board\Includes\Classes\Context::get('post');
-			if($o_post->post_id) {  // update a old post
-				$a_header['cmd'] = X2B_CMD_PROC_MODIFY_POST;
-				$a_header['post_id'] = $o_post->post_id;
-				// $a_header['parent_post_id'] = $o_post->parent_post_id;
-			}
-			else { // write a new post
-				$a_header['cmd'] = X2B_CMD_PROC_WRITE_POST; 
-				$a_header['post_id'] = \X2board\Includes\getNextSequence(); // reserve new post id for file appending
-			}
-			unset($o_post);
-			// }
-			// $product_id = isset($_GET['woocommerce_product_tabs_inside']) ? intval($_GET['woocommerce_product_tabs_inside']) : '';
-			// if($product_id){
-			// 	$header['x2b_option_woocommerce_product_id'] = sprintf('<input type="hidden" name="x2b_option_woocommerce_product_id" value="%d">', $product_id);
-			// }
-			$o_file_controller = \X2board\Includes\getController('file');
-			$o_file_controller->set_upload_info($a_header['post_id'], $a_header['post_id']);
-			unset($o_file_controller);
-
-			wp_nonce_field('x2b_'.$a_header['cmd'], 'x2b_'.$a_header['cmd'].'_nonce');
-			
-			// $header = apply_filters('x2b_skin_editor_header', $header, $content, $board);
-			foreach( $a_header as $s_field_name => $s_field_value ) {
-				echo '<input type="hidden" name="'.$s_field_name.'" value="'.$s_field_value.'">' . "\n";
-			}
-			unset($a_header);
-			// do_action('x2b_skin_editor_header_after', $content, $board);
-		}
-
-		/**
-		 * /includes/no_namespace.helper.php::x2b_write_post_single_user_field()를 통해서
-		 * editor 스킨의 사용자 입력 field 출력
-		 */
-		// public function getTemplate($field, $content='', $boardBuilder=''){
-		public function write_post_single_user_field($a_field_info) { 
-			$field = $a_field_info;
-			$template = '';
-			$permission = (isset($field['permission']) && $field['permission']) ? $field['permission'] : '';
-			$roles = (isset($field['roles']) && $field['roles']) ? $field['roles'] : '';
-			$meta_key = (isset($field['meta_key']) && $field['meta_key']) ? sanitize_key($field['meta_key']) : '';
-			
-			// if(!$this->_is_available_user_field($permission, $roles) && $meta_key){
-			// 	return;
-			// }
-			// if(!$content){
-				// $content = new KBContent();
-			// }
-
-			// $field = apply_filters('kboard_get_template_field_data', $field); //, $content, $this->board);
-
-			$field_name = strlen($field['field_name']) > 0 ? $field['field_name'] : $this->_get_field_label($field);
-			$required = (isset($field['required']) && $field['required']) ? 'required' : '';
-			$placeholder = (isset($field['placeholder']) && $field['placeholder']) ? $field['placeholder'] : '';
-			$wordpress_search = '';
-			$default_value = (isset($field['default_value']) && $field['default_value']) ? $field['default_value'] : '';
-			$html = (isset($field['html']) && $field['html']) ? $field['html'] : '';
-			$shortcode = (isset($field['shortcode']) && $field['shortcode']) ? $field['shortcode'] : '';
-			
-			$has_default_values = false;
-			$a_default_value = array();
-			if(isset($field['row']) && $field['row']){
-				foreach($field['row'] as $item){
-					if(isset($item['label']) && $item['label']){
-						$has_default_values = true;
-						if(isset($item['default_value']) && $item['default_value']){
-							$a_default_value[] = $item['label'];
-						}
-					}
-				}
-			}
-			if($a_default_value){
-				$default_value = $a_default_value;
-			}
-			
-			if($field['field_type'] == 'content'){
-				$o_editor_conf = new \stdClass();
-				$o_editor_conf->editor_type = 'textarea';
-				$o_post = \X2board\Includes\Classes\Context::get('post');
-				$o_editor_conf->s_content = $o_post->content;
-				unset($o_post);
-				$o_editor_conf->s_required = $required;
-				$o_editor_conf->s_placeholder = $placeholder;
-				$o_editor_conf->n_editor_height = 400;
-				$o_editor_conf->s_content_field_name = 'content';
-				$editor_html = $this->_ob_get_editor_html($o_editor_conf);
-				unset($o_editor_conf);
-			}
-			elseif($field['field_type'] == 'attach') {
-				$o_module_info = \X2board\Includes\Classes\Context::get('module_info');
-				$s_accept_file_types = str_replace(" ", "", $o_module_info->file_allowed_filetypes);
-				$s_accept_file_types = str_replace(",", "|", $s_accept_file_types);
-				$n_file_max_attached_count = intval($o_module_info->file_max_attached_count);
-				$n_file_allowed_filesize_mb = intval($o_module_info->file_allowed_filesize_mb);
-				unset($o_module_info);
-				wp_enqueue_style("x2board-jquery-fileupload-css", X2B_URL . '/assets/jquery.fileupload/css/jquery.fileupload.css', [], X2B_VERSION);
-				wp_enqueue_style("x2board-jquery-fileupload-css", X2B_URL . '/assets/jquery.fileupload/css/jquery.fileupload-ui.css', [], X2B_VERSION);
-				wp_enqueue_script('x2board-jquery-ui-widget', X2B_URL . '/assets/jquery.fileupload/js/vendor/jquery.ui.widget.js', ['jquery'], X2B_VERSION, true);
-				wp_enqueue_script('x2board-jquery-iframe-transport', X2B_URL . '/assets/jquery.fileupload/js/jquery.iframe-transport.js', ['jquery'], X2B_VERSION, true);
-				wp_enqueue_script('x2board-fileupload', X2B_URL . '/assets/jquery.fileupload/js/jquery.fileupload.js', ['jquery'], X2B_VERSION, true);
-				wp_enqueue_script('x2board-fileupload-process', X2B_URL . '/assets/jquery.fileupload/js/jquery.fileupload-process.js', ['jquery'], X2B_VERSION, true);
-				wp_enqueue_script('x2board-fileupload-caller', X2B_URL . '/assets/jquery.fileupload/file-upload.js', ['jquery'], X2B_VERSION, true);
-			}
-
-			$post = \X2board\Includes\Classes\Context::get('post');	
-			
-			// if($field['field_type'] == 'search'){
-			// 	if($content->search){
-			// 		$wordpress_search = $content->search;
-			// 	}
-			// 	else if(isset($field['default_value']) && $field['default_value']){
-			// 		$wordpress_search = $field['default_value'];
-			// 	}
-			// }
-			
-			// $order = new KBOrder();
-			// $order->board = $this->board;
-			// $order->board_id = $this->board->id;
-			
-			// $url = new KBUrl();
-			// $url->setBoard($this->board);
-			
-			// $skin = KBoardSkin::getInstance();
-			
-			// if(!$boardBuilder){
-			// 	$boardBuilder = new KBoardBuilder($this->board->id);
-			// 	$boardBuilder->setSkin($this->board->skin);
-			// 	if(wp_is_mobile() && $this->board->meta->mobile_page_rpp){
-			// 		$builder->setRpp($this->board->meta->mobile_page_rpp);
-			// 	}
-			// 	else{
-			// 		$boardBuilder->setRpp($this->board->page_rpp);
-			// 	}
-			// 	$boardBuilder->board = $this->board;
-			// }
-			// var_dump($this->board->skin)			;
-			// if(strpos($html, '#{ESC_ATTR_VALUE}') !== false){
-			// 	$value = $content->option->{$meta_key} ? esc_attr($content->option->{$meta_key}) : esc_attr($default_value);
-			// 	$html = str_replace('#{ESC_ATTR_VALUE}', $value, $html);
-			// }
-			// if(strpos($html, '#{ESC_TEXTAREA_VALUE}') !== false){
-			// 	$value = $content->option->{$meta_key} ? esc_textarea($content->option->{$meta_key}) : esc_textarea($default_value);
-			// 	$html = str_replace('#{ESC_TEXTAREA_VALUE}', $value, $html);
-			// }
-			// if(strpos($html, '#{ESC_HTML_VALUE}') !== false){
-			// 	$value = $content->option->{$meta_key} ? esc_html($content->option->{$meta_key}) : esc_html($default_value);
-			// 	$html = str_replace('#{ESC_HTML_VALUE}', $value, $html);
-			// }
-			
-			// $parent = new KBContent();
-			// $parent->initWithUID($content->parent_uid);
-			
-			// $vars = array(
-			// 	'field' => $field,
-			// 	'meta_key' => $meta_key,
-			// 	'field_name' => $field_name,
-			// 	'required' => $required,
-			// 	'placeholder' => $placeholder,
-			// 	'row' => $row,
-			// 	'wordpress_search' => $wordpress_search,
-			// 	'default_value' => $default_value,
-			// 	'html' => $html,
-			// 	'shortcode' => $shortcode,
-			// 	'board' => $this->board,
-			// 	'content' => $content,
-			// 	'parent' => $parent,
-			// 	// 'fields' => $this,
-			// 	// 'order' => $order,
-			// 	'url' => $url,
-			// 	'skin' => $skin,
-			// 	'skin_path' => $skin->url($this->board->skin),
-			// 	'skin_dir' => $skin->dir($this->board->skin),
-			// 	'boardBuilder' => $boardBuilder
-			// );
-			
-			// ob_start();
-			
-			// do_action('kboard_skin_field_before', $field, $content, $this->board);
-			// do_action("kboard_skin_field_before_{$meta_key}", $field, $content, $this->board);
-
-			// if($skin->fileExists($this->board->skin, "editor-field-{$meta_key}.php")){
-			// 	$field_html = $skin->load($this->board->skin, "editor-field-{$meta_key}.php", $vars);
-			// }
-			// else{
-				// $field_html = $this->render($this->board->skin, 'editor-fields.php', $vars);
-				// $field_html = $this->render('sketchbook5', 'editor-fields.php');
-			// }
-			
-			// if(!$field_html){
-			// 	$field_html = $skin->loadTemplate('editor-fields.php', $vars);
-			// }
-			
-			// $skin_name = 'sketchbook5';
-			// $file = 'editor-fields.php';
-			// $current_file_path = "{$this->merged_list[$skin_name]->dir}/{$file}";
-			// $current_file_path = apply_filters('kboard_skin_file_path', $current_file_path, $skin_name, $file);  //, $vars, $this);
-
-			// if($current_file_path && file_exists($current_file_path)){
-			// 	include $current_file_path;
-			// }
-			// else{
-			// 	echo sprintf(__('%s file does not exist.', 'x2board'), $file);
-			// }
-
-			$s_skin_path = \X2board\Includes\Classes\Context::get('skin_path_abs'); // this sets on board.view.php::init()
-			$s_skin_file_abs_path = $s_skin_path . '/editor-fields.php';
-			if( !file_exists( $s_skin_file_abs_path ) ) {
-				echo sprintf(__('%s file does not exist.', 'x2board'), $s_skin_file_abs_path);
-			}
-			include $s_skin_file_abs_path;
-		}
-
-		/**
-		 * 입력 필드 이름을 반환한다.
-		 * @param string $name
-		 * @return string
-		 */
-		// public function getOptionFieldName($name){
-		public function get_option_field_name( $s_name ) {
-			return $this->SKIN_OPTION_PREFIX . sanitize_key($s_name);
-		}
 
 		/**
 		 * 기본값이나 저장된 값이 있는지 확인한다.
@@ -295,187 +43,118 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorView')) {
 		}
 
 		/**
-		 * /includes/no_namespace.helper.php::x2b_write_post_hidden_fields()를 통해서
-		 * editor스킨의 hidden field 출력
+		 * post 에디터 HTML 출력
+		 * @param 
 		 */
-		public function write_comment_hidden_fields() {
-			$a_header = array();
-			$a_header['board_id'] = get_the_ID();
-			$a_header['parent_post_id'] = \X2board\Includes\Classes\Context::get('post_id');
-			$o_comment = \X2board\Includes\Classes\Context::get('o_comment');
-// var_dump($o_comment);
-			if($o_comment->comment_id) {  // update a old comment
-				$a_header['cmd'] = X2B_CMD_PROC_MODIFY_COMMENT;
-				$a_header['comment_id'] = $o_comment->comment_id;
-			}
-			else { // write a new comment
-				$a_header['cmd'] = X2B_CMD_PROC_WRITE_COMMENT; 
-			}
-			unset($o_comment);
-			wp_nonce_field('x2b_'.$a_header['cmd'], 'x2b_'.$a_header['cmd'].'_nonce');
-			// $header = apply_filters('x2b_skin_editor_header', $header, $content, $board);
-			foreach( $a_header as $s_field_name => $s_field_value ) {
-				echo '<input type="hidden" name="'.$s_field_name.'" value="'.$s_field_value.'">' . "\n";
-			}
-			unset($a_header);
-			// do_action('x2b_skin_editor_header_after', $content, $board);
-		}
-		
-		public function get_comment_editor() {
+		public static function get_post_editor_html($n_current_post_id, $s_placeholder =null) {   // $s_content_type, $s_required =null, 
 			$o_editor_conf = new \stdClass();
-			$o_editor_conf->editor_type = 'textarea';
-			$o_editor_conf->s_content_field_name = 'comment_content';
-			// $o_post = \X2board\Includes\Classes\Context::get('post');
-			// $o_editor_conf->s_editor_uid = 'comment_content_'.$o_post->post_id;
-			// unset($o_post);
-			$o_editor_conf->s_content = null;
-			$o_editor_conf->s_placeholder = __('Add a comment', 'x2board').'...';
-			$o_editor_conf->n_editor_height = 200;
-			$o_editor_conf->n_textarea_rows = 4;
+			if( is_null( $n_current_post_id ) ) {
+				wp_die( __('invalid current post id', 'x2board') );
+			}
+
+			$o_current_module_info = \X2board\Includes\Classes\Context::get('current_module_info');
 			
-			$o_rst = new \stdClass();
-			$o_rst->s_comment_editor_html = $this->_ob_get_editor_html($o_editor_conf);
-			unset($o_editor_conf);
-
-			$o_rst->s_comment_hidden_field_html = $this->_ob_get_comment_hidden_fields();
-			unset($o_post);
-			return $o_rst; 
-		}
-
-		/**
-		 * modify comment editor
-		 * /includes/no_namespace.helper.php::x2b_write_comment_content_editor()를 통해서
-		 * editor 스킨의 사용자 입력 field 출력
-		 */
-		public function write_comment_content_editor() { 
-			$s_editor_html = null;
-			$o_comment = \X2board\Includes\Classes\Context::get('o_comment');
-			if($o_comment->comment_id) {  // update a old comment
-				$o_editor_conf = new \stdClass();
-				$o_editor_conf->editor_type = 'textarea';
-				$o_editor_conf->s_content_field_name = 'comment_content';
-				// $o_post = \X2board\Includes\Classes\Context::get('post');
-				// $o_editor_conf->s_editor_uid = 'comment_content_'.$o_post->post_id;
-				// unset($o_post);
-				$o_editor_conf->s_content = $o_comment->content;
-				$o_editor_conf->n_editor_height = 400;
-				$s_editor_html = $this->_ob_get_editor_html($o_editor_conf);
-				unset($o_editor_conf);
-			}
-			unset($o_comment);
-			return $s_editor_html;
-		}
-		
-		/**
-		 * 입력 필드를 사용할 수 있는 권한인지 확인한다.
-		 * @param string $name
-		 * @return boolean
-		 */
-		// public function isUseFields($permission, $roles){
-		/*private function _is_available_user_field($permission, $roles) {
-			// $board = $this->board;
-			// if($board->isAdmin()){
-			// 	return true;
-			// }
-			$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
-	// var_dump($o_logged_info->roles);		
-			if($o_logged_info->is_admin == 'Y') {
-				return true;
-			}
-			switch($permission){
-				case 'all': 
-					return true;
-				case 'author': 
-					return is_user_logged_in() ? true : false;
-				case 'roles':
-					if(is_user_logged_in()){
-						if(array_intersect($roles, (array)$o_logged_info->roles)){
-							return true;
-						}
-					}
-					return false;
-				default: 
-					return true;
-			}
-		}*/
-
-		/**
-		 * 번역된 필드의 레이블을 반환한다.
-		 * @param array $field
-		 * @return string
-		 */
-		// public function getFieldLabel($field){
-		private function _get_field_label($a_field){
-			$field_type = $a_field['field_type'];
-			if(isset($this->_default_fields[$field_type])){
-				return $this->_default_fields[$field_type]['field_label'];
-			}
-			if(isset($this->_extends_fields[$field_type])){
-				return $this->_extends_fields[$field_type]['field_label'];
-			}
-			return $a_field['field_label'];
-		}
-	
-		/**
-		 * editor스킨의 hidden field 출력
-		 */
-		private function _ob_get_comment_hidden_fields() { 
-			ob_start();
-			wp_nonce_field('x2b_'.X2B_CMD_PROC_WRITE_COMMENT, 'x2b_'.X2B_CMD_PROC_WRITE_COMMENT.'_nonce');
-
-			$header = array();
-			$a_header['cmd'] = X2B_CMD_PROC_WRITE_COMMENT;
-			$a_header['board_id'] = get_the_ID();
+			$o_editor_conf->s_content_field_name = 'content'; // $o_editor_conf_in_arg->s_content_field_name;
+			$o_editor_conf->s_editor_type = isset( $o_current_module_info->post_editor_skin ) ? $o_current_module_info->post_editor_skin : 'ckeditor';
+			$o_editor_conf->n_editor_height = isset( $o_current_module_info->post_editor_height ) ? $o_current_module_info->post_editor_height : 500;
+			// $o_editor_conf->s_required = isset( $s_required ) ? $s_required : '';
+			$o_editor_conf->s_placeholder = isset( $s_placeholder ) ? $s_placeholder : __('Type what you think', 'x2board');
+			// $o_editor_conf->s_editor_uid = isset( $o_editor_conf_in_arg->s_editor_uid ) ? $o_editor_conf_in_arg->s_editor_uid : '';
+			$o_editor_conf->n_textarea_rows = isset( $o_current_module_info->textarea_rows ) ? $o_current_module_info->textarea_rows : 50;
 
 			$o_post = \X2board\Includes\Classes\Context::get('post');
-			if(isset($o_post)) {  // insert a root comment
-				if($o_post->post_id) {  // this is mandatory
-					$a_header['parent_post_id'] = $o_post->post_id;
-				}			
-				unset($o_post);
+			$o_editor_conf->s_content = $o_post->content;
+			unset($o_post);
+
+			ob_start();
+			if($o_editor_conf->s_editor_type == 'ckeditor') {
+				$o_editor_conf->n_board_id = \X2board\Includes\Classes\Context::get('board_id');				
+				$o_editor_conf->module_type = 'post'; //$s_content_type;				
+				$o_editor_conf->upload_target_id = $n_current_post_id;
+				$o_editor_conf->primary_key_name = 'post_id';
+				$o_editor_conf->post_editor_skin = $o_editor_conf->s_editor_type;
+				$o_editor_conf->post_editor_height = $o_current_module_info->post_editor_height;
+
+				$o_editor_conf->comment_editor_skin = $o_editor_conf->s_editor_type;
+				$o_editor_conf->comment_editor_height = $o_current_module_info->comment_editor_height;
+				$o_editor_conf->comment_upload_file_grant = $o_current_module_info->comment_upload_file_grant;
+				$o_editor_conf->enable_comment_html_grant = $o_current_module_info->enable_comment_html_grant;
+				
+				$o_editor_conf->enable_autosave = $o_current_module_info->enable_autosave;
+				$o_editor_conf->enable_html_grant = $o_current_module_info->enable_html_grant;
+				$o_editor_conf->upload_file_grant = $o_current_module_info->upload_file_grant;
+
+				$o_editor_model = \X2board\Includes\getModel('editor');
+				echo $o_editor_model->get_board_editor($o_editor_conf); // $s_content_type, $n_current_post_id, 'comment_id', $o_editor_conf->s_content_field_name);
+				unset($o_editor_model);
 			}
-			else {  // insert a child comment
-				$o_the_comment = \X2board\Includes\Classes\Context::get('o_the_comment');
-				$a_header['parent_post_id'] = $o_the_comment->get('post_id');
-				$a_header['parent_comment_id'] = $o_the_comment->get('parent_comment_id');
-				$a_header['comment_id'] = $o_the_comment->get('comment_id');
-				$a_header['content'] = htmlspecialchars($o_the_comment->get('content'));
+			elseif($o_editor_conf->s_editor_type == 'wordpress'){
+				$o_grant = \X2board\Includes\Classes\Context::get('grant');
+				wp_editor($o_editor_conf->s_content, $o_editor_conf->s_content_field_name, array('media_buttons'=>$o_grant->is_admin, 'editor_height'=>$o_editor_conf->n_editor_height));
+				// wp_editor($content, $editor_uid, array('media_buttons'=>$o_grant->is_admin, 'textarea_name'=>$content_field_name, 'editor_height'=>$editor_height));  //  'editor_class'=>'comment-textarea'
+				unset($o_grant);
 			}
-			
-			foreach( $a_header as $s_field_name => $s_field_value ) {
-				echo '<input type="hidden" name="'.$s_field_name.'" value="'.$s_field_value.'">' . "\n";
+			else{
+				echo sprintf('<textarea id="%s" class="editor-textarea required" name="%s" placeholder="%s">%s</textarea>', 
+							 esc_attr($o_editor_conf->s_content_field_name), 
+							//  esc_attr($o_editor_conf->s_required), 
+							 esc_attr($o_editor_conf->s_content_field_name), 
+							 esc_attr($o_editor_conf->s_placeholder), 
+							 esc_textarea($o_editor_conf->s_content));
+				// echo '<textarea class="comment-textarea" cols="50" rows="'.$textarea_rows.'" style="overflow: hidden; min-height: 4em; height: 46px; width: 100%;" name="'.$content_field_name.'" placeholder="'.__('Add a comment', 'x2board').'..." required>'.esc_textarea($content).'</textarea>';
 			}
-			unset($a_header);
-			$s_field = ob_get_clean();
-			// do_action('x2b_skin_editor_header_after', $content, $board);
-			return apply_filters('x2board_comment_field', $s_field);
+			$s_editor_html = ob_get_clean();
+			unset($o_editor_conf);
+			return $s_editor_html;
 		}
 
 		/**
-		 * post와 comment 에디터 HTML 반환
-		 * @param array $vars
-		 * @return string
+		 * comment 에디터 HTML 출력
 		 */
-		private function _ob_get_editor_html($o_editor_conf_in_arg) {
+		public static function get_comment_editor_html() {
+			$n_current_post_id = 123123;
 			$o_editor_conf = new \stdClass();
-			if( is_null( $o_editor_conf_in_arg->s_content_field_name ) ) {
-				wp_die( __('invalid editor field name - blank', 'x2board') );
-			}
-			$o_editor_conf->s_content_field_name = $o_editor_conf_in_arg->s_content_field_name;
-			$o_editor_conf->s_editor_type = isset( $o_editor_conf_in_arg->s_editor_type ) ? $o_editor_conf_in_arg->s_editor_type : 'textarea';
-			$o_editor_conf->s_content = isset( $o_editor_conf_in_arg->s_content ) ? $o_editor_conf_in_arg->s_content : null;
-			$o_editor_conf->s_required = isset( $o_editor_conf_in_arg->s_required ) ? $o_editor_conf_in_arg->s_required : '';
-			$o_editor_conf->s_placeholder = isset( $o_editor_conf_in_arg->s_placeholder ) ? $o_editor_conf_in_arg->s_placeholder : __('Type what you think', 'x2board');
-			$o_editor_conf->s_editor_uid = isset( $o_editor_conf_in_arg->s_editor_uid ) ? $o_editor_conf_in_arg->s_editor_uid : '';
-			$o_editor_conf->n_editor_height = isset( $o_editor_conf_in_arg->n_editor_height ) ? $o_editor_conf_in_arg->n_editor_height : 400;
-			$o_editor_conf->n_textarea_rows = isset( $o_editor_conf_in_arg->n_textarea_rows ) ? $o_editor_conf_in_arg->n_textarea_rows : 50;
-			
-			// $o_grant = \X2board\Includes\Classes\Context::get('grant');
+			// if( is_null( $n_current_post_id ) ) {
+			// 	wp_die( __('invalid current post id', 'x2board') );
+			// }
 
-			ob_start();
-			if($o_editor_conf->s_editor_type == 'wordpress'){
-				wp_editor($o_editor_conf->s_content, $o_editor_conf->s_content_field_name, array('editor_height'=>$o_editor_conf->n_editor_height));
-				// wp_editor($content, $editor_uid, array('media_buttons'=>$o_grant->is_admin, 'textarea_name'=>$content_field_name, 'editor_height'=>$editor_height));  //  'editor_class'=>'comment-textarea'
+			$o_current_module_info = \X2board\Includes\Classes\Context::get('current_module_info');
+			
+			$o_editor_conf->s_content_field_name = 'content'; // $o_editor_conf_in_arg->s_content_field_name;
+			
+			$o_editor_conf->s_editor_type = isset( $o_current_module_info->comment_editor_skin ) ? $o_current_module_info->comment_editor_skin : 'ckeditor';
+			$o_editor_conf->n_editor_height = isset( $o_current_module_info->comment_editor_height ) ? $o_current_module_info->comment_editor_height : 300;
+		
+			$o_editor_conf->s_required = isset( $s_required ) ? $s_required : '';
+			$o_editor_conf->s_placeholder = isset( $s_placeholder ) ? $s_placeholder : __('Type what you think', 'x2board');
+			// $o_editor_conf->s_editor_uid = isset( $o_editor_conf_in_arg->s_editor_uid ) ? $o_editor_conf_in_arg->s_editor_uid : '';
+			$o_editor_conf->n_textarea_rows = isset( $o_current_module_info->textarea_rows ) ? $o_current_module_info->textarea_rows : 50;
+
+			$o_the_comment = \X2board\Includes\Classes\Context::get('o_the_comment');
+			if( $o_the_comment ){
+				$o_editor_conf->s_content = $o_the_comment->content;
+			}
+			unset($o_the_comment);
+
+			// ob_start();
+			if($o_editor_conf->s_editor_type == 'ckeditor') {
+				$o_editor_conf->n_board_id = \X2board\Includes\Classes\Context::get('board_id');				
+				$o_editor_conf->module_type = 'comment'; //$s_content_type;				
+				$o_editor_conf->upload_target_id = $n_current_post_id;
+				$o_editor_conf->primary_key_name = 'comment_id';
+
+				$o_editor_conf->comment_editor_skin = $o_editor_conf->s_editor_type;
+				$o_editor_conf->comment_editor_height = $o_current_module_info->comment_editor_height;
+				$o_editor_conf->comment_upload_file_grant = $o_current_module_info->comment_upload_file_grant;
+				$o_editor_conf->enable_comment_html_grant = $o_current_module_info->enable_comment_html_grant;
+				
+				$o_editor_conf->enable_autosave = $o_current_module_info->enable_autosave;
+				$o_editor_conf->enable_html_grant = $o_current_module_info->enable_html_grant;
+				$o_editor_conf->upload_file_grant = $o_current_module_info->upload_file_grant;
+
+				$o_editor_model = \X2board\Includes\getModel('editor');
+				echo $o_editor_model->get_board_editor($o_editor_conf);
+				unset($o_editor_model);
 			}
 			else{
 				echo sprintf('<textarea id="%s" class="editor-textarea %s" name="%s" placeholder="%s">%s</textarea>', 
@@ -486,9 +165,43 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorView')) {
 							 esc_textarea($o_editor_conf->s_content));
 				// echo '<textarea class="comment-textarea" cols="50" rows="'.$textarea_rows.'" style="overflow: hidden; min-height: 4em; height: 46px; width: 100%;" name="'.$content_field_name.'" placeholder="'.__('Add a comment', 'x2board').'..." required>'.esc_textarea($content).'</textarea>';
 			}
-			$s_editor_html = ob_get_clean();
+			// $s_editor_html = ob_get_clean();
 			unset($o_editor_conf);
-			return $s_editor_html;
+			// return $s_editor_html;
+		}
+
+		/**
+		 * @brief convert editor component codes to be returned and specify content style.
+		 * Originally called from DisplayHandler.class.php::printContent()
+		 */
+		// function triggerEditorComponentCompile(&$content) {
+		public function render_editor_css() {
+			$o_board_info = \X2board\Includes\Classes\Context::get('current_module_info');
+			$s_content_style = $o_board_info->content_style;
+			unset($o_board_info);
+			if($s_content_style) {
+				$s_path = X2B_PATH . 'includes/modules/editor/styles/'.$s_content_style.'/';
+				if(is_dir($s_path) && file_exists($s_path . 'style.ini')) {
+					global $G_X2B_CACHE;
+					$ini = file($s_path.'style.ini');
+					for($i = 0, $c = count($ini); $i < $c; $i++) {
+						$file = trim($ini[$i]);
+						if(!$file) {
+							continue;
+						}
+						if(isset($G_X2B_CACHE['__editor_css__'][$file])) {
+							return null;
+						}
+						if(substr_compare($file, '.css', -4) === 0)	{
+							if(!isset($G_X2B_CACHE['__editor_css__'][$file])) {
+								$G_X2B_CACHE['__editor_css__'][$file] = true;
+								return "<link rel='stylesheet' id='x2board-editor-style' href='".X2B_URL."/includes/modules/editor/styles/".$s_content_style."/".$file."' type='text/css' media='all' />";
+							}
+						}
+					}
+				}
+			}
+			return null;
 		}
 
 		/**
@@ -613,7 +326,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorView')) {
 		// 	return new BaseObject();
 		// }
 
-
 		// function dispEditorPreview()
 		// {
 		// 	$this->setTemplatePath($this->module_path.'tpl');
@@ -713,6 +425,134 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorView')) {
 			return apply_filters('x2board_comment_editor', $s_editor);
 		}*/
 
+		/**
+		 * editor스킨의 hidden field 출력
+		 */
+		/*public function ob_get_comment_hidden_fields() { 
+			ob_start();
+			wp_nonce_field('x2b_'.X2B_CMD_PROC_WRITE_COMMENT, 'x2b_'.X2B_CMD_PROC_WRITE_COMMENT.'_nonce');
+
+			$header = array();
+			$a_header['cmd'] = X2B_CMD_PROC_WRITE_COMMENT;
+			$a_header['board_id'] = get_the_ID();
+
+			$o_post = \X2board\Includes\Classes\Context::get('post');
+			if(isset($o_post)) {  // insert a root comment
+				if($o_post->post_id) {  // this is mandatory
+					$a_header['parent_post_id'] = $o_post->post_id;
+				}			
+				unset($o_post);
+				$a_header['content'] = null;
+			}
+			else {  // insert a child comment
+				$o_the_comment = \X2board\Includes\Classes\Context::get('o_the_comment');
+				$a_header['parent_post_id'] = $o_the_comment->get('post_id');
+				$a_header['parent_comment_id'] = $o_the_comment->get('parent_comment_id');
+				$a_header['comment_id'] = $o_the_comment->get('comment_id');
+				$a_header['content'] = htmlspecialchars($o_the_comment->get('content'));
+			}
+			
+			foreach( $a_header as $s_field_name => $s_field_value ) {
+				echo '<input type="hidden" name="'.$s_field_name.'" value="'.$s_field_value.'">' . "\n";
+			}
+			unset($a_header);
+			$s_field = ob_get_clean();
+			// do_action('x2b_skin_editor_header_after', $content, $board);
+			return apply_filters('x2board_comment_field', $s_field);
+		}*/
+		/**
+		 * modify comment editor
+		 * /includes/no_namespace.helper.php::x2b_write_comment_content_editor()를 통해서
+		 * editor 스킨의 사용자 입력 field 출력
+		 */
+		// public function write_comment_content_editor() { 
+		// 	$s_editor_html = null;
+		// 	$o_comment = \X2board\Includes\Classes\Context::get('o_comment');
+		// 	if($o_comment->comment_id) {  // update a old comment
+				/*$o_editor_conf = new \stdClass();
+				$o_editor_conf->editor_type = 'textarea';
+				$o_editor_conf->s_content_field_name = 'comment_content';
+				// $o_post = \X2board\Includes\Classes\Context::get('post');
+				// $o_editor_conf->s_editor_uid = 'comment_content_'.$o_post->post_id;
+				// unset($o_post);
+				$o_editor_conf->s_content = $o_comment->content;
+				$o_editor_conf->n_editor_height = 400;*/
+				// $s_editor_html = $this->get_editor_html('comment', 1234, null, __('Add a comment', 'x2board').'...' );//$o_editor_conf);
+				// unset($o_editor_conf);
+		// 	}
+		// 	unset($o_comment);
+		// 	return $s_editor_html;
+		// }
+		
+		/**
+		 * 입력 필드를 사용할 수 있는 권한인지 확인한다.
+		 * @param string $name
+		 * @return boolean
+		 */
+		// public function isUseFields($permission, $roles){
+		/*private function _is_available_user_field($permission, $roles) {
+			// $board = $this->board;
+			// if($board->isAdmin()){
+			// 	return true;
+			// }
+			$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
+	// var_dump($o_logged_info->roles);		
+			if($o_logged_info->is_admin == 'Y') {
+				return true;
+			}
+			switch($permission){
+				case 'all': 
+					return true;
+				case 'author': 
+					return is_user_logged_in() ? true : false;
+				case 'roles':
+					if(is_user_logged_in()){
+						if(array_intersect($roles, (array)$o_logged_info->roles)){
+							return true;
+						}
+					}
+					return false;
+				default: 
+					return true;
+			}
+		}*/
+
+		/*public function get_comment_editor() {
+			$o_rst = new \stdClass();
+			$o_rst->s_comment_editor_html = null;//$this->get_editor_html('comment', 1234, null, __('Add a comment', 'x2board').'...' ); //$o_editor_conf);
+			// unset($o_editor_conf);
+
+			// $o_rst->s_comment_hidden_field_html = $this->_ob_get_comment_hidden_fields();
+			unset($o_post);
+			return $o_rst; 
+		}*/
+
+		/**
+		 * /includes/no_namespace.helper.php::x2b_write_post_hidden_fields()를 통해서
+		 * editor스킨의 hidden field 출력
+		 */
+		/*public static function write_comment_hidden_fields() {
+			$a_header = array();
+			$a_header['board_id'] = get_the_ID();
+			$a_header['parent_post_id'] = \X2board\Includes\Classes\Context::get('post_id');
+			$o_comment = \X2board\Includes\Classes\Context::get('o_comment');
+// var_dump($o_comment);
+			if($o_comment->comment_id) {  // update a old comment
+				$a_header['cmd'] = X2B_CMD_PROC_MODIFY_COMMENT;
+				$a_header['comment_id'] = $o_comment->comment_id;
+			}
+			else { // write a new comment
+				$a_header['cmd'] = X2B_CMD_PROC_WRITE_COMMENT; 
+			}
+			unset($o_comment);
+			wp_nonce_field('x2b_'.$a_header['cmd'], 'x2b_'.$a_header['cmd'].'_nonce');
+			// $header = apply_filters('x2b_skin_editor_header', $header, $content, $board);
+			foreach( $a_header as $s_field_name => $s_field_value ) {
+				echo '<input type="hidden" name="'.$s_field_name.'" value="'.$s_field_value.'">' . "\n";
+			}
+			unset($a_header);
+			// do_action('x2b_skin_editor_header_after', $content, $board);
+		}*/
 	}
 }
 /* End of file editor.view.php */

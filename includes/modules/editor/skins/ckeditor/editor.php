@@ -42,10 +42,10 @@ jQuery.browser = {};
 <?php $css_content = null;
 if($content_font || $content_font_size) {
 	if($content_style === 'ckeditor_light') {
-		$css_content = '.xe_content.editable p { margin: 0;'. chr(125);
+		$css_content = '.x2b_content.editable p { margin: 0;'. chr(125);
 	}
 
-	$css_content .= ' .xe_content.editable { ';
+	$css_content .= ' .x2b_content.editable { ';
 	if(isset( $content_font )) {
 		$css_content .= 'font-family:' . $content_font . ';';
 	}

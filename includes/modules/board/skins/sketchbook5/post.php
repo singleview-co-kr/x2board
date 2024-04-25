@@ -3,6 +3,7 @@ $mi = new \stdClass();
 $mi->use_category = 'Y';
 $mi->et_var = false;
 ?>
+
 <div class="bd hover_effect" >
 	<div class="rd rd_nav_style2 clear" itemscope itemtype="http://schema.org/Article">
 		<div class="rd_hd clear"> <!--  style="margin:0 -15px 20px"> -->
@@ -119,7 +120,9 @@ endforeach ?>
 			</table>
 <?php endif?>				
 			<article>
-				<div class="document_296826_0 x2b_content"><?php echo $post->get_content()?></div>
+				<!-- <div class="post_<?php //echo $post->post_id?>_<?php //echo $post->post_author?> x2b_content"> -->
+				<?php echo $post->get_content()?>
+				<!-- </div> -->
 			</article>
 		</div>
 <?php		

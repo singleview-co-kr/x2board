@@ -395,7 +395,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			$result = $this->_check_accessible_from_status();
 			if($result) {
 				$_SESSION['accessible'][$this->_n_wp_post_id] = true;
-			}
+			}			
 
 			$s_content = $this->get('content');
 			if(!$stripEmbedTagException) {
@@ -420,20 +420,19 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			// If additional content information is set
 			// if($add_content_info)
 			// {
-			// 	$memberSrl = $this->get('member_srl');
-			// 	if($memberSrl < 0)
-			// 	{
-			// 		$memberSrl = 0;
-			// 	}
-			// 	$content = sprintf(
-			// 		'<!--BeforeDocument(%d,%d)--><div class="document_%d_%d xe_content">%s</div><!--AfterDocument(%d,%d)-->',
-			// 		$this->_n_wp_post_id, $memberSrl,
-			// 		$this->_n_wp_post_id, $memberSrl,
-			// 		$content,
-			// 		$this->_n_wp_post_id, $memberSrl,
-			// 		$this->_n_wp_post_id, $memberSrl
-			// 	);
-			// 	// Add xe_content class although accessing content is not required
+				$n_post_author_id = $this->get('post_author');
+				if($n_post_author_id < 0) {
+					$n_post_author_id = 0;
+				}
+				$s_content = sprintf(
+					'<!--BeforePost(%d,%d)--><div class="post_%d_%d x2b_content">%s</div><!--AfterPost(%d,%d)-->',
+					$this->_n_wp_post_id, $n_post_author_id,
+					$this->_n_wp_post_id, $n_post_author_id,
+					$s_content,
+					$this->_n_wp_post_id, $n_post_author_id,
+					$this->_n_wp_post_id, $n_post_author_id
+				);
+				// Add x2b_content class although accessing content is not required
 			// }
 			// else
 			// {

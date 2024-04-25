@@ -26,8 +26,9 @@ else {
 
 	<!--@if($grant->write_comment && $post->isEnableComment())-->
 	<?php if($grant->write_comment && $post->is_enable_comment()):?>
-		<form id="kboard-comments-form-<?php echo $post->post_id?>" class="bd_wrt cmt_wrt clear" method="post" action="<?php echo esc_url(x2b_get_url('cmd', '', 'post_id', ''))?>" enctype="multipart/form-data" onsubmit="return kboard_comments_execute(this);">
-			<?php echo $comment_hidden_field_html ?>
+		<!-- onsubmit="return kboard_comments_execute(this);" -->
+		<form id="kboard-comments-form-<?php echo $post->post_id?>" class="bd_wrt cmt_wrt clear" method="post" action="<?php echo esc_url(x2b_get_url('cmd', '', 'post_id', ''))?>" enctype="multipart/form-data">
+		<?php x2b_write_comment_hidden_fields(); ?>
 
 			<div class="kboard-comments-form">
 				<!-- <div cond="$mi->cmt_wrt=='editor'" class="wysiwyg">{$oDocument->getCommentEditor()}</div>
@@ -44,7 +45,7 @@ else {
 				<div class="simple_wrt">
 					<!-- <span class="profile img no_img">?</span>		 -->
 					<div class="text">
-						<?php echo $comment_editor_html ?>
+						<?php x2b_write_comment_editor(); ?>
 					</div>
 					<div class="text">
 						<?php
@@ -157,8 +158,9 @@ else {
 				<!-- <a class="wysiwyg m_no" href="#"><em class="fa fa-info-circle bd_info_icon"></em> 에디터 사용하기</a> -->
 				<a class="close" href="#" onclick="jQuery('#re_cmt').fadeOut().parent().find('.re_comment').focus();return false"><i class="fa fa-times"></i> <?php echo __('Close', 'x2board')?></a>
 			</div>
-			<form id="kboard-comments-form-<?php echo $post->post_id?>" class="bd_wrt clear" method="post" action="<?php echo esc_url(x2b_get_url('cmd', '', 'post_id', ''))?>" enctype="multipart/form-data" onsubmit="return kboard_comments_execute(this);">
-				<?php echo $comment_hidden_field_html ?>
+			<!-- onsubmit="return kboard_comments_execute(this);" -->
+			<form id="kboard-comments-form-<?php echo $post->post_id?>" class="bd_wrt clear" method="post" action="<?php echo esc_url(x2b_get_url('cmd', '', 'post_id', ''))?>" enctype="multipart/form-data">
+				<?php x2b_write_comment_hidden_fields(); ?>
 			<!-- <form method="post" action="<?php //echo $commentURL->getInsertURL()?>" class="bd_wrt clear" enctype="multipart/form-data" onsubmit="return kboard_comments_execute(this);">	
 				<input type="hidden" name="content_uid" value="<?php //echo $content_uid?>">
 				<input type="hidden" name="member_uid" value="<?php //echo $member_uid?>">
@@ -166,7 +168,7 @@ else {
 				<input type="hidden" name="parent_uid" value=""> -->
 				<div class="simple_wrt">
 					<div class="text">
-						<?php echo $comment_editor_html ?>
+						<?php //echo $comment_editor_html ?>
 					</div>
 					<div class="text">
 						<?php

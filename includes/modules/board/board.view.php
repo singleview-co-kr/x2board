@@ -12,10 +12,17 @@ if ( !defined( 'ABSPATH' ) ) {
 
 if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 
-	class boardView extends board
-	{
+	class boardView extends board {
 		var $listConfig;
 		var $columnList;
+
+		private $_default_fields = array();  // get_default_user_input_fields();
+		private $_extends_fields = array();
+		private $_n_current_post_id = null;  // hidden field에서 설정하고 editor module로 전달하기 위한 메모리
+		private $_n_current_comment_id = null;  // hidden field에서 설정하고 editor module로 전달하기 위한 메모리
+
+		// 스킨에서 사용 할 사용자 정의 옵션 input, textarea, select 이름의 prefix를 정의한다.
+		const SKIN_OPTION_PREFIX = 'x2board_option_';
 
 		/**
 		 * @brief initialization
@@ -69,6 +76,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			}
 			$this->set_skin_path($s_template_path);
 			\X2board\Includes\Classes\Context::set('skin_url', X2B_URL.'includes/modules/board/skins/'.$this->module_info->skin);
+
+			//current_module_info있으므로 절대 생성하지 말것
+			// \X2board\Includes\Classes\Context::set('module_info', $this->module_info);  
 
 			$s_cmd = \X2board\Includes\Classes\Context::get('cmd');
 			switch( $s_cmd ) {
@@ -409,14 +419,13 @@ var_dump(X2B_CMD_VIEW_POST);
 			\X2board\Includes\Classes\Context::set('post', $o_post);
 
 			if($o_post->is_exists()) {  // check comment list; which depends on \X2board\Includes\Classes\Context::get('post');
-				$o_editor_view = \X2board\Includes\getView('editor');
-				$o_comment_editor = $o_editor_view->get_comment_editor();
-				unset($o_editor_view);
-				\X2board\Includes\Classes\Context::set('comment_editor_html', $o_comment_editor->s_comment_editor_html );
-				\X2board\Includes\Classes\Context::set('comment_hidden_field_html', $o_comment_editor->s_comment_hidden_field_html);
-				unset($o_comment_editor);
+				// $o_editor_view = \X2board\Includes\getView('editor');
+				// $o_comment_editor = $o_editor_view->get_comment_editor();
+				// unset($o_editor_view);
+				// \X2board\Includes\Classes\Context::set('comment_editor_html', $o_comment_editor->s_comment_editor_html );
+				// \X2board\Includes\Classes\Context::set('comment_hidden_field_html', $o_comment_editor->s_comment_hidden_field_html);
+				// unset($o_comment_editor);
 			}
-
 
 			/**
 			 * add javascript filters
@@ -430,10 +439,9 @@ var_dump(X2B_CMD_VIEW_POST);
 		/**
 		 * @brief get the board configuration
 		 **/
-		public function get_config() {
-			
+		/*public function get_config() {
 			return $this->module_info;
-		}
+		}*/
 
 		/**
 		 * @brief display board content list
@@ -728,7 +736,6 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			
 			// begin - for editor.view.php module usage	
 			\X2board\Includes\Classes\Context::set('skin_path_abs', $this->skin_path);
-			\X2board\Includes\Classes\Context::set('module_info', $this->module_info);
 			// end - for editor.view.php module usage	
 
 			// setup the skin file
@@ -822,7 +829,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			// setup the comment variables on context
 			// \X2board\Includes\Classes\Context::set('o_source_comment', $oCommentModel->getComment());
 			\X2board\Includes\Classes\Context::set('o_source_comment', $o_source_comment);
-			\X2board\Includes\Classes\Context::set('o_comment', $o_comment);
+			\X2board\Includes\Classes\Context::set('o_the_comment', $o_comment);
 
 			/**
 			 * add JS fitlers
@@ -830,7 +837,8 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			// Context::addJsFilter($this->module_path.'tpl/filter', 'insert_comment.xml');
 
 			// $this->setTemplateFile('comment_form');
-			echo $this->render_skin_file('editor_comment');
+			// echo $this->render_skin_file('editor_comment');
+			echo $this->render_skin_file('comment_form');
 		}
 
 		// function _getStatusNameList(&$oDocumentModel)
@@ -935,11 +943,11 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 
 			// get the comment information
 			$o_child_comment = $o_comment_model->get_comment();
-// var_dump($this->module_info);
+// var_dump($o_child_comment);
 			unset($o_comment_model);
 			$o_child_comment->add('board_id', $o_post->get('board_id'));
 			unset($o_post);
-			$o_child_comment->add('post_id', $o_source_comment->get('parent_post_id'));
+			$o_child_comment->add('parent_post_id', $o_source_comment->get('parent_post_id'));
 			$o_child_comment->add('parent_comment_id', $parent_comment_id);
 			\X2board\Includes\Classes\Context::set('o_the_comment', $o_child_comment);
 
@@ -948,15 +956,14 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			unset($o_source_comment);
 
 			// setup module variables
-			\X2board\Includes\Classes\Context::set('module_info', $this->module_info);
+			// \X2board\Includes\Classes\Context::set('module_info', $this->module_info);
 
-			$o_editor_view = \X2board\Includes\getView('editor');
-			$o_comment_editor = $o_editor_view->get_comment_editor();
-			unset($o_editor_view);
-			// \X2board\Includes\Classes\Context::set('comment_editor_html', $o_comment_editor->s_comment_editor_html );
-			\X2board\Includes\Classes\Context::set('comment_hidden_field_html', $o_comment_editor->s_comment_hidden_field_html);
-			unset($o_comment_editor);
-
+			// $o_editor_view = \X2board\Includes\getView('editor');
+			// $o_comment_editor = $o_editor_view->get_comment_editor_html();
+			// \X2board\Includes\Classes\Context::set('comment_editor_html', $o_editor_view->ob_get_comment_editor_html() );
+			// unset($o_editor_view);
+			// \X2board\Includes\Classes\Context::set('comment_hidden_field_html', $this->ob_get_comment_hidden_fields());
+		
 			/**
 			 * add JS filters
 			 **/
@@ -1006,6 +1013,320 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			echo $this->render_skin_file('delete_comment_form');
 			// $this->setTemplateFile('delete_comment_form');
 		}
+
+		/**
+		 * /includes/no_namespace.helper.php::x2b_write_post_hidden_fields()를 통해서
+		 * editor스킨의 hidden field 출력
+		 */
+		public function write_post_hidden_fields() {
+			$a_header = array();
+			$a_header['board_id'] = get_the_ID();
+			$o_post = \X2board\Includes\Classes\Context::get('post');
+			if($o_post->post_id) {  // update a old post
+				$a_header['cmd'] = X2B_CMD_PROC_MODIFY_POST;
+				$a_header['post_id'] = $o_post->post_id;
+				$a_header['content'] = htmlspecialchars($o_post->content);
+			}
+			else { // write a new post
+				$a_header['cmd'] = X2B_CMD_PROC_WRITE_POST; 
+				$a_header['post_id'] = \X2board\Includes\getNextSequence(); // reserve new post id for file appending
+				$a_header['content'] = null;
+			}
+			unset($o_post);
+
+			$this->_n_current_post_id = $a_header['post_id'];
+			// }
+			// $product_id = isset($_GET['woocommerce_product_tabs_inside']) ? intval($_GET['woocommerce_product_tabs_inside']) : '';
+			// if($product_id){
+			// 	$header['x2b_option_woocommerce_product_id'] = sprintf('<input type="hidden" name="x2b_option_woocommerce_product_id" value="%d">', $product_id);
+			// }
+			$o_file_controller = \X2board\Includes\getController('file');
+			$o_file_controller->set_upload_info($a_header['post_id'], $a_header['post_id']);
+			unset($o_file_controller);
+
+			wp_nonce_field('x2b_'.$a_header['cmd'], 'x2b_'.$a_header['cmd'].'_nonce');
+			
+			// $header = apply_filters('x2b_skin_editor_header', $header, $content, $board);
+			foreach( $a_header as $s_field_name => $s_field_value ) {
+				echo '<input type="hidden" name="'.$s_field_name.'" value="'.$s_field_value.'">' . "\n";
+			}
+			unset($a_header);
+			// do_action('x2b_skin_editor_header_after', $content, $board);
+		}
+
+		/**
+		 * /includes/no_namespace.helper.php::x2b_write_post_prepare_single_user_field()를 통해서
+		 * editor 스킨의 사용자 입력 field 출력
+		 */
+		public function write_post_prepare_single_user_field() { 
+			$o_post_model = \X2board\Includes\getModel('post');
+			$this->_default_fields = $o_post_model->get_default_fields();  // get_default_user_input_fields();
+			$this->_extends_fields = $o_post_model->get_extended_fields();  // get_extended_user_input_fields();
+			$a_user_input_field = $o_post_model->get_user_define_fields();
+			unset($o_post_model);
+			\X2board\Includes\Classes\Context::set('field', $a_user_input_field);
+
+// var_dump( plugin_dir_url( __FILE__ ).'js/user_define_field.js');	
+			// wp_enqueue_script('x2board-user-define-fields', plugin_dir_url( __FILE__ ).'js/user_define_field.js', ['jquery'], X2B_VERSION, true);
+		}
+
+		/**
+		 * 번역된 필드의 레이블을 반환한다.
+		 * @param array $field
+		 * @return string
+		 */
+		// public function getFieldLabel($field){
+		private function _get_field_label($a_field){
+			$field_type = $a_field['field_type'];
+			if(isset($this->_default_fields[$field_type])){
+				return $this->_default_fields[$field_type]['field_label'];
+			}
+			if(isset($this->_extends_fields[$field_type])){
+				return $this->_extends_fields[$field_type]['field_label'];
+			}
+			return $a_field['field_label'];
+		}
+
+		/**
+		 * /includes/no_namespace.helper.php::x2b_write_post_input_fields()를 통해서
+		 * editor 스킨의 사용자 입력 field 출력
+		 */
+		// public function getTemplate($field, $content='', $boardBuilder=''){
+		public function write_post_single_user_field($a_field_info) { 
+			$field = $a_field_info;
+			$template = '';
+			$permission = (isset($field['permission']) && $field['permission']) ? $field['permission'] : '';
+			$roles = (isset($field['roles']) && $field['roles']) ? $field['roles'] : '';
+			$meta_key = (isset($field['meta_key']) && $field['meta_key']) ? sanitize_key($field['meta_key']) : '';
+			
+			// if(!$this->_is_available_user_field($permission, $roles) && $meta_key){
+			// 	return;
+			// }
+			// if(!$content){
+				// $content = new KBContent();
+			// }
+
+			// $field = apply_filters('kboard_get_template_field_data', $field); //, $content, $this->board);
+
+			$field_name = strlen($field['field_name']) > 0 ? $field['field_name'] : $this->_get_field_label($field);
+			$required = (isset($field['required']) && $field['required']) ? 'required' : '';
+			$placeholder = (isset($field['placeholder']) && $field['placeholder']) ? $field['placeholder'] : '';
+			$wordpress_search = '';
+			$default_value = (isset($field['default_value']) && $field['default_value']) ? $field['default_value'] : '';
+			$html = (isset($field['html']) && $field['html']) ? $field['html'] : '';
+			$shortcode = (isset($field['shortcode']) && $field['shortcode']) ? $field['shortcode'] : '';
+			
+			$has_default_values = false;
+			$a_default_value = array();
+			if(isset($field['row']) && $field['row']){
+				foreach($field['row'] as $item){
+					if(isset($item['label']) && $item['label']){
+						$has_default_values = true;
+						if(isset($item['default_value']) && $item['default_value']){
+							$a_default_value[] = $item['label'];
+						}
+					}
+				}
+			}
+			if($a_default_value){
+				$default_value = $a_default_value;
+			}
+			
+			if($field['field_type'] == 'content'){
+// var_dump($this->module_info);	
+				// $o_editor_conf = new \stdClass();
+				// $o_editor_conf->s_editor_type = $this->module_info->post_editor_skin; //'textarea';
+				// $o_editor_conf->s_required = $required;
+				// $o_editor_conf->s_placeholder = $placeholder;
+				// $o_editor_conf->n_editor_height = $this->module_info->post_editor_height; //400;
+				// $o_editor_conf->s_content_field_name = 'content';
+
+				// $o_post = \X2board\Includes\Classes\Context::get('post');
+				// $o_editor_conf->s_content = $o_post->content;
+				// unset($o_post);
+
+				$o_editor_view = \X2board\Includes\getView('editor');
+				$editor_html = $o_editor_view->get_post_editor_html($this->_n_current_post_id, $placeholder);//$o_editor_conf);
+				unset($o_editor_view);
+				// unset($o_editor_conf);
+			}
+			elseif($field['field_type'] == 'attach') {
+				$o_module_info = $this->module_info;
+				$s_accept_file_types = str_replace(" ", "", $o_module_info->file_allowed_filetypes);
+				$s_accept_file_types = str_replace(",", "|", $s_accept_file_types);
+				$n_file_max_attached_count = intval($o_module_info->file_max_attached_count);
+				$n_file_allowed_filesize_mb = intval($o_module_info->file_allowed_filesize_mb);
+				unset($o_module_info);
+				wp_enqueue_style("x2board-jquery-fileupload-css", X2B_URL . '/assets/jquery.fileupload/css/jquery.fileupload.css', [], X2B_VERSION);
+				wp_enqueue_style("x2board-jquery-fileupload-css", X2B_URL . '/assets/jquery.fileupload/css/jquery.fileupload-ui.css', [], X2B_VERSION);
+				wp_enqueue_script('x2board-jquery-ui-widget', X2B_URL . '/assets/jquery.fileupload/js/vendor/jquery.ui.widget.js', ['jquery'], X2B_VERSION, true);
+				wp_enqueue_script('x2board-jquery-iframe-transport', X2B_URL . '/assets/jquery.fileupload/js/jquery.iframe-transport.js', ['jquery'], X2B_VERSION, true);
+				wp_enqueue_script('x2board-fileupload', X2B_URL . '/assets/jquery.fileupload/js/jquery.fileupload.js', ['jquery'], X2B_VERSION, true);
+				wp_enqueue_script('x2board-fileupload-process', X2B_URL . '/assets/jquery.fileupload/js/jquery.fileupload-process.js', ['jquery'], X2B_VERSION, true);
+				wp_enqueue_script('x2board-fileupload-caller', X2B_URL . '/assets/jquery.fileupload/file-upload.js', ['jquery'], X2B_VERSION, true);
+			}
+
+			$post = \X2board\Includes\Classes\Context::get('post');	
+			
+			// if($field['field_type'] == 'search'){
+			// 	if($content->search){
+			// 		$wordpress_search = $content->search;
+			// 	}
+			// 	else if(isset($field['default_value']) && $field['default_value']){
+			// 		$wordpress_search = $field['default_value'];
+			// 	}
+			// }
+			
+			// $order = new KBOrder();
+			// $order->board = $this->board;
+			// $order->board_id = $this->board->id;
+			
+			// $url = new KBUrl();
+			// $url->setBoard($this->board);
+			
+			// $skin = KBoardSkin::getInstance();
+			
+			// if(!$boardBuilder){
+			// 	$boardBuilder = new KBoardBuilder($this->board->id);
+			// 	$boardBuilder->setSkin($this->board->skin);
+			// 	if(wp_is_mobile() && $this->board->meta->mobile_page_rpp){
+			// 		$builder->setRpp($this->board->meta->mobile_page_rpp);
+			// 	}
+			// 	else{
+			// 		$boardBuilder->setRpp($this->board->page_rpp);
+			// 	}
+			// 	$boardBuilder->board = $this->board;
+			// }
+			// var_dump($this->board->skin)			;
+			// if(strpos($html, '#{ESC_ATTR_VALUE}') !== false){
+			// 	$value = $content->option->{$meta_key} ? esc_attr($content->option->{$meta_key}) : esc_attr($default_value);
+			// 	$html = str_replace('#{ESC_ATTR_VALUE}', $value, $html);
+			// }
+			// if(strpos($html, '#{ESC_TEXTAREA_VALUE}') !== false){
+			// 	$value = $content->option->{$meta_key} ? esc_textarea($content->option->{$meta_key}) : esc_textarea($default_value);
+			// 	$html = str_replace('#{ESC_TEXTAREA_VALUE}', $value, $html);
+			// }
+			// if(strpos($html, '#{ESC_HTML_VALUE}') !== false){
+			// 	$value = $content->option->{$meta_key} ? esc_html($content->option->{$meta_key}) : esc_html($default_value);
+			// 	$html = str_replace('#{ESC_HTML_VALUE}', $value, $html);
+			// }
+			
+			// $parent = new KBContent();
+			// $parent->initWithUID($content->parent_uid);
+			
+			// $vars = array(
+			// 	'field' => $field,
+			// 	'meta_key' => $meta_key,
+			// 	'field_name' => $field_name,
+			// 	'required' => $required,
+			// 	'placeholder' => $placeholder,
+			// 	'row' => $row,
+			// 	'wordpress_search' => $wordpress_search,
+			// 	'default_value' => $default_value,
+			// 	'html' => $html,
+			// 	'shortcode' => $shortcode,
+			// 	'board' => $this->board,
+			// 	'content' => $content,
+			// 	'parent' => $parent,
+			// 	// 'fields' => $this,
+			// 	// 'order' => $order,
+			// 	'url' => $url,
+			// 	'skin' => $skin,
+			// 	'skin_path' => $skin->url($this->board->skin),
+			// 	'skin_dir' => $skin->dir($this->board->skin),
+			// 	'boardBuilder' => $boardBuilder
+			// );
+			
+			// ob_start();
+			
+			// do_action('kboard_skin_field_before', $field, $content, $this->board);
+			// do_action("kboard_skin_field_before_{$meta_key}", $field, $content, $this->board);
+
+			// if($skin->fileExists($this->board->skin, "editor-field-{$meta_key}.php")){
+			// 	$field_html = $skin->load($this->board->skin, "editor-field-{$meta_key}.php", $vars);
+			// }
+			// else{
+				// $field_html = $this->render($this->board->skin, 'editor-fields.php', $vars);
+				// $field_html = $this->render('sketchbook5', 'editor-fields.php');
+			// }
+			
+			// if(!$field_html){
+			// 	$field_html = $skin->loadTemplate('editor-fields.php', $vars);
+			// }
+			
+			// $skin_name = 'sketchbook5';
+			// $file = 'editor-fields.php';
+			// $current_file_path = "{$this->merged_list[$skin_name]->dir}/{$file}";
+			// $current_file_path = apply_filters('kboard_skin_file_path', $current_file_path, $skin_name, $file);  //, $vars, $this);
+
+			// if($current_file_path && file_exists($current_file_path)){
+			// 	include $current_file_path;
+			// }
+			// else{
+			// 	echo sprintf(__('%s file does not exist.', 'x2board'), $file);
+			// }
+
+			$s_skin_path = \X2board\Includes\Classes\Context::get('skin_path_abs'); // this sets on board.view.php::init()
+			$s_skin_file_abs_path = $s_skin_path . '/editor-fields.php';
+			if( !file_exists( $s_skin_file_abs_path ) ) {
+				echo sprintf(__('%s file does not exist.', 'x2board'), $s_skin_file_abs_path);
+			}
+			include $s_skin_file_abs_path;
+		}
+
+		/**
+		 * 입력 필드 이름을 반환한다.
+		 * \includes\modules\board\skins\sketchbook5\editor-fields.php에서 사용
+		 * @param string $name
+		 * @return string
+		 */
+		// public function getOptionFieldName($name){
+		public function get_option_field_name( $s_name ) {
+			return $this->SKIN_OPTION_PREFIX . sanitize_key($s_name);
+		}
+
+		/**
+		 * editor스킨의 hidden field 출력
+		 */
+		public static function write_comment_hidden_fields() { 
+			wp_nonce_field('x2b_'.X2B_CMD_PROC_WRITE_COMMENT, 'x2b_'.X2B_CMD_PROC_WRITE_COMMENT.'_nonce');
+
+			$header = array();
+			$a_header['cmd'] = X2B_CMD_PROC_WRITE_COMMENT;
+			$a_header['board_id'] = get_the_ID();
+
+			$o_post = \X2board\Includes\Classes\Context::get('post');
+			if(isset($o_post)) {  // insert a root comment
+				if($o_post->post_id) {  // this is mandatory
+					$a_header['parent_post_id'] = $o_post->post_id;
+				}			
+				unset($o_post);
+				$a_header['content'] = null;
+			}
+			else {   // insert a child comment  or update the comment
+				$o_the_comment = \X2board\Includes\Classes\Context::get('o_the_comment');
+				$a_header['parent_post_id'] = $o_the_comment->get('parent_post_id');
+				$a_header['parent_comment_id'] = $o_the_comment->get('parent_comment_id');
+				$a_header['comment_id'] = $o_the_comment->get('comment_id');
+				$a_header['content'] = htmlspecialchars($o_the_comment->get('content'));
+				unset($o_the_comment);
+			}
+			unset($o_post);
+			
+			foreach( $a_header as $s_field_name => $s_field_value ) {
+				echo '<input type="hidden" name="'.$s_field_name.'" value="'.$s_field_value.'">' . "\n";
+			}
+			unset($a_header);
+			// $s_field = ob_get_clean();
+			// do_action('x2b_skin_editor_header_after', $content, $board);
+			// return apply_filters('x2board_comment_field', $s_field);
+		}
+
+
+	
+
+		
+		
 
 		/**
 		 * @brief display tag list

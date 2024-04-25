@@ -200,10 +200,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 		 */
 		// function getCommentConfig($module_srl)
 		private function _get_comment_config() {
-			$o_board_model = \X2board\Includes\getView('board');
-			$o_board_config = $o_board_model->get_config();
-			unset($o_board_model);
-
+			$o_board_config = \X2board\Includes\Classes\Context::get('current_module_info');
 			$o_comment_config = new \stdClass();
 			if(is_object($o_board_config)) {
 				$o_comment_config->comment_count = $o_board_config->comment_count;

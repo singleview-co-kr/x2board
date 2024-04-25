@@ -1,5 +1,6 @@
 <div id="kboard-default-editor" class="bd">
-	<form class="kboard-form" method="post" action="<?php echo esc_url(x2b_get_url('cmd', '', 'post_id', ''))?>" enctype="multipart/form-data" onsubmit="return kboard_editor_execute(this);">
+<!-- onsubmit="return kboard_editor_execute(this);" -->
+	<form class="kboard-form" method="post" action="<?php echo esc_url(x2b_get_url('cmd', '', 'post_id', ''))?>" enctype="multipart/form-data">  
 		<?php x2b_write_post_input_fields(); ?>
 		
 		<div class="kboard-control">

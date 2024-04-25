@@ -35,7 +35,6 @@ if ( !defined( 'X2B_CMD_VIEW_LIST' ) ) {
     define('X2B_CMD_PROC_MODIFY_POST', 'proc_modify_post');
     define('X2B_CMD_PROC_DELETE_POST', 'proc_delete_post');
     define('X2B_CMD_PROC_WRITE_COMMENT', 'proc_write_comment');  // include X2B_CMD_PROC_REPLY_COMMENT
-    define('X2B_CMD_PROC_MODIFY_COMMENT', 'proc_modify_comment');
     define('X2B_CMD_PROC_DELETE_COMMENT', 'proc_delete_comment');
     define('X2B_CMD_PROC_DOWNLOAD_FILE', 'proc_download_file');
     define('X2B_CMD_PROC_OUTPUT_FILE', 'proc_output_file');

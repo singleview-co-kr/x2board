@@ -156,9 +156,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 			// if(Mobile::isFromMobilePhone() && $obj->use_editor != 'Y') {
 			if(wp_is_mobile() && $obj->use_editor != 'Y') {
 				if($obj->use_html != 'Y') {
-					$obj->comment_content = htmlspecialchars($obj->comment_content, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
+					$obj->content = htmlspecialchars($obj->content, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
 				}
-				$obj->comment_content = nl2br($obj->comment_content);
+				$obj->content = nl2br($obj->content);
 			}
 
 			if(!isset($obj->regdate_dt)) {
@@ -167,7 +167,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 
 			// remove iframe and script if not a top administrator on the session.
 			if($o_logged_info->is_admin != 'Y') {
-				$obj->comment_content = \X2board\Includes\removeHackTag($obj->comment_content);
+				$obj->content = \X2board\Includes\removeHackTag($obj->content);
 			}
 			unset($o_logged_info);
 
@@ -307,7 +307,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 			$a_new_comment = array();
 			$a_new_comment['board_id'] = $obj->board_id;
 			$a_new_comment['parent_post_id'] = intval($obj->parent_post_id);
-			$a_new_comment['content'] = sanitize_text_field($obj->comment_content);
+			$a_new_comment['content'] = $obj->content;  // sanitize_text_field eliminates all HTML tag
 			$a_new_comment['parent_comment_id'] = intval($obj->parent_comment_id);
 			$a_new_comment['comment_id'] = intval($obj->comment_id);
 			// $a_new_comment['use_editor'] = sanitize_text_field($obj->use_editor);
@@ -333,8 +333,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 				$a_insert_key[] = "`$key`";
 				$a_insert_val[] = "'$value'";
 			}
-			// unset($a_new_comment);
-
 			// insert comment
 			$query = "INSERT INTO `{$wpdb->prefix}x2b_comments` (".implode(',', $a_insert_key).") VALUES (".implode(',', $a_insert_val).")";
 			if ($wpdb->query($query) === FALSE) {
@@ -439,11 +437,11 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 			// 	return new BaseObject(-1, 'msg_invalid_request');
 			// }
 			if(!$manual_updated) {  // check WP nonce if a guest inserts a new post
-				$wp_verify_nonce = \X2board\Includes\Classes\Context::get('x2b_'.X2B_CMD_PROC_MODIFY_COMMENT.'_nonce');
+				$wp_verify_nonce = \X2board\Includes\Classes\Context::get('x2b_'.X2B_CMD_PROC_WRITE_COMMENT.'_nonce');
 				if( is_null( $wp_verify_nonce ) ){
 					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request1', 'x2board') );
 				}
-				if( !wp_verify_nonce($wp_verify_nonce, 'x2b_'.X2B_CMD_PROC_MODIFY_COMMENT) ){
+				if( !wp_verify_nonce($wp_verify_nonce, 'x2b_'.X2B_CMD_PROC_WRITE_COMMENT) ){
 					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request2', 'x2board') );
 				}
 			}
@@ -451,11 +449,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 			if(!is_object($obj)) {
 				$obj = new \stdClass();
 			}
-
-			if(!isset($obj->content)) {
-				$obj->content = $obj->comment_content;
-			}
-			unset($obj->comment_content);
 
 			// call a trigger (before)
 			// $output = ModuleHandler::triggerCall('comment.updateComment', 'before', $obj);
@@ -544,22 +537,22 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 				$obj->last_update_dt = date('Y-m-d H:i:s', current_time('timestamp')); //date("YmdHis");
 			}		
 			
-			// var_dump($obj);
-			// sanitize
+			// sanitize other user input fields, $obj->content has been sanitized enough
 			$a_new_comment = array();
-			$a_ignore_key = array('board_id', 'use_html', 'use_editor', 'parent_post_id');
+			$a_ignore_key = array('board_id', 'content', 'use_html', 'use_editor', 'parent_post_id');
 			foreach($obj as $s_key => $s_val ) {
 				if( !in_array($s_key, $a_ignore_key) && isset($s_val) ) {
 					$a_new_comment[$s_key] = esc_sql($s_val);
 				}
 			}
+			$a_new_comment['content'] = $obj->content;  // esc_sql() converts new line to \r\n again and again
+
 			global $wpdb;
 			$result = $wpdb->update ( "{$wpdb->prefix}x2b_comments", $a_new_comment, array ( 'comment_id' => esc_sql(intval($a_new_comment['comment_id'] )) ) );
 			if( $result < 0 || $result === false ){
 				return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error );
 			}
-// var_dump($o_source_comment);
-// exit;	
+
 			// add wp_comment_id to update wp comment
 			$a_new_comment['wp_comment_id'] = $o_source_comment->wp_comment_id;
 			$this->_update_wp_comment($a_new_comment);

@@ -28,31 +28,30 @@ function x2b_get_url() {  // this function is same with func.inc.php::get_url()
 }
 
 function x2b_write_post_input_fields() {
-	$o_editor_view = \X2board\Includes\getView('editor');
-	$o_editor_view->write_post_hidden_fields();
-	$o_editor_view->write_post_prepare_single_user_field();
+	$o_board_view = \X2board\Includes\getView('board');
+	$o_board_view->write_post_hidden_fields();
+	$o_board_view->write_post_prepare_single_user_field();
 	$a_field = \X2board\Includes\Classes\Context::get('field');
 // var_dump($a_field);
 	if($a_field) {
 		foreach( $a_field as $a_field_info ){
-			$o_editor_view->write_post_single_user_field($a_field_info);
+			$o_board_view->write_post_single_user_field($a_field_info);
 		}
 	}
 	unset($a_field);
-	unset($o_boaro_editor_viewd_view);
+	unset($o_board_view);
 }
 
 function x2b_write_comment_hidden_fields() {
-	$o_board_view = \X2board\Includes\getView('editor');
+	$o_board_view = \X2board\Includes\getView('board');
 	$o_board_view->write_comment_hidden_fields();
 	unset($o_board_view);
 }
 
-function x2b_write_comment_content_editor() {
+function x2b_write_comment_editor() {
 	$o_editor_view = \X2board\Includes\getView('editor');
-	$s_editor_html = $o_editor_view->write_comment_content_editor();
+	$o_editor_view->get_comment_editor_html();
 	unset($o_editor_view);
-	return $s_editor_html;
 }
 
 /* function x2b_is_manager() {

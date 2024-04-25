@@ -281,8 +281,14 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 				echo sprintf(__('%s file does not exist.', 'x2board'), $s_skin_file_abs_path);
 			}
 			ob_start();
+
+			// call editor style on behalf of DisplayHandler.class.php::printContent() 
+			// just once!!
+			$o_editor_view = \X2board\Includes\getView('editor');
+			echo $o_editor_view->render_editor_css();
+			unset($o_editor_view);			
+
 			extract(Context::getAll4Skin(), EXTR_SKIP);
-			$s_skin_file_abs_path = apply_filters('kboard_skin_file_path', $s_skin_file_abs_path ); // , $skin_name, $file, $vars, $this);
 			include $s_skin_file_abs_path;
 			return ob_get_clean();
 		}

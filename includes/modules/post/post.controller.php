@@ -234,7 +234,7 @@ var_dump('post controller init()');
 			$a_new_post['post_author'] = intval($obj->post_author);
 			$a_new_post['nick_name'] = sanitize_text_field($obj->nick_name);
 			$a_new_post['title'] = sanitize_text_field($obj->title); // isset($data['title'])?kboard_safeiframe(kboard_xssfilter($data['title'])):'';
-			$a_new_post['content'] = sanitize_text_field($obj->content); // isset($data['content'])?kboard_safeiframe(kboard_xssfilter($data['content'])):'';
+			$a_new_post['content'] = $obj->content; // // sanitize_text_field eliminates all HTML tag  isset($data['content'])?kboard_safeiframe(kboard_xssfilter($data['content'])):'';
 			$a_new_post['regdate_dt'] = date('Y-m-d H:i:s', current_time('timestamp'));  // $n_cur_unix_timestamp; // isset($data['date'])?sanitize_key($data['date']):date('YmdHis', current_time('timestamp'));
 			$a_new_post['last_update_dt'] = $a_new_post['regdate_dt']; // $n_cur_unix_timestamp; //isset($data['update'])?sanitize_key($data['update']):$data['date'];
 			$a_new_post['readed_count'] = 0; //isset($data['view'])?intval($data['view']):0;
@@ -663,7 +663,6 @@ var_dump('post controller init()');
 				}
 				$o_new_obj->content = nl2br($o_new_obj->content);
 			}
-		
 			// Remove iframe and script if not a top adminisrator in the session.
 			if($o_logged_info->is_admin != 'Y') {
 				$o_new_obj->content = \X2board\Includes\removeHackTag($o_new_obj->content);
@@ -704,21 +703,21 @@ var_dump('post controller init()');
 			// 	return $output;
 			// }
 
-			// sanitize
+			// sanitize other user input fields, $o_new_obj->content has been sanitized enough
 			$a_new_post = array();
-			$a_ignore_key = array('use_editor', 'use_html');  // 'post_id', 
+			$a_ignore_key = array('use_editor', 'content', 'use_html');
 			foreach($o_new_obj as $s_key => $s_val ) {
 				if( !in_array($s_key, $a_ignore_key) && isset($s_val) ) {
 					$a_new_post[$s_key] = esc_sql($s_val);
 				}
 			}
+			$a_new_post['content'] = $o_new_obj->content;  // esc_sql() converts new line to \r\n again and again
 
 // var_dump($a_new_post);
 			global $wpdb;
 			$result = $wpdb->update ( "{$wpdb->prefix}x2b_posts", $a_new_post, array ( 'post_id' => esc_sql(intval($a_new_post['post_id'] )) ) );
 			if( $result < 0 || $result === false ){
 // var_dump($wpdb->last_error);					
-// exit;
 				return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error );
 			}
 			
