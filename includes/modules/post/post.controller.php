@@ -371,10 +371,8 @@ var_dump('post controller init()');
 			}
 
 			$o_file_controller = \X2board\Includes\getController('file');
-			$output = $o_file_controller->set_files_valid($a_new_post['post_id']);
+			$o_file_controller->set_files_valid($a_new_post['post_id']);
 			unset($o_file_controller);
-			unset($output);
-
 			$this->update_uploaded_count(array($a_new_post['post_id']));
 
 			// $n_new_wp_post_id = $this->_insert_wp_post($a_new_post);
@@ -746,6 +744,10 @@ var_dump('post controller init()');
 					$this->_insert_user_defined_value($a_new_post['board_id'], $a_new_post['post_id'], $idx, $o_user_input_value, $o_user_define_item->eid);
 				}
 			}
+			$o_file_controller = \X2board\Includes\getController('file');
+			$o_file_controller->set_files_valid($a_new_post['post_id']);
+			unset($o_file_controller);
+			$this->update_uploaded_count(array($a_new_post['post_id']));
 			unset($a_new_post);
 // exit;		
 

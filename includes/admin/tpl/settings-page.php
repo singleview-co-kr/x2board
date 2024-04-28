@@ -884,7 +884,7 @@ function x2b_wpuserfieldui_callback( $args ) {
 		$field_label = $o_post_admin_model->get_field_label($item);
 		$html .= 		'<li class="'.$o_post_admin_model->is_default_field($item['field_type']).' '.esc_attr($meta_key).' '.esc_attr($item['field_type']).'">';
 		$html .= 			'<input type="hidden" class="parent_id" value="'.esc_attr($meta_key).'">';
-		$html .= 			'<input type="hidden" name="fields['.esc_attr($meta_key).'][class]" class="field_data class" value="'.$item['class'].'">';
+		// $html .= 			'<input type="hidden" name="fields['.esc_attr($meta_key).'][class]" class="field_data class" value="'.$item['class'].'">';
 		$s_clos_btn = isset($item['close_button']) ? $item['close_button'] : '';
 		$html .= 			'<input type="hidden" name="fields['.esc_attr($meta_key).'][close_button]" class="field_data close_button" value="'.$s_clos_btn.'">';
 		$html .= 				'<div class="x2board-saved-fields-header">';

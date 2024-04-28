@@ -468,11 +468,11 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			}
 
 			$o_post_model = \X2board\Includes\getModel('post');
-			$configStatusList = $o_post_model->getStatusList();
-			if($status == $configStatusList['public'] || $status == $configStatusList['publish']) {
+			$configStatusList = $o_post_model->get_status_list();
+			if($status == $configStatusList['public']) {  // || $status == $configStatusList['publish']) {
 				return true;
 			}
-			else if($status == $configStatusList['private'] || $status == $configStatusList['secret']) {
+			else if($status == $configStatusList['secret']) {  // $status == $configStatusList['private'] || 
 				if($this->get('post_author') == $o_logged_info->ID)
 					return true;
 			}
@@ -556,7 +556,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 				return null;
 			}
 			$o_post_model = \X2board\Includes\getModel('post');
-			$a_skin_fields = $o_post_model->get_extra_vars($this->_n_wp_post_id);
+			$a_skin_fields = $o_post_model->get_user_define_vars($this->_n_wp_post_id);
 			unset($o_post_model);
 
 			$o_post_user_define_fields = new \X2board\Includes\Classes\UserDefineFields();

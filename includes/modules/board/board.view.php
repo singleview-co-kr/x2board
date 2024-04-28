@@ -21,9 +21,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 		private $_n_current_post_id = null;  // hidden field에서 설정하고 editor module로 전달하기 위한 메모리
 		private $_n_current_comment_id = null;  // hidden field에서 설정하고 editor module로 전달하기 위한 메모리
 
-		// 스킨에서 사용 할 사용자 정의 옵션 input, textarea, select 이름의 prefix를 정의한다.
-		const SKIN_OPTION_PREFIX = 'x2board_option_';
-
 		/**
 		 * @brief initialization
 		 * board module can be used in guest mode
@@ -227,6 +224,12 @@ var_dump(X2B_CMD_VIEW_LIST);
 			// 	return $this->_disp_message('msg_not_permitted');
 			// }
 
+			// call editor style on behalf of DisplayHandler.class.php::printContent() 
+			// just once!!
+			$o_editor_view = \X2board\Includes\getView('editor');
+			echo $o_editor_view->render_editor_css();
+			unset($o_editor_view);
+
 			/**
 			 * display the category list, and then setup the category list on context
 			 **/
@@ -290,11 +293,12 @@ var_dump(X2B_CMD_VIEW_LIST);
 			\X2board\Includes\Classes\Context::set( 'unit_meridiem', $unit_week );
 			
 			// display the notice list
-			$output = $this->_disp_notice_list();
+			$this->_disp_notice_list();
+			// $output = $this->_disp_notice_list();
 			// Return if no result or an error occurs
-			if(!$output->toBool()) {
-				return $this->_disp_message($output->getMessage());
-			}
+			// if(!$output->toBool()) {
+			// 	return $this->_disp_message($output->getMessage());
+			// }
 
 			// display the post list
 			$output = $this->_disp_post_list();
@@ -581,10 +585,8 @@ var_dump(X2B_CMD_VIEW_POST);
 			$o_args = new \stdClass();
 			$o_args->wp_page_id = get_the_ID();  // $this->module_srl;
 			$output = $o_post_model->get_notice_list($o_args, $this->columnList);
-
 			unset($o_args);
 			\X2board\Includes\Classes\Context::set('notice_list', $output->data);	
-			return $output;
 		}
 
 		private function _makeListColumnList()
@@ -727,11 +729,6 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 // var_dump($o_post);
 			\X2board\Includes\Classes\Context::set('post', $o_post);
 			unset($o_post);
-
-			// $o_post_model = \X2board\Includes\getModel('post');
-			// $a_user_input_field = $o_post_model->get_user_define_fields();
-			// \X2board\Includes\Classes\Context::set('field', $a_user_input_field);
-
 			unset($o_post_model);
 			
 			// begin - for editor.view.php module usage	
@@ -1092,7 +1089,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 		 * editor 스킨의 사용자 입력 field 출력
 		 */
 		// public function getTemplate($field, $content='', $boardBuilder=''){
-		public function write_post_single_user_field($a_field_info) { 
+		/*public function write_post_single_user_field($a_field_info) { 
 			$field = $a_field_info;
 			$template = '';
 			$permission = (isset($field['permission']) && $field['permission']) ? $field['permission'] : '';
@@ -1102,11 +1099,6 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			// if(!$this->_is_available_user_field($permission, $roles) && $meta_key){
 			// 	return;
 			// }
-			// if(!$content){
-				// $content = new KBContent();
-			// }
-
-			// $field = apply_filters('kboard_get_template_field_data', $field); //, $content, $this->board);
 
 			$field_name = strlen($field['field_name']) > 0 ? $field['field_name'] : $this->_get_field_label($field);
 			$required = (isset($field['required']) && $field['required']) ? 'required' : '';
@@ -1132,7 +1124,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 				$default_value = $a_default_value;
 			}
 			
-			if($field['field_type'] == 'content'){
+			// if($field['field_type'] == 'content'){
 // var_dump($this->module_info);	
 				// $o_editor_conf = new \stdClass();
 				// $o_editor_conf->s_editor_type = $this->module_info->post_editor_skin; //'textarea';
@@ -1145,26 +1137,26 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 				// $o_editor_conf->s_content = $o_post->content;
 				// unset($o_post);
 
-				$o_editor_view = \X2board\Includes\getView('editor');
-				$editor_html = $o_editor_view->get_post_editor_html($this->_n_current_post_id, $placeholder);//$o_editor_conf);
-				unset($o_editor_view);
+				// $o_editor_view = \X2board\Includes\getView('editor');
+				// $editor_html = $o_editor_view->get_post_editor_html($this->_n_current_post_id, $placeholder);//$o_editor_conf);
+				// unset($o_editor_view);
 				// unset($o_editor_conf);
-			}
-			elseif($field['field_type'] == 'attach') {
-				$o_module_info = $this->module_info;
-				$s_accept_file_types = str_replace(" ", "", $o_module_info->file_allowed_filetypes);
-				$s_accept_file_types = str_replace(",", "|", $s_accept_file_types);
-				$n_file_max_attached_count = intval($o_module_info->file_max_attached_count);
-				$n_file_allowed_filesize_mb = intval($o_module_info->file_allowed_filesize_mb);
-				unset($o_module_info);
-				wp_enqueue_style("x2board-jquery-fileupload-css", X2B_URL . '/assets/jquery.fileupload/css/jquery.fileupload.css', [], X2B_VERSION);
-				wp_enqueue_style("x2board-jquery-fileupload-css", X2B_URL . '/assets/jquery.fileupload/css/jquery.fileupload-ui.css', [], X2B_VERSION);
-				wp_enqueue_script('x2board-jquery-ui-widget', X2B_URL . '/assets/jquery.fileupload/js/vendor/jquery.ui.widget.js', ['jquery'], X2B_VERSION, true);
-				wp_enqueue_script('x2board-jquery-iframe-transport', X2B_URL . '/assets/jquery.fileupload/js/jquery.iframe-transport.js', ['jquery'], X2B_VERSION, true);
-				wp_enqueue_script('x2board-fileupload', X2B_URL . '/assets/jquery.fileupload/js/jquery.fileupload.js', ['jquery'], X2B_VERSION, true);
-				wp_enqueue_script('x2board-fileupload-process', X2B_URL . '/assets/jquery.fileupload/js/jquery.fileupload-process.js', ['jquery'], X2B_VERSION, true);
-				wp_enqueue_script('x2board-fileupload-caller', X2B_URL . '/assets/jquery.fileupload/file-upload.js', ['jquery'], X2B_VERSION, true);
-			}
+			// }
+			// elseif($field['field_type'] == 'attach') {
+			// 	$o_module_info = $this->module_info;
+			// 	$s_accept_file_types = str_replace(" ", "", $o_module_info->file_allowed_filetypes);
+			// 	$s_accept_file_types = str_replace(",", "|", $s_accept_file_types);
+			// 	$n_file_max_attached_count = intval($o_module_info->file_max_attached_count);
+			// 	$n_file_allowed_filesize_mb = intval($o_module_info->file_allowed_filesize_mb);
+			// 	unset($o_module_info);
+			// 	wp_enqueue_style("x2board-jquery-fileupload-css", X2B_URL . '/assets/jquery.fileupload/css/jquery.fileupload.css', [], X2B_VERSION);
+			// 	wp_enqueue_style("x2board-jquery-fileupload-css", X2B_URL . '/assets/jquery.fileupload/css/jquery.fileupload-ui.css', [], X2B_VERSION);
+			// 	wp_enqueue_script('x2board-jquery-ui-widget', X2B_URL . '/assets/jquery.fileupload/js/vendor/jquery.ui.widget.js', ['jquery'], X2B_VERSION, true);
+			// 	wp_enqueue_script('x2board-jquery-iframe-transport', X2B_URL . '/assets/jquery.fileupload/js/jquery.iframe-transport.js', ['jquery'], X2B_VERSION, true);
+			// 	wp_enqueue_script('x2board-fileupload', X2B_URL . '/assets/jquery.fileupload/js/jquery.fileupload.js', ['jquery'], X2B_VERSION, true);
+			// 	wp_enqueue_script('x2board-fileupload-process', X2B_URL . '/assets/jquery.fileupload/js/jquery.fileupload-process.js', ['jquery'], X2B_VERSION, true);
+			// 	wp_enqueue_script('x2board-fileupload-caller', X2B_URL . '/assets/jquery.fileupload/file-upload.js', ['jquery'], X2B_VERSION, true);
+			// }
 
 			$post = \X2board\Includes\Classes\Context::get('post');	
 			
@@ -1272,18 +1264,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 				echo sprintf(__('%s file does not exist.', 'x2board'), $s_skin_file_abs_path);
 			}
 			include $s_skin_file_abs_path;
-		}
-
-		/**
-		 * 입력 필드 이름을 반환한다.
-		 * \includes\modules\board\skins\sketchbook5\editor-fields.php에서 사용
-		 * @param string $name
-		 * @return string
-		 */
-		// public function getOptionFieldName($name){
-		public function get_option_field_name( $s_name ) {
-			return $this->SKIN_OPTION_PREFIX . sanitize_key($s_name);
-		}
+		}*/
 
 		/**
 		 * editor스킨의 hidden field 출력

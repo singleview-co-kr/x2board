@@ -106,36 +106,64 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileModel')) {
 		 * @return array Returns array of object that contains file information. If no result returns null.
 		 */
 		// function getFiles($upload_target_srl, $columnList = array(), $sortIndex = 'file_srl', $ckValid = false)
-		public function get_files($upload_target_id, $columnList = array(), $sortIndex = 'file_id', $ckValid = false)	{
-			$args = new \stdClass();
-			$args->upload_target_id = $upload_target_id;
-			$args->sort_index = $sortIndex;
-			if($ckValid) {
-				$args->isvalid = 'Y';
+		public function get_files($upload_target_id, $columnList = array(), $sortIndex = 'file_id', $showValidOnly = false)	{
+			// $args = new \stdClass();
+			// $args->upload_target_id = $upload_target_id;
+			// $args->sort_index = $sortIndex;
+			$s_where = "`upload_target_id`=".$upload_target_id;
+			if($showValidOnly) {
+				// $args->isvalid = 'Y';
+				$s_where .= " AND `isvalid` = 'Y'";
 			}
 
 			global $wpdb;
    			// $rows = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "posts");
-			$a_file_list = $wpdb->get_results("SELECT * FROM `{$wpdb->prefix}x2b_files` WHERE `upload_target_id`={$upload_target_id} AND `isvalid` = 'Y' ORDER BY `file_id` ASC");
-// var_dump($a_files);
-			
+			$a_file_list = $wpdb->get_results("SELECT * FROM `{$wpdb->prefix}x2b_files` WHERE {$s_where} ORDER BY `file_id` ASC");
 			// $output = executeQueryArray('file.getFiles', $args, $columnList);
 			// if(!$output->data) {
 			// 	return;
 			// }
-
 			//$file_list = $output->data;
-
 			// if($file_list && !is_array($file_list)) {
 			// 	$file_list = array($file_list);
 			// }
 
 			foreach ($a_file_list as &$file) {
-				$file->source_filename = stripslashes($file->source_filename);
-				$file->source_filename = htmlspecialchars($file->source_filename);
-				$file->download_url = $this->_get_download_url($file->file_id, $file->sid); //, $file->board_id);
+				$file->source_filename = htmlspecialchars(stripslashes($file->source_filename));
+				$file->download_url = $this->get_download_url($file->file_id, $file->sid);				
+				$file->file_type = $this->is_image_file($file->uploaded_filename) ? 'image' : 'binary';
+				$file->thumbnail_abs_url = $this->get_thumbnail_url($file->file_type, $file->uploaded_filename);
 			}
 			return $a_file_list;
+		}
+
+		/**
+		 * decide file type
+		 *
+		 * @param int $s_file_name
+		 * @return bool
+		 */
+		public function is_image_file($s_file_name) {
+			return preg_match("/\.(jpe?g|gif|png|wm[va]|mpe?g|avi|flv|mp[1-4]|as[fx]|wav|midi?|moo?v|qt|r[am]{1,2}|m4v)$/i", $s_file_name);
+		}
+
+		/**
+		 * decide file type
+		 *
+		 * @param int $s_file_name
+		 * @return bool
+		 */
+		public function get_thumbnail_url($s_file_type, $s_filename) {
+			if( $s_file_type == 'image' ) {
+				$s_wp_content_folder_name = str_replace(get_site_url(),'',content_url()).'/';  // would be '/wp-content/'
+				$a_attachment_path = explode($s_wp_content_folder_name, $s_filename);
+				$thumbnail_abs_url = content_url().'/'.$a_attachment_path[1];
+				unset($a_attachment_path);
+			}
+			else {
+				$thumbnail_abs_url = plugins_url().'/'.X2B_DOMAIN.'/assets/jquery.fileupload/img/file.png';
+			}
+			return $thumbnail_abs_url;
 		}
 
 		/**
@@ -146,7 +174,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileModel')) {
 		 * @return string Returns a url
 		 */
 		// function getDownloadUrl($file_srl, $sid, $module_srl="")
-		private function _get_download_url($file_id, $sid) {
+		public function get_download_url($file_id, $sid) {
 			return get_the_permalink().'?cmd='.X2B_CMD_PROC_DOWNLOAD_FILE.'&board_id='.get_the_ID().'&file_id='.$file_id.'&sid='.$sid;
 			// return sprintf('?module=%s&amp;cmd=%s&amp;file_id=%s&amp;sid=%s&amp;module_srl=%s', 'file', 'procFileDownload', $file_srl, $sid, $module_srl);
 		}
@@ -176,7 +204,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileModel')) {
 			// old version compatibility
 			// if(count($output->data) == 1) {
 				// $file = $output->data[0];
-				$o_file->download_url = $this->_get_download_url($o_file->file_id, $o_file->sid, $o_file->board_id);
+				$o_file->download_url = $this->get_download_url($o_file->file_id, $o_file->sid, $o_file->board_id);
 				return $o_file;
 			// }
 			// else {

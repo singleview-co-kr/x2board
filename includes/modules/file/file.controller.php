@@ -97,17 +97,17 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 
 			$output = $this->_insert_file($a_file_info, $n_board_id, $upload_target_id);  // , $module_srl
 			// Context::setResponseMethod('JSON');
-			if($output->get('direct_download') === 'Y') {
+			// if($output->get('direct_download') === 'Y') {
 				// $this->add('download_url',$output->get('uploaded_filename'));
 				$s_download_url = $output->get('thumbnail_abs_url');
-			}
-			else {
-				$n_board_id = \X2board\Includes\Classes\Context::get('board_id');
-				$o_file_model = \X2board\Includes\getModel('file');
-				// $this->add('download_url',$o_file_model->getDownloadUrl($output->get('file_id'), $output->get('sid'), $n_board_id, $n_board_id)); // $module_srl));
-				$s_download_url = $o_file_model->getDownloadUrl($output->get('file_id'), $output->get('sid'), $n_board_id, $n_board_id);
-				unset($o_file_model);
-			}
+			// }
+			// else {
+			// 	$n_board_id = \X2board\Includes\Classes\Context::get('board_id');
+			// 	$o_file_model = \X2board\Includes\getModel('file');
+			// 	// $this->add('download_url',$o_file_model->getDownloadUrl($output->get('file_id'), $output->get('sid'), $n_board_id, $n_board_id)); // $module_srl));
+			// 	$s_download_url = $o_file_model->get_download_url($output->get('file_id'), $output->get('sid')); //, $n_board_id, $n_board_id);
+			// 	unset($o_file_model);
+			// }
 
 			// if($file['size']){
 			// 	// 사진 메타데이터 추출
@@ -204,12 +204,12 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 				$file_info['name'] = base64_decode(strtr($match[1], ':', '/'));
 			}
 
+			$o_file_model = \X2board\Includes\getModel('file');
 			$logged_info = \X2board\Includes\Classes\Context::get('logged_info');
 			if(!$manual_insert)	{
 				// Get the file configurations
 				if($logged_info->is_admin != 'Y') {
-					$oFileModel = getModel('file');
-					$config = $oFileModel->getFileConfig($module_srl);
+					$config = $o_file_model->getFileConfig($module_srl);
 
 					// check file type
 					if(isset($config->allowed_filetypes) && $config->allowed_filetypes !== '*.*') {
@@ -255,9 +255,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 
 			$s_attach_path = wp_get_upload_dir()['basedir'].DIRECTORY_SEPARATOR.X2B_ATTACH_FILE_PATH;
 			$s_attach_rand_dir = \X2board\Includes\getNumberingPath($upload_target_id,3);
-
 			// Set upload path by checking if the attachement is an image or other kinds of file
-			if(preg_match("/\.(jpe?g|gif|png|wm[va]|mpe?g|avi|flv|mp[1-4]|as[fx]|wav|midi?|moo?v|qt|r[am]{1,2}|m4v)$/i", $file_info['name'])) {
+			$b_img_file = $o_file_model->is_image_file($file_info['name']);
+			
+			if( $b_img_file ) {
 				// $path = sprintf("./files/attach/images/%s/%s", $n_board_id,\X2board\Includes\getNumberingPath($upload_target_id,3));
 				$s_path = $s_attach_path.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.$n_board_id.DIRECTORY_SEPARATOR.$s_attach_rand_dir;
 				
@@ -274,6 +275,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 				}
 				$direct_download = 'Y';
 				$s_file_type = 'image';
+				$thumbnail_abs_url = $o_file_model->get_thumbnail_url($s_file_type, $filename);
 			}
 			else { 
 				// $path = sprintf("./files/attach/binaries/%s/%s", $n_board_id, \X2board\Includes\getNumberingPath($upload_target_id,3));
@@ -281,10 +283,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 				$filename = $s_path.$o_random->create_secure_salt(32, 'hex');
 				$direct_download = 'N';
 				$s_file_type = 'binary';
+				$thumbnail_abs_url = $o_file_model->get_thumbnail_url($s_file_type, $filename);
 			}
-
-			$s_url = explode('/wp-content/', $filename);
-// error_log(print_r(get_site_url().'/wp-content/'.$s_url[1], true));
+			unset($o_file_model);
+			
 			// if(!FileHandler::makeDir($path)) {
 			if( !file_exists( $s_path ) ) {
 				if(!wp_mkdir_p( $s_path ) ){
@@ -314,13 +316,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 				}
 			}
 
-			if( $s_file_type == 'image' ) {
-				$thumbnail_abs_url = get_site_url().'/wp-content/'.$s_url[1];
-			}
-			else {
-				$thumbnail_abs_url = plugins_url().'/x2board/images/file.png';
-			}
-	
 			// file information
 			$a_new_file['file_id'] = \X2board\Includes\getNextSequence();
 			$a_new_file['upload_target_id'] = $upload_target_id;
@@ -362,7 +357,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 			// $o_rst->add('source_filename', $o_args->source_filename);
 			// $o_rst->add('upload_target_id', $o_args->upload_target_id);
 			// $o_rst->add('uploaded_filename', $o_args->uploaded_filename);
-			unset($a_new_file);
+			unset($a_new_file);		
 			return $o_rst;
 		}
 
@@ -382,7 +377,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 			// $file_srls = \X2board\Includes\Classes\Context::get('file_srls');
 			// if($file_srls) $file_srl = $file_srls;
 			// Exit a session if there is neither upload permission nor information
-// error_log(print_r($n_post_id, true));
+// error_log(print_r($file_id, true));
 // error_log(print_r($_SESSION['x2b_upload_info'], true));
 			if(!$_SESSION['x2b_upload_info'][$editor_sequence]->enabled) {
 				exit();
@@ -455,7 +450,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 			// 	return;
 			// }
 
-			
 			$a_post_id = array();
 
 			// foreach($ids as $id) {
@@ -729,6 +723,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 			$file_key = \X2board\Includes\Classes\Context::get('file_key');
 			if(strstr($_SERVER['HTTP_USER_AGENT'], "Android")) {
 				$is_android = true;
+			}
+			else {
+				$is_android = false;
 			}
 
 			if($is_android && $_SESSION['__XE_FILE_KEY_AND__'][$file_id]) {

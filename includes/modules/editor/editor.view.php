@@ -48,9 +48,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorView')) {
 		 */
 		public static function get_post_editor_html($n_current_post_id, $s_placeholder =null) {   // $s_content_type, $s_required =null, 
 			$o_editor_conf = new \stdClass();
-			if( is_null( $n_current_post_id ) ) {
-				wp_die( __('invalid current post id', 'x2board') );
-			}
+			// if( is_null( $n_current_post_id ) ) {
+			// 	wp_die( __('invalid current post id', 'x2board') );
+			// }
 
 			$o_current_module_info = \X2board\Includes\Classes\Context::get('current_module_info');
 			
@@ -195,7 +195,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorView')) {
 						if(substr_compare($file, '.css', -4) === 0)	{
 							if(!isset($G_X2B_CACHE['__editor_css__'][$file])) {
 								$G_X2B_CACHE['__editor_css__'][$file] = true;
-								return "<link rel='stylesheet' id='x2board-editor-style' href='".X2B_URL."/includes/modules/editor/styles/".$s_content_style."/".$file."' type='text/css' media='all' />";
+								wp_enqueue_style('x2board-editor-style', X2B_URL.'/includes/modules/editor/styles/'.$s_content_style.'/'.$file, array(), X2B_VERSION, 'all');
+								return;
 							}
 						}
 					}

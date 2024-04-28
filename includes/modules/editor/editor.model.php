@@ -82,9 +82,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorModel')) {
 				$o_config->editor_height = $o_editor_config->comment_editor_height;
 				$o_config->enable_autosave = 'N';
 			}
+			$logged_info = \X2board\Includes\Classes\Context::get('logged_info');
 			// Check a group_list of the currently logged-in user for permission check
 			if(\X2board\Includes\Classes\Context::get('is_logged')) {
-				$logged_info = \X2board\Includes\Classes\Context::get('logged_info');
 				$group_list = $logged_info->group_list;
 			}
 			else {
@@ -103,7 +103,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorModel')) {
 			if($logged_info->is_admin=='Y') {
 				$option->allow_fileupload = true;
 			}
-			elseif(count($o_config->upload_file_grant)) {
+			elseif(count((array)$o_config->upload_file_grant)) {
 				foreach($group_list as $group_srl => $group_info) {
 					if(in_array($group_srl, $o_config->upload_file_grant)) {
 						$option->allow_fileupload = true;
@@ -151,7 +151,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorModel')) {
 			if($logged_info->is_admin=='Y') {
 				$enable_html = true;
 			}
-			elseif(count($o_config->enable_html_grant)) {
+			elseif(count((array)$o_config->enable_html_grant)) {
 				foreach($group_list as $group_srl => $group_info) {
 					if(in_array($group_srl, $o_config->enable_html_grant)) {
 						$enable_html = true;

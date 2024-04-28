@@ -36,7 +36,7 @@ $mi->et_var = false;
 			if( count($attachments) ):?>
 			<div id="files_290669" class="rd_fnt rd_file">
 				<table class="bd_tb" style="margin-bottom: 0px;">
-					<caption class="blind">Atachment</caption>
+					<caption class="blind"><?php echo __('Atachment', 'x2board')?></caption>
 					<tbody>
 						<tr>
 							<th scope="row" class="ui_font"><strong><?php echo __('Attachments', 'x2board')?></strong> <span class="fnt_count">'<b><?php echo count($attachments)?></b>'</span></th>
@@ -104,7 +104,7 @@ $mi->et_var = false;
 		<div class="rd_body clear">
 <?php if( !$mi->et_var && $post->is_user_define_extended_vars_exists() && (!$post->is_secret() || $post->is_granted()) ): ?>			
 			<table class="et_vars bd_tb" style="display: table;">
-				<caption class="blind">Extra Form</caption>
+				<caption class="blind"><?php echo __('Extra Form', 'x2board')?></caption>
 				<tbody>
 <?php $etIdx=1;
 foreach( $post->get_user_define_extended_fields() as $_ => $o_val ):?>					
@@ -126,6 +126,7 @@ endforeach ?>
 			</article>
 		</div>
 <?php		
+$cur_post_pos_in_list = -1000;  // sentinel
 foreach( $post_list as $no => $o_post ) {
 	if( $post_id == $o_post->post_id ) {
 		$cur_post_pos_in_list = $no;

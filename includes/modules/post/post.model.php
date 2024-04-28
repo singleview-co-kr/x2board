@@ -37,7 +37,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 				$G_X2B_CACHE['X2B_USER_DEFINE_KEYS'] = array();
 			}
 
-			$o_post_user_define_fields = new \X2board\Includes\Classes\UserDefineFields();
+			$o_post_user_define_fields = \X2board\Includes\Classes\UserDefineFields::getInstance();
 			$this->_a_default_fields = $o_post_user_define_fields->get_default_fields();
 			$this->_a_extends_fields = $o_post_user_define_fields->get_extended_fields();
 			unset($o_post_user_define_fields);
@@ -200,8 +200,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 		 * @return object|void
 		 */
 		// function getNoticeList($obj, $columnList = array())
-		public function get_notice_list($obj, $columnList = array())
-		{
+		public function get_notice_list($obj, $columnList = array()) {
 			// $args = new \stdClass();
 			// $args->module_srl = $obj->module_srl;
 			// $args->category_srl= $obj->category_srl;
@@ -309,7 +308,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 		public function get_user_define_extended_fields($n_board_id) {
 			$a_user_define_keys = $this->get_user_define_keys($n_board_id);
 			
-			$o_post_user_define_fields = new \X2board\Includes\Classes\UserDefineFields();
+			$o_post_user_define_fields = \X2board\Includes\Classes\UserDefineFields::getInstance();
 			$a_default_fields = $o_post_user_define_fields->get_default_fields();
 			unset($o_post_user_define_fields);
 			$a_ignore_field_type = array_keys($a_default_fields);
@@ -357,6 +356,12 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 				$a_single_field['default_value'] = $o_field->var_default;
 				$a_single_field['description'] = $o_field->var_desc;
 				$a_single_field['required'] = $o_field->var_is_required;
+				if( isset( $this->_a_default_fields[$o_field->var_type] )){
+					$a_single_field['class'] = $this->_a_default_fields[$o_field->var_type]['class']; //'x2board-class';	
+				}
+				elseif( isset( $this->_a_extends_fields[$o_field->var_type] )){
+					$a_single_field['class'] = $this->_a_extends_fields[$o_field->var_type]['class']; //'x2board-class';	
+				}
 
 				$a_single_field = array_merge($a_single_field, $a_other_field);
 				$this->_a_user_define_fields[$o_field->eid] = $a_single_field;
@@ -380,23 +385,22 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			}
 			else {
 				$a_fields = $this->_a_default_fields;
-				// foreach($a_fields as $key=>$value) {
-				// 	if(isset($value['x2board_extends'])){
-				// 		unset($a_fields[$key]);
-				// 	}
-				// }
 			}
-			return $a_fields;
+// var_dump($this->_a_user_define_fields);
+			$n_board_id = \X2board\Includes\Classes\Context::get('board_id');
+			$o_user_define_field = \X2board\Includes\Classes\UserDefineFields::getInstance();
+			$o_user_define_field->set_board_id($n_board_id);
+			$o_user_define_field->set_user_define_keys_2_submit($a_fields);
+			return $o_user_define_field->get_user_define_vars();
 		}
 	
 		/**
 		 * A particular post to get the value of the extra variable function
-		 * @param int $module_srl
-		 * @param int $document_srl
+		 * @param int $n_post_id
 		 * @return array
 		 */
 		// function getExtraVars($module_srl, $document_srl)
-		public function get_extra_vars( $n_post_id ) {
+		public function get_user_define_vars( $n_post_id ) {
 			global $G_X2B_CACHE;
 			if(!isset($G_X2B_CACHE['EXTRA_VARS'][$n_post_id])) {
 				// Extended to extract the values of variables set
@@ -507,8 +511,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 				unset($evars);
 				// $evars = new ExtraVar($n_board_id);
 				// $evars->setExtraVarKeys($extra_keys);
-				$evars = new \X2board\Includes\Classes\UserDefineFields($n_board_id);
-				$evars->set_user_define_keys($extra_keys);
+				$evars = new \X2board\Includes\Classes\UserDefineFields(); //$n_board_id);
+// var_dump($extra_keys);
+				$evars->set_user_define_keys_2_display($extra_keys);
 				
 				// Title Processing
 				// if($vars[-1][$user_lang_code]) {
@@ -552,12 +557,12 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 		}
 
 		/**
-		 * Import page of the document, module_srl Without throughout ..
-		 * @param documentItem $oDocument
+		 * Import page of the post
+		 * @param posttItem $o_post
 		 * @param object $opt
 		 * @return int
 		 */
-		// function getDocumentPage($oDocument, $opt)
+		// function getDocumentPage($o_post, $opt)
 		public function get_post_page($o_post, $o_in_args) {
 			$o_sort_check = $this->_set_sort_index($o_in_args, TRUE);
 			$o_in_args->sort_index = $o_sort_check->sort_index;
@@ -1037,8 +1042,8 @@ var_dump('plz define category search');
 						$output = executeQueryArray('document.getDocumentExtraKeys', $obj);
 					}*/
 
-					$o_user_define_fields = \X2board\Includes\Classes\UserDefineFields::getInstance($n_board_id);
-					$o_user_define_fields->set_user_define_keys($a_temp);
+					$o_user_define_fields = \X2board\Includes\Classes\UserDefineFields::getInstance(); //$n_board_id);
+					$o_user_define_fields->set_user_define_keys_2_display($a_temp);
 					$a_keys = $o_user_define_fields->get_user_define_vars();
 					unset($o_user_define_fields);
 					if(!$a_keys) {
