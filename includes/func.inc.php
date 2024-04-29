@@ -85,7 +85,7 @@ function init_custom_route() {
  */
 function enqueue_user_scripts(){
 	wp_enqueue_script('jquery');
-	wp_enqueue_script(X2B_JS_HANDLER_USER, X2B_URL . '/template/js/script.js', array(), X2B_VERSION, true);
+	wp_enqueue_script(X2B_JS_HANDLER_USER, X2B_URL . '/common/js/guest_script.js', array(), X2B_VERSION, true);
 // error_log(print_r(X2B_URL, true));
 	// Tags Input 등록
 	// wp_register_style('tagsinput', KBOARD_URL_PATH . '/assets/tagsinput/jquery.tagsinput.css', array(), '1.3.3');
