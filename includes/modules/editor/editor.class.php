@@ -1,8 +1,11 @@
 <?php
-/* Copyright (C) singleview.co.kr <https://singleview.co.kr> */
+/* Copyright (C) XEHub <https://www.xehub.io> */
+/* WP port by singleview.co.kr */
+
 /**
- * High class of the category module
- * @author singleview.co.kr
+ * @class  editor
+ * @author XEHub (developers@xpressengine.com)
+ * @brief high class of the editor odule 
  */
 namespace X2board\Includes\Modules\Editor;
 

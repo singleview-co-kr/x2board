@@ -1,8 +1,14 @@
 <?php
-/* Copyright (C) singleview.co.kr <https://singleview.co.kr> */
+/* Copyright (C) XEHub <https://www.xehub.io> */
+/* WP port by singleview.co.kr */
+
 /**
- * High class of the category module
- * @author singleview.co.kr
+ * postAdminModel class
+ * Post the module's admin model class
+ *
+ * @author XEHub (developers@xpressengine.com)
+ * @package /modules/post
+ * @version 0.1
  */
 namespace X2board\Includes\Modules\Post;
 

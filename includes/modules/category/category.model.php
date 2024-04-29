@@ -1,9 +1,11 @@
 <?php
 /* Copyright (C) singleview.co.kr <https://singleview.co.kr> */
+
 /**
- * High class of the category module
- * @author singleview.co.kr
- */
+ * @class  categoryModel
+ * @author XEHub (developers@xpressengine.com)
+ * @brief  category module Model class
+ **/
 namespace X2board\Includes\Modules\Category;
 
 if ( !defined( 'ABSPATH' ) ) {

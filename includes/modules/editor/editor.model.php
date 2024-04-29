@@ -1,11 +1,13 @@
 <?php
-namespace X2board\Includes\Modules\Editor;
 /* Copyright (C) XEHub <https://www.xehub.io> */
+/* WP port by singleview.co.kr */
+
 /**
  * @class  editorModel
  * @author XEHub (developers@xpressengine.com)
  * @brief model class of the editor odule
  */
+namespace X2board\Includes\Modules\Editor;
 
 if ( !defined( 'ABSPATH' ) ) {
     exit;  // Exit if accessed directly.

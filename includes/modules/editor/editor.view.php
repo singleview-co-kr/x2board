@@ -1,5 +1,6 @@
 <?php
 /* Copyright (C) XEHub <https://www.xehub.io> */
+/* WP port by singleview.co.kr */
 
 /**
  * @class  editorView

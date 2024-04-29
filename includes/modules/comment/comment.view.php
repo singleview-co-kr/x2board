@@ -1,9 +1,12 @@
 <?php
+/* Copyright (C) XEHub <https://www.xehub.io> */
+/* WP port by singleview.co.kr */
+
 /**
  * commentView class
  * comment module's view class
  *
- * @author singleview.co.kr
+ * @author XEHub (developers@xpressengine.com)
  * @package /modules/comment
  * @version 0.1
  */
@@ -15,8 +18,7 @@ if ( !defined( 'ABSPATH' ) ) {
 
 if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentView')) {
 	
-	class commentView extends comment
-	{
+	class commentView extends comment {
 
 		/**
 		 * Initialization

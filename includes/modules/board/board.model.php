@@ -1,7 +1,10 @@
 <?php
+/* Copyright (C) XEHub <https://www.xehub.io> */
+/* WP port by singleview.co.kr */
+
 /**
  * @class  boardModel
- * @author singleview.co.kr
+ * @author XEHub (developers@xpressengine.com)
  * @brief  board module  Model class
  **/
 namespace X2board\Includes\Modules\Board;
@@ -12,8 +15,7 @@ if ( !defined( 'ABSPATH' ) ) {
 
 if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardModel')) {
 
-	class boardModel extends board // module
-	{
+	class boardModel extends board { // module
 		/**
 		 * @brief initialization
 		 **/

@@ -1,5 +1,7 @@
 <?php
 /* Copyright (C) XEHub <https://www.xehub.io> */
+/* WP port by singleview.co.kr */
+
 /**
  * Model class of the file module
  * @author XEHub (developers@xpressengine.com)
@@ -12,8 +14,7 @@ if ( !defined( 'ABSPATH' ) ) {
 
 if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileModel')) {
 
-	class fileModel extends file
-	{
+	class fileModel extends file {
 		/**
 		 * Initialization
 		 * @return void

@@ -1,5 +1,7 @@
 <?php
 /* Copyright (C) XEHub <https://www.xehub.io> */
+/* WP port by singleview.co.kr */
+
 /**
  * High class of the file module
  * @author XEHub (developers@xpressengine.com)

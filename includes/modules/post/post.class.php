@@ -1,9 +1,16 @@
 <?php
+/* Copyright (C) XEHub <https://www.xehub.io> */
+/* WP port by singleview.co.kr */
+
 /**
- * @class  post
- * @author singleview.co.kr
- * @brief  post module high class
- **/
+ * post class
+ * @brief post the module's high class
+ * {@internal Silently adds one extra Foo to compensate for lack of Foo }
+ *
+ * @author XEHub (developers@xpressengine.com)
+ * @package /modules/post
+ * @version 0.1
+ */
 namespace X2board\Includes\Modules\Post;
 
 if ( !defined( 'ABSPATH' ) ) {

@@ -1,13 +1,15 @@
 <?php
+/* Copyright (C) XEHub <https://www.xehub.io> */
+/* WP port by singleview.co.kr */
+
 /**
  * commentItem class
  * comment BaseObject
  *
- * @author singleview.co.kr
+ * @author XEHub (developers@xpressengine.com)
  * @package /modules/comment
  * @version 0.1
  */
-
 namespace X2board\Includes\Modules\Comment;
 
 if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentItem')) {

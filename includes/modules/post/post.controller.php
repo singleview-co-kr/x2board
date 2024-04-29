@@ -1,9 +1,12 @@
 <?php
+/* Copyright (C) XEHub <https://www.xehub.io> */
+/* WP port by singleview.co.kr */
+
 /**
  * postController class
  * post the module's controller class
  *
- * @author singleview.co.kr
+ * @author XEHub (developers@xpressengine.com)
  * @package /modules/post
  * @version 0.1
  */

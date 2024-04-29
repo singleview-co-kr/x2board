@@ -1,7 +1,10 @@
 <?php
+/* Copyright (C) XEHub <https://www.xehub.io> */
+/* WP port by singleview.co.kr */
+
 /**
  * @class  boardController
- * @author singleview.co.kr
+ * @author XEHub (developers@xpressengine.com)
  * @brief  board module Controller class
  **/
 namespace X2board\Includes\Modules\Board;

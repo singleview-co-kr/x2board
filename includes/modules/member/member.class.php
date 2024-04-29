@@ -1,7 +1,10 @@
 <?php
+/* Copyright (C) XEHub <https://www.xehub.io> */
+/* WP port by singleview.co.kr */
+
 /**
  * @class  member
- * @author singleview.co.kr
+ * @author XEHub (developers@xpressengine.com)
  * high class of the member module
  */
 namespace X2board\Includes\Modules\Member;

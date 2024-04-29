@@ -1,9 +1,12 @@
 <?php
+/* Copyright (C) XEHub <https://www.xehub.io> */
+/* WP port by singleview.co.kr */
+
 /**
  * comment
  * comment module's high class
  *
- * @author singleview.co.kr
+ * @author XEHub (developers@xpressengine.com)
  * @package /modules/comment
  * @version 0.1
  */
