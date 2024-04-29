@@ -36,7 +36,7 @@
 						<a href="<?php echo esc_url(x2b_get_url('cmd', X2B_CMD_VIEW_POST, 'post_id', $post->post_id))?>"><strong><?php echo $post->title?></strong></a>
 						<a href="<?php echo esc_url(x2b_get_url('cmd', X2B_CMD_VIEW_POST, 'post_id', $post->post_id))?>#289220_comment" class="replyNum" title="댓글"><?php echo $post->get_comment_count()?></a>
 						<span class="extraimages">
-							<?php if($post->is_new()):?><span class="kboard-default-new-notify">N</span><?php endif?>
+							<?php if($post->is_new()):?><span class="x2board-default-new-notify">N</span><?php endif?>
 							<?php if($post->is_secret == 'Y'):?><img src="<?php echo $skin_url?>/img/icon-lock.png" alt="<?php echo __('Secret', 'x2board')?>"><?php endif?>
 						</span>
 					</td>
@@ -50,7 +50,7 @@
 				</tr>
 			<?php endforeach //endwhile?>
 			<?php if(false): // while($content = $list->hasNextPopular()):?>
-				<tr <?php if($content->uid == kboard_uid()):?>class='select'<?php endif?> >
+				<tr <?php if($content->uid == x2board_id()):?>class='select'<?php endif?> >
 					<td class="no"><?php echo $list->index()?></td>
 					<td class="cate"><span style="color:"><?php echo esc_html($content->category_name)?></span></td>
 					<td class="title">
@@ -58,7 +58,7 @@
 						<?php echo $content->title?></a>
 						<a href="<?php echo esc_url(x2b_get_url('cmd', X2B_CMD_VIEW_POST, 'post_id', $post->post_id))?>#289220_comment" class="replyNum" title="댓글"><?php echo $content->getCommentsCount()?></a>
 						<span class="extraimages">
-							<?php if($content->isNew()):?><span class="kboard-default-new-notify">N</span><?php endif?>
+							<?php if($content->isNew()):?><span class="x2board-default-new-notify">N</span><?php endif?>
 							<?php if($content->secret):?><img src="<?php echo $skin_url?>/img/icon-lock.png" alt="<?php echo __('Secret', 'x2board')?>"><?php endif?>
 						</span>
 					</td>
@@ -81,7 +81,7 @@
 						<?php echo $post->title?></a>
 						<a href="<?php echo esc_url(x2b_get_url('cmd', X2B_CMD_VIEW_POST, 'post_id', $post->post_id))?>#289220_comment" class="replyNum" title="댓글"><?php echo $post->get_comment_count()?></a>
 						<span class="extraimages">
-							<?php if($post->is_new()):?><span class="kboard-default-new-notify">N</span><?php endif?>
+							<?php if($post->is_new()):?><span class="x2board-default-new-notify">N</span><?php endif?>
 							<?php if($post->is_secret == 'Y'):?><img src="<?php echo $skin_url?>/img/icon-lock.png" alt="<?php echo __('Secret', 'x2board')?>"><?php endif?>
 						</span>
 					</td>
@@ -127,14 +127,14 @@ $mi_page_count = $this->n_page_count;
 // var_dump($page);
 ?>
 
-<div id="kboard-default-list">
-	<!-- <div class="kboard-pagination">
-		<ul class="kboard-pagination-pages"> -->
+<div id="x2board-default-list">
+	<!-- <div class="x2board-pagination">
+		<ul class="x2board-pagination-pages"> -->
 		<?php // echo kboard_pagination($list->page, $list->total, $list->rpp)?>
 		<!-- </ul>
 	</div> -->
 	<!-- 검색폼 시작 -->
-	<div class="kboard-search">
+	<div class="x2board-search">
 		<!-- 페이징 시작 -->
 		<!--// 페이지네이션 -->
 		<form action="./" method="get" class="bd_pg clear">
@@ -200,17 +200,17 @@ $mi_page_count = $this->n_page_count;
 		<!-- </form> -->
 		<!-- 페이징 끝 -->
 		
-		<!-- <form id="kboard-search-form-<?php echo $board_id?>" method="get" action="<?php echo x2b_get_url('cmd', '')?>"> -->
+		<!-- <form id="x2board-search-form-<?php echo $board_id?>" method="get" action="<?php echo x2b_get_url('cmd', '')?>"> -->
 			<?php //echo $url->set('pageid', '1')->set('target', '')->set('keyword', '')->set('mod', 'list')->toInput()?>
 			
 			<select name="target">
 				<option value=""><?php echo __('All', 'x2board')?></option>
-				<option value="title"<?php if(kboard_target() == 'title'):?> selected<?php endif?>><?php echo __('Title', 'x2board')?></option>
-				<option value="content"<?php if(kboard_target() == 'content'):?> selected<?php endif?>><?php echo __('Content', 'x2board')?></option>
-				<option value="member_display"<?php if(kboard_target() == 'member_display'):?> selected<?php endif?>><?php echo __('Author', 'x2board')?></option>
+				<option value="title"<?php if(x2board_target() == 'title'):?> selected<?php endif?>><?php echo __('Title', 'x2board')?></option>
+				<option value="content"<?php if(x2board_target() == 'content'):?> selected<?php endif?>><?php echo __('Content', 'x2board')?></option>
+				<option value="member_display"<?php if(x2board_target() == 'member_display'):?> selected<?php endif?>><?php echo __('Author', 'x2board')?></option>
 			</select>
-			<input type="text" name="keyword" value="<?php echo esc_attr(kboard_keyword())?>">
-			<button type="submit" class="kboard-default-button-small"><?php echo __('Search', 'x2board')?></button>
+			<input type="text" name="keyword" value="<?php echo esc_attr(x2board_keyword())?>">
+			<button type="submit" class="x2board-default-button-small"><?php echo __('Search', 'x2board')?></button>
 		</form>
 	</div>
 	<!-- 검색폼 끝 -->
@@ -219,8 +219,8 @@ $mi_page_count = $this->n_page_count;
 <?php if($grant->manager ):
 	//&& $board->isTreeCategoryActive()):?>
 <!-- 게시판 관리 기능 시작 -->
-<div clas1s="kboard-control" id='panel_control' style="margin-top:12px; display:none;">
-	<button type="button" id='btn_move_category' data-board-id='<?php echo $board_id?>' class="kboard-default-button-small"><?php echo __('Move Category to', 'x2board')?></button>
+<div clas1s="x2board-control" id='panel_control' style="margin-top:12px; display:none;">
+	<button type="button" id='btn_move_category' data-board-id='<?php echo $board_id?>' class="x2board-default-button-small"><?php echo __('Move Category to', 'x2board')?></button>
 	<select name="target_category">
 		<option value=""><?php echo __('Category select', 'x2board')?></option>
 		<?//php foreach($board->getCategoryList() as $cat_id=>$option_val):?>
@@ -247,7 +247,7 @@ jQuery('#btn_control_panel').click(function() {
 <?php endif?>
 
 <?php //if($board->contribution()):?>
-<div class="kboard-default-poweredby">
+<div class="x2board-default-poweredby">
 	<a href="#" title="">Powered by x2board</a>
 </div>
 <?php //endif?>

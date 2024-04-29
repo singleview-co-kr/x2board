@@ -53,6 +53,23 @@ function x2b_write_comment_editor() {
 	unset($o_editor_view);
 }
 
+function x2board_target(){
+	// static $target;
+	// if($target === null){
+	// 	$_GET['target'] = isset($_GET['target'])?sanitize_key($_GET['target']):'';
+	// 	$target = $_GET['target'];
+	// }
+	return null;
+}
+
+function x2board_keyword(){
+	return null;
+}
+
+function x2board_id(){
+	return null;
+}
+
 /* function x2b_is_manager() {
 	if(is_user_logged_in() ) {
 		$o_grant = \X2board\Includes\Classes\Context::get('grant');

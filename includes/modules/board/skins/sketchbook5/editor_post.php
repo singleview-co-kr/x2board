@@ -13,4 +13,3 @@
 </div>
 
 <?php //wp_enqueue_script('x2board-default-script', "{$skin_url}/js/editor.js", array(), X2B_VERSION, true)?>
-<?php wp_enqueue_style('x2board-sketchbook5-style', "{$skin_url}/style.css", array(), X2B_VERSION, 'all')?>

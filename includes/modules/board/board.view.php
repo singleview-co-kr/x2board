@@ -74,6 +74,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			$this->set_skin_path($s_template_path);
 			\X2board\Includes\Classes\Context::set('skin_url', X2B_URL.'includes/modules/board/skins/'.$this->module_info->skin);
 
+			// 기본 style sheet 호출
+			wp_enqueue_style('x2board-sketchbook5-style', X2B_URL.'includes/modules/board/skins/'.$this->module_info->skin."/css/style.css", array(), X2B_VERSION, 'all');
+
 			//current_module_info있으므로 절대 생성하지 말것
 			// \X2board\Includes\Classes\Context::set('module_info', $this->module_info);  
 
