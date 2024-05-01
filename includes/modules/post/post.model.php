@@ -40,7 +40,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 				$G_X2B_CACHE['X2B_USER_DEFINE_KEYS'] = array();
 			}
 
-			$o_post_user_define_fields = \X2board\Includes\Classes\UserDefineFields::getInstance();
+			$o_post_user_define_fields = \X2board\Includes\Classes\GuestUserDefineFields::getInstance();
 			$this->_a_default_fields = $o_post_user_define_fields->get_default_fields();
 			$this->_a_extends_fields = $o_post_user_define_fields->get_extended_fields();
 			unset($o_post_user_define_fields);
@@ -311,7 +311,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 		public function get_user_define_extended_fields($n_board_id) {
 			$a_user_define_keys = $this->get_user_define_keys($n_board_id);
 			
-			$o_post_user_define_fields = \X2board\Includes\Classes\UserDefineFields::getInstance();
+			$o_post_user_define_fields = \X2board\Includes\Classes\GuestUserDefineFields::getInstance();
 			$a_default_fields = $o_post_user_define_fields->get_default_fields();
 			unset($o_post_user_define_fields);
 			$a_ignore_field_type = array_keys($a_default_fields);
@@ -391,7 +391,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			}
 // var_dump($this->_a_user_define_fields);
 			$n_board_id = \X2board\Includes\Classes\Context::get('board_id');
-			$o_user_define_field = \X2board\Includes\Classes\UserDefineFields::getInstance();
+			$o_user_define_field = \X2board\Includes\Classes\GuestUserDefineFields::getInstance();
 			$o_user_define_field->set_board_id($n_board_id);
 			$o_user_define_field->set_user_define_keys_2_submit($a_fields);
 			return $o_user_define_field->get_user_define_vars();
@@ -514,7 +514,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 				unset($evars);
 				// $evars = new ExtraVar($n_board_id);
 				// $evars->setExtraVarKeys($extra_keys);
-				$evars = new \X2board\Includes\Classes\UserDefineFields(); //$n_board_id);
+				$evars = new \X2board\Includes\Classes\GuestUserDefineFields(); //$n_board_id);
 // var_dump($extra_keys);
 				$evars->set_user_define_keys_2_display($extra_keys);
 				
@@ -998,7 +998,7 @@ var_dump('plz define category search');
 					$cache_key = $o_cache_handler->getGroupKey('site_and_module', $object_key);
 					$a_keys = $o_cache_handler->get($cache_key);
 				}
-				// $o_user_define_fields = \X2board\Includes\Classes\UserDefineFields::getInstance($n_board_id); // 호출 효율성 위해서 아래로 이동
+				// $o_user_define_fields = \X2board\Includes\Classes\GuestUserDefineFields::getInstance($n_board_id); // 호출 효율성 위해서 아래로 이동
 
 				if($a_keys === false) {  // _set_user_define_fields()과 동일한 DB 호출  -> 캐쉬화해야 함
 					$s_columns = '`board_id` as `board_id`, `var_idx` as `idx`, `var_name` as `name`, `var_type` as `type`, `var_is_required` as `is_required`, `var_search` as `search`, `var_default` as `default`, `var_desc` as `desc`, `eid` as `eid`  ';
@@ -1045,7 +1045,7 @@ var_dump('plz define category search');
 						$output = executeQueryArray('document.getDocumentExtraKeys', $obj);
 					}*/
 
-					$o_user_define_fields = \X2board\Includes\Classes\UserDefineFields::getInstance(); //$n_board_id);
+					$o_user_define_fields = \X2board\Includes\Classes\GuestUserDefineFields::getInstance(); //$n_board_id);
 					$o_user_define_fields->set_user_define_keys_2_display($a_temp);
 					$a_keys = $o_user_define_fields->get_user_define_vars();
 					unset($o_user_define_fields);

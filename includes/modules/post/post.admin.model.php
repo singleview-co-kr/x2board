@@ -18,13 +18,12 @@ if (!defined('ABSPATH')) {
 
 if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postAdminModel')) {
 	
-	require_once X2B_PATH . 'includes\classes\UserDefineFields.class.php';
+	require_once X2B_PATH . 'includes\classes\user_define_fields\AdminUserDefineFields.class.php';
 
 	class postAdminModel {
-		private $_n_board_id = null;
-		private $_a_default_fields = array();
-		private $_a_extends_fields = array();
+		private $_a_unchosen_user_default_fields = array();
 		private $_a_user_define_fields = array();
+		private $_a_extended_fields = array();
 
 		/**
 		 * @brief constructor
@@ -37,91 +36,17 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postAdminModel')) {
 				wp_die(__('You do not have permission.', 'x2board'));
 			}
 			unset($o_current_user);
-
-			// $o_post_extra_vars = new \X2board\Includes\Modules\Post\postExtraVars();
-			$o_post_user_define_fields = new \X2board\Includes\Classes\UserDefineFields();
-			$this->_a_default_fields = $o_post_user_define_fields->get_default_fields();
-			$this->_a_extends_fields = $o_post_user_define_fields->get_extended_fields();
-			unset($o_post_user_define_fields);
-
-			$this->_set_user_define_fields();
-		}
-
-		/**
-		 * 게시판 관리자의 사용자 정의 필드 목록 화면용 필드 정뵤 반환
-		 * @return array
-		 */
-		// getDefaultFields() {
-		public function get_default_fields() {
-			$a_default_fields = $this->_a_default_fields;
-			if(empty($this->_a_user_define_fields)) { // all default fields are selected if init case
-				return array();
-			}
-			foreach($a_default_fields as $key=>$value) {
-// var_dump($key);
-				if($this->_a_user_define_fields) {
-					if(isset($this->_a_user_define_fields[$key])){
-						unset($a_default_fields[$key]);
-					}
-				}
-				// else {
-				// 	if(!isset($value['kboard_extends'])) {
-						;//unset($a_default_fields[$key]);  ??????????????????
-				// 	}
-				// }
-			}
-			return $a_default_fields;
-		}
-
-		/**
-		 * 확장 필드를 반환한다.
-		 * @return array
-		 */
-		public function get_extended_fields() {
-			return $this->_a_extends_fields;
-		}
-
-		/**
-		 * 관리자가 설정한 입력 필드를 반환한다.
-		 * @return array
-		 */
-		// getSkinFields() {
-		public function get_user_define_fields() {
-			$a_fields = array();
-			if($this->_a_user_define_fields) {
-				$a_fields = $this->_a_user_define_fields;
-			}
-			else {
-				$a_fields = $this->_a_default_fields;
-				// foreach($a_fields as $key=>$value) {
-				// 	if(isset($value['x2board_extends'])){
-				// 		unset($a_fields[$key]);
-				// 	}
-				// }
-			}
-			return $a_fields;
+			$this->_build_user_define_fields();
 		}
 
 		/**
 		 * retrieve user define fields from DB
-		 * admin: 'field_name' => db: var_name  관리자 화면에서 [필드 레이블] 입력란은 field_name에 저장함
-		 * admin: 'field_type' => db: var_type
-		 * admin: 'meta_key' => db: eid
-		 * admin: 'default_value' => db: var_default
-		 * admin: 'description' => db: var_desc
-		 * admin: 'required' => db: var_is_required
-		 * 
-		 * admin: 'field_label' => db: ??  관리자 화면에서 용도 불명, 사용자 화면에서 기본 필드명 표시위한 용도
 		 */
-		private function _set_user_define_fields() { //$skin_fields){
-			if( !empty($this->_a_user_define_fields ) ){
-				return;
-			}
-// var_dump($_GET['board_id']);
-			$this->_n_board_id = intval(sanitize_text_field($_GET['board_id'] ));
+		private function _build_user_define_fields() {
+			$n_board_id = intval(sanitize_text_field($_GET['board_id'] ));
 			$s_columns = '`var_name`, `var_type`, `var_is_required`, `var_search`, `var_default`, `var_desc`, `eid`, `json_param`';  // , `meta_key`
 			global $wpdb;
-			$a_temp = $wpdb->get_results("SELECT {$s_columns} FROM `{$wpdb->prefix}x2b_user_define_keys` WHERE `board_id` = '{$this->_n_board_id}' ORDER BY `var_idx` ASC");
+			$a_temp = $wpdb->get_results("SELECT {$s_columns} FROM `{$wpdb->prefix}x2b_user_define_keys` WHERE `board_id` = '{$n_board_id}' ORDER BY `var_idx` ASC");
 // var_dump($a_temp);
 			
 			foreach( $a_temp as $_ => $o_field ) {
@@ -142,69 +67,125 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postAdminModel')) {
 				unset($a_other_field);
 			}
 			unset($a_temp);
-// var_dump($this->_a_user_define_fields);
+
+			$o_post_user_define_fields = \X2board\Includes\Classes\AdminUserDefineFields::getInstance();
+			$o_post_user_define_fields->set_user_define_fields_from_db($this->_a_user_define_fields);
+			$this->a_user_define_fields = $o_post_user_define_fields->get_user_define_fields();
+			$this->_a_unchosen_user_default_fields = $o_post_user_define_fields->get_unchosen_default_fields();
+			$this->_a_extended_fields = $o_post_user_define_fields->get_extended_fields();
+// var_dump($this->_a_unchosen_user_default_fields);
+			unset($o_post_user_define_fields);
 		}
 
 		/**
-		 * 입력 필드에 여러 줄을 입력하는 필드인지 확인한다.
-		 * @param string $fields_type
-		 * @return string
+		 * WP user field UI Callback
+		 *
+		 * Renders WP user field UI fields.
+		 *
+		 * @since 2.6.0
+		 *
+		 * @return void
 		 */
-		// public function isMultiLineFields($fields_type){
-		public function is_multiline_fields($s_fields_type) {
-			// $multi_line_fields = apply_filters('kboard_multi_line_fields_fields', array('html', 'shortcode'), $this->board);
-			if(in_array($s_fields_type, array('html', 'shortcode'))){
-				return true;
+		public function render_user_field_ui() {
+			$s_html = '<div class="x2board-fields-wrap">
+						<!---div class="x2board-fields-message">
+							일부 스킨에서는 입력필드 설정이 적용되지 않습니다.
+						</div --->
+						<div class="x2board-fields-left">
+							<h3 class="x2board-fields-h3">'.__('Available field', 'x2board').'</h3>
+							<ul class="x2board-fields">
+								<li class="x2board-fields-default left">
+									<button type="button" class="x2board-fields-header">'.
+										__('Basic field', 'x2board').
+										'<span class="fields-up">▲</span>
+										<span class="fields-down">▼</span>
+									</button>
+									<ul class="x2board-fields-list x2board-fields-content">';
+			$s_html .= $this->_render_unchosen_default_fields();
+			$s_html .=				'</ul>
+								</li>
+								<li class="x2board-fields-extension left">
+								<button type="button" class="x2board-fields-header">'.
+								__('Extended fields', 'x2board').
+									'<span class="fields-up">▲</span>
+									<span class="fields-down">▼</span>
+								</button>
+								<ul class="x2board-fields-list x2board-fields-content">';
+			
+			if($this->_a_extended_fields) {
+				$s_html .= $this->_render_user_extended_fields();
 			}
-			return false;
+
+			$s_html .= 		'</ul>
+						</li>
+					</ul>
+				</div>
+				<div class="x2board-fields-right">
+					<div class="x2board-fields x2board-sortable-fields">
+						<h3 class="x2board-fields-h3">'.__('User define fields presentation', 'x2board').'</h3>
+						<div class="description">'.__('Drag from the left section to activate', 'x2board').'</div>
+						<ul class="x2board-skin-fields x2board-fields-sortable connected-sortable">';
+			$s_html .= $this->_render_user_define_fields();
+			$s_html .= 	'</ul>
+						<div class="description"><button type="button" class="button button-small" onclick="x2board_skin_fields_reset()">'.__('Reset configuration', 'x2board').'</button></div>
+					</div>
+				</div>
+			</div>';
+			echo apply_filters( 'x2b_after_setting_output', $s_html );
 		}
 
 		/**
-		 * 기본 필드인지 확인한다.
-		 * @param string $fields_type
-		 * @return string
+		 * unchosen user default field UI render
+		 *
+		 * Renders unchosen user field UI fields.
+		 *
+		 * @since 2.6.0
+		 *
+		 * @param array $array of unchosen user default field 
+		 * @return void
 		 */
-		// public function isDefaultFields($fields_type) {
-		public function is_default_field($fields_type) {
-			// $default_fields = apply_filters('kboard_admin_default_fields', $this->default_fields, $this->board);
-			if(isset($this->_a_default_fields[$fields_type])) {
-				return 'default';
+		private function _render_unchosen_default_fields() {
+			$s_html = null;
+			foreach($this->_a_unchosen_user_default_fields as $key=>$o_item) {
+				$s_html .= 	$o_item->get_widget_html();
 			}
-			return 'extends';
+			return $s_html;
 		}
 
 		/**
-		 * 번역된 필드의 레이블을 반환한다.
-		 * @param array $field
-		 * @return string
+		 * unchosen user default field UI render
+		 *
+		 * Renders unchosen user field UI fields.
+		 *
+		 * @since 2.6.0
+		 *
+		 * @param array $array of unchosen user default field 
+		 * @return void
 		 */
-		// public function getFieldLabel($field){
-		public function get_field_label($a_field_info){
-			$s_field_type = $a_field_info['field_type'];
-			// $fields = apply_filters('kboard_admin_default_fields', $this->default_fields, $this->board);
-			if(isset($this->_a_default_fields[$s_field_type])){
-				return $this->_a_default_fields[$s_field_type]['field_label'];
+		private function _render_user_extended_fields() {
+			$s_html =	null;
+			foreach($this->_a_extended_fields as $key=>$o_item) {
+				$s_html .= 	$o_item->get_widget_html();
 			}
-			// $fields = apply_filters('kboard_admin_extends_fields', $this->extends_fields, $this->board);
-			if(isset($this->_a_extends_fields[$s_field_type])){
-				return $this->_a_extends_fields[$s_field_type]['field_label'];
-			}
-			return $a_field_info['field_label'];
+			return $s_html;
 		}
 
 		/**
-		 * 저장된 값이 있는지 체크한다.
-		 * @param array $row
-		 * @return boolean
+		 * unchosen user default field UI render
+		 *
+		 * Renders unchosen user field UI fields.
+		 *
+		 * @since 2.6.0
+		 *
+		 * @param array $array of unchosen user default field 
+		 * @return void
 		 */
-		// public function valueExists($row){
-		public function is_value_exists($row) {
-			foreach($row as $key=>$item) {
-				if(isset($item['label']) && $item['label']) {
-					return true;
-				}
+		private function _render_user_define_fields() {
+			$s_html = null;
+			foreach($this->a_user_define_fields as $key=>$o_item) {
+				$s_html .= 	$o_item->get_widget_html();
 			}
-			return false;
+			return $s_html;
 		}
 	}
 }

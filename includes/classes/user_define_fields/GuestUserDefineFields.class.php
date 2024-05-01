@@ -11,13 +11,11 @@ if (!defined('ABSPATH')) {
 	exit;
 } // Exit if accessed directly
 
-if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
+require_once X2B_PATH . 'includes\classes\user_define_fields\UserDefineFields.class.php';
 
-	class UserDefineFields {
+if (!class_exists('\\X2board\\Includes\\Classes\\GuestUserDefineFields')) {
 
-		private $_a_default_fields = array();
-		private $_a_extends_fields = array();
-
+	class GuestUserDefineFields extends UserDefineFields {
 
 		/**
 		 * sequence of board
@@ -26,334 +24,27 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 		private $_n_board_id = null;
 
 		/**
-		 * Current module's Set of UserDefineItem
-		 * @var UserDefineItem[]
+		 * Current module's Set of UserDefineItemForGuest
+		 * @var UserDefineItemForGuest[]
 		 */
 		private $_a_key = null;
 
 		/**
-		 * Get instance of ExtraVar (singleton)
+		 * Get instance of GuestUserDefineFields (singleton)
 		 *
-		 * @param int $board_id
-		 * @return UserDefineFields
+		 * @return GuestUserDefineFields
 		 */
 		public static function getInstance() {
-			return new UserDefineFields();
+			return new GuestUserDefineFields();
 		}
 
 		/**
 		 * Constructor
 		 *
-		 * @param int $board_id Sequence of board
 		 * @return void
 		 */
-		public function __construct() {			
-			$this->_a_default_fields = array(
-				'title' => array(
-					'field_type' => 'title',
-					'field_label' => __('Title', 'x2board'),
-					'field_name' => '',
-					'class' => 'x2board-attr-title',
-					'meta_key' => 'title',
-					'permission' => 'all',
-					'roles' => array(),
-					'default_value' => '',
-					'placeholder' => '',
-					'description' => '',
-					'close_button' => ''
-				),
-				'option' => array(
-					'field_type' => 'option',
-					'field_label' => __('Options', 'x2board'),
-					'field_name' => '',
-					'class' => 'x2board-attr-option',
-					'meta_key' => 'option',
-					'secret_permission' => '',
-					'secret' => array(),
-					'notice_permission' => 'roles',
-					'notice'=> array('administrator'),
-					'allow_comment_permission' => 'roles',
-					'allow_comment'=> array('administrator'),
-					'description' => '',
-					'close_button' => 'yes'
-				),
-				'nick_name' => array(
-					'field_type' => 'nick_name',
-					'field_label' => __('Nickname', 'x2board'),
-					'field_name' => '',
-					'class' => 'x2board-attr-nick-name',
-					'meta_key' => 'nick_name',
-					'permission' => '',
-					'default_value' => '',
-					'placeholder' => '',
-					'description' => '',
-					'close_button' => ''
-				),
-				'category' => array(
-					'field_type' => 'category',
-					'field_label' => __('Category', 'x2board'),
-					'field_name' => '',
-					'class' => 'x2board-attr-category',
-					'meta_key' => 'category',
-					'permission' => '',
-					'roles' => array(),
-					'option_field' => true,
-					'description' => '',
-					'close_button' => 'yes'
-				),
-				// 'captcha' => array(
-				// 	'field_type' => 'captcha',
-				// 	'field_label' => __('Captcha', 'x2board'),
-				// 	'class' => 'x2board-attr-captcha',
-				// 	'meta_key' => 'captcha',
-				// 	'description' => '',
-				// 	'close_button' => 'yes'
-				// ),
-				'content' => array(
-					'field_type' => 'content',
-					'field_label' => __('Content', 'x2board'),
-					'field_name' => '',
-					'class' => 'x2board-attr-content',
-					'meta_key' => 'content',
-					'placeholder' => '',
-					'description' => '',
-					'required' => '',
-					'close_button' => 'yes'
-				),
-				'attach' => array(
-					'field_type' => 'attach',
-					'field_label' => __('Attachment', 'x2board'),
-					'field_name' => '',
-					'class' => 'x2board-attr-attach',
-					'meta_key' => 'attach',
-					'permission' => '',
-					'roles' => array(),
-					'description' => '',
-					'close_button' => 'yes'
-				),
-				'search' => array(
-					'field_type' => 'search',
-					'field_label' => __('WP Search', 'x2board'),
-					'field_name' => '',
-					'class' => 'x2board-attr-search',
-					'meta_key' => 'search',
-					'permission' => '',
-					'roles' => array(),
-					'default_value' => '',
-					'description' => '',
-					'hidden' => '',
-					'close_button' => ''
-				)
-			);
-
-			$this->_a_extends_fields = array(
-				'text' => array(
-					'field_type' => 'text',
-					'field_label' => __('Text/Hidden', 'x2board'),
-					'field_name' => '',
-					'class' => 'x2board-attr-text',
-					'custom_class' => '',
-					'meta_key' => '',
-					'permission' => '',
-					'roles' => array(),
-					'default_value' => '',
-					'placeholder' => '',
-					'description' => '',
-					'required' => '',
-					'show_document' => '',
-					'hidden' => '',
-					'close_button' => 'yes'
-				),
-				'select' => array(
-					'field_type' => 'select',
-					'field_label' => __('Select Box', 'x2board'),
-					'field_name' => '',
-					'class' => 'x2board-attr-select',
-					'custom_class' => '',
-					'meta_key' => '',
-					'row' => array(),
-					'default_value' => '',
-					'permission' => '',
-					'roles' => array(),
-					'description' => '',
-					'required' => '',
-					'show_document' => '',
-					'close_button' => 'yes'
-				),
-				'radio' => array(
-					'field_type' => 'radio',
-					'field_label' => __('Radio Button', 'x2board'),
-					'field_name' => '',
-					'class' => 'x2board-attr-radio',
-					'custom_class' => '',
-					'meta_key' => '',
-					'row' => array(),
-					'default_value' => '',
-					'permission' => '',
-					'roles' => array(),
-					'description' => '',
-					'required' => '',
-					'show_document' => '',
-					'close_button' => 'yes'
-				),
-				'checkbox' => array(
-					'field_type' => 'checkbox',
-					'field_label' => __('Checkbox', 'x2board'),
-					'field_name' => '',
-					'class' => 'x2board-attr-checkbox',
-					'custom_class' => '',
-					'meta_key' => '',
-					'row' => array(),
-					'permission' => '',
-					'roles' => array(),
-					'description' => '',
-					'required' => '',
-					'show_document' => '',
-					'close_button' => 'yes'
-				),
-				'textarea' => array(
-					'field_type' => 'textarea',
-					'field_label' => __('Textarea', 'x2board'),
-					'field_name' => '',
-					'class' => 'x2board-attr-textarea',
-					'custom_class' => '',
-					'meta_key' => '',
-					'permission' => '',
-					'roles' => array(),
-					'default_value' => '',
-					'placeholder' => '',
-					'required' => '',
-					'show_document' => '',
-					'description' => '',
-					'close_button' => 'yes'
-				),
-				'wp_editor' => array(
-					'field_type' => 'wp_editor',
-					'field_label' => __('WP Editor', 'x2board'),
-					'field_name' => '',
-					'class' => 'x2board-attr-wp-editor',
-					'custom_class' => '',
-					'meta_key' => '',
-					'permission' => '',
-					'roles' => array(),
-					'default_value' => '',
-					'placeholder' => '',
-					'required' => '',
-					'show_document' => '',
-					'description' => '',
-					'close_button' => 'yes'
-				),
-				'html' => array(
-					'field_type' => 'html',
-					'field_label' => __('HTML', 'x2board'),
-					'field_name' => '',
-					'class' => 'x2board-attr-html',
-					'custom_class' => '',
-					'meta_key' => '',
-					'permission' => '',
-					'roles' => array(),
-					'default_value' => '',
-					'show_document' => '',
-					'description' => '',
-					'close_button' => 'yes',
-					'html' => ''
-				),
-				'shortcode' => array(
-					'field_type' => 'shortcode',
-					'field_label' => __('Shortcode', 'x2board'),
-					'field_name' => '',
-					'class' => 'x2board-attr-shortcode',
-					'custom_class' => '',
-					'meta_key' => '',
-					'permission' => '',
-					'roles' => array(),
-					'default_value' => '',
-					'show_document' => '',
-					'description' => '',
-					'close_button' => 'yes',
-					'shortcode' => ''
-				),
-				'date' => array(
-					'field_type' => 'date',
-					'field_label' => __('Date Select', 'x2board'),
-					'field_name' => '',
-					'class' => 'x2board-attr-date',
-					'custom_class' => '',
-					'meta_key' => '',
-					'permission' => '',
-					'roles' => array(),
-					'default_value' => '',
-					'placeholder' => '',
-					'required' => '',
-					'show_document' => '',
-					'description' => '',
-					'close_button' => 'yes'
-				),
-				'time' => array(
-					'field_type' => 'time',
-					'field_label' => __('Time Select', 'x2board'),
-					'field_name' => '',
-					'class' => 'x2board-attr-time',
-					'custom_class' => '',
-					'meta_key' => '',
-					'permission' => '',
-					'roles' => array(),
-					'default_value' => '',
-					'placeholder' => '',
-					'required' => '',
-					'show_document' => '',
-					'description' => '',
-					'close_button' => 'yes'
-				),
-				'email' => array(
-					'field_type' => 'email',
-					'field_label' => __('Email', 'x2board'),
-					'field_name' => '',
-					'class' => 'x2board-attr-email',
-					'custom_class' => '',
-					'meta_key' => '',
-					'permission' => '',
-					'roles' => array(),
-					'default_value' => '',
-					'placeholder' => '',
-					'required' => '',
-					'show_document' => '',
-					'description' => '',
-					'hidden' => '',
-					'close_button' => 'yes'
-				),
-				'address' => array(
-					'field_type' => 'address',
-					'field_label' => __('Address', 'x2board'),
-					'field_name' => '',
-					'class' => 'x2board-attr-address',
-					'custom_class' => '',
-					'meta_key' => '',
-					'permission' => '',
-					'roles' => array(),
-					'default_value' => '',
-					'placeholder' => '',
-					'required' => '',
-					'show_document' => '',
-					'description' => '',
-					'close_button' => 'yes'
-				),
-				/*
-				'color' => array(
-					'field_type' => 'color',
-					'field_label' => __('Color Select', 'x2board'),
-					'field_name' => '',
-					// 'class' => 'x2board-attr-color',
-					'meta_key' => '',
-					'permission' => '',
-					'roles' => array(),
-					'default_value' => '',
-					'description' => '',
-					'show_document' => '',
-					'close_button' => 'yes'
-				)
-				*/
-			);
+		public function __construct() {
+			parent::__construct();
 		}
 
 		/**
@@ -373,21 +64,13 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 		}
 
 		/**
-		 * Register a key of user define fields to display on /skins/post.html
-		 * 
-		 * @param object[] $extra_keys Array of extra variable. A value of array is object that contains board_id, idx, name, default, desc, is_required, search, value, eid.
-		 * @return void
+		 * Returns an array of UserDefineItemForGuest
+		 *
+		 * @return UserDefineItemForGuest[]
 		 */
-		// function setExtraVarKeys($extra_keys) {
-		public function set_user_define_keys_2_display($a_user_define_field) {
-			if(!is_array($a_user_define_field) || count($a_user_define_field) < 1) {
-				return;
-			}
-			foreach($a_user_define_field as $val) {
-				$s_old_val = isset($val->value) ? $val->value : null;
-				$obj = new UserDefineItem($val->board_id, $val->idx, $val->name, $val->type, $val->default, $val->desc, $val->is_required, $val->search, $s_old_val, $val->eid);
-				$this->_a_key[$val->idx] = $obj;
-			}
+		// function getExtraVars() {
+		public function get_user_define_vars() {
+			return $this->_a_key;
 		}
 
 		/**
@@ -401,21 +84,47 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 		}
 
 		/**
+		 * Register a key of user define fields to display on /skins/post.html
+		 * 
+		 * @param object[] $extra_keys Array of extra variable. A value of array is object that contains board_id, idx, name, default, desc, is_required, search, value, eid.
+		 * @return void
+		 */
+		// function setExtraVarKeys($extra_keys) {
+		public function set_user_define_keys_2_display($a_user_define_field) {
+			if(!is_array($a_user_define_field) || count($a_user_define_field) < 1) {
+				return;
+			}
+			foreach($a_user_define_field as $val) {
+				$s_old_val = isset($val->value) ? $val->value : null;
+				$obj = new UserDefineItemForGuest($val->board_id, $val->idx, $val->name, $val->type, $val->default, $val->desc, $val->is_required, $val->search, $s_old_val, $val->eid);
+				$this->_a_key[$val->idx] = $obj;
+			}
+		}
+
+		/**
 		 * Convert and register Kboard formatted user define fields to display on /skins/editor_post.html
 		 * 
 		 * @param object[] $extra_keys Array of extra variable. A value of array is object that contains board_id, idx, name, default, desc, is_required, search, value, eid.
 		 * @return void
+		 * admin: 'field_name' => db: var_name  관리자 화면에서 [필드 레이블] 입력란은 field_name에 저장함
+		 * admin: 'field_type' => db: var_type
+		 * admin: 'meta_key' => db: eid
+		 * admin: 'default_value' => db: var_default
+		 * admin: 'description' => db: var_desc
+		 * admin: 'required' => db: var_is_required
+		 * 
+		 * admin: 'field_label' => db: ??  관리자 화면에서 용도 불명, 사용자 화면에서 기본 필드명 표시위한 용도
 		 */
 		public function set_user_define_keys_2_submit($a_user_define_field) {
 			if(!is_array($a_user_define_field) || count($a_user_define_field) < 1) {
 				return;
 			}
-
 			$n_idx = 1;
 			foreach( $a_user_define_field as $s_field_type => $a_kb_field ) {
-// var_dump($a_kb_field);
 				$s_search = isset($a_kb_field['search']) ? $a_kb_field['search'] : null;
 				$s_old_val = isset($a_kb_field['value']) ? $a_kb_field['value'] : null;
+				$s_default_value = isset($a_kb_field['default_value']) ? $a_kb_field['default_value'] : null;
+				$s_required = isset($a_kb_field['required']) ? $a_kb_field['required'] : null;
 
 				$o_misc_info = new \stdClass();
 				$o_misc_info->s_placeholder = isset($a_kb_field['placeholder']) ? $a_kb_field['placeholder'] : null;
@@ -428,30 +137,19 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 				$o_misc_info->s_allow_comment_permission = isset($a_kb_field['allow_comment_permission']) ? $a_kb_field['allow_comment_permission'] : null;
 				$o_misc_info->a_allow_comment = isset($a_kb_field['allow_comment']) ? $a_kb_field['allow_comment'] : null;
 				$o_misc_info->a_row = isset($a_kb_field['row']) ? $a_kb_field['row'] : null;
-
-				$o_user_define_key = new UserDefineItem($this->_n_board_id, 
+				$o_user_define_key = new UserDefineItemForGuest($this->_n_board_id, 
 										  $n_idx++, 
 										  $a_kb_field['field_name'], 
 										  $a_kb_field['field_type'], 
-										  $a_kb_field['default_value'], 
+										  $s_default_value,
 										  $a_kb_field['description'], 
-										  $a_kb_field['required'], 
+										  $s_required,
 										  $s_search,
 										  $s_old_val, 
 										  $a_kb_field['meta_key'],
 										  $o_misc_info);
 				$this->_a_key[$n_idx] = $o_user_define_key;
 			}
-		}
-
-		/**
-		 * Returns an array of UserDefineItem
-		 *
-		 * @return UserDefineItem[]
-		 */
-		// function getExtraVars() {
-		public function get_user_define_vars() {
-			return $this->_a_key;
 		}
 	}
 }
@@ -461,9 +159,9 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
  *
  * @author XEHub (developers@xpressengine.com)
  */
-if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItem')) {
+if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 
-	class UserDefineItem {
+	class UserDefineItemForGuest {
 
 		// 스킨에서 사용 할 사용자 정의 옵션 input, textarea, select 이름의 prefix를 정의한다.
 		// const SKIN_OPTION_PREFIX = 'x2board_option_';
@@ -1185,4 +883,4 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItem')) {
 		}
 	}
 }
-/* End of file UserDefineFields.class.php */
+/* End of file GuestUserDefineFields.class.php */

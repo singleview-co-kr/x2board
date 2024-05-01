@@ -562,7 +562,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			$a_skin_fields = $o_post_model->get_user_define_vars($this->_n_wp_post_id);
 			unset($o_post_model);
 
-			$o_post_user_define_fields = new \X2board\Includes\Classes\UserDefineFields();
+			$o_post_user_define_fields = new \X2board\Includes\Classes\GuestUserDefineFields();
 			$a_default_fields = $o_post_user_define_fields->get_default_fields();
 			unset($o_post_user_define_fields);
 

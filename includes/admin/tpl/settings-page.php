@@ -519,6 +519,183 @@ function x2b_wpsortableui_callback( $args ) {
 	echo apply_filters( 'x2b_after_setting_output', $html, $args );
 }
 
+function x2b_wpuserfieldui_callback( $args ) {
+	$o_post_admin_model = new \X2board\Includes\Modules\Post\postAdminModel();
+	echo $o_post_admin_model->render_user_field_ui();
+	unset($o_cat_admin_model);
+
+	// $o_user_define_fields_ui = new X2bUserDefineFieldsUI();
+	// echo $o_user_define_fields_ui->render_user_field_ui();
+	// unset($o_user_define_fields_ui);
+}
+
+if (!class_exists('\\X2board\\Includes\\Admin\\Tpl\\X2bUserDefineFieldsUI')) {
+
+	class X2bUserDefineFieldsUI {
+		
+		private $_a_unchosen_user_default_fields = array();
+		private $_a_user_define_fields = array();
+		private $_a_extended_fields = array();
+		
+		/**
+		 * Constructor
+		 *
+		 * @param int $board_id Sequence of board
+		 * @return void
+		 */
+		public function __construct() {
+			$n_board_id = intval(sanitize_text_field($_GET['board_id'] ));
+			$s_columns = '`var_name`, `var_type`, `var_is_required`, `var_search`, `var_default`, `var_desc`, `eid`, `json_param`';  // , `meta_key`
+			global $wpdb;
+			$a_temp = $wpdb->get_results("SELECT {$s_columns} FROM `{$wpdb->prefix}x2b_user_define_keys` WHERE `board_id` = '{$n_board_id}' ORDER BY `var_idx` ASC");
+// var_dump($a_temp);
+			
+			foreach( $a_temp as $_ => $o_field ) {
+				$a_other_field = unserialize($o_field->json_param);
+
+				$a_single_field['field_type'] = $o_field->var_type;
+				// $a_single_field['field_label'] = $o_field->var_name;
+				$a_single_field['field_name'] = $o_field->var_name;
+				$a_single_field['meta_key'] = $o_field->eid;
+				$a_single_field['default_value'] = $o_field->var_default;
+				$a_single_field['description'] = $o_field->var_desc;
+				$a_single_field['required'] = $o_field->var_is_required;
+
+				$a_single_field = array_merge($a_single_field, $a_other_field);
+				$this->_a_user_define_fields[$o_field->eid] = $a_single_field;
+
+				unset($a_single_field);
+				unset($a_other_field);
+			}
+			unset($a_temp);
+
+			$o_post_user_define_fields = \X2board\Includes\Classes\AdminUserDefineFields::getInstance();
+			$o_post_user_define_fields->set_user_define_fields_from_db($this->_a_user_define_fields);
+			$this->a_user_define_fields = $o_post_user_define_fields->get_user_define_fields();
+			$this->_a_unchosen_user_default_fields = $o_post_user_define_fields->get_unchosen_default_fields();
+			$this->_a_extended_fields = $o_post_user_define_fields->get_extended_fields();
+			
+// var_dump($this->_a_unchosen_user_default_fields);
+
+			unset($o_post_user_define_fields);
+		}
+
+		/**
+		 * WP user field UI Callback
+		 *
+		 * Renders WP user field UI fields.
+		 *
+		 * @since 2.6.0
+		 *
+		 * @return void
+		 */
+		/*public function render_user_field_ui() {
+			$s_html = '<div class="x2board-fields-wrap">
+						<!---div class="x2board-fields-message">
+							일부 스킨에서는 입력필드 설정이 적용되지 않습니다.
+						</div --->
+						<div class="x2board-fields-left">
+							<h3 class="x2board-fields-h3">'.__('Available field', 'x2board').'</h3>
+							<ul class="x2board-fields">
+								<li class="x2board-fields-default left">
+									<button type="button" class="x2board-fields-header">'.
+										__('Basic field', 'x2board').
+										'<span class="fields-up">▲</span>
+										<span class="fields-down">▼</span>
+									</button>
+									<ul class="x2board-fields-list x2board-fields-content">';
+			$s_html .= $this->_render_unchosen_default_fields();
+			$s_html .=				'</ul>
+								</li>
+								<li class="x2board-fields-extension left">
+								<button type="button" class="x2board-fields-header">'.
+								__('Extended fields', 'x2board').
+									'<span class="fields-up">▲</span>
+									<span class="fields-down">▼</span>
+								</button>
+								<ul class="x2board-fields-list x2board-fields-content">';
+			
+			if($this->_a_extended_fields) {
+				$s_html .= $this->_render_user_extended_fields();
+			}
+
+			$s_html .= 		'</ul>
+						</li>
+					</ul>
+				</div>
+				<div class="x2board-fields-right">
+					<div class="x2board-fields x2board-sortable-fields">
+						<h3 class="x2board-fields-h3">'.__('User define fields presentation', 'x2board').'</h3>
+						<div class="description">'.__('Drag from the left section to activate', 'x2board').'</div>
+						<ul class="x2board-skin-fields x2board-fields-sortable connected-sortable">';
+			$s_html .= $this->_render_user_define_fields();
+			$s_html .= 	'</ul>
+						<div class="description"><button type="button" class="button button-small" onclick="x2board_skin_fields_reset()">'.__('Reset configuration', 'x2board').'</button></div>
+					</div>
+				</div>
+			</div>';
+			echo apply_filters( 'x2b_after_setting_output', $s_html );
+		}*/
+
+		/**
+		 * unchosen user default field UI render
+		 *
+		 * Renders unchosen user field UI fields.
+		 *
+		 * @since 2.6.0
+		 *
+		 * @param array $array of unchosen user default field 
+		 * @return void
+		 */
+		/*private function _render_unchosen_default_fields() {
+			$s_html = null;
+			foreach($this->_a_unchosen_user_default_fields as $key=>$o_item) {
+				$s_html .= 	$o_item->get_widget_html();
+			}
+			return $s_html;
+		}*/
+
+		/**
+		 * unchosen user default field UI render
+		 *
+		 * Renders unchosen user field UI fields.
+		 *
+		 * @since 2.6.0
+		 *
+		 * @param array $array of unchosen user default field 
+		 * @return void
+		 */
+		/*private function _render_user_extended_fields() {
+			$s_html =	null;
+			foreach($this->_a_extended_fields as $key=>$o_item) {
+				$s_html .= 	$o_item->get_widget_html();
+			}
+			return $s_html;
+		}*/
+
+		/**
+		 * unchosen user default field UI render
+		 *
+		 * Renders unchosen user field UI fields.
+		 *
+		 * @since 2.6.0
+		 *
+		 * @param array $array of unchosen user default field 
+		 * @return void
+		 */
+		/*private function _render_user_define_fields() {
+			$s_html = null;
+			foreach($this->a_user_define_fields as $key=>$o_item) {
+				$s_html .= 	$o_item->get_widget_html();
+			}
+			return $s_html;
+		}*/
+	}
+}
+//////////////////////////////////////
+// static $a_user_default_fields = array();
+// static $a_extended_fields = array();
+// static $a_all_fields = array();
 
 /**
  * WP user field UI Callback
@@ -530,7 +707,7 @@ function x2b_wpsortableui_callback( $args ) {
  * @param array $args Array of arguments.
  * @return void
  */
-function x2b_wpuserfieldui_callback( $args ) {
+/*function x2b_wpuserfieldui_callback( $args ) {
 	
 	$html = '<div class="x2board-fields-wrap">
 				<!---div class="x2board-fields-message">
@@ -549,14 +726,19 @@ function x2b_wpuserfieldui_callback( $args ) {
 	
 	// $n_board_id = isset($_GET['board_id'])?esc_attr($_GET['board_id']):'';
 	$o_post_admin_model = new \X2board\Includes\Modules\Post\postAdminModel();
-	// $o_post_admin_model->set_board_id($n_board_id);
+	
 	$a_user_default_fields = $o_post_admin_model->get_default_fields();
-	foreach($a_user_default_fields as $key=>$item)	{
+	$a_extended_fields = $o_post_admin_model->get_extended_fields();
+
+	$a_all_fields = array_merge($a_user_default_fields, $a_extended_fields);
+
+	$a_user_default_fields_unchosen = $o_post_admin_model->get_default_fields_unchosen();
+	foreach($a_user_default_fields_unchosen as $key=>$item)	{
 ////////////////////////
 		$html .= 				'<li class="default '.$key.'">';
-		$html .= 					'<input type="hidden" class="field_data class" value="'.$item['class'].'">';
-		$s_value = isset($item['close_button'])?$item['close_button']:'';
-		$html .= 					'<input type="hidden" class="field_data close_button" value="'.$s_value.'">';
+		// $html .= 					'<input type="hidden" class="field_data class" value="'.$item['class'].'">';
+		// $s_value = isset($item['close_button'])?$item['close_button']:'';
+		// $html .= 					'<input type="hidden" class="field_data close_button" value="'.$s_value.'">';
 		$html .= 					'<div class="x2board-extends-fields">
 										<div class="x2board-fields-title toggle x2board-field-handle">
 											<button type="button">';
@@ -703,6 +885,7 @@ function x2b_wpuserfieldui_callback( $args ) {
 									</li>';
 //////////////////////////
 	}
+	unset($a_user_default_fields_unchosen);
 	unset($a_user_default_fields);
 	$html .= 					'</ul>
 							</li>
@@ -713,15 +896,15 @@ function x2b_wpuserfieldui_callback( $args ) {
 								<span class="fields-down">▼</span>
 							</button>
 							<ul class="x2board-fields-list x2board-fields-content">';
-	$a_extended_fields = $o_post_admin_model->get_extended_fields();
+	
 	if($a_extended_fields) {
 		foreach($a_extended_fields as $key=>$item) {
 ////////////////////////////////
 			$html .=			'<li class="extends '.$key.'">';
-			$html .= 				'<input type="hidden" value="'.$item['class'].'" class="field_data class">';
-			$s_value = isset($item['close_button']) ? $item['close_button'] : '';
-			$html .= 				'<input type="hidden" class="field_data close_button" value="'.$s_value.'">
-									<div class="x2board-extends-fields">
+			// $html .= 				'<input type="hidden" value="'.$item['class'].'" class="field_data class">';
+			// $s_value = isset($item['close_button']) ? $item['close_button'] : '';
+			// $html .= 				'<input type="hidden" class="field_data close_button" value="'.$s_value.'">';
+			$html .= 				'<div class="x2board-extends-fields">
 										<div class="x2board-fields-title toggle x2board-field-handle">
 											<button type="button">';
 			$html .=					 	esc_html($item['field_label']);
@@ -868,7 +1051,7 @@ function x2b_wpuserfieldui_callback( $args ) {
 ////////////////////////////////
 		}
 	}
-	unset($a_extended_fields);
+	
 	$html .= 			'</ul>
 					</li>
 				</ul>
@@ -879,17 +1062,20 @@ function x2b_wpuserfieldui_callback( $args ) {
 					<div class="description">왼쪽 열에서 필드를 드래그 앤 드롭으로 추가하세요.</div>
 					<ul class="x2board-skin-fields x2board-fields-sortable connected-sortable">';
 	$a_user_define_fields = $o_post_admin_model->get_user_define_fields();
+
 	foreach($a_user_define_fields as $key=>$item) {
+		$s_field_type = $item['field_type'];
 		$meta_key = isset($item['meta_key']) && $item['meta_key'] ? $item['meta_key'] : $key;
 		$field_label = $o_post_admin_model->get_field_label($item);
 		$html .= 		'<li class="'.$o_post_admin_model->is_default_field($item['field_type']).' '.esc_attr($meta_key).' '.esc_attr($item['field_type']).'">';
 		$html .= 			'<input type="hidden" class="parent_id" value="'.esc_attr($meta_key).'">';
 		// $html .= 			'<input type="hidden" name="fields['.esc_attr($meta_key).'][class]" class="field_data class" value="'.$item['class'].'">';
-		$s_clos_btn = isset($item['close_button']) ? $item['close_button'] : '';
-		$html .= 			'<input type="hidden" name="fields['.esc_attr($meta_key).'][close_button]" class="field_data close_button" value="'.$s_clos_btn.'">';
+		// $s_clos_btn = isset($item['close_button']) ? $item['close_button'] : '';
+		// $html .= 			'<input type="hidden" name="fields['.esc_attr($meta_key).'][close_button]" class="field_data close_button" value="'.$s_clos_btn.'">';
 		$html .= 				'<div class="x2board-saved-fields-header">';
-		$s_clos_btn = !(isset($item['close_button']) && $item['close_button'] == 'yes') ? 'only-toggle' : '';
-		$html .= 					'<div class="x2board-fields-title toggle x2board-field-handle '.$s_clos_btn.'">
+// var_dump($a_all_fields[$s_field_type]['close_button']);		
+		// $s_clos_btn = !(isset($a_all_fields[$s_field_type]['close_button']) && $a_all_fields[$s_field_type]['close_button'] == 'yes') ? 'only-toggle' : '';
+		$html .= 					'<div class="x2board-fields-title toggle x2board-field-handle">
 										<button type="button">';
 		$html .= 							esc_html($field_label);
 		if(isset($item['field_name']) && $item['field_name']) {
@@ -899,7 +1085,7 @@ function x2b_wpuserfieldui_callback( $args ) {
 											<span class="fields-down">▼</span>
 										</button>
 									</div>';
-		if(isset($item['close_button']) && $item['close_button'] == 'yes') {
+		if(isset($a_all_fields[$s_field_type]['close_button']) && $a_all_fields[$s_field_type]['close_button'] == 'yes') {
 			$html .= 				'<div class="x2board-fields-toggle">
 										<button type="button" class="fields-remove" title="'.__('Remove', 'x2board').'">X</button>
 									</div>';
@@ -926,7 +1112,7 @@ function x2b_wpuserfieldui_callback( $args ) {
 										<div class="description">※ 비회원은 비밀번호를 항상 필수로 입력해야 합니다.</div>
 									</div>';
 		}
-		elseif($item['field_type'] == '____attach') {
+		elseif($item['field_type'] == 'attach') {
 			$html .= 				'<div class="attr-row">
 										<label class="attr-name" for="max_each_file_size_mb">첨부파일 당 최대 용량(Mb)</label>
 										<div class="attr-value">';
@@ -1240,17 +1426,19 @@ function x2b_wpuserfieldui_callback( $args ) {
 		$html .=			 	'</div>
 							</li>';
 	}
-	unset($a_user_define_fields);			
+	unset($a_extended_fields);
+	unset($a_user_define_fields);
 	$html .= 		'</ul>
 					<div class="description"><button type="button" class="button button-small" onclick="x2board_skin_fields_reset()">설정 초기화</button></div>
 				</div>
 			</div>
-		</div>';	
+		</div>';
 	
 	unset($o_post_admin_model);
 	echo apply_filters( 'x2b_after_setting_output', $html, $args );
 }
-
+*/
+//////////////////////////////////////
 
 /**
  * Display the default thumbnail below the setting.
