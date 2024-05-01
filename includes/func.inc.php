@@ -358,7 +358,7 @@ function getModule($module_name, $type = 'view', $kind = '') {
 		$G_X2B_CACHE['__elapsed_class_load__'] = null;
 	}
 
-	return \X2board\Includes\Classes\ModuleHandler::getModuleInstance($module_name, $type, $kind);
+	return \X2board\Includes\Classes\ModuleHandler::get_module_instance($module_name, $type, $kind);
 }
 
 /**

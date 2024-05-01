@@ -7,8 +7,7 @@ if (!defined('ABSPATH')) {
 
 if (!class_exists('\\X2board\\Includes\\Classes\\ModuleHandler')) {
 
-	class ModuleHandler //  extends Handler  -> blank abc
-	{
+	class ModuleHandler { //  extends Handler  -> blank abc
 		// const MODULE_ABS_PATH = 'includes/modules/';
 		var $module = NULL; ///< Module
 		// var $act = NULL; ///< action
@@ -30,8 +29,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleHandler')) {
 		 * @return void
 		 * */
 
-		function __construct($module = '', $act = '', $mid = '', $post_id = '' ) // $document_srl = '', $module_srl = '')
-		{
+		function __construct($module = '', $act = '', $mid = '', $post_id = '' ) { // $document_srl = '', $module_srl = '')
 			// If XE has not installed yet, set module as install
 			// if(!Context::isInstalled())
 			// {
@@ -41,7 +39,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleHandler')) {
 			// }
 
 			$o_context = Context::getInstance();
-			if($oContext->isSuccessInit == FALSE) {
+			if($o_context->isSuccessInit == FALSE) {
 				// @see https://github.com/xpressengine/xe-core/issues/2304
 				$this->error = 'msg_invalid_request';
 				return;
@@ -114,6 +112,207 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleHandler')) {
 			// if(file_exists($addon_file)) include($addon_file);
 		}
 
+		/**
+		 * module auto loader
+		 * @remarks if there exists a module instance created before, returns it.
+		 * */
+		public static function auto_load_modules() {
+			$a_valid_types = array('view','controller','model','class');
+			$s_modules_path_abs = X2B_PATH.'includes'.DIRECTORY_SEPARATOR.'modules';
+
+			$a_requested_modules = array();
+			$a_modules = \X2board\Includes\Classes\FileHandler::readDir($s_modules_path_abs);
+			foreach( $a_modules as $_ => $s_module_name ) {
+				$s_single_module_path_abs = $s_modules_path_abs.DIRECTORY_SEPARATOR.$s_module_name;
+				if(!is_dir($s_single_module_path_abs)) {
+					continue;
+				}
+
+				if( !isset($a_requested_modules[$s_module_name]) ) {
+					$a_requested_modules[$s_module_name] = array();
+				}
+
+				$a_module_files =  \X2board\Includes\Classes\FileHandler::readDir($s_single_module_path_abs);
+				foreach($a_module_files as $__ => $s_module_file) {
+					$s_single_file_path_abs = $s_single_module_path_abs.DIRECTORY_SEPARATOR.$s_module_file;
+					if(is_dir($s_single_file_path_abs)) {
+						continue;
+					}
+					$a_file_info = explode( '.', basename( $s_module_file ) );
+					
+					if( $a_file_info[1] == 'admin' ) {  // do not automatically load admin modules
+						continue;
+					}
+
+					$s_module_type = $a_file_info[1];
+					if(in_array( $a_file_info[1], $a_valid_types)) {
+						$a_requested_modules[$s_module_name][$s_module_type] = $s_module_file;
+					}
+				}
+			}
+
+			// validate module components
+			$a_valid_modules = array();
+			foreach( $a_requested_modules as $s_module_name => $a_module_info ) {
+				if( isset($a_module_info['class'] ) ) {
+					$a_valid_modules[$s_module_name] = $a_module_info;
+				}
+				else {
+					error_log(X2B_DOMAIN.' Warning! '.$s_modules_path_abs.DIRECTORY_SEPARATOR.$s_module_name.DIRECTORY_SEPARATOR.$s_module_name.'.class.php is required.');
+				}
+			}
+			unset($a_requested_modules);
+
+			// load valid modules
+			foreach( $a_valid_modules as $s_module_name => $a_module_info ) {
+				foreach( $a_module_info as $s_module_type => $s_module_file ) {
+					require_once($s_modules_path_abs.DIRECTORY_SEPARATOR.$s_module_name.DIRECTORY_SEPARATOR.$s_module_file);					
+				}
+			}
+			unset($a_valid_modules);
+		}
+
+		/**
+		 * It creates a module instance
+		 * @param string $module module name
+		 * @param string $type instance type, (e.g., view, controller, model)
+		 * @param string $kind admin or svc
+		 * @return ModuleObject module instance (if failed it returns null)
+		 * @remarks if there exists a module instance created before, returns it.
+		 * */
+		public static function &get_module_instance($s_module_name, $type = 'view') {  //, $kind = '')
+			global $G_X2B_CACHE;
+			if(__DEBUG__ == 3) {
+				$start_time = \X2board\Includes\getMicroTime();
+			}
+
+			$parent_module = $s_module_name;
+			// $kind = strtolower($kind);
+			$type = strtolower($type);
+
+			// $kinds = array('svc' => 1, 'admin' => 1);
+			// if(!isset($kinds[$kind]))
+			{
+				$kind = 'svc';  // no admin feature allowed
+			}
+
+			$key = $s_module_name . '.' . ($kind != 'admin' ? '' : 'admin') . '.' . $type;
+
+			$extend_module = null;
+			if(is_array($G_X2B_CACHE['__MODULE_EXTEND__']) && array_key_exists($key, $G_X2B_CACHE['__MODULE_EXTEND__'])) {
+				$s_module_name = $extend_module = $G_X2B_CACHE['__MODULE_EXTEND__'][$key];
+			}
+
+			// if there is no instance of the module in global variable, create a new one
+			if(!isset($G_X2B_CACHE['_loaded_module'][$s_module_name][$type][$kind])) {
+				ModuleHandler::_get_module_filepath($s_module_name, $type, $kind, $class_path, $high_class_file, $class_file, $instance_name);
+
+				if($extend_module && (!is_readable($high_class_file) || !is_readable($class_file)))	{
+					$s_module_name = $parent_module;
+					ModuleHandler::_get_module_filepath($s_module_name, $type, $kind, $class_path, $high_class_file, $class_file, $instance_name);
+				}
+// var_dump('X2board\Includes\Modules\\'.ucfirst($s_module_name).'\\'.$s_module_name);
+				// Check if the base class and instance class exist
+				if(!class_exists('\\X2board\\Includes\\Modules\\'.ucfirst($s_module_name).'\\'.$s_module_name, true)) {
+					return NULL;
+				}
+// var_dump($instance_name);
+				$s_instance_in_namespace = '\\X2board\\Includes\\Modules\\'.ucfirst($s_module_name).'\\'.$instance_name;
+// var_dump($s_instance_in_namespace);
+				if(!class_exists($s_instance_in_namespace, true)) {
+					return NULL;
+				}
+				// Create an instance
+				$oModule = new $s_instance_in_namespace();
+				if(!is_object($oModule)) {
+					return NULL;
+				}
+// var_dump('dd');
+				// Load language files for the class
+				// Context::loadLang($class_path . 'lang');
+				// if($extend_module) {
+				// 	Context::loadLang(ModuleHandler::_get_module_path($parent_module) . 'lang');
+				// }
+
+				// Set variables to the instance
+				$oModule->setModule($s_module_name);
+				$class_path = ModuleHandler::_get_real_path($class_path);
+				$oModule->setModulePath($class_path);
+
+				// If the module has a constructor, run it.
+				if(!isset($G_X2B_CACHE['_called_constructor'][$instance_name]))	{
+					$G_X2B_CACHE['_called_constructor'][$instance_name] = TRUE;
+					if(@method_exists($oModule, $instance_name)) {
+						$oModule->{$instance_name}();
+					}
+				}
+
+				// Store the created instance into GLOBALS variable
+				$G_X2B_CACHE['_loaded_module'][$s_module_name][$type][$kind] = $oModule;
+			}
+
+			if(__DEBUG__ == 3) {
+				$G_X2B_CACHE['__elapsed_class_load__'] += \X2board\Includes\getMicroTime() - $start_time;
+			}
+// var_dump('dd');
+			// return the instance
+			return $G_X2B_CACHE['_loaded_module'][$s_module_name][$type][$kind];
+		}
+
+		/**
+		 * @remarks 
+		 * */
+		private static function _get_module_filepath($module, $type, $kind, &$classPath, &$highClassFile, &$classFile, &$instanceName) {
+			$classPath = ModuleHandler::_get_module_path($module);
+			$highClassFile = sprintf('%s%s.class.php', $classPath, $module);
+			$highClassFile = ModuleHandler::_get_real_path($highClassFile);
+// var_Dump($highClassFile );
+
+			$types = array('view','controller','model','class');  // 'api','wap','mobile',
+			if(!in_array($type, $types)) {
+				$type = $types[0];
+			}
+			if($type == 'class') {
+				$instanceName = '%s';
+				$classFile = '%s%s.%s.php';
+			}
+			// elseif($kind == 'admin' && array_search($type, $types) < 3)	{
+			// 	$instanceName = '%sAdmin%s';
+			// 	$classFile = '%s%s.admin.%s.php';
+			// }
+			else {
+				$instanceName = '%s%s';
+				$classFile = '%s%s.%s.php';
+			}
+			$instanceName = sprintf($instanceName, $module, ucfirst($type));
+			$classFile = ModuleHandler::_get_real_path(sprintf($classFile, $classPath, $module, $type));
+// var_Dump($classPath );			
+// var_Dump($classFile );	
+		}
+
+		/**
+		 * Changes path of target file, directory into absolute path
+		 *
+		 * @param string $source path to change into absolute path
+		 * @return string Absolute path
+		 */
+		private static function _get_real_path($source) {
+			if(strlen($source) >= 2 && substr_compare($source, './', 0, 2) === 0) {
+				return X2B_PATH . substr($source, 2);
+			}
+			return $source;
+		}
+
+		/**
+		 * returns module's path
+		 * @param string $module module name
+		 * @return string path of the module
+		 * */
+		private static function _get_module_path($module) {
+			return './includes/modules/' . $module . '/';
+		}
+
+		/*
 		public static function xeErrorLog($errnumber, $errormassage, $errorfile, $errorline, $errorcontext)
 		{
 			if(($errnumber & 3) == 0 || error_reporting() == 0)
@@ -201,402 +400,202 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleHandler')) {
 				case E_RECOVERABLE_ERROR: return 'Catchable Fatal Error';
 				default: return 'Error';
 			}
-		}
+		}*/
 
 		/**
 		 * Initialization. It finds the target module based on module, mid, document_srl, and prepares to execute an action
 		 * @return boolean true: OK, false: redirected
 		 * */
-		function init()	{
-			$oModuleModel = getModel('module');
-			// $site_module_info = Context::get('site_module_info');
+		// function init()	{
+		// 	$oModuleModel = getModel('module');
+		// 	// $site_module_info = Context::get('site_module_info');
 
-			// if success_return_url and error_return_url is incorrect
-			$urls = array(Context::get('success_return_url'), Context::get('error_return_url'));
-			// $dbInfo = Context::getDBInfo();
-			// $defaultUrlInfo = parse_url($dbInfo->default_url);
-			// $defaultHost = $defaultUrlInfo['host'];
-			// $siteDomain = parse_url($site_module_info->domain);
-			// $siteDomain = $siteDomain['host'];
+		// 	// if success_return_url and error_return_url is incorrect
+		// 	$urls = array(Context::get('success_return_url'), Context::get('error_return_url'));
+		// 	// $dbInfo = Context::getDBInfo();
+		// 	// $defaultUrlInfo = parse_url($dbInfo->default_url);
+		// 	// $defaultHost = $defaultUrlInfo['host'];
+		// 	// $siteDomain = parse_url($site_module_info->domain);
+		// 	// $siteDomain = $siteDomain['host'];
 
-			foreach($urls as $url) {
-				if(empty($url))	{
-					continue;
-				}
+		// 	foreach($urls as $url) {
+		// 		if(empty($url))	{
+		// 			continue;
+		// 		}
 
-				$urlInfo = parse_url(urldecode($url));
-				$host = $urlInfo['host'];
+		// 		$urlInfo = parse_url(urldecode($url));
+		// 		$host = $urlInfo['host'];
 
-				if($host && ($host !== $defaultHost && ($host !== $site_module_info->domain || $host !== $siteDomain))) {
-					throw new Exception('msg_default_url_is_null');
-				}
-				else if((!$host || !$urlInfo || !$urlInfo['scheme']) && preg_match("/^(https?|[a-z0-9])+\:(\/)*/i", urldecode($url))) {
-					throw new exception('msg_invalid_request');
-				}
-			}
+		// 		if($host && ($host !== $defaultHost && ($host !== $site_module_info->domain || $host !== $siteDomain))) {
+		// 			throw new Exception('msg_default_url_is_null');
+		// 		}
+		// 		else if((!$host || !$urlInfo || !$urlInfo['scheme']) && preg_match("/^(https?|[a-z0-9])+\:(\/)*/i", urldecode($url))) {
+		// 			throw new exception('msg_invalid_request');
+		// 		}
+		// 	}
 
-			if(!$this->post_id ) { // && $this->mid && $this->entry)
-				$oDocumentModel = getModel('document');
-				$this->post_id = null;  // $oDocumentModel->getDocumentSrlByAlias($this->mid, $this->entry);
-				if($this->post_id) {
-					Context::set('post_id', $this->post_id);
-				}
-			}
+		// 	if(!$this->post_id ) { // && $this->mid && $this->entry)
+		// 		$oDocumentModel = getModel('document');
+		// 		$this->post_id = null;  // $oDocumentModel->getDocumentSrlByAlias($this->mid, $this->entry);
+		// 		if($this->post_id) {
+		// 			Context::set('post_id', $this->post_id);
+		// 		}
+		// 	}
 
-			// Get module's information based on document_srl, if it's specified
-			if($this->post_id) {
-				$module_info = $oModuleModel->getModuleInfoByDocumentSrl($this->post_id);
-				// If the document does not exist, remove document_srl
-				if(!$module_info) {
-					unset($this->document_srl);
-				}
-				else
-				{
-					// If it exists, compare mid based on the module information
-					// if mids are not matching, set it as the document's mid
-					if(!$this->mid || ($this->mid != $module_info->mid))
-					{
+		// 	// Get module's information based on document_srl, if it's specified
+		// 	if($this->post_id) {
+		// 		$module_info = $oModuleModel->getModuleInfoByDocumentSrl($this->post_id);
+		// 		// If the document does not exist, remove document_srl
+		// 		if(!$module_info) {
+		// 			unset($this->document_srl);
+		// 		}
+		// 		else
+		// 		{
+		// 			// If it exists, compare mid based on the module information
+		// 			// if mids are not matching, set it as the document's mid
+		// 			if(!$this->mid || ($this->mid != $module_info->mid))
+		// 			{
 
-						if(Context::getRequestMethod() == 'GET')
-						{
-							$this->mid = $module_info->mid;
-							header('location:' . getNotEncodedSiteUrl($site_module_info->domain, 'mid', $this->mid, 'document_srl', $this->document_srl));
-							return FALSE;
-						}
-						else
-						{
-							$this->mid = $module_info->mid;
-							Context::set('mid', $this->mid);
-						}
+		// 				if(Context::getRequestMethod() == 'GET')
+		// 				{
+		// 					$this->mid = $module_info->mid;
+		// 					header('location:' . getNotEncodedSiteUrl($site_module_info->domain, 'mid', $this->mid, 'document_srl', $this->document_srl));
+		// 					return FALSE;
+		// 				}
+		// 				else
+		// 				{
+		// 					$this->mid = $module_info->mid;
+		// 					Context::set('mid', $this->mid);
+		// 				}
 
-					}
-					// if requested module is different from one of the document, remove the module information retrieved based on the document number
-					if($this->module && $module_info->module != $this->module)
-					{
-						unset($module_info);
-					}
-				}
+		// 			}
+		// 			// if requested module is different from one of the document, remove the module information retrieved based on the document number
+		// 			if($this->module && $module_info->module != $this->module)
+		// 			{
+		// 				unset($module_info);
+		// 			}
+		// 		}
 
-			}
+		// 	}
 
-			// If module_info is not set yet, and there exists mid information, get module information based on the mid
-			if(!$module_info && $this->mid)
-			{
-				$module_info = $oModuleModel->getModuleInfoByMid($this->mid, $site_module_info->site_srl);
-				//if($this->module && $module_info->module != $this->module) unset($module_info);
-			}
+		// 	// If module_info is not set yet, and there exists mid information, get module information based on the mid
+		// 	if(!$module_info && $this->mid)
+		// 	{
+		// 		$module_info = $oModuleModel->getModuleInfoByMid($this->mid, $site_module_info->site_srl);
+		// 		//if($this->module && $module_info->module != $this->module) unset($module_info);
+		// 	}
 
-			// redirect, if module_site_srl and site_srl are different
-			if(!$this->module && !$module_info && $site_module_info->site_srl == 0 && $site_module_info->module_site_srl > 0)
-			{
-				$site_info = $oModuleModel->getSiteInfo($site_module_info->module_site_srl);
-				header("location:" . getNotEncodedSiteUrl($site_info->domain, 'mid', $site_module_info->mid));
-				return FALSE;
-			}
+		// 	// redirect, if module_site_srl and site_srl are different
+		// 	if(!$this->module && !$module_info && $site_module_info->site_srl == 0 && $site_module_info->module_site_srl > 0)
+		// 	{
+		// 		$site_info = $oModuleModel->getSiteInfo($site_module_info->module_site_srl);
+		// 		header("location:" . getNotEncodedSiteUrl($site_info->domain, 'mid', $site_module_info->mid));
+		// 		return FALSE;
+		// 	}
 
-			// If module_info is not set still, and $module does not exist, find the default module
-			if(!$module_info && !$this->module && !$this->mid)
-			{
-				$module_info = $site_module_info;
-			}
+		// 	// If module_info is not set still, and $module does not exist, find the default module
+		// 	if(!$module_info && !$this->module && !$this->mid)
+		// 	{
+		// 		$module_info = $site_module_info;
+		// 	}
 
-			if(!$module_info && !$this->module && $site_module_info->module_site_srl)
-			{
-				$module_info = $site_module_info;
-			}
+		// 	if(!$module_info && !$this->module && $site_module_info->module_site_srl)
+		// 	{
+		// 		$module_info = $site_module_info;
+		// 	}
 
-			// redirect, if site_srl of module_info is different from one of site's module_info
-			if($module_info && $module_info->site_srl != $site_module_info->site_srl && !isCrawler())
-			{
-				// If the module is of virtual site
-				if($module_info->site_srl)
-				{
-					$site_info = $oModuleModel->getSiteInfo($module_info->site_srl);
-					$redirect_url = getNotEncodedSiteUrl($site_info->domain, 'mid', Context::get('mid'), 'document_srl', Context::get('document_srl'), 'module_srl', Context::get('module_srl'), 'entry', Context::get('entry'));
-					// If it's called from a virtual site, though it's not a module of the virtual site
-				}
-				else
-				{
-					$db_info = Context::getDBInfo();
-					if(!$db_info->default_url)
-					{
-						return Context::getLang('msg_default_url_is_not_defined');
-					}
-					else
-					{
-						$redirect_url = getNotEncodedSiteUrl($db_info->default_url, 'mid', Context::get('mid'), 'document_srl', Context::get('document_srl'), 'module_srl', Context::get('module_srl'), 'entry', Context::get('entry'));
-					}
-				}
-				header("location:" . $redirect_url);
-				return FALSE;
-			}
+		// 	// redirect, if site_srl of module_info is different from one of site's module_info
+		// 	if($module_info && $module_info->site_srl != $site_module_info->site_srl && !isCrawler())
+		// 	{
+		// 		// If the module is of virtual site
+		// 		if($module_info->site_srl)
+		// 		{
+		// 			$site_info = $oModuleModel->getSiteInfo($module_info->site_srl);
+		// 			$redirect_url = getNotEncodedSiteUrl($site_info->domain, 'mid', Context::get('mid'), 'document_srl', Context::get('document_srl'), 'module_srl', Context::get('module_srl'), 'entry', Context::get('entry'));
+		// 			// If it's called from a virtual site, though it's not a module of the virtual site
+		// 		}
+		// 		else
+		// 		{
+		// 			$db_info = Context::getDBInfo();
+		// 			if(!$db_info->default_url)
+		// 			{
+		// 				return Context::getLang('msg_default_url_is_not_defined');
+		// 			}
+		// 			else
+		// 			{
+		// 				$redirect_url = getNotEncodedSiteUrl($db_info->default_url, 'mid', Context::get('mid'), 'document_srl', Context::get('document_srl'), 'module_srl', Context::get('module_srl'), 'entry', Context::get('entry'));
+		// 			}
+		// 		}
+		// 		header("location:" . $redirect_url);
+		// 		return FALSE;
+		// 	}
 
-			// If module info was set, retrieve variables from the module information
-			if($module_info)
-			{
-				$this->module = $module_info->module;
-				$this->mid = $module_info->mid;
-				$this->module_info = $module_info;
-				Context::setBrowserTitle($module_info->browser_title);
+		// 	// If module info was set, retrieve variables from the module information
+		// 	if($module_info)
+		// 	{
+		// 		$this->module = $module_info->module;
+		// 		$this->mid = $module_info->mid;
+		// 		$this->module_info = $module_info;
+		// 		Context::setBrowserTitle($module_info->browser_title);
 
-				$viewType = (Mobile::isFromMobilePhone()) ? 'M' : 'P';
-				$targetSrl = (Mobile::isFromMobilePhone()) ? 'mlayout_srl' : 'layout_srl';
+		// 		$viewType = (Mobile::isFromMobilePhone()) ? 'M' : 'P';
+		// 		$targetSrl = (Mobile::isFromMobilePhone()) ? 'mlayout_srl' : 'layout_srl';
 
-				// use the site default layout.
-				if($module_info->{$targetSrl} == -1)
-				{
-					$oLayoutAdminModel = getAdminModel('layout');
-					$layoutSrl = $oLayoutAdminModel->getSiteDefaultLayout($viewType, $module_info->site_srl);
-				}
-				else
-				{
-					$layoutSrl = $module_info->{$targetSrl};
-				}
+		// 		// use the site default layout.
+		// 		if($module_info->{$targetSrl} == -1)
+		// 		{
+		// 			$oLayoutAdminModel = getAdminModel('layout');
+		// 			$layoutSrl = $oLayoutAdminModel->getSiteDefaultLayout($viewType, $module_info->site_srl);
+		// 		}
+		// 		else
+		// 		{
+		// 			$layoutSrl = $module_info->{$targetSrl};
+		// 		}
 
-				// reset a layout_srl in module_info.
-				$module_info->{$targetSrl} = $layoutSrl;
+		// 		// reset a layout_srl in module_info.
+		// 		$module_info->{$targetSrl} = $layoutSrl;
 
-				$part_config = $oModuleModel->getModulePartConfig('layout', $layoutSrl);
-				Context::addHtmlHeader($part_config->header_script);
-			}
+		// 		$part_config = $oModuleModel->getModulePartConfig('layout', $layoutSrl);
+		// 		Context::addHtmlHeader($part_config->header_script);
+		// 	}
 
-			// Set module and mid into module_info
-			if(!isset($this->module_info))
-			{
-				$this->module_info = new stdClass();
-			}
-			$this->module_info->module = $this->module;
-			$this->module_info->mid = $this->mid;
+		// 	// Set module and mid into module_info
+		// 	if(!isset($this->module_info))
+		// 	{
+		// 		$this->module_info = new stdClass();
+		// 	}
+		// 	$this->module_info->module = $this->module;
+		// 	$this->module_info->mid = $this->mid;
 
-			// Set site_srl add 2011 08 09
-			$this->module_info->site_srl = $site_module_info->site_srl;
+		// 	// Set site_srl add 2011 08 09
+		// 	$this->module_info->site_srl = $site_module_info->site_srl;
 
-			// Still no module? it's an error
-			if(!$this->module)
-			{
-				$this->error = 'msg_module_is_not_exists';
-				$this->httpStatusCode = '404';
-			}
+		// 	// Still no module? it's an error
+		// 	if(!$this->module)
+		// 	{
+		// 		$this->error = 'msg_module_is_not_exists';
+		// 		$this->httpStatusCode = '404';
+		// 	}
 
-			// If mid exists, set mid into context
-			if($this->mid)
-			{
-				Context::set('mid', $this->mid, TRUE);
-			}
+		// 	// If mid exists, set mid into context
+		// 	if($this->mid)
+		// 	{
+		// 		Context::set('mid', $this->mid, TRUE);
+		// 	}
 
-			// Call a trigger after moduleHandler init
-			$output = ModuleHandler::triggerCall('moduleHandler.init', 'after', $this->module_info);
-			if(!$output->toBool())
-			{
-				$this->error = $output->getMessage();
-				return TRUE;
-			}
+		// 	// Call a trigger after moduleHandler init
+		// 	$output = ModuleHandler::triggerCall('moduleHandler.init', 'after', $this->module_info);
+		// 	if(!$output->toBool())
+		// 	{
+		// 		$this->error = $output->getMessage();
+		// 		return TRUE;
+		// 	}
 
-			// Set current module info into context
-			Context::set('current_module_info', $this->module_info);
+		// 	// Set current module info into context
+		// 	Context::set('current_module_info', $this->module_info);
 
-			return TRUE;
-		}
-
-		/**
-		 * module auto loader
-		 * @remarks if there exists a module instance created before, returns it.
-		 * */
-		public static function auto_load_modules() {
-			$a_valid_types = array('view','controller','model','class');
-			$s_modules_path_abs = X2B_PATH.'includes'.DIRECTORY_SEPARATOR.'modules';
-
-			$a_requested_modules = array();
-			$a_modules = \X2board\Includes\Classes\FileHandler::readDir($s_modules_path_abs);
-			foreach( $a_modules as $_ => $s_module_name ) {
-				$s_single_module_path_abs = $s_modules_path_abs.DIRECTORY_SEPARATOR.$s_module_name;
-				if(!is_dir($s_single_module_path_abs)) {
-					continue;
-				}
-
-				if( !isset($a_requested_modules[$s_module_name]) ) {
-					$a_requested_modules[$s_module_name] = array();
-				}
-
-				$a_module_files =  \X2board\Includes\Classes\FileHandler::readDir($s_single_module_path_abs);
-				foreach($a_module_files as $__ => $s_module_file) {
-					$s_single_file_path_abs = $s_single_module_path_abs.DIRECTORY_SEPARATOR.$s_module_file;
-					if(is_dir($s_single_file_path_abs)) {
-						continue;
-					}
-					$a_file_info = explode( '.', basename( $s_module_file ) );
-					
-					if( $a_file_info[1] == 'admin' ) {  // do not automatically load admin modules
-						continue;
-					}
-
-					$s_module_type = $a_file_info[1];
-					if(in_array( $a_file_info[1], $a_valid_types)) {
-						$a_requested_modules[$s_module_name][$s_module_type] = $s_module_file;
-					}
-				}
-			}
-
-			// validate module components
-			$a_valid_modules = array();
-			foreach( $a_requested_modules as $s_module_name => $a_module_info ) {
-				if( isset($a_module_info['class'] ) ) {
-					$a_valid_modules[$s_module_name] = $a_module_info;
-				}
-				else {
-					error_log(X2B_DOMAIN.' Warning! '.$s_modules_path_abs.DIRECTORY_SEPARATOR.$s_module_name.DIRECTORY_SEPARATOR.$s_module_name.'.class.php is required.');
-				}
-			}
-			unset($a_requested_modules);
-
-			// load valid modules
-			foreach( $a_valid_modules as $s_module_name => $a_module_info ) {
-				foreach( $a_module_info as $s_module_type => $s_module_file ) {
-					require_once($s_modules_path_abs.DIRECTORY_SEPARATOR.$s_module_name.DIRECTORY_SEPARATOR.$s_module_file);					
-				}
-			}
-			unset($a_valid_modules);
-		}
-
-		/**
-		 * It creates a module instance
-		 * @param string $module module name
-		 * @param string $type instance type, (e.g., view, controller, model)
-		 * @param string $kind admin or svc
-		 * @return ModuleObject module instance (if failed it returns null)
-		 * @remarks if there exists a module instance created before, returns it.
-		 * */
-		public static function &getModuleInstance($s_module_name, $type = 'view') {  //, $kind = '')
-			global $G_X2B_CACHE;
-			if(__DEBUG__ == 3) {
-				$start_time = \X2board\Includes\getMicroTime();
-			}
-
-			$parent_module = $s_module_name;
-			// $kind = strtolower($kind);
-			$type = strtolower($type);
-
-			// $kinds = array('svc' => 1, 'admin' => 1);
-			// if(!isset($kinds[$kind]))
-			{
-				$kind = 'svc';  // no admin feature allowed
-			}
-
-			$key = $s_module_name . '.' . ($kind != 'admin' ? '' : 'admin') . '.' . $type;
-
-			$extend_module = null;
-			if(is_array($G_X2B_CACHE['__MODULE_EXTEND__']) && array_key_exists($key, $G_X2B_CACHE['__MODULE_EXTEND__'])) {
-				$s_module_name = $extend_module = $G_X2B_CACHE['__MODULE_EXTEND__'][$key];
-			}
-
-			// if there is no instance of the module in global variable, create a new one
-			if(!isset($G_X2B_CACHE['_loaded_module'][$s_module_name][$type][$kind])) {
-				ModuleHandler::_getModuleFilePath($s_module_name, $type, $kind, $class_path, $high_class_file, $class_file, $instance_name);
-
-				if($extend_module && (!is_readable($high_class_file) || !is_readable($class_file)))	{
-					$s_module_name = $parent_module;
-					ModuleHandler::_getModuleFilePath($s_module_name, $type, $kind, $class_path, $high_class_file, $class_file, $instance_name);
-				}
-// var_dump('X2board\Includes\Modules\\'.ucfirst($s_module_name).'\\'.$s_module_name);
-				// Check if the base class and instance class exist
-				if(!class_exists('\\X2board\\Includes\\Modules\\'.ucfirst($s_module_name).'\\'.$s_module_name, true)) {
-					return NULL;
-				}
-// var_dump($instance_name);
-				$s_instance_in_namespace = '\\X2board\\Includes\\Modules\\'.ucfirst($s_module_name).'\\'.$instance_name;
-// var_dump($s_instance_in_namespace);
-				if(!class_exists($s_instance_in_namespace, true)) {
-					return NULL;
-				}
-				// Create an instance
-				$oModule = new $s_instance_in_namespace();
-				if(!is_object($oModule)) {
-					return NULL;
-				}
-// var_dump('dd');
-				// Load language files for the class
-				// Context::loadLang($class_path . 'lang');
-				// if($extend_module) {
-				// 	Context::loadLang(ModuleHandler::_getModulePath($parent_module) . 'lang');
-				// }
-
-				// Set variables to the instance
-				$oModule->setModule($s_module_name);
-				$class_path = ModuleHandler::_getRealPath($class_path);
-				$oModule->setModulePath($class_path);
-
-				// If the module has a constructor, run it.
-				if(!isset($G_X2B_CACHE['_called_constructor'][$instance_name]))	{
-					$G_X2B_CACHE['_called_constructor'][$instance_name] = TRUE;
-					if(@method_exists($oModule, $instance_name)) {
-						$oModule->{$instance_name}();
-					}
-				}
-
-				// Store the created instance into GLOBALS variable
-				$G_X2B_CACHE['_loaded_module'][$s_module_name][$type][$kind] = $oModule;
-			}
-
-			if(__DEBUG__ == 3) {
-				$G_X2B_CACHE['__elapsed_class_load__'] += \X2board\Includes\getMicroTime() - $start_time;
-			}
-// var_dump('dd');
-			// return the instance
-			return $G_X2B_CACHE['_loaded_module'][$s_module_name][$type][$kind];
-		}
-
-		/**
-		 * @remarks 
-		 * */
-		private static function _getModuleFilePath($module, $type, $kind, &$classPath, &$highClassFile, &$classFile, &$instanceName) {
-			$classPath = ModuleHandler::_getModulePath($module);
-			$highClassFile = sprintf('%s%s.class.php', $classPath, $module);
-			$highClassFile = ModuleHandler::_getRealPath($highClassFile);
-// var_Dump($highClassFile );
-
-			$types = array('view','controller','model','class');  // 'api','wap','mobile',
-			if(!in_array($type, $types)) {
-				$type = $types[0];
-			}
-			if($type == 'class') {
-				$instanceName = '%s';
-				$classFile = '%s%s.%s.php';
-			}
-			// elseif($kind == 'admin' && array_search($type, $types) < 3)	{
-			// 	$instanceName = '%sAdmin%s';
-			// 	$classFile = '%s%s.admin.%s.php';
-			// }
-			else {
-				$instanceName = '%s%s';
-				$classFile = '%s%s.%s.php';
-			}
-			$instanceName = sprintf($instanceName, $module, ucfirst($type));
-			$classFile = ModuleHandler::_getRealPath(sprintf($classFile, $classPath, $module, $type));
-// var_Dump($classPath );			
-// var_Dump($classFile );	
-		}
-
-		/**
-		 * Changes path of target file, directory into absolute path
-		 *
-		 * @param string $source path to change into absolute path
-		 * @return string Absolute path
-		 */
-		private static function _getRealPath($source) {
-			if(strlen($source) >= 2 && substr_compare($source, './', 0, 2) === 0) {
-				return X2B_PATH . substr($source, 2);
-			}
-			return $source;
-		}
-
-		/**
-		 * returns module's path
-		 * @param string $module module name
-		 * @return string path of the module
-		 * */
-		private static function _getModulePath($module) {
-			return './includes/modules/' . $module . '/';
-		}
+		// 	return TRUE;
+		// }
 
 		/**
 		 * get a module instance and execute an action
@@ -1144,7 +1143,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleHandler')) {
 		 * occured error when, set input values to session.
 		 * @return void
 		 * */
-		function _setInputValueToSession()
+		/*function _setInputValueToSession()
 		{
 			$requestVars = Context::getRequestVars();
 			unset($requestVars->act, $requestVars->mid, $requestVars->vid, $requestVars->success_return_url, $requestVars->error_return_url);
@@ -1154,7 +1153,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleHandler')) {
 				$aTmp[$key] = $value;  //$_SESSION['INPUT_ERROR'][$key] = $value;
 			}
 			$_SESSION['INPUT_ERROR'] = $aTmp;
-		}
+		}*/
 
 		/**
 		 * display contents from executed module
@@ -1414,7 +1413,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleHandler')) {
 		 * @param string $code
 		 * @return string
 		 * */
-		function _setHttpStatusMessage($code)
+		/*function _setHttpStatusMessage($code)
 		{
 			$statusMessageList = array(
 				// 1×× Informational
@@ -1491,7 +1490,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleHandler')) {
 
 			Context::set('http_status_code', $code);
 			Context::set('http_status_message', $statusMessage);
-		}
+		}*/
 	}
 }
 /* End of file ModuleHandler.class.php */
