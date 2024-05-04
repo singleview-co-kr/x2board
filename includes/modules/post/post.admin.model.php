@@ -53,9 +53,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postAdminModel')) {
 				$a_other_field = unserialize($o_field->json_param);
 
 				$a_single_field['field_type'] = $o_field->var_type;
-				// $a_single_field['field_label'] = $o_field->var_name;
 				$a_single_field['field_name'] = $o_field->var_name;
 				$a_single_field['meta_key'] = $o_field->eid;
+				$a_single_field['search'] = $o_field->var_search;
 				$a_single_field['default_value'] = $o_field->var_default;
 				$a_single_field['description'] = $o_field->var_desc;
 				$a_single_field['required'] = $o_field->var_is_required;
