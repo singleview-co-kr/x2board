@@ -1,6 +1,7 @@
 <?php
 namespace X2board\Includes\Classes;
 /* Copyright (C) XEHub <https://www.xehub.io> */
+/* WP port by singleview.co.kr */
 
 /**
  * Contains methods for accessing file system

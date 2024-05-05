@@ -1,4 +1,12 @@
 <?php
+/* Copyright (C) XEHub <https://www.xehub.io> */
+/* WP port by singleview.co.kr */
+
+/**
+ * @class ModuleObject
+ * @author XEHub (developers@xpressengine.com)
+ * base class of ModuleHandler
+ * */
 namespace X2board\Includes\Classes;
 
 if (!defined('ABSPATH')) {

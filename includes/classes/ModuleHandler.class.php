@@ -1,4 +1,16 @@
 <?php
+/* Copyright (C) XEHub <https://www.xehub.io> */
+/* WP port by singleview.co.kr */
+
+/**
+ * @class ModuleHandler
+ * @author XEHub (developers@xpressengine.com)
+ * Handling modules
+ *
+ * @remarks This class is to excute actions of modules.
+ *          Constructing an instance without any parameterconstructor, it finds the target module based on Context.
+ *          If there is no act on the found module, excute an action referencing action_forward.
+ * */
 namespace X2board\Includes\Classes;
 
 if (!defined('ABSPATH')) {

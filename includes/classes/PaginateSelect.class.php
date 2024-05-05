@@ -1,9 +1,12 @@
 <?php
+/* Copyright (C) XEHub <https://www.xehub.io> */
+/* WP port by singleview.co.kr */
+
 /**
- * - DB parent class
- * - connect db with WP
+ * - This was DB parent class
+ * - customize class for paginated select only
  *
- * @author singleview.co.kr
+ * @author XEHub (developers@xpressengine.com)
  * @package /classes/db
  * @version 0.1
  */

@@ -1,7 +1,10 @@
 <?php
+/* Copyright (C) XEHub <https://www.xehub.io> */
+/* WP port by singleview.co.kr */
+
 /**
  * @class PageHandler
- * @author https://singleview.co.kr
+ * @author XEHub (developers@xpressengine.com)
  * handles page navigation
  * @version 0.1
  *

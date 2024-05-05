@@ -1,8 +1,11 @@
 <?php
+/* Copyright (C) XEHub <https://www.xehub.io> */
+/* WP port by singleview.co.kr */
+
 /**
  * Every modules inherits from BaseObject class. It includes error, message, and other variables for communicatin purpose.
  *
- * @author https://singleview.co.kr
+ * @author XEHub (developers@xpressengine.com)
  */
 namespace X2board\Includes\Classes;
 
