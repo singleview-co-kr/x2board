@@ -232,7 +232,7 @@ function _launch_x2b($s_cmd_type) {
 	require_once X2B_PATH . 'includes/classes/BaseObject.class.php';
 	require_once X2B_PATH . 'includes/classes/ModuleObject.class.php';
 	require_once X2B_PATH . 'includes/classes/ModuleHandler.class.php';
-	require_once X2B_PATH . 'includes/classes/DB.class.php';
+	require_once X2B_PATH . 'includes/classes/PaginateSelect.class.php';
 	require_once X2B_PATH . 'includes/classes/PageHandler.class.php';
 	require_once X2B_PATH . 'includes/classes/FileHandler.class.php';
 	require_once X2B_PATH . 'includes/classes/cache/CacheHandler.class.php';
@@ -435,21 +435,14 @@ function getClass($module_name) {
  * Function to handle the result of DB::executeQuery() as an array
  *
  * @see DB::executeQuery()
- * @see executeQuery()
- * @param string $query_id (module name.query XML file)
- * @param object $args values of args object
- * @param string[] $arg_columns Column list
+ * @param object $o_query query object
  * @return object Query result data
  */
-function executeQueryArray($o_query) {  // $query_id, $args = NULL, $arg_columns = NULL)
-	// getPaginationSelect로 명칭 변경 예정
-	$o_db = \X2board\Includes\Classes\DB::getInstance();
-	$output = $o_db->executeQuery($o_query);  // $args,
-	// if(!is_array($output->data) && count((array)$output->data) > 0)
-	// {
-	// 	$output->data = array($output->data);
-	// }
-	return $output;  // $o_db->executeQuery() always outputs array 
+function get_paginate_select($o_query) {
+	$o_pagination = \X2board\Includes\Classes\PaginateSelect::getInstance();
+	$output = $o_pagination->execute_query($o_query);
+	unset($o_pagination);
+	return $output;
 }
 
 /**

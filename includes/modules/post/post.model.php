@@ -131,7 +131,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 					$o_query->page = $obj->page;
 					$o_query->list_count = $obj->list_count;
 					$o_query->page_count = $obj->page_count;
-					$output = \X2board\Includes\executeQueryArray($o_query); // $query_id, $args, $columnList);
+					$output = \X2board\Includes\get_paginate_select($o_query); // $query_id, $args, $columnList);
 					unset($o_query);
 				}
 				elseif( $query_id == 'post.getPostListWithExtraVars' ) { // extended user define field list query
@@ -145,7 +145,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 					$o_query->page = $obj->page;
 					$o_query->list_count = $obj->list_count;
 					$o_query->page_count = $obj->page_count;
-					$output = \X2board\Includes\executeQueryArray($o_query); // $query_id, $args, $columnList);
+					$output = \X2board\Includes\get_paginate_select($o_query); // $query_id, $args, $columnList);
 					unset($o_query);
 				}
 			}
@@ -226,7 +226,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			$o_query->s_columns = "*";
 			$o_query->s_where = "WHERE `board_id`=".$obj->wp_page_id." AND `is_notice`='Y' AND `status` in ('PUBLIC')"; // and `list_order` <= 2100000000";
 			$o_query->s_orderby = "ORDER BY `list_order` desc";
-			$output = \X2board\Includes\executeQueryArray($o_query); // $query_id, $args, $columnList);
+			$output = \X2board\Includes\get_paginate_select($o_query); // $query_id, $args, $columnList);
 			unset($o_query);
 			if(!$output->toBool()||!$output->data) 
 				return $output;
@@ -974,7 +974,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 						// $output = executeQuery($divisionSqlID, $division_args, array('list_order'));
 						// $division_args = null;
 
-						$output = \X2board\Includes\executeQueryArray($o_query);
+						$output = \X2board\Includes\get_paginate_select($o_query);
 						if($output->data) {
 							$item = array_pop($output->data);
 							$n_division = $item->list_order;
@@ -995,7 +995,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 						// $last_division_args->page = 5001;
 						// $output = executeQuery($divisionSqlID, $last_division_args, array('list_order'));
 						$o_query->page = 5001;
-						$output = \X2board\Includes\executeQueryArray($o_query);
+						$output = \X2board\Includes\get_paginate_select($o_query);
 						if($output->data) {
 							$item = array_pop($output->data);
 							$n_last_division = $item->list_order;

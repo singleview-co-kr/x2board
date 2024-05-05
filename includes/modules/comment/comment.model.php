@@ -168,7 +168,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 			$o_query->page = $page;
 			$o_query->list_count = $comment_count;
 			$o_query->page_count = $comment_count;
-			$output = \X2board\Includes\executeQueryArray($o_query);
+			$output = \X2board\Includes\get_paginate_select($o_query);
 			unset($o_query);
 			// return if an error occurs in the query results
 			if(!$output->toBool()) {
