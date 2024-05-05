@@ -22,7 +22,7 @@ function x2b_get_url() {  // this function is same with func.inc.php::get_url()
 		$s_url = \X2board\Includes\Classes\Context::get_url($n_num_args, $a_args_list);
 	}	
 	else{ 
-		$s_url = \X2board\Includes\Classes\Context::get_request_uri();
+		$s_url = get_permalink();  // WP method
 	}
 	return preg_replace('@\berror_return_url=[^&]*|\w+=(?:&|$)@', '', $s_url);
 }
@@ -51,23 +51,6 @@ function x2b_write_comment_editor() {
 	$o_editor_view = \X2board\Includes\getView('editor');
 	$o_editor_view->get_comment_editor_html();
 	unset($o_editor_view);
-}
-
-function x2board_target(){
-	// static $target;
-	// if($target === null){
-	// 	$_GET['target'] = isset($_GET['target'])?sanitize_key($_GET['target']):'';
-	// 	$target = $_GET['target'];
-	// }
-	return null;
-}
-
-function x2board_keyword(){
-	return null;
-}
-
-function x2board_id(){
-	return null;
 }
 
 /* function x2b_is_manager() {

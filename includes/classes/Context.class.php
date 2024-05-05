@@ -1,4 +1,7 @@
 <?php
+/* Copyright (C) XEHub <https://www.xehub.io> */
+/* WP port by singleview.co.kr */
+
 namespace X2board\Includes\Classes;
 
 if (!defined('ABSPATH')) {
@@ -12,8 +15,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 	 *
 	 * @author https://singleview.co.kr
 	 */
-	class Context
-	{
+	class Context {
 		/**
 		 * Allow rewrite
 		 * @var bool TRUE: using rewrite mod, FALSE: otherwise
@@ -907,7 +909,7 @@ var_dump('detected view cmd:'. $s_cmd);
 			elseif($_SERVER['REQUEST_METHOD'] == 'GET') {
 				// Otherwise, make GET variables into array
 				// $get_vars = get_object_vars($self->get_vars);
-				$get_vars = get_object_vars($self->gets('cmd', 'post_id', 'page', 'category'));
+				$get_vars = get_object_vars($self->gets('cmd', 'post_id', 'page', 'category','search_target','search_keyword'));
 // error_log(print_r($get_vars, true));
 				// 이 조건문 작동하면 ?cmd=view_post&post_id=17&cpage=2#17_comment 와 같은 댓글 페이지 처리가 안됨
 				// if( isset( $get_vars['cmd'] ) && $get_vars['cmd'] == X2B_CMD_VIEW_POST &&
@@ -926,6 +928,13 @@ var_dump('detected view cmd:'. $s_cmd);
 				// if($get_vars['act'] == 'IS') {
 				// 	if(!!$self->get_vars->is_keyword) $get_vars['is_keyword'] = $self->get_vars->is_keyword;
 				// }
+			}
+
+			if( is_null($get_vars['search_target'])){
+				unset($get_vars['search_target']);
+			}
+			if( is_null($get_vars['search_keyword'])){
+				unset($get_vars['search_keyword']);
 			}
 
 			// arrange args_list
@@ -1070,18 +1079,18 @@ var_dump('detected view cmd:'. $s_cmd);
 			// 	// no SSL
 			// }
 			// else
-			{
-				// currently on SSL but target is not based on SSL
-				if($_SERVER['HTTPS'] == 'on') {
-					$query = $self->get_request_uri(ENFORCE_SSL, $domain) . $query;
-				}
-				else if($domain) {  // if $domain is set
-					$query = $self->get_request_uri(FOLLOW_REQUEST_SSL, $domain) . $query;
-				}
-				// else {
-				// 	$query = \X2board\Includes\get_script_path() . $query;
-				// }
-			}
+			// {
+			// 	// currently on SSL but target is not based on SSL
+			// 	if($_SERVER['HTTPS'] == 'on') {
+			// 		$query = $self->get_request_uri(ENFORCE_SSL, $domain) . $query;
+			// 	}
+			// 	else if($domain) {  // if $domain is set
+			// 		$query = $self->get_request_uri(FOLLOW_REQUEST_SSL, $domain) . $query;
+			// 	}
+			// 	// else {
+			// 	// 	$query = \X2board\Includes\get_script_path() . $query;
+			// 	// }
+			// }
 
 			if(!$encode) {
 				return $query;
@@ -1090,19 +1099,33 @@ var_dump('detected view cmd:'. $s_cmd);
 			if(!$autoEncode) {
 				return htmlspecialchars($query, ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE);
 			}
+			wp_die('bottom part of \X2board\Includes\Classes\get_url() executed specially');
+			// $output = array();
+			// $encode_queries = array();
+			// $parsedUrl = parse_url($query);
+			// parse_str($parsedUrl['query'], $output);
+			// foreach($output as $key => $value) {
+			// 	if(preg_match('/&([a-z]{2,}|#\d+);/', urldecode($value))) {
+			// 		$value = urlencode(htmlspecialchars_decode(urldecode($value)));
+			// 	}
+			// 	$encode_queries[] = $key . '=' . $value;
+			// }
+			// return htmlspecialchars($parsedUrl['path'] . '?' . join('&', $encode_queries), ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE);
+		}
 
-			$output = array();
-			$encode_queries = array();
-			$parsedUrl = parse_url($query);
-			parse_str($parsedUrl['query'], $output);
-			foreach($output as $key => $value) {
-				if(preg_match('/&([a-z]{2,}|#\d+);/', urldecode($value))) {
-					$value = urlencode(htmlspecialchars_decode(urldecode($value)));
-				}
-				$encode_queries[] = $key . '=' . $value;
+		/**
+		 * Get lang_type
+		 *
+		 * @return string Language type
+		 */
+		public static function getLangType() {
+			$a_locale = array('ko_KR' => 'ko', 'en_GB'=>'en');
+			if( !isset($a_locale[get_locale()]) ) {
+				wp_die(__('undefined locale', 'x2board'));
 			}
-
-			return htmlspecialchars($parsedUrl['path'] . '?' . join('&', $encode_queries), ENT_COMPAT | ENT_HTML401, 'UTF-8', FALSE);
+			return $a_locale[get_locale()];
+			// $self = self::getInstance();
+			// return $self->lang_type;
 		}
 
 		/**
@@ -1113,7 +1136,7 @@ var_dump('detected view cmd:'. $s_cmd);
 		 * @retrun string converted URL
 		 */
 		// public static function getRequestUri($ssl_mode = FOLLOW_REQUEST_SSL, $domain = null)
-		public static function get_request_uri($ssl_mode = FOLLOW_REQUEST_SSL, $domain = null) {
+		/*public static function get_request_uri($ssl_mode = FOLLOW_REQUEST_SSL, $domain = null) {
 			static $url = array();
 
 			// Check HTTP Request
@@ -1124,7 +1147,7 @@ var_dump('detected view cmd:'. $s_cmd);
 			// if(self::get('_use_ssl') == 'always') {
 			// 	$ssl_mode = ENFORCE_SSL;
 			// }
-error_log(print_r($domain, true));
+
 			if($domain) {
 				$domain_key = md5($domain);
 			}
@@ -1154,7 +1177,7 @@ error_log(print_r($domain, true));
 				}
 			}
 			else {
-				$target_url = $_SERVER['HTTP_HOST'] . getScriptPath();
+				$target_url = $_SERVER['HTTP_HOST'] . \X2board\Includes\get_script_path();
 			}
 
 			$url_info = parse_url('http://' . $target_url);
@@ -1187,24 +1210,9 @@ error_log(print_r($domain, true));
 			}
 
 			$url[$ssl_mode][$domain_key] = sprintf('%s://%s%s%s', $use_ssl ? 'https' : $url_info['scheme'], $url_info['host'], $url_info['port'] && $url_info['port'] != 80 ? ':' . $url_info['port'] : '', $url_info['path']);
-
+error_log(print_r($url, true));
 			return $url[$ssl_mode][$domain_key];
-		}
-
-		/**
-		 * Get lang_type
-		 *
-		 * @return string Language type
-		 */
-		public static function getLangType() {
-			$a_locale = array('ko_KR' => 'ko', 'en_GB'=>'en');
-			if( !isset($a_locale[get_locale()]) ) {
-				wp_die(__('undefined locale', 'x2board'));
-			}
-			return $a_locale[get_locale()];
-			// $self = self::getInstance();
-			// return $self->lang_type;
-		}
+		}*/
 
 		/**
 		 * Load the database information

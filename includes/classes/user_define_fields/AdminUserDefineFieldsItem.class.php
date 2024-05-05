@@ -26,6 +26,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\AdminUserDefineFieldsItem')) {
 		protected $_s_field_type = null;
 		protected $_s_field_name = null;
 		protected $_s_meta_key = null;
+		protected $_s_search = null;
 		protected $_s_default_value = null;
 		protected $_s_description = null;
 		protected $_s_required = null;
@@ -56,11 +57,12 @@ if (!class_exists('\\X2board\\Includes\\Classes\\AdminUserDefineFieldsItem')) {
 		public function __construct($a_single_field) {
 			parent::__construct();
 			$this->_a_all_fields = array_merge($this->_a_default_fields, $this->_a_extends_fields);
-	// var_dump($this->_a_extends_fields);
+// var_dump($this->_a_extends_fields);
 			// default fields
 			$this->_s_field_type = $a_single_field['field_type'];
 			$this->_s_field_name = $a_single_field['field_name'];
 			$this->_s_meta_key = $a_single_field['meta_key'];
+			$this->_s_search = $a_single_field['search'];
 			$this->_s_description = $a_single_field['description'];
 
 			// optional fields
@@ -143,7 +145,6 @@ if (!class_exists('\\X2board\\Includes\\Classes\\AdminUserDefineFieldsItem')) {
 												<span class="fields-down">▼</span>
 											</button>
 										</div>';
-// var_dump($this->_a_all_fields);
 			if($this->_a_all_fields[$this->_s_field_type]['close_button'] == 'yes') {
 				$s_html .= 				'<div class="x2board-fields-toggle">
 											<button type="button" class="fields-remove" title="'.__('Remove', 'x2board').'">X</button>
@@ -463,8 +464,15 @@ if (!class_exists('\\X2board\\Includes\\Classes\\AdminUserDefineFieldsItem')) {
 											</div>
 										</div>';
 			}
-			if(!is_null($this->_s_required) || !is_null($this->_s_show_document) || !is_null($this->_s_hidden)) {
+			if(!is_null($this->_s_search) || !is_null($this->_s_required) || !is_null($this->_s_show_document) || !is_null($this->_s_hidden)) {
 				$s_html .=			 	'<div class="attr-row">';
+				if(isset($this->_s_search)){
+					$s_checked = $this->_s_search == 'Y' ? 'checked' : '';
+					$s_html .=			 	'<label>
+												<input type="hidden" name="fields['.esc_attr($this->_s_meta_key).'][search]" class="field_data search" value="">
+												<input type="checkbox" name="fields['.esc_attr($this->_s_meta_key).'][search]" class="field_data search" value="Y" '.$s_checked.' >'.__('Search', 'x2board').'
+											</label>';
+				}
 				if(isset($this->_s_required)){
 					$s_checked = $this->_s_required == '1' ? 'checked' : '';
 					$s_html .=			 	'<label>

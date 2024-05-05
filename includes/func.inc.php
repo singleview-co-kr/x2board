@@ -441,10 +441,10 @@ function getClass($module_name) {
  * @param string[] $arg_columns Column list
  * @return object Query result data
  */
-function executeQueryArray($o_query, $arg_columns = NULL) {  // $query_id, $args = NULL, $arg_columns = NULL)
+function executeQueryArray($o_query) {  // $query_id, $args = NULL, $arg_columns = NULL)
 	// getPaginationSelect로 명칭 변경 예정
 	$o_db = \X2board\Includes\Classes\DB::getInstance();
-	$output = $o_db->executeQuery($o_query, $arg_columns);  // $args,
+	$output = $o_db->executeQuery($o_query);  // $args,
 	// if(!is_array($output->data) && count((array)$output->data) > 0)
 	// {
 	// 	$output->data = array($output->data);

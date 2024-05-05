@@ -46,13 +46,39 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 
 			$this->except_notice = $this->module_info->except_notice == 'N' ? FALSE : TRUE;
 
+			// time translation for \X2board\Includes\zdate()
+			$unit_week = array( "Monday"=> "월", "Tuesday" => "화", "Wednesday" => "수", "Thursday" => "목", "Friday" => "금", "Saturday" => "토", "Sunday" =>"일" );
+			\X2board\Includes\Classes\Context::set( 'unit_week', $unit_week );
+			$unit_week = array( "am"=> "오전", "pm" => "오후", "AM" => "오전", "PM" => "오후" );
+			\X2board\Includes\Classes\Context::set( 'unit_meridiem', $unit_week );
+			
 			$o_post_model = \X2board\Includes\getModel('post');
 			$a_status = $this->_get_status_name_list($o_post_model);
 			if(isset($a_status['SECRET'])) {
 				$this->module_info->secret = 'Y';  // for notify_message checkbox on post/comment editor
 			}
-			unset($o_post_model);
 			unset($a_status);
+
+			/**
+			 * use context::set to setup extra variables
+			 **/
+			$n_board_id = \X2board\Includes\Classes\Context::get('board_id');
+			$a_extra_keys = $o_post_model->get_user_define_keys($n_board_id);
+			\X2board\Includes\Classes\Context::set('extra_keys', $a_extra_keys);
+			unset($o_post_model);
+
+			/**
+			 * add extra variables to order(sorting) target
+			 **/
+			$a_ignore_key = array('attach', 'category', 'search');
+			if( is_array($a_extra_keys) ) {
+				foreach($a_extra_keys as $val) {
+					if( !in_array( $val->eid, $a_ignore_key) ){
+						$this->a_order_target[] = $val->eid;
+					}
+				}
+			}
+			unset($a_ignore_key);
 
 			// remove [post_id]_cpage from get_vars
 			$o_args = \X2board\Includes\Classes\Context::getRequestVars();
@@ -245,34 +271,22 @@ var_dump(X2B_CMD_VIEW_LIST);
 			 * display the search options on the screen
 			 * add extra vaiables to the search options
 			 **/
-			$a_search_option_lang_ko = array( "title_content" => "제목+내용", "title" => "제목",
-										   "content" => "내용", "comment" => "댓글", "user_name" => "이름",
-										   "user_id" => "아이디", "nick_name" => "닉네임", "tag" => "태그" ); 
 			// use search options on the template (the search options key has been declared, based on the language selected)
 			foreach($this->a_search_option as $opt) {
-				$search_option[$opt] = $a_search_option_lang_ko[$opt];//Context::getLang($opt);
+				$a_search_option[$opt] = __($opt, 'x2board'); //Context::getLang($opt);
 			}
-			unset($a_search_option_lang_ko);
-// var_dump($search_option);	
-			// $extra_keys = Context::get('extra_keys');
-			// if($extra_keys)
-			// {
-			// 	foreach($extra_keys as $key => $val)
-			// 	{
-			// 		if($val->search == 'Y') $search_option['extra_vars'.$val->idx] = $val->name;
-			// 	}
-			// }
-			// remove a search option that is not public in member config
-			// $memberConfig = getModel('module')->getModuleConfig('member');
-			// foreach($memberConfig->signupForm as $signupFormElement)
-			// {
-			// 	if(in_array($signupFormElement->title, $search_option))
-			// 	{
-			// 		if($signupFormElement->isPublic == 'N')
-			// 			unset($search_option[$signupFormElement->name]);
-			// 	}
-			// }
-			\X2board\Includes\Classes\Context::set('search_option', $search_option);
+
+			$a_extra_keys = \X2board\Includes\Classes\Context::get('extra_keys');
+// var_Dump($a_extra_keys);			
+			if($a_extra_keys) {
+				foreach($a_extra_keys as $key => $val) {
+					if($val->search == 'Y') {
+						$a_search_option[$val->eid] = $val->name;
+					}
+				}
+			}
+// var_Dump($a_search_option);
+			\X2board\Includes\Classes\Context::set('search_option', $a_search_option);
 
 			// $oDocumentModel = getModel('document');
 			// $statusNameList = $this->_getStatusNameList($oDocumentModel);
@@ -292,26 +306,15 @@ var_dump(X2B_CMD_VIEW_LIST);
 			}
 			$this->_makeListColumnList();
 
-			// time translation for \X2board\Includes\zdate()
-			$unit_week = array( "Monday"=> "월", "Tuesday" => "화", "Wednesday" => "수", "Thursday" => "목", "Friday" => "금", "Saturday" => "토", "Sunday" =>"일" );
-			\X2board\Includes\Classes\Context::set( 'unit_week', $unit_week );
-			$unit_week = array( "am"=> "오전", "pm" => "오후", "AM" => "오전", "PM" => "오후" );
-			\X2board\Includes\Classes\Context::set( 'unit_meridiem', $unit_week );
-			
 			// display the notice list
 			$this->_disp_notice_list();
-			// $output = $this->_disp_notice_list();
+
+			// display the post list
+			$this->_disp_post_list();
 			// Return if no result or an error occurs
 			// if(!$output->toBool()) {
 			// 	return $this->_disp_message($output->getMessage());
 			// }
-
-			// display the post list
-			$output = $this->_disp_post_list();
-			// Return if no result or an error occurs
-			if(!$output->toBool()) {
-				return $this->_disp_message($output->getMessage());
-			}
 
 			/**
 			 * add javascript filters
@@ -515,8 +518,7 @@ var_dump(X2B_CMD_VIEW_POST);
 			// set the current page of documents
 			// $document_srl = Context::get('document_srl');
 			$post_id = \X2board\Includes\Classes\Context::get('post_id');  //$g_a_x2b_query_param['post_id'];
-			if(!$o_args->page && $post_id)
-			{
+			if(!$o_args->page && $post_id) {
 // var_dump($o_args->page);
 				$o_post = $o_post_model->get_post($post_id);
 				if($o_post->is_exists() && !$o_post->is_notice()) {
@@ -548,7 +550,7 @@ var_dump(X2B_CMD_VIEW_POST);
 			// setup the list config variable on context
 			// Context::set('list_config', $this->listConfig);
 // var_dump($o_args);			
-			// setup document list variables on context
+			// setup post list variables on context
 			$output = $o_post_model->get_post_list($o_args, $this->except_notice);  //, TRUE, $this->columnList);
 			unset($o_post_model);
 			\X2board\Includes\Classes\Context::set('post_list', $output->data);
@@ -591,25 +593,28 @@ var_dump(X2B_CMD_VIEW_POST);
 			$o_args = new \stdClass();
 			$o_args->wp_page_id = get_the_ID();  // $this->module_srl;
 			$output = $o_post_model->get_notice_list($o_args, $this->columnList);
+// var_dump($this->columnList);			
 			unset($o_args);
 			\X2board\Includes\Classes\Context::set('notice_list', $output->data);	
 		}
 
-		private function _makeListColumnList()
-		{
+		private function _makeListColumnList() {
 			$configColumList = array_keys($this->listConfig);
-			$tableColumnList = array('document_srl', 'module_srl', 'category_srl', 'lang_code', 'is_notice',
+			$tableColumnList = array('post_id', 'board_id', 'category_id', 'is_notice',  // , 'lang_code'
 					'title', 'title_bold', 'title_color', 'content', 'readed_count', 'voted_count',
-					'blamed_count', 'comment_count', 'trackback_count', 'uploaded_count', 'password', 'user_id',
-					'user_name', 'nick_name', 'member_srl', 'email_address', 'homepage', 'tags', 'extra_vars',
+					'blamed_count', 'comment_count', 'trackback_count', 'uploaded_count', 'password',  // 'user_id',
+					'nick_name', 'post_author', 'email_address', 'tags', // 'member_srl', 'user_name', 'homepage', 'extra_vars',
 					'regdate_dt', 'last_update_dt', 'last_updater', 'ipaddress', 'list_order', 'update_order',
-					'allow_trackback', 'notify_message', 'status', 'comment_status');
+					'status', 'comment_status');  // 'allow_trackback', 'notify_message', 
 			$this->columnList = array_intersect($configColumList, $tableColumnList);
 
-			if(in_array('summary', $configColumList)) array_push($this->columnList, 'content');
+			if(in_array('summary', $configColumList)) {
+				array_push($this->columnList, 'content');
+			}
 
 			// default column list add
-			$defaultColumn = array('document_srl', 'module_srl', 'category_srl', 'lang_code', 'member_srl', 'last_update_dt', 'comment_count', 'trackback_count', 'uploaded_count', 'status', 'regdate_dt', 'title_bold', 'title_color');
+			$defaultColumn = array('post_id', 'board_id', 'category_id', 'post_author', 'last_update_dt', 'comment_count',  // 'lang_code', 
+								   'uploaded_count', 'status', 'regdate_dt', 'title_bold', 'title_color');  // 'trackback_count', 
 
 			//TODO guestbook, blog style supports legacy codes.
 			// if($this->module_info->skin == 'x2_guestbook' || $this->module_info->default_style == 'blog') {
@@ -627,9 +632,9 @@ var_dump(X2B_CMD_VIEW_POST);
 			$this->columnList = array_unique(array_merge($this->columnList, $defaultColumn));
 
 			// add table name
-			foreach($this->columnList as $no => $value)	{
-				$this->columnList[$no] = 'post.' . $value;
-			}
+			// foreach($this->columnList as $no => $value)	{
+			// 	$this->columnList[$no] = 'post.' . $value;
+			// }
 		}
 
 		/**

@@ -68,9 +68,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			$o_sort_check = $this->_set_sort_index($obj, $load_extra_vars);
 			
 			$obj->sort_index = $o_sort_check->sort_index;
-			$obj->isExtraVars = $o_sort_check->isExtraVars;
+			$obj->is_user_define_field = $o_sort_check->is_user_define_field;
+// var_dump($obj);			
 			// unset($obj->use_alternate_output);
-			$obj->columnList = $columnList;
+			// $obj->columnList = $columnList;
 			// Call trigger (before)
 			// This trigger can be used to set an alternative output using a different search method
 			// $output = ModuleHandler::triggerCall('document.getDocumentList', 'before', $obj);
@@ -78,23 +79,19 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			// {
 			// 	return $output;
 			// }
-
-			$o_search_check = $this->_set_search_option($obj, $args, $query_id, $use_division);
-// var_dump($args);
-// var_dump($query_id);
-			// if ($o_sort_check->isExtraVars && substr_count($obj->search_target,'extra_vars'))
-			// {
+// var_dump($obj);
+			$o_search_check = $this->_set_search_option($obj); //, $args);// , $query_id, $use_division);
+// var_dump($o_search_check);
+			$query_id = $o_search_check->s_query_id; // 'post.getPostList';   // basic document list query
+			if ($o_sort_check->is_user_define_field && substr_count($obj->search_target, 'extra_vars')) {
 			// 	$query_id = 'document.getDocumentListWithinExtraVarsExtraSort';
 			// 	$args->sort_index = str_replace('documents.','',$args->sort_index);
 			// 	$output = executeQueryArray($query_id, $args);
-			// }
-			// elseif ($o_sort_check->isExtraVars)
-			// {
-			// 	$output = executeQueryArray($query_id, $args);
-			// }
-			// else
-			{
-				$query_id = 'post.getPostList';   // basic document list query
+			}
+			elseif ($o_sort_check->is_user_define_field) {
+				$output = executeQueryArray($query_id, $args);
+			}
+			else {
 				// document.getDocumentList query execution
 				// Query_id if you have a group by clause getDocumentListWithinTag getDocumentListWithinComment or used again to perform the query because
 				$groupByQuery = array('post.getPostListWithinComment' => 1, 'post.getPostListWithinTag' => 1, 'post.getPostListWithinExtraVars' => 1);
@@ -124,20 +121,31 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 					$output->total_page = $page_navigation->total_page;
 					$output->page = $page_navigation->cur_page;
 				}
-				else { // basic document list query
-					// $query_id = 'post.getPostList';
+				elseif( $query_id == 'post.getPostList' ) { // basic post list query
 					global $wpdb;
 					$o_query = new \stdClass();
-					$o_query->s_tables = '`'.$wpdb->prefix.'x2b_posts`';
+					$o_query->s_tables = '`'.$wpdb->prefix.'x2b_posts` as `posts`';
 					$o_query->s_columns = "*";
-					// $o_query->s_where = "WHERE `board_id`=".$obj->wp_page_id." AND `status` in ('SECRET', 'PUBLIC')"; // and `list_order` <= 2100000000";
-					// $o_query->s_orderby = "ORDER BY `list_order` asc";
-					$o_query->s_where = $o_search_check->s_where;
+					$o_query->s_where = $o_search_check->s_where . " AND `posts`.`is_notice`='N'";
 					$o_query->s_orderby = $o_search_check->s_orderby;
 					$o_query->page = $obj->page;
 					$o_query->list_count = $obj->list_count;
 					$o_query->page_count = $obj->page_count;
-					$output = \X2board\Includes\executeQueryArray($o_query, $columnList); // $query_id, $args, $columnList);
+					$output = \X2board\Includes\executeQueryArray($o_query); // $query_id, $args, $columnList);
+					unset($o_query);
+				}
+				elseif( $query_id == 'post.getPostListWithExtraVars' ) { // extended user define field list query
+					global $wpdb;
+					$o_query = new \stdClass();
+					$o_query->s_tables = '`'.$wpdb->prefix.'x2b_posts` as `posts`, `'.$wpdb->prefix.'x2b_user_define_vars` as `user_vars` ';
+					$o_query->s_columns = "*";
+					$o_query->s_where = $o_search_check->s_where . " AND `posts`.`is_notice`='N'";
+					$o_query->s_groupby = $o_search_check->s_groupby;
+					$o_query->s_orderby = $o_search_check->s_orderby;
+					$o_query->page = $obj->page;
+					$o_query->list_count = $obj->list_count;
+					$o_query->page_count = $obj->page_count;
+					$output = \X2board\Includes\executeQueryArray($o_query); // $query_id, $args, $columnList);
 					unset($o_query);
 				}
 			}
@@ -218,7 +226,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			$o_query->s_columns = "*";
 			$o_query->s_where = "WHERE `board_id`=".$obj->wp_page_id." AND `is_notice`='Y' AND `status` in ('PUBLIC')"; // and `list_order` <= 2100000000";
 			$o_query->s_orderby = "ORDER BY `list_order` desc";
-			$output = \X2board\Includes\executeQueryArray($o_query, $columnList); // $query_id, $args, $columnList);
+			$output = \X2board\Includes\executeQueryArray($o_query); // $query_id, $args, $columnList);
 			unset($o_query);
 			if(!$output->toBool()||!$output->data) 
 				return $output;
@@ -569,47 +577,48 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 		public function get_post_page($o_post, $o_in_args) {
 			$o_sort_check = $this->_set_sort_index($o_in_args, TRUE);
 			$o_in_args->sort_index = $o_sort_check->sort_index;
-			$o_in_args->isExtraVars = $o_sort_check->isExtraVars;
+			$o_in_args->is_user_define_field = $o_sort_check->is_user_define_field;
 
-			$o_search_check = $this->_set_search_option($o_in_args, $args, $query_id, $use_division);
-
-			if($o_sort_check->isExtraVars) {
+			$o_search_check = $this->_set_search_option($o_in_args); //, $args);  //, $query_id, $use_division);
+// var_dump($o_in_args);
+			if($o_sort_check->is_user_define_field) {
 				return 1;
 			}
 			else {
 				if($o_sort_check->sort_index === 'list_order' || $o_sort_check->sort_index === 'update_order') {
-					if($args->order_type === 'desc') {
-						$args->{'rev_' . $o_sort_check->sort_index} = $o_post->get($o_sort_check->sort_index);
+					if($o_in_args->order_type === 'desc') {
+						$o_in_args->{'rev_' . $o_sort_check->sort_index} = $o_post->get($o_sort_check->sort_index);
 					}
 					else {
-						$args->{$o_sort_check->sort_index} = $o_post->get($o_sort_check->sort_index);
+						$o_in_args->{$o_sort_check->sort_index} = $o_post->get($o_sort_check->sort_index);
 					}
 				}
 				elseif($o_sort_check->sort_index === 'regdate_dt') {
 
-					if($args->order_type === 'asc') {
-						$args->{'rev_' . $o_sort_check->sort_index} = $o_post->get($o_sort_check->sort_index);
+					if($o_in_args->order_type === 'asc') {
+						$o_in_args->{'rev_' . $o_sort_check->sort_index} = $o_post->get($o_sort_check->sort_index);
 					}
 					else {
-						$args->{$o_sort_check->sort_index} = $o_post->get($o_sort_check->sort_index);
+						$o_in_args->{$o_sort_check->sort_index} = $o_post->get($o_sort_check->sort_index);
 					}
 				}
 				else {
 					return 1;
 				}
 			}
-// var_dump($query_id);
 // var_dump($o_in_args);
+// var_dump($query_id);
+// var_dump($o_search_check->s_query_id);
 			// total number of the article search page
-			$query_id .= 'Page';  // $output = executeQuery($query_id . 'Page', $args);
+			$query_id = $o_search_check->s_query_id.'Page';  // $output = executeQuery($query_id . 'Page', $args);
 			global $wpdb;
-			$s_tables = '`'.$wpdb->prefix.'x2b_posts`';
+			$s_tables = '`'.$wpdb->prefix.'x2b_posts` as `posts`';
 			$s_query = "SELECT COUNT(*) as `rec_cnt` FROM {$s_tables}";
 			
 			if( $query_id == 'post.getPostListPage' ) {
 				// SELECT count(`document_srl`) as `count` FROM `xe_documents` as `documents` WHERE `module_srl` in (?) and `status` in (?,?) and ( `list_order` <= ? ) 
-				if( isset($args->list_order) ) {
-					$o_search_check->s_where .= " AND `list_order` <= ".$args->list_order;
+				if( isset($o_in_args->list_order) ) {
+					$o_search_check->s_where .= " AND `posts`.`list_order` <= ".$o_in_args->list_order;
 				}
 			}
 
@@ -635,10 +644,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 		// private function _setSortIndex($obj, $load_extra_vars)
 		private function _set_sort_index($obj, $load_extra_vars) {
 			$sortIndex = $obj->sort_index;
-			$isExtraVars = false;
+			$is_user_define_field = false;
 			$a_sortable_field = array('list_order','regdate_dt','last_update_dt','update_order','readed_count',
-									  'voted_count','comment_count','uploaded_count','title',
-									  'category_id');
+									  'voted_count','comment_count','uploaded_count','title', 'category_id');
 			if(!in_array($sortIndex, $a_sortable_field)) {
 				// get module_srl extra_vars list
 				if ($load_extra_vars) {
@@ -657,7 +665,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 							$sortIndex = 'list_order';
 						}
 						else {
-							$isExtraVars = true;
+							$is_user_define_field = true;
 						}
 					}
 				}
@@ -668,7 +676,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			unset($a_sortable_field);
 			$o_rst = new \stdClass();
 			$o_rst->sort_index = $sortIndex;
-			$o_rst->isExtraVars = $isExtraVars;
+			$o_rst->is_user_define_field = $is_user_define_field;
 			return $o_rst;
 		}
 
@@ -682,9 +690,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 		 * @param bool $use_division
 		 * @return void
 		 */
-		private function _set_search_option($searchOpt, &$args, &$query_id, &$use_division) {
+		private function _set_search_option($searchOpt) {  // , &$args) { // , &$query_id, &$use_division) {
 			// Variable check
-// var_dump($searchOpt);		
+// var_dump($searchOpt);
 			$args = new \stdClass();
 			$args->category_id = $searchOpt->category_id ? $searchOpt->category_id : null;
 			$args->order_type = $searchOpt->order_type;
@@ -702,6 +710,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			if(!isset($orderType[$args->order_type])) {
 				$args->order_type = 'asc';
 			}
+			unset($orderType);
 
 			// If that came across mid module_srl instead of a direct module_srl guhaejum
 			// if($searchOpt->mid) {
@@ -709,7 +718,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			// 	$args->module_srl = $oModuleModel->getModuleSrlByMid($obj->mid);
 			// 	unset($searchOpt->mid);
 			// }
-
+			
 			// Module_srl passed the array may be a check whether the array
 			// if(is_array($searchOpt->module_srl)) {
 			// 	$args->module_srl = implode(',', $searchOpt->module_srl);
@@ -717,6 +726,12 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			// else {
 			// 	$args->module_srl = $searchOpt->module_srl;
 			// }
+			if(is_array($searchOpt->wp_page_id)) {
+				$args->board_id = implode(',', $searchOpt->wp_page_id);
+			}
+			else {
+				$args->board_id = $searchOpt->wp_page_id;
+			}
 
 			// Except for the test module_srl
 			// if(is_array($searchOpt->exclude_module_srl)) {
@@ -725,23 +740,38 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			// else {
 			// 	$args->exclude_module_srl = $searchOpt->exclude_module_srl;
 			// }
-			$logged_info = \X2board\Includes\Classes\Context::get('logged_info');
+			if(isset($searchOpt->exclude_board_id)) {
+				if(is_array($searchOpt->exclude_board_id)) {
+					$args->exclude_board_id = implode(',', $searchOpt->exclude_board_id);
+				}
+				else {
+					$args->exclude_board_id = $searchOpt->exclude_board_id;
+				}
+			}
+			else {
+				$args->exclude_board_id = null;
+			}
+
+			$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
 			// only admin document list, temp document showing
 			if(isset($searchOpt->statusList)) {
 				$args->statusList = $searchOpt->statusList;
 			}
 			else {
-				// if($logged_info->is_admin == 'Y' ) && !$searchOpt->module_srl) {
-				// 	$args->statusList = array($this->getConfigStatus('secret'), $this->getConfigStatus('public'), $this->getConfigStatus('temp'));
-				// }
-				// else {
+				if($o_logged_info->is_admin == 'Y' && !$searchOpt->wp_page_id) {  // wp_page_id is board_id
+					$args->statusList = array($this->get_config_status('secret'), $this->get_config_status('public'), $this->get_config_status('temp'));
+				}
+				else {
 					$args->statusList = array($this->get_config_status('secret'), $this->get_config_status('public'));
-				// }
+				}
 			}
-
+// var_dump($args->statusList);
 			// Category is selected, further sub-categories until all conditions
+			//////////////////////////////////////////
+			//// 여기서  category_id가 라벨에서 ID로 변경
+			//////////////////////////////////////////
 			if($args->category_id) {
-var_dump('plz define category search');
+				$args->category_id = implode(',',$this->_get_category_list($args->category_id));
 				// $category_list = $this->getCategoryList($args->module_srl);
 				// $category_info = $category_list[$args->category_id];
 				// $category_info->childs[] = $args->category_id;
@@ -751,30 +781,33 @@ var_dump('plz define category search');
 			// Used to specify the default query id (based on several search options to query id modified)
 			$query_id = 'post.getPostList';
 
-			// If the search by specifying the document division naeyonggeomsaekil processed for
+			// If the search by specifying the post division naeyonggeomsaekil processed for
 			$use_division = false;
 
 			// Search options
 			$search_target = $searchOpt->search_target;
 			$search_keyword = $searchOpt->search_keyword;
 
+			global $wpdb;
+			$s_field_search_clause = null;
 			if($search_target && $search_keyword) {
-				switch($search_target)
-				{
+				switch($search_target) {
 					case 'title' :
 					case 'content' :
 						if($search_keyword) {
 							$search_keyword = str_replace(' ','%',$search_keyword);
 						}
-						$args->{"s_".$search_target} = $search_keyword;
+						// $args->{"s_".$search_target} = $search_keyword;
+						$s_field_search_clause = "`".$search_target."` like '%".$search_keyword."%'";
 						$use_division = true;
 						break;
 					case 'title_content' :
 						if($search_keyword) {
 							$search_keyword = str_replace(' ','%',$search_keyword);
 						}
-						$args->s_title = $search_keyword;
-						$args->s_content = $search_keyword;
+						// $args->s_title = $search_keyword;
+						// $args->s_content = $search_keyword;
+						$s_field_search_clause = "( `title` like '%".$search_keyword."%' or `content` like '%".$search_keyword."%' )";
 						$use_division = true;
 						break;
 					// case 'user_id' :
@@ -789,9 +822,10 @@ var_dump('plz define category search');
 						if($search_keyword) {
 							$search_keyword = str_replace(' ','%',$search_keyword);
 						}
-						$args->{"s_".$search_target} = $search_keyword;
+						// $args->{"s_".$search_target} = $search_keyword;
+						$s_field_search_clause = "`".$search_target."` like '%".$search_keyword."%'";
 						break;
-					case 'is_notice' :
+					/*case 'is_notice' :
 						if($search_keyword=='N') {
 							$args->{"s_".$search_target} = 'N';
 						}
@@ -824,10 +858,10 @@ var_dump('plz define category search');
 					case 'post_authors' :// case 'member_srls' :
 						$args->{"s_".$search_target} = (int)$search_keyword;
 
-						if($logged_info->member_srl) {
+						if($o_logged_info->ID) {
 							$srls = explode(',', $search_keyword);
 							foreach($srls as $srl) {
-								if(abs($srl) != $logged_info->member_srl) {
+								if(abs($srl) != $o_logged_info->ID) {
 									break; // foreach
 								}
 								$args->{"s_".$search_target} = $search_keyword;
@@ -842,7 +876,7 @@ var_dump('plz define category search');
 					case 'last_update_dt' :
 					case 'ipaddress' :
 						$args->{"s_".$search_target} = $search_keyword;
-						break;
+						break;*/
 					case 'comment' :
 						$args->s_comment = $search_keyword;
 						$query_id = 'post.getPostListWithinComment';
@@ -856,23 +890,40 @@ var_dump('plz define category search');
 					// 	$args->var_value = str_replace(' ', '%', $search_keyword);
 					// 	$query_id = 'document.getDocumentListWithinExtraVars';
 					// 	break;
-					default :
-						if(strpos($search_target,'extra_vars')!==false) {
-							$args->var_idx = substr($search_target, strlen('extra_vars'));
-							$args->var_value = str_replace(' ','%',$search_keyword);
-							$args->sort_index = 'documents.'.$args->sort_index;
-							$query_id = 'post.getPostListWithExtraVars';
+					default :  // extended user define fields case
+						// check if extended user define field exists in the tbl::user_Define_keys
+						$s_tables = '`'.$wpdb->prefix.'x2b_user_define_keys`';
+						$s_query = "SELECT var_search FROM {$s_tables} ";
+						$s_query .= "WHERE `board_id` = ".$args->board_id." AND `eid` = '".$search_target."'";
+						$data = $wpdb->get_row($s_query);
+						if ($data === null) {  // weird situation as $search_target has been already validated at \includes\modules\board\board.view.php::_disp_post_list()
+							wp_die($wpdb->last_error);
+						} 
+						else {
+							$wpdb->flush();
 						}
+						if($data->var_search == 'Y') {
+							$query_id = 'post.getPostListWithExtraVars';
+							$s_field_search_clause = "`user_vars`.`board_id` = '".$args->board_id."' ";
+							$s_field_search_clause = "`user_vars`.`post_id` = `posts`.`post_id` ";
+							$s_field_search_clause .= "AND `user_vars`.`eid` = '".$search_target."' ";
+							$s_field_search_clause .= "AND `user_vars`.`value` like '%".$search_keyword."%'";
+						}
+						// if(strpos($search_target,'extra_vars')!==false) {
+						// 	$args->var_idx = substr($search_target, strlen('extra_vars'));
+						// 	$args->var_value = str_replace(' ','%',$search_keyword);
+						// 	$args->sort_index = 'posts.'.$args->sort_index;
+						// 	$query_id = 'post.getPostListWithExtraVars';
+						// }
 						break;
 				}
 			}
-			unset($logged_info);
+			unset($o_logged_info);
 
-			if( $searchOpt->isExtraVars) {
+			if( $searchOpt->is_user_define_field) {
 				$query_id = 'post.getPostListExtraSort';
 			}
 			else {  // basic list
-// var_dump('ddd');
 				/**
 				 * list_order asc sort of division that can be used only when
 				 */
@@ -881,87 +932,157 @@ var_dump('plz define category search');
 				}
 
 				/**
-				 * If it is true, use_division changed to use the document division
+				 * If it is true, use_division changed to use the post division
 				 */
 				if($use_division) {
 					// Division begins
-					$division = (int)Context::get('division');
+					$n_division = (int)\X2board\Includes\Classes\Context::get('division');
 
 					// order by list_order and (module_srl===0 or module_srl may count), therefore case table full scan
-					// if($args->sort_index == 'list_order' && ($args->exclude_module_srl === '0' || count(explode(',', $args->module_srl)) > 5)) {
-					// 	$listSqlID = 'document.getDocumentListUseIndex';
-					// 	$divisionSqlID = 'document.getDocumentDivisionUseIndex';
-					// }
-					// else {
-						$listSqlID = 'post.getPostList';
+					if($args->sort_index == 'list_order' && ($args->exclude_board_id === '0' || count(explode(',', $args->board_id)) > 5)) {
+						// $listSqlID = 'document.getDocumentListUseIndex';
+						$divisionSqlID = 'post.getDocumentDivisionUseIndex';
+					}
+					else {
+						// $listSqlID = 'post.getPostList';
 						$divisionSqlID = 'post.getPostDivision';
-					// }
+						// SELECT `list_order`  FROM `_posts` WHERE ( `board_id` in (?) and `board_id` not in (?,?) and `list_order` >= ? )
+					}
+					
+					$o_query = new \stdClass();
+					$o_query->s_tables = '`'.$wpdb->prefix.'x2b_posts`';
+					$o_query->s_columns = "`list_order`";
 
+					$o_query->s_where = "WHERE `board_id` in (".$args->board_id.") ";
+					if( $args->exclude_board_id ) {
+						$o_query->s_where .= "AND `board_id` not in ('.$args->exclude_board_id.') ";
+					}
+					if( isset( $args->list_order ) ) {
+						$o_query->s_where .= 'AND `list_order` >= '.$args->list_order;
+					}
+					$o_query->s_orderby = 'ORDER BY '.$args->sort_index.' '.$args->order_type;
+					$o_query->list_count = 1;
 					// If you do not value the best division top
-					if(!$division) {
-						$division_args = new stdClass();
-						// $division_args->module_srl = $args->module_srl;
-						// $division_args->exclude_module_srl = $args->exclude_module_srl;
-						$division_args->list_count = 1;
-						$division_args->sort_index = $args->sort_index;
-						$division_args->order_type = $args->order_type;
-						$division_args->statusList = $args->statusList;
+					if(!$n_division) {
+						// $division_args = new \stdClass();
+						// $division_args->board_id = $args->board_id;
+						// $division_args->exclude_board_id = $args->exclude_board_id;
+						// $division_args->list_count = 1;
+						// $division_args->sort_index = $args->sort_index;
+						// $division_args->order_type = $args->order_type;
+						// $division_args->statusList = $args->statusList;
+						// $output = executeQuery($divisionSqlID, $division_args, array('list_order'));
+						// $division_args = null;
 
-						$output = executeQuery($divisionSqlID, $division_args, array('list_order'));
+						$output = \X2board\Includes\executeQueryArray($o_query);
 						if($output->data) {
 							$item = array_pop($output->data);
-							$division = $item->list_order;
+							$n_division = $item->list_order;
 						}
-						$division_args = null;
+						unset($output);
 					}
-
 					// The last division
-					$last_division = (int)Context::get('last_division');
-
+					$n_last_division = (int)\X2board\Includes\Classes\Context::get('last_division');
 					// Division after division from the 5000 value of the specified Wanted
-					if(!$last_division) {
-						$last_division_args = new stdClass();
+					if(!$n_last_division) {
+						// $last_division_args = new \stdClass();
 						// $last_division_args->module_srl = $args->module_srl;
 						// $last_division_args->exclude_module_srl = $args->exclude_module_srl;
-						$last_division_args->list_count = 1;
-						$last_division_args->sort_index = $args->sort_index;
-						$last_division_args->order_type = $args->order_type;
-						$last_division_args->list_order = $division;
-						$last_division_args->page = 5001;
-
-						$output = executeQuery($divisionSqlID, $last_division_args, array('list_order'));
+						// $last_division_args->list_count = 1;
+						// $last_division_args->sort_index = $args->sort_index;
+						// $last_division_args->order_type = $args->order_type;
+						// $last_division_args->list_order = $n_division;
+						// $last_division_args->page = 5001;
+						// $output = executeQuery($divisionSqlID, $last_division_args, array('list_order'));
+						$o_query->page = 5001;
+						$output = \X2board\Includes\executeQueryArray($o_query);
 						if($output->data) {
 							$item = array_pop($output->data);
-							$last_division = $item->list_order;
+							$n_last_division = $item->list_order;
 						}
 					}
+					unset($o_query);
 
-					// Make sure that after last_division article
-					if($last_division) {
-						$last_division_args = new stdClass();
+					// Make sure that after n_last_division article
+					if($n_last_division) {				
+						// $last_division_args = new stdClass();
 						// $last_division_args->module_srl = $args->module_srl;
 						// $last_division_args->exclude_module_srl = $args->exclude_module_srl;
-						$last_division_args->list_order = $last_division;
-						$output = executeQuery('post.getPostDivisionCount', $last_division_args);
-						if($output->data->count<1) $last_division = null;
+						// $last_division_args->list_order = $n_last_division;
+						// $output = executeQuery('post.getPostDivisionCount', $last_division_args);
+						// "SELECT count(*) as `count` FROM `xe_documents` as `documents`  WHERE `module_srl` in (?) and `list_order` > ? " 
+						$s_tables = '`'.$wpdb->prefix.'x2b_posts`';
+						$s_query = "SELECT COUNT(*) as `count` FROM {$s_tables} ";
+						$s_query .= "WHERE `board_id` in (".$args->board_id.") ";
+						if( $args->exclude_board_id ) {
+							$s_query .= "AND `board_id` not in ('.$args->exclude_board_id.') ";
+						}
+						$s_query .= ' AND `list_order` > '.$n_last_division;
+						$data = $wpdb->get_row($s_query);
+						if ($data === null) {
+							wp_die($wpdb->last_error);
+						} 
+						else {
+							$wpdb->flush();
+						}
+						if(intval($data->count) < 1) {
+							$n_last_division = null;
+						}
 					}
-
-					$args->division = $division;
-					$args->last_division = $last_division;
-					Context::set('division', $division);
-					Context::set('last_division', $last_division);
+					// $args->division = $n_division;
+					// $args->last_division = $n_last_division;
+					\X2board\Includes\Classes\Context::set('division', $n_division);
+					\X2board\Includes\Classes\Context::set('last_division', $n_last_division);
 				}
 			}
-// var_dump($args->list_order);	
+
+			// search post table
+			// "SELECT * FROM `xe_documents` 
+			// WHERE ( `board_id` in (?) and `status` in (?,?) and ( `list_order` >= ? and `list_order` < ? ) and ( `title` like ? or `content` like ? )) and `list_order` <= 2100000000 
+			// ORDER BY `list_order` asc LIMIT 0, 20"
+
+			// search user define table
+			// "SELECT `posts`.* FROM `xe_documents` as `documents`, `xe_document_extra_vars` as `extra_vars` 
+			// WHERE ( `posts`.`board_id` in (?)
+			// 			and `extra_vars`.`board_id` = `posts`.`board_id` 
+			// 			and `extra_vars`.`var_idx` = ? 
+			// 			and `posts`.`status` in (?,?) 
+			// 			and `extra_vars`.`value` like ? ) 
+			// 			and `posts`.`list_order` <= 2100000000 
+			// GROUP BY `extra_vars`.`document_srl` 
+			// ORDER BY `posts`.`list_order` asc LIMIT 0, 20"
+
 			$o_query_rst = new \stdClass();
-			$o_query_rst->s_where = "WHERE `board_id`=".get_the_ID();
+			$o_query_rst->s_query_id = $query_id;
+			$o_query_rst->s_where = "WHERE ("; 
+			$o_query_rst->s_where .= "`posts`.`board_id` in (".$args->board_id.") ";   // "`board_id` = ".get_the_ID();
+
 			if( isset( $args->statusList ) && is_array($args->statusList) ) {
-				// var_dump(implode("', '" , $args->statusList));
-				$o_query_rst->s_where .= " AND `status` in ('".implode("', '" , $args->statusList)."')"; // and `list_order` <= 2100000000";
+				$o_query_rst->s_where .= " AND `posts`.`status` in ('".implode("', '" , $args->statusList)."')"; // and `list_order` <= 2100000000";
+			}
+			if( $use_division ) {
+				$o_query_rst->s_where .= " AND ( `posts`.`list_order` >= ".$n_division." AND `posts`.`list_order` < ".$n_last_division." )";
+			}
+			if( $s_field_search_clause ) {
+				if( $query_id == 'post.getPostList' ) {
+					$o_query_rst->s_where .= " AND ".$s_field_search_clause;
+				}
+				elseif( $query_id == 'post.getPostListWithExtraVars' ) {
+					$o_query_rst->s_where .= " AND ".$s_field_search_clause;
+				}
+			}
+			$o_query_rst->s_where .= ") ";
+
+			if( isset($args->list_order) ) {
+				$o_query_rst->s_where .= "AND `posts`.`list_order` <=".$args->list_order." ";
+			}
+
+			if( $query_id == 'post.getPostListWithExtraVars' ) {
+				$o_query_rst->s_groupby = "GROUP BY `user_vars`.`post_id` ";
 			}
 
 			if( isset($args->sort_index) ) {
-				$o_query_rst->s_orderby = " ORDER BY `".$args->sort_index."` ".$args->order_type;
+				$o_query_rst->s_orderby = "ORDER BY `posts`.`".$args->sort_index."` ".$args->order_type;
 			}
 // var_dump($o_query_rst);	
 			return $o_query_rst;
@@ -1061,6 +1182,46 @@ var_dump('plz define category search');
 				$G_X2B_CACHE['X2B_USER_DEFINE_KEYS'][$n_board_id] = $a_keys;
 			}
 			return $G_X2B_CACHE['X2B_USER_DEFINE_KEYS'][$n_board_id];
+		}
+
+		/**
+		 * Bringing the Categories list the specific module
+		 * Speed and variety of categories, considering the situation created by the php script to include a list of the must, in principle, to use
+		 * @param array $columnList
+		 * @return array
+		 */
+		// function getCategoryList()
+		private function _get_category_list($s_category_label) {  // $module_srl, 
+			$o_category = \X2board\Includes\getModel('category');
+			$n_board_id = \X2board\Includes\Classes\Context::get('board_id');
+			$o_category->set_board_id($n_board_id);
+			$a_tree_category = $o_category->build_linear_category();
+			unset($o_category);
+
+			$a_category_id = array();
+			$s_category_label = trim($s_category_label);
+			foreach($a_tree_category as $n_cat_id => $o_cat_info) {
+				if($o_cat_info->title == $s_category_label) {
+					$a_category_id[] = $n_cat_id;
+					$a_category_id = array_merge($a_category_id, $o_cat_info->children);
+					return $a_category_id;
+				}
+			}
+			return $a_category_id;
+			// $module_srl = (int)$module_srl;
+			// Category of the target module file swollen
+			/*$filename = sprintf("%sfiles/cache/post_category/%s.php", X2B_PATH, $n_board_id);
+			// If the target file to the cache file regeneration category
+			if(!file_exists($filename))	{
+				$oDocumentController = getController('document');
+				if(!$oDocumentController->makeCategoryFile($module_srl)) return array();
+			}
+			include($filename);
+
+			// Cleanup of category
+			$post_category = array();
+			$this->_arrangeCategory($post_category, $menu->list, 0);
+			return $post_category;*/
 		}
 
 
@@ -1239,7 +1400,7 @@ var_dump('plz define category search');
 		 * Wanted to set document information
 		 * @return object
 		 */
-		function getDocumentConfig()
+		/*function getDocumentConfig()
 		{
 			if($this->documentConfig === NULL)
 			{
@@ -1253,7 +1414,7 @@ var_dump('plz define category search');
 				$this->documentConfig = $config;
 			}
 			return $this->documentConfig;
-		}
+		}*/
 
 		/**
 		 * Common:: Module extensions of variable management
@@ -1261,7 +1422,7 @@ var_dump('plz define category search');
 		 * @param int $module_srl
 		 * @return string
 		 */
-		function getExtraVarsHTML($module_srl)
+		/*function getExtraVarsHTML($module_srl)
 		{
 			// Bringing existing extra_keys
 			$extra_keys = $this->getExtraKeys($module_srl);
@@ -1272,7 +1433,7 @@ var_dump('plz define category search');
 			// Get information of module_grants
 			$oTemplate = &TemplateHandler::getInstance();
 			return $oTemplate->compile($this->module_path.'tpl', 'extra_keys');
-		}
+		}*/
 
 		/**
 		 * Return docuent number by document title
@@ -1280,7 +1441,7 @@ var_dump('plz define category search');
 		 * @param string $title
 		 * @return int|void
 		 */
-		function getDocumentSrlByTitle($module_srl, $title)
+		/*function getDocumentSrlByTitle($module_srl, $title)
 		{
 			if(!$module_srl || !$title) return null;
 			$args = new stdClass;
@@ -1293,7 +1454,7 @@ var_dump('plz define category search');
 				if(is_array($output->data)) return $output->data[0]->document_srl;
 				return $output->data->document_srl;
 			}
-		}
+		}*/
 
 		/**
 		 * Return document's history list
@@ -1531,34 +1692,6 @@ var_dump('plz define category search');
 		 */
 		// public function get_extended_user_input_fields() {
 		// 	return $this->extends_fields;
-		// }
-
-
-		/**
-		 * Bringing the Categories list the specific module
-		 * Speed and variety of categories, considering the situation created by the php script to include a list of the must, in principle, to use
-		 * @param int $module_srl
-		 * @param array $columnList
-		 * @return array
-		 */
-		// function getCategoryList()
-		// function get_category_list($columnList = array()) {  // $module_srl, 
-			// $module_srl = (int)$module_srl;
-			// $n_board_id = \X2board\Includes\Classes\Context::get('board_id');
-
-			// Category of the target module file swollen
-			// $filename = sprintf("%sfiles/cache/document_category/%s.php", _XE_PATH_, $module_srl);
-			// If the target file to the cache file regeneration category
-			// if(!file_exists($filename))	{
-			// 	$oDocumentController = getController('document');
-			// 	if(!$oDocumentController->makeCategoryFile($module_srl)) return array();
-			// }
-			// include($filename);
-
-			// Cleanup of category
-			// $post_category = array();
-			// $this->_arrangeCategory($post_category, $menu->list, 0);
-		// 	return $post_category;
 		// }
 
 		/**

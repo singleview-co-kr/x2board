@@ -1,4 +1,7 @@
-<?php if($post->is_exists()) {
+<?php 
+$mi = new \stdClass();
+$mi->default_style = '';
+if($post->is_exists()) {
 	x2b_include_skin('post');
 }?>
 
@@ -50,7 +53,7 @@
 				</tr>
 			<?php endforeach //endwhile?>
 			<?php if(false): // while($content = $list->hasNextPopular()):?>
-				<tr <?php if($content->uid == x2board_id()):?>class='select'<?php endif?> >
+				<tr <?php if($content->uid == $post_id):?>class='select'<?php endif?> >
 					<td class="no"><?php echo $list->index()?></td>
 					<td class="cate"><span style="color:"><?php echo esc_html($content->category_name)?></span></td>
 					<td class="title">
@@ -128,24 +131,18 @@ $mi_page_count = $this->n_page_count;
 ?>
 
 <div id="x2board-default-list">
-	<!-- <div class="x2board-pagination">
-		<ul class="x2board-pagination-pages"> -->
-		<?php // echo kboard_pagination($list->page, $list->total, $list->rpp)?>
-		<!-- </ul>
-	</div> -->
+	
 	<!-- 검색폼 시작 -->
 	<div class="x2board-search">
 		<!-- 페이징 시작 -->
 		<!--// 페이지네이션 -->
-		<form action="./" method="get" class="bd_pg clear">
+		<form action="<?php echo esc_url(x2b_get_url('cmd', '', 'post_id', ''))?>" method="get" class="bd_pg clear">
 			<fieldset>
 			<legend class="blind"><?php echo __('Board Pagination', 'x2board')?></legend>
-			<input type="hidden" name="vid" value="{$vid}" />
-			<input type="hidden" name="mid" value="{$mid}" />
-			<input type="hidden" name="category" value="{$category}" />
-			<input type="hidden" name="search_keyword" value="{htmlspecialchars($search_keyword)}" />
-			<input type="hidden" name="search_target" value="{$search_target}" />
-			<input type="hidden" name="listStyle" value="{$mi->default_style}" />
+			<input type="hidden" name="category" value="<?php echo sanitize_key($category) ?>" />
+			<input type="hidden" name="search_keyword" value="<?php echo sanitize_key($search_keyword)?>" />
+			<input type="hidden" name="search_target" value="<?php echo sanitize_key($search_target) ?>" />
+			<input type="hidden" name="listStyle" value="<?php echo sanitize_key($mi->default_style) ?>" />
 			
 			<?php if( $page!=$prev_page ):?>
 				<a href="<?php echo x2b_get_url('page',$prev_page,'post_id','')?>" class="direction"><i class="fa fa-angle-left"></i> <?php echo __('Prev', 'x2board')?></a>
@@ -197,19 +194,17 @@ $mi_page_count = $this->n_page_count;
 				<button type="button" class="tg_blur2"></button>
 			</div>
 			</fieldset>
-		<!-- </form> -->
+		</form>
 		<!-- 페이징 끝 -->
 		
-		<!-- <form id="x2board-search-form-<?php echo $board_id?>" method="get" action="<?php echo x2b_get_url('cmd', '')?>"> -->
-			<?php //echo $url->set('pageid', '1')->set('target', '')->set('keyword', '')->set('mod', 'list')->toInput()?>
-			
-			<select name="target">
-				<option value=""><?php echo __('All', 'x2board')?></option>
-				<option value="title"<?php if(x2board_target() == 'title'):?> selected<?php endif?>><?php echo __('Title', 'x2board')?></option>
-				<option value="content"<?php if(x2board_target() == 'content'):?> selected<?php endif?>><?php echo __('Content', 'x2board')?></option>
-				<option value="member_display"<?php if(x2board_target() == 'member_display'):?> selected<?php endif?>><?php echo __('Author', 'x2board')?></option>
+		<form id="x2board-search-form-<?php echo $board_id?>" method="get" action="<?php echo esc_url(x2b_get_url())?>" class="bd_pg clear">
+			<input type="hidden" name="category" value="<?php echo sanitize_key($category) ?>" />
+			<select name="search_target">
+				<?php foreach( $search_option as $key => $val ): ?>
+				<option value="<?php echo $key ?>" <?php if($search_target==$key):?> selected="selected" <?php endif?>><?php echo __($val, 'x2board') ?></option>
+				<?php endforeach ?>
 			</select>
-			<input type="text" name="keyword" value="<?php echo esc_attr(x2board_keyword())?>">
+			<input type="text" name="search_keyword" value="<?php echo esc_attr($search_keyword)?>">
 			<button type="submit" class="x2board-default-button-small"><?php echo __('Search', 'x2board')?></button>
 		</form>
 	</div>

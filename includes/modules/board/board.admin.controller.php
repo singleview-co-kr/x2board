@@ -185,6 +185,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 				unset($a_tmp_field['description']);
 				unset($a_tmp_field['required']);
 				$s_json_param = serialize($a_tmp_field);
+				unset($a_tmp_field);
 
 				if( isset($a_field['description']) ) {
 					$s_description = strlen($a_field['description']) ? $a_field['description'] : null;
@@ -200,14 +201,14 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 						'var_idx'   => $n_var_seq++,
 						'var_name'   => strlen($a_field['field_name']) ? $a_field['field_name'] : $a_field['field_label'],
 						'var_type'  => $a_field['field_type'],
-						// 'eid'  => strlen($a_field['field_name']) ? $a_field['field_name'] : 'php_'.uniqid(),  // $a_field['field_name'],
 						'eid'  => strlen($a_field['meta_key']) ? $a_field['meta_key'] : $s_uid,  // $a_field['meta_key'],
 						'var_default'  => isset($a_field['default_value']) ? $a_field['default_value'] : null,  // $a_field['default_value'],
 						'var_desc'  => $s_description,  // $a_field['description'],
 						'var_is_required'  => isset($a_field['required']) ? $a_field['required'] : 'N',
-						'json_param'  => serialize($a_tmp_field)
+						'var_search'  => $a_field['search'] == 'Y' ? 'Y' : 'N',
+						'json_param'  => $s_json_param //serialize($a_tmp_field)
 					),
-					array('%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')
+					array('%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')
 				);
 				if( $result < 0 || $result === false ){
 					wp_die($wpdb->last_error );

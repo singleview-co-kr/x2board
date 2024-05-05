@@ -145,8 +145,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\IpFilter')) {
 		 * @param string $db_type type of db
 		 * @return DB return DB object instance
 		 */
-		public static function getInstance() // $db_type = NULL)
-		{
+		public static function getInstance() { // $db_type = NULL)
 			global $G_X2B_CACHE;
 			if(!isset($G_X2B_CACHE['__DB__'])) {
 				$G_X2B_CACHE['__DB__'] = self::create();
@@ -194,8 +193,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\IpFilter')) {
 		 * returns instance of db
 		 * @return DB return DB object instance
 		 */
-		public static function create()
-		{
+		public static function create() {
 			return new DB;
 		}
 
@@ -203,8 +201,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\IpFilter')) {
 		 * constructor
 		 * @return void
 		 */
-		public function __construct()
-		{
+		public function __construct() {
 			// $this->count_cache_path = _XE_PATH_ . $this->count_cache_path;
 			// $this->cache_file = _XE_PATH_ . $this->cache_file;
 		}
@@ -243,8 +240,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\IpFilter')) {
 		 * @param array $arg_columns column list. if you want get specific colums from executed result, add column list to $arg_columns
 		 * @return object result of query
 		 */
-		function executeQuery($o_query, $arg_columns = NULL) // $query_id, $args = NULL, $arg_columns = NULL, $type = NULL)
-		{
+		function executeQuery($o_query) {// $query_id, $args = NULL, $arg_columns = NULL, $type = NULL)
 			// static $cache_file = array();
 
 			// if(!$query_id)
@@ -304,7 +300,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\IpFilter')) {
 			// 	$cache_file[$query_id] = $this->checkQueryCacheFile($query_id, $xml_file);
 			// }
 			// execute query
-			$output = $this->_executeQuery($o_query, $arg_columns); //$cache_file[$query_id], $args, $query_id, $arg_columns, $type);
+			$output = $this->_executeQuery($o_query); //$cache_file[$query_id], $args, $query_id, $arg_columns, $type);
 			$this->_actDBClassFinish();
 			return $output;
 		}
@@ -317,8 +313,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\IpFilter')) {
 		 * @param array $arg_columns column list. if you want get specific colums from executed result, add column list to $arg_columns
 		 * @return object result of query
 		 */
-		function _executeQuery($o_query, $arg_columns)  // $cache_file, $source_args, $query_id, $arg_columns, $type)
-		{
+		function _executeQuery($o_query) {// $cache_file, $source_args, $query_id, $arg_columns, $type)
 			// global $lang;
 			
 			// if(!in_array($type, array('master','slave'))) $type = 'slave';
@@ -409,14 +404,15 @@ if (!class_exists('\\X2board\\Includes\\Classes\\IpFilter')) {
 			// 	$s_limit = null;
 			// }
 
-			$a_result = NULL;  // $result = NULL;
+			// $a_result = NULL;  // $result = NULL;
 			// $limit = $queryObject->getLimit();
 			// if($limit && $limit->isPageHandler())
 			if( isset( $queryObject->page ) ) {
-				return $this->_queryPageLimit($queryObject, $a_result);  // $connection, $with_values
+				return $this->_query_page_limit($queryObject);  // $connection, $a_result, $with_values
 			}
 			else {  // list query without pagination
-				global $wpdb;
+				wp_die('pagination query has been executed without page param!');
+				/*global $wpdb;
 				$query = "SELECT {$queryObject->s_columns} FROM {$queryObject->s_tables} {$queryObject->s_where} {$queryObject->s_orderby}"; // {$s_limit}"; 
 				//$query = $this->getSelectSql($queryObject, $with_values);
 				// if(is_a($query, 'BaseObject'))
@@ -442,7 +438,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\IpFilter')) {
 				// 	$update_query = $this->getClickCountQuery($queryObject);
 				// 	$this->_executeUpdateAct($update_query, $with_values);
 				// }
-				return $o_buff;
+				return $o_buff;*/
 			}
 		}
 
@@ -454,8 +450,8 @@ if (!class_exists('\\X2board\\Includes\\Classes\\IpFilter')) {
 		 * @param boolean $with_values
 		 * @return BaseObject BaseObject with page info containing
 		 */
-		private function _queryPageLimit($queryObject, $result)  // $connection, $with_values = true
-		{
+		// private function _queryPageLimit($queryObject) { // $connection, $result, $with_values = true
+		private function _query_page_limit($queryObject) { // $connection, $result, $with_values = true
 			// $limit = $queryObject->getLimit();
 			// Total count
 			// $temp_where = $queryObject->getWhereString($with_values, false);
@@ -483,16 +479,17 @@ if (!class_exists('\\X2board\\Includes\\Classes\\IpFilter')) {
 			// $count_output = $this->_fetch($result_count);
 			// $total_count = (int) (isset($count_output->count) ? $count_output->count : NULL);
 			global $wpdb;
-			$this->query = "SELECT COUNT(*) as `rec_cnt` FROM {$queryObject->s_tables} {$queryObject->s_where}";
+			$this->query = "SELECT COUNT(*) as `rec_cnt` FROM {$queryObject->s_tables} {$queryObject->s_where} {$queryObject->s_groupby}";
 			$o_rec_cnt = $wpdb->get_row($this->query);
-			if ($o_rec_cnt === null) {
-					return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error);
-			} 
-			else {
-				$wpdb->flush();
+			$wpdb->flush();
+			if($o_rec_cnt === null) {
+				$n_rec_cnt = 0;
+				$total_count = 0;
 			}
-			$n_rec_cnt = intval($o_rec_cnt->rec_cnt);
-			$total_count = intval(isset($o_rec_cnt->rec_cnt) ? $o_rec_cnt->rec_cnt : NULL);
+			else {
+				$n_rec_cnt = intval($o_rec_cnt->rec_cnt);
+				$total_count = intval(isset($o_rec_cnt->rec_cnt) ? $o_rec_cnt->rec_cnt : NULL);
+			}
 			unset($o_rec_cnt);
 
 			$list_count = $queryObject->list_count; // $limit->list_count->getValue();
@@ -537,7 +534,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\IpFilter')) {
 			// $query .= (__DEBUG_QUERY__ & 1 && $queryObject->query_id) ? sprintf(' ' . $this->comment_syntax, $this->query_id) : '';
 			// $result = $this->_query($query, $connection);
 		
-			$this->query = "SELECT {$queryObject->s_columns} FROM {$queryObject->s_tables} {$queryObject->s_where} {$queryObject->s_orderby} {$s_limit}";
+			$this->query = "SELECT {$queryObject->s_columns} FROM {$queryObject->s_tables} {$queryObject->s_where} {$queryObject->s_groupby} {$queryObject->s_orderby} {$s_limit}";
 			if ($wpdb->query($this->query) === FALSE) {
 				return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error);
 			} 
@@ -563,8 +560,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\IpFilter')) {
 		 * @param int|NULL $arrayIndexEndValue
 		 * @return array
 		 */
-		private function _fetch($a_result, $arrayIndexEndValue = NULL)
-		{
+		private function _fetch($a_result, $arrayIndexEndValue = NULL) {
 	// 		$n_post_cnt = intval($o_post_cnt->post_cnt);
 	// 		$n_star_pos = $n_post_cnt - $n_star_pos;  // set guest-wise start idx of each x2b post
 
@@ -618,8 +614,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\IpFilter')) {
 		 * Finish recording DBClass log
 		 * @return void
 		 */
-		private function _actDBClassFinish()
-		{
+		private function _actDBClassFinish() {
 			if(!$this->query) {
 				return;
 			}
