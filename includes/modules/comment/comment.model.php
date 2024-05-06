@@ -91,8 +91,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 		 * @return object
 		 */
 		// function getCommentList($document_srl, $page = 0, $is_admin = FALSE, $count = 0)
-		public function get_comment_list($n_parent_post_id, $page = 0, $is_admin = FALSE, $count = 0)
-		{
+		public function get_comment_list($n_parent_post_id, $page = 0, $is_admin = FALSE, $count = 0) {
 			if(!isset($n_parent_post_id)) {
 				return;
 			}
@@ -158,7 +157,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 			// }
 
 			// $output = executeQueryArray('comment.getCommentPageList', $args);
-			
 			global $wpdb;
 			$o_query = new \stdClass();
 			$o_query->s_tables = '`'.$wpdb->prefix.'x2b_comments` as `comments` , `'.$wpdb->prefix.'x2b_comments_list` as `comments_list`';
@@ -169,7 +167,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 			$o_query->list_count = $comment_count;
 			$o_query->page_count = $comment_count;
 			$output = \X2board\Includes\get_paginate_select($o_query);
-			unset($o_query);
 			// return if an error occurs in the query results
 			if(!$output->toBool()) {
 				return;
@@ -177,12 +174,14 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 
 			// insert data into CommentPageList table if the number of results is different from stored comments
 			if(!$output->data) {
-				$this->fixCommentList($o_post->get('board_id'), $n_parent_post_id);
-				$output = executeQueryArray('comment.getCommentPageList', $args);
+				$this->_fix_comment_list($o_post->get('board_id'), $n_parent_post_id);
+				// $output = executeQueryArray('comment.getCommentPageList', $args);
+				$output = \X2board\Includes\get_paginate_select($o_query);
 				if(!$output->toBool()) {
 					return;
 				}
 			}
+			unset($o_query);
 
 			// call trigger (after)
 			// $trigger_output = ModuleHandler::triggerCall('comment.getCommentList', 'after', $output);
@@ -231,7 +230,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 		 * @return int
 		 */
 		// function getChildComments($comment_srl)
-		function get_child_comments($n_comment_id)	{
+		public function get_child_comments($n_comment_id) {
 			global $wpdb;
 			$s_query = "SELECT `comment_id`, `comment_author` FROM ".$wpdb->prefix."x2b_comments WHERE `parent_comment_id`=".$n_comment_id;
 			if ($wpdb->query($s_query) === FALSE) {
@@ -246,6 +245,144 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 			// $args->comment_srl = $comment_srl;
 			// $output = executeQueryArray('comment.getChildComments', $args, NULL, 'master');
 			// return $output->data;
+		}
+
+		/**
+		 * Update a list of comments in corresponding with post_id
+		 * @param int $n_board_id
+		 * @param int $n_post_id
+		 * @return void
+		 */
+		private function _fix_comment_list($n_board_id, $n_parent_post_id) {
+			// create a lock file to prevent repeated work when performing a batch job
+			// $lock_file = "./files/cache/tmp/lock." . $n_parent_post_id;
+			$s_lock_folder = wp_get_upload_dir()['basedir'].DIRECTORY_SEPARATOR.X2B_DOMAIN.DIRECTORY_SEPARATOR.'cache'.DIRECTORY_SEPARATOR.'tmp'.DIRECTORY_SEPARATOR.'lock';
+			if( !file_exists( $s_lock_folder ) ) {
+				wp_mkdir_p( $s_lock_folder );
+			}
+
+			$s_lock_file = $s_lock_folder.DIRECTORY_SEPARATOR.$n_parent_post_id;
+			if(file_exists($s_lock_file) && filemtime($s_lock_file) + 36000 < $_SERVER['REQUEST_TIME']) {  // 36000 == 60 * 60 * 10
+				return;
+			}
+
+			require_once ( ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php' );
+			require_once ( ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php' );
+			$o_wp_filesystem = new \WP_Filesystem_Direct(false);
+			$o_wp_filesystem->put_contents($s_lock_file, ''); // FileHandler::writeFile($s_lock_file, '');
+
+			// get a list
+			// $args = new stdClass();
+			// $args->document_srl = $n_parent_post_id;
+			// $args->list_order = 'list_order';
+			// $output = executeQuery('comment.getCommentList', $args);
+			// if(!$output->toBool()) {
+			// 	return $output;
+			// }
+			global $wpdb;
+			// SELECT `comment_srl`, `parent_srl`, `regdate` FROM `xe_comments` as `comments` WHERE ( `document_srl` = ? ) and `list_order` <= 2100000000 ORDER BY `list_order` asc 
+			$s_query = "SELECT `comment_id`, `parent_comment_id`, `regdate_dt` FROM ".$wpdb->prefix."x2b_comments WHERE `parent_post_id`=".$n_parent_post_id.' and `list_order` <= 2100000000 ORDER BY `list_order` asc';
+			if ($wpdb->query($s_query) === FALSE) {
+				return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error);
+			} 
+			else {
+				$a_source_list = $wpdb->get_results($s_query);
+				$wpdb->flush();
+			}
+			// return $a_result;
+			
+			// $source_list = $output->data;
+			// if(!is_array($a_source_list)) {
+			// 	$a_source_list = array($a_source_list);
+			// }
+
+			// Sort comments by the hierarchical structure
+			$n_comment_count = count($a_source_list);
+
+			$o_root = new \stdClass;
+			$a_list = array();
+			$a_comment_list = array();
+
+			// generate a hierarchical structure of comments for loop
+			for($i = $n_comment_count - 1; $i >= 0; $i--) {
+				$n_comment_id = $a_source_list[$i]->comment_id;
+				$n_parent_comment_id = $a_source_list[$i]->parent_comment_id;
+				if(!$n_comment_id) {
+					continue;
+				}
+
+				// generate a list
+				$a_list[$n_comment_id] = $a_source_list[$i];
+
+				if($n_parent_comment_id) {
+					$a_list[$n_parent_comment_id]->child[] = &$a_list[$n_comment_id];
+				}
+				else {
+					$o_root->child[] = &$a_list[$n_comment_id];
+				}
+			}
+			$this->_arrange_comment($a_comment_list, $o_root->child, 0, NULL);
+
+			// insert values to the database
+			if(count($a_comment_list)) {
+				$o_comment_controller = \X2board\Includes\getController('comment');
+				foreach($a_comment_list as $n_comment_id => $item) {
+					$o_comment_args = new \stdClass();
+					$o_comment_args->comment_id = $n_comment_id;
+					$o_comment_args->parent_post_id = $n_parent_post_id;
+					$o_comment_args->board_id = $n_board_id;
+					$o_comment_args->regdate_dt = $item->regdate_dt;
+					$o_comment_args->arrange = $item->arrange;
+					$o_comment_args->head = $item->head;
+					$o_comment_args->depth = $item->depth;
+					$o_comment_controller->insert_comment_list($o_comment_args);  // executeQuery('comment.insertCommentList', $comment_args);
+					unset($o_comment_args);
+				}
+				unset($o_comment_controller);
+			}
+			unset($a_list);
+			unset($a_comment_list);
+			unset($o_root);
+
+			// remove the lock file if successful.
+			$o_wp_filesystem->delete($s_lock_file);  // FileHandler::removeFile($s_lock_file);
+			unset($o_wp_filesystem);
+		}
+
+		/**
+		 * Relocate comments in the hierarchical structure
+		 * @param array $comment_list
+		 * @param array $list
+		 * @param int $depth
+		 * @param object $parent
+		 * @return void
+		 */
+		private function _arrange_comment(&$comment_list, $list, $depth, $parent = NULL) {
+			if(!count($list)) {
+				return;
+			}
+
+			foreach($list as $key => $val) {
+				if($parent) {
+					$val->head = $parent->head;
+				}
+				else {
+					$val->head = $val->comment_id;
+				}
+
+				$val->arrange = count($comment_list) + 1;
+
+				if(isset($val->child)) {
+					$val->depth = $depth;
+					$comment_list[$val->comment_id] = $val;
+					$this->_arrange_comment($comment_list, $val->child, $depth + 1, $val);
+					unset($val->child);
+				}
+				else {
+					$val->depth = $depth;
+					$comment_list[$val->comment_id] = $val;
+				}
+			}
 		}
 
 
@@ -270,13 +407,13 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 		 * @param int $comment_srl
 		 * @return int
 		 */
-		function getChildCommentCount($comment_srl)
+		/*function getChildCommentCount($comment_srl)
 		{
 			$args = new stdClass();
 			$args->comment_srl = $comment_srl;
 			$output = executeQuery('comment.getChildCommentCount', $args, NULL, 'master');
 			return (int) $output->data->count;
-		}
+		}*/
 
 		/**
 		 * Get the comment list(not paginating)
@@ -284,7 +421,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 		 * @param array $columnList
 		 * @return array
 		 */
-		function getComments($comment_srl_list, $columnList = array())
+		/*function getComments($comment_srl_list, $columnList = array())
 		{
 			if(is_array($comment_srl_list))
 			{
@@ -329,7 +466,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 				$result[$attribute->comment_srl] = $oComment;
 			}
 			return $result;
-		}
+		}*/
 
 		/**
 		 * Get the total number of comments in corresponding with document_srl.
@@ -365,7 +502,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 		 * @param bool $published
 		 * @return int
 		 */
-		function getCommentAllCount($module_srl, $published = null)
+		/*function getCommentAllCount($module_srl, $published = null)
 		{
 			$args = new stdClass();
 			$args->module_srl = $module_srl;
@@ -396,32 +533,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 			$total_count = $output->data->count;
 
 			return (int) $total_count;
-		}
-
-		/**
-		 * Get the module info without duplication
-		 * @return array
-		 */
-		function getDistinctModules()
-		{
-			return array();
-
-			/*
-			$output = executeQueryArray('comment.getDistinctModules');
-			$module_srls = $output->data;
-			$oModuleModel = getModel('module');
-			$result = array();
-			if($module_srls)
-			{
-				foreach($module_srls as $module)
-				{
-					$module_info = $oModuleModel->getModuleInfoByModuleSrl($module->module_srl);
-					$result[$module->module_srl] = $module_info->mid;
-				}
-			}
-			return $result;
-			*/
-		}
+		}*/
 
 		/**
 		 * Get the comment in corresponding with mid.
@@ -430,7 +542,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 		 * @param array $columnList
 		 * @return array
 		 */
-		function getNewestCommentList($obj, $columnList = array())
+		/*function getNewestCommentList($obj, $columnList = array())
 		{
 			$args = new stdClass();
 
@@ -507,141 +619,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 			}
 
 			return $result;
-		}
-
-		/**
-		 * Update a list of comments in corresponding with document_srl
-		 * Take care of previously used data than GA version
-		 * @param int $module_srl
-		 * @param int $document_srl
-		 * @return void
-		 */
-		function fixCommentList($module_srl, $document_srl)
-		{
-			// create a lock file to prevent repeated work when performing a batch job
-			$lock_file = "./files/cache/tmp/lock." . $document_srl;
-
-			if(file_exists($lock_file) && filemtime($lock_file) + 60 * 60 * 10 < $_SERVER['REQUEST_TIME'])
-			{
-				return;
-			}
-
-			FileHandler::writeFile($lock_file, '');
-
-			// get a list
-			$args = new stdClass();
-			$args->document_srl = $document_srl;
-			$args->list_order = 'list_order';
-			$output = executeQuery('comment.getCommentList', $args);
-			if(!$output->toBool())
-			{
-				return $output;
-			}
-
-			$source_list = $output->data;
-			if(!is_array($source_list))
-			{
-				$source_list = array($source_list);
-			}
-
-			// Sort comments by the hierarchical structure
-			$comment_count = count($source_list);
-
-			$root = new stdClass;
-			$list = array();
-			$comment_list = array();
-
-			// get the log-in information for logged-in users
-			$logged_info = Context::get('logged_info');
-
-			// generate a hierarchical structure of comments for loop
-			for($i = $comment_count - 1; $i >= 0; $i--)
-			{
-				$comment_srl = $source_list[$i]->comment_srl;
-				$parent_srl = $source_list[$i]->parent_srl;
-				if(!$comment_srl)
-				{
-					continue;
-				}
-
-				// generate a list
-				$list[$comment_srl] = $source_list[$i];
-
-				if($parent_srl)
-				{
-					$list[$parent_srl]->child[] = &$list[$comment_srl];
-				}
-				else
-				{
-					$root->child[] = &$list[$comment_srl];
-				}
-			}
-			$this->_arrangeComment($comment_list, $root->child, 0, NULL);
-
-			// insert values to the database
-			if(count($comment_list))
-			{
-				foreach($comment_list as $comment_srl => $item)
-				{
-					$comment_args = new stdClass();
-					$comment_args->comment_srl = $comment_srl;
-					$comment_args->document_srl = $document_srl;
-					$comment_args->head = $item->head;
-					$comment_args->arrange = $item->arrange;
-					$comment_args->module_srl = $module_srl;
-					$comment_args->regdate = $item->regdate;
-					$comment_args->depth = $item->depth;
-
-					executeQuery('comment.insertCommentList', $comment_args);
-				}
-			}
-
-			// remove the lock file if successful.
-			FileHandler::removeFile($lock_file);
-		}
-
-		/**
-		 * Relocate comments in the hierarchical structure
-		 * @param array $comment_list
-		 * @param array $list
-		 * @param int $depth
-		 * @param object $parent
-		 * @return void
-		 */
-		function _arrangeComment(&$comment_list, $list, $depth, $parent = NULL)
-		{
-			if(!count($list))
-			{
-				return;
-			}
-
-			foreach($list as $key => $val)
-			{
-				if($parent)
-				{
-					$val->head = $parent->head;
-				}
-				else
-				{
-					$val->head = $val->comment_srl;
-				}
-
-				$val->arrange = count($comment_list) + 1;
-
-				if($val->child)
-				{
-					$val->depth = $depth;
-					$comment_list[$val->comment_srl] = $val;
-					$this->_arrangeComment($comment_list, $val->child, $depth + 1, $val);
-					unset($val->child);
-				}
-				else
-				{
-					$val->depth = $depth;
-					$comment_list[$val->comment_srl] = $val;
-				}
-			}
-		}
+		}*/
 
 		/**
 		 * Get all the comments in time decending order(for administrators)
@@ -649,7 +627,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 		 * @param array $columnList
 		 * @return object
 		 */
-		function getTotalCommentList($obj, $columnList = array())
+		/*function getTotalCommentList($obj, $columnList = array())
 		{
 			$query_id = 'comment.getTotalCommentList';
 
@@ -790,14 +768,14 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 			}
 
 			return $output;
-		}
+		}*/
 
 		/**
 		 * Get all the comment count in time decending order(for administrators)
 		 * @param object $obj
 		 * @return int
 		 */
-		function getTotalCommentCount($obj)
+		/*function getTotalCommentCount($obj)
 		{
 			$query_id = 'comment.getTotalCommentCountByGroupStatus';
 
@@ -900,13 +878,13 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 			}
 
 			return $output->data;
-		}
+		}*/
 
 		/**
 		 * Return a list of voting member
 		 * @return void
 		 */
-		function getCommentVotedMemberList()
+		/*function getCommentVotedMemberList()
 		{
 			$comment_srl = Context::get('comment_srl');
 			if(!$comment_srl)
@@ -970,13 +948,13 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 			}
 
 			$this->add('voted_member_list', $output->data);
-		}
+		}*/
 
 		/**
 		 * Return a secret status by secret field
 		 * @return array
 		 */
-		function getSecretNameList()
+		/*function getSecretNameList()
 		{
 			global $lang;
 
@@ -988,20 +966,20 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 			{
 				return $lang->secret_name_list;
 			}
-		}
+		}*/
 
 		/**
 		 * Get the total number of comments in corresponding with member_srl.
 		 * @param int $member_srl
 		 * @return int
 		 */
-		function getCommentCountByMemberSrl($member_srl)
+		/*function getCommentCountByMemberSrl($member_srl)
 		{
 			$args = new stdClass();
 			$args->member_srl = $member_srl;
 			$output = executeQuery('comment.getCommentCountByMemberSrl', $args);
 			return (int) $output->data->count;
-		}
+		}*/
 
 
 		/**
@@ -1013,7 +991,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 		 * @param int $count
 		 * @return object
 		 */
-		function getCommentListByMemberSrl($member_srl, $columnList = array(), $page = 0, $is_admin = FALSE, $count = 0)
+		/*function getCommentListByMemberSrl($member_srl, $columnList = array(), $page = 0, $is_admin = FALSE, $count = 0)
 		{
 			$args = new stdClass();
 			$args->member_srl = $member_srl;
@@ -1025,7 +1003,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 			if(!is_array($comment_list)) $comment_list = array($comment_list);
 
 			return $comment_list;
-		}
+		}*/
 
 		/**
 		 * display the pop-up menu of the post

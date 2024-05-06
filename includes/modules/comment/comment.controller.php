@@ -275,36 +275,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 			}
 // var_dump($list_args);
 // exit;	
-			$a_new_comment_list = array();
-			$a_new_comment_list['comment_id'] = $list_args->comment_id;
-			$a_new_comment_list['parent_post_id'] = $list_args->parent_post_id;
-			$a_new_comment_list['board_id'] = $list_args->board_id;
-			$a_new_comment_list['regdate_dt'] = $list_args->regdate_dt;
-			$a_new_comment_list['arrange'] = $list_args->arrange;
-			$a_new_comment_list['head'] = $list_args->head;
-			$a_new_comment_list['depth'] = $list_args->depth;
-
-			$a_insert_key = array();
-			$a_insert_val = array();
-			foreach($a_new_comment_list as $key=>$value){
-				// $this->{$key} = $value;
-				$value = esc_sql($value);
-				$a_insert_key[] = "`$key`";
-				$a_insert_val[] = "'$value'";
-			}
-			unset($a_new_comment);
-
-			$query = "INSERT INTO `{$wpdb->prefix}x2b_comments_list` (".implode(',', $a_insert_key).") VALUES (".implode(',', $a_insert_val).")";
-			if ($wpdb->query($query) === FALSE) {
-				return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error);
-			} 
-			// $n_new_post_id = $wpdb->insert_id;
-			unset($a_insert_key);
-			unset($a_insert_data);
-			// $output = executeQuery('comment.insertCommentList', $list_args);
-			// if(!$output->toBool()) {
-			// 	return $output;
-			// }
+			$this->insert_comment_list($list_args);
 
 			// sanitize
 			$a_new_comment = array();
@@ -428,7 +399,45 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 		}
 
 		/**
-		 * Fix the comment
+		 * insert comment list to display hierarchy
+		 * @param object $list_args
+		 * @return object
+		 */
+		public function insert_comment_list($o_list_args) {
+			global $wpdb;
+			$a_new_comment_list = array();
+			$a_new_comment_list['comment_id'] = $o_list_args->comment_id;
+			$a_new_comment_list['parent_post_id'] = $o_list_args->parent_post_id;
+			$a_new_comment_list['board_id'] = $o_list_args->board_id;
+			$a_new_comment_list['regdate_dt'] = $o_list_args->regdate_dt;
+			$a_new_comment_list['arrange'] = $o_list_args->arrange;
+			$a_new_comment_list['head'] = $o_list_args->head;
+			$a_new_comment_list['depth'] = $o_list_args->depth;
+
+			$a_insert_key = array();
+			$a_insert_val = array();
+			foreach($a_new_comment_list as $key=>$value){
+				$value = esc_sql($value);
+				$a_insert_key[] = "`$key`";
+				$a_insert_val[] = "'$value'";
+			}
+			unset($a_new_comment);
+
+			$query = "INSERT INTO `{$wpdb->prefix}x2b_comments_list` (".implode(',', $a_insert_key).") VALUES (".implode(',', $a_insert_val).")";
+			if ($wpdb->query($query) === FALSE) {
+				// return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error);
+				wp_die($wpdb->last_error );
+			} 
+			unset($a_insert_key);
+			unset($a_insert_data);
+			// $output = executeQuery('comment.insertCommentList', $list_args);
+			// if(!$output->toBool()) {
+			// 	return $output;
+			// }
+		}
+
+		/**
+		 * update the comment
 		 * @param object $obj
 		 * @param bool $is_admin
 		 * @param bool $manual_updated
