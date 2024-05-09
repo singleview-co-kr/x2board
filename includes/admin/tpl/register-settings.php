@@ -86,7 +86,7 @@ function x2b_load_settings( $board_id ) { // $o_board_info ) {
 				$a_board_settings[ $option['id'] ] = $option['options'];
 			}
 			// , 'radiodesc', 'thumbsizes'
-			if ( in_array( $option['type'], array( 'multicheck', 'radio', 'select' ), true ) && isset( $option['default'] ) ) {
+			if ( in_array( $option['type'], array( 'multicheck', 'grantselect','radio', 'select' ), true ) && isset( $option['default'] ) ) {
 				$a_board_settings[ $option['id'] ] = $option['default'];
 			}
 		}
@@ -194,10 +194,12 @@ function x2b_settings_defaults() {
 				$options[ $option['id'] ] = 0;
 			}
 			// If an option is set.
-			if ( in_array( $option['type'], array( 'textarea', 'text', 'csv', 'numbercsv', 'posttypes', 'number', 'css' ), true ) && isset( $option['options'] ) ) {
+			// 'csv', 'numbercsv', 'posttypes', 'css', 
+			if ( in_array( $option['type'], array( 'textarea', 'text', 'number' ), true ) && isset( $option['options'] ) ) {
 				$options[ $option['id'] ] = $option['options'];
 			}
-			if ( in_array( $option['type'], array( 'multicheck', 'radio', 'select', 'radiodesc', 'thumbsizes' ), true ) && isset( $option['default'] ) ) {
+			// , 'radiodesc', 'thumbsizes'
+			if ( in_array( $option['type'], array( 'multicheck', 'grantselect', 'radio', 'select' ), true ) && isset( $option['default'] ) ) {
 				$options[ $option['id'] ] = $option['default'];
 			}
 		}

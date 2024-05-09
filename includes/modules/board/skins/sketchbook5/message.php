@@ -1,20 +1,11 @@
-<div id="kboard-default-editor" class="confirm">
-	<div class="kboard-attr-row kboard-confirm-row">
-		<label class="attr-name"><?php echo __('Message', 'x2board')?></label>
-		<div class="attr-value">
-			<?php echo __('please pay attention', 'x2board')?>
-			<div class="description"><?php echo $message?></div>
-		</div>
-	</div>
-	<div class="kboard-control">
-		<div class="left">
-			<?php if($content->uid && kboard_mod() != 'document'):?>
-			<a href="<?php echo esc_url($url->getDocumentURLWithUID($content->uid))?>" class="kboard-default-button-small"><?php echo __('Document', 'kboard')?></a>
-			<?php endif?>
-			<a href="<?php echo esc_url($url->getBoardList())?>" class="kboard-default-button-small"><?php echo __('List', 'kboard')?></a>
-		</div>
-		<div class="right">
-			<button type="submit" class="kboard-default-button-small"><?php echo __('Password confirm', 'kboard')?></button>
-		</div>
-	</div>
+<include target="_header.html" />
+<div class="context_message">
+    <h1><?php echo $message?></h1>
+    <div class="btnArea">
+<?php if(!$is_logged):?>
+        <a class="bd_btn blue" href="<?php echo esc_url( wp_registration_url() ); ?>"><?php esc_html_e( 'cmd_login', 'x2board' ); ?></a>
+<?php endif ?>		
+        <button class="bd_btn" type="button" onclick="history.back();"><?php echo __('cmd_back', 'x2board')?></button>
+    </div>
 </div>
+<include target="_footer.html" />

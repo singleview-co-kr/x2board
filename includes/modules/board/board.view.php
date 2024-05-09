@@ -21,8 +21,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 
 		private $_default_fields = array();  // get_default_user_input_fields();
 		private $_extends_fields = array();
-		private $_n_current_post_id = null;  // hidden field에서 설정하고 editor module로 전달하기 위한 메모리
-		private $_n_current_comment_id = null;  // hidden field에서 설정하고 editor module로 전달하기 위한 메모리
+		// private $_n_current_post_id = null;  // hidden field에서 설정하고 editor module로 전달하기 위한 메모리
+		// private $_n_current_comment_id = null;  // hidden field에서 설정하고 editor module로 전달하기 위한 메모리
 
 		/**
 		 * @brief initialization
@@ -46,12 +46,23 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 
 			$this->except_notice = $this->module_info->except_notice == 'N' ? FALSE : TRUE;
 
-			// time translation for \X2board\Includes\zdate()
-			$unit_week = array( "Monday"=> "월", "Tuesday" => "화", "Wednesday" => "수", "Thursday" => "목", "Friday" => "금", "Saturday" => "토", "Sunday" =>"일" );
-			\X2board\Includes\Classes\Context::set( 'unit_week', $unit_week );
-			$unit_week = array( "am"=> "오전", "pm" => "오후", "AM" => "오전", "PM" => "오후" );
-			\X2board\Includes\Classes\Context::set( 'unit_meridiem', $unit_week );
-			
+			/**
+			 * check the consultation function, if the user is admin then swich off consultation function
+			 * if the user is not logged, then disppear write post/write comment./ view post
+			 **/
+			if($this->module_info->consultation == 'Y' && !$this->grant->manager && !$this->grant->consultation_read) {
+				$this->consultation = TRUE;
+				if(!\X2board\Includes\Classes\Context::get('is_logged')) {
+					$this->grant->list = FALSE;
+					$this->grant->write_post = FALSE;
+					$this->grant->write_comment = FALSE;
+					$this->grant->view = FALSE;
+				}
+			}
+			else {
+				$this->consultation = FALSE;
+			}
+
 			$o_post_model = \X2board\Includes\getModel('post');
 			$a_status = $this->_get_status_name_list($o_post_model);
 			if(isset($a_status['SECRET'])) {
@@ -251,10 +262,9 @@ var_dump(X2B_CMD_VIEW_LIST);
 			/**
 			 * check the access grant (all the grant has been set by the module object)
 			 **/
-			// if(!$this->grant->access || !$this->grant->list)
-			// {
-			// 	return $this->_disp_message('msg_not_permitted');
-			// }
+			if(!$this->grant->access || !$this->grant->list) {
+				return $this->_disp_message('msg_not_permitted');
+			}
 
 			// call editor style on behalf of DisplayHandler.class.php::printContent() 
 			// just once!!
@@ -395,7 +405,7 @@ var_dump(X2B_CMD_VIEW_POST);
 			}
 
 			if($o_post->is_exists()) {  // check the document view grant
-				if(!$this->grant->view && !$oDocument->is_granted()) {
+				if(!$this->grant->view && !$o_post->is_granted()) {
 					$o_post = $o_post_model->get_post(0);
 					\X2board\Includes\Classes\Context::set('post_id','',true);
 					$this->_alert_message( __('msg_not_permitted', 'x2board') );
@@ -480,6 +490,8 @@ var_dump(X2B_CMD_VIEW_POST);
 			$o_args->page = \X2board\Includes\Classes\Context::get('page');
 			$o_args->list_count = $this->module_info->list_count;
 			$o_args->page_count = $this->module_info->page_count;
+			$o_args->search_target = null;
+			$o_args->search_keyword = null;
 			
 			// get the search target and keyword
 			if($this->grant->view) {
@@ -1042,7 +1054,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			}
 			unset($o_post);
 
-			$this->_n_current_post_id = $a_header['post_id'];
+			// $this->_n_current_post_id = $a_header['post_id'];
 			// }
 			// $product_id = isset($_GET['woocommerce_product_tabs_inside']) ? intval($_GET['woocommerce_product_tabs_inside']) : '';
 			// if($product_id){

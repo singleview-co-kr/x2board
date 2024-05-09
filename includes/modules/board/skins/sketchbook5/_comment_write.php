@@ -139,8 +139,6 @@ else {
 						<?php
 						// 댓글 입력 필드 출력
 						$field_html = ob_get_clean();
-						// do_action('kboard_comments_field', $field_html, $board, $post->post_id, $commentBuilder);
-						// do_action('kboard_comments_field', $field_html, $post->post_id);
 						?>
 					</div>
 				</div>
@@ -242,10 +240,9 @@ else {
 					<a class="cmt_disable bd_login" href="#"><?php echo __('write_comment', 'x2board')?><?php echo __('msg_not_permitted', 'x2board')?><?php echo __('bd_login', 'x2board')?></a>
 				<?php endif?>
 			</div>
-			<input type="button" value="{$lang->cmd_submit}" disabled="disabled" class="bd_btn" />
+			<input type="button" value="<?php echo __('cmd_submit', 'x2board')?>" disabled="disabled" class="bd_btn" />
 		</div>
 	</div>
 	<?php endif?>
 	<!--@end-->
-
 </div>

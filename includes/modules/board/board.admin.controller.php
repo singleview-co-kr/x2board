@@ -85,8 +85,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 				$this->_proc_user_define_fields();
 				unset( $_POST['fields']);
 			}
-// var_dump($_POST);
-// exit;
+
 			$n_board_id = intval(sanitize_text_field($_POST['board_id'] ));
 			$o_rst = \X2board\Includes\Admin\Tpl\x2b_load_settings( $n_board_id );
 
@@ -94,7 +93,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 			if( $o_rst->b_ok === false ) {
 				return false;
 			}
-			
+
 			// handle [board_title] specially
 			if( $_POST['board_title'] != $o_rst->a_board_settings['board_title'] ) {
 				$update = array(
@@ -115,11 +114,15 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 				unset( $a_update_page );
 			}
 
-			// handle [fields] specially
-			// if( isset($_POST['fields'] ) ) {
-			// 	$this->_proc_user_define_fields();
-			// 	unset( $_POST['fields']);
-			// }
+			// handle access grant configuration specially
+			$a_grant_name = array('board_grant_access', 'board_grant_list', 'board_grant_view', 'board_grant_write_post',
+								  'board_grant_write_comment', 'board_grant_consultation_read', 'board_grant_manager');
+			foreach( $a_grant_name as $s_grant_name) {
+				if($_POST[$s_grant_name] == X2B_CUSTOMIZE) {
+					$_POST['board_grant'][$s_grant_name] = $_POST['grant'][$s_grant_name][X2B_CUSTOMIZE];
+				}
+				unset($_POST['grant'][$s_grant_name]);
+			}
 			
 			// do not save params below
 			unset( $_POST['board_id']);

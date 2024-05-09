@@ -12,9 +12,7 @@ if ( !defined( 'ABSPATH' ) ) {
 
 function plugin_loaded(){
 	// if(!session_id() && !is_admin() ) { // && !wp_is_json_request()){
-	if( isset($_POST['action']) ) {  // $_POST['action'] comes from AJAX only
-		session_start();  // activate $_SESSION while AJAX execution
-	}
+	session_start();  // activate $_SESSION while AJAX execution
 	// 언어 파일 추가
 	// load_plugin_textdomain('x2board', false, X2B_PATH . 'languages');
 	register_post_type(X2B_DOMAIN, array(
@@ -372,16 +370,6 @@ function getController($module_name) {
 }
 
 /**
- * Create a admin controller instance of the module
- *
- * @param string $module_name The module name to get a admin controller instance
- * @return mixed Module admin controller instance
- */
-function getAdminController($module_name) {
-	return getModule($module_name, 'controller', 'admin');
-}
-
-/**
  * Create a view instance of the module
  *
  * @param string $module_name The module name to get a view instance
@@ -392,16 +380,6 @@ function getView($module_name) {
 }
 
 /**
- * Create a admin view instance of the module
- *
- * @param string $module_name The module name to get a admin view instance
- * @return mixed Module admin view instance
- */
-function getAdminView($module_name) {
-	return getModule($module_name, 'view', 'admin');
-}
-
-/**
  * Create a model instance of the module
  *
  * @param string $module_name The module name to get a model instance
@@ -409,16 +387,6 @@ function getAdminView($module_name) {
  */
 function getModel($module_name) {
 	return getModule($module_name, 'model');
-}
-
-/**
- * Create an admin model instance of the module
- *
- * @param string $module_name The module name to get a admin model instance
- * @return mixed Module admin model instance
- */
-function getAdminModel($module_name) {
-	return getModule($module_name, 'model', 'admin');
 }
 
 /**
@@ -452,18 +420,13 @@ function get_paginate_select($o_query) {
  * @return int
  */
 function getNextSequence() {
-	// $o_db = \X2board\Includes\Classes\DB::getInstance();
-	// $seq = $o_db->getNextSequence();
-	// setUserSequence($seq);
-	// return $seq;
 	global $wpdb;
 	$s_query = "INSERT INTO `{$wpdb->prefix}x2b_sequence` (seq) values ('0')";
 	if ($wpdb->query($s_query) === FALSE) {
 		wp_die($wpdb->last_error);
 	} 		
 	$seq = $wpdb->insert_id;
-	if($seq % 10000 == 0)
-	{
+	if($seq % 10000 == 0) {
 		$s_query = "delete from  `{$wpdb->prefix}x2b_sequence` where seq < ".$seq;
 		if ($wpdb->query($s_query) === FALSE) {
 			wp_die($wpdb->last_error);
@@ -481,14 +444,14 @@ function getNextSequence() {
  */
 function setUserSequence($seq) {
 	$arr_seq = array();
-	if(isset($_SESSION['seq']))	{
-		if(!is_array($_SESSION['seq'])) {
-			$_SESSION['seq'] = array($_SESSION['seq']);
+	if(isset($_SESSION['x2b_seq']))	{
+		if(!is_array($_SESSION['x2b_seq'])) {
+			$_SESSION['x2b_seq'] = array($_SESSION['x2b_seq']);
 		}
-		$arr_seq = $_SESSION['seq'];
+		$arr_seq = $_SESSION['x2b_seq'];
 	}
 	$arr_seq[] = $seq;
-	$_SESSION['seq'] = $arr_seq;
+	$_SESSION['x2b_seq'] = $arr_seq;
 }
 
 /**
@@ -498,10 +461,10 @@ function setUserSequence($seq) {
  * @return boolean
  */
 function checkUserSequence($seq) {
-	if(!isset($_SESSION['seq'])) {
+	if(!isset($_SESSION['x2b_seq'])) {
 		return false;
 	}
-	if(!in_array($seq, $_SESSION['seq'])) {
+	if(!in_array($seq, $_SESSION['x2b_seq'])) {
 		return false;
 	}
 	return true;
@@ -799,18 +762,6 @@ function removeSrcHack($match) {
 	return "<{$match[1]}{$tag}{$attr}{$match[4]}>";
 }
 
-// function purifierHtml(&$content) {
-// 	require_once X2B_PATH.'includes/classes/security/Purifier.class.php';
-// 	$oPurifier = \X2board\Includes\Classes\Security\Purifier::getInstance();
-// 	// @see https://github.com/xpressengine/xe-core/issues/2278
-// 	$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
-// 	if($o_logged_info->is_admin !== 'Y') {
-// 		$oPurifier->setConfig('HTML.Nofollow', true);
-// 	}
-// 	unset($o_logged_info);
-// 	$oPurifier->purify($content);
-// }
-
 /**
  * blocking widget code
  *
@@ -861,8 +812,6 @@ function get_remote_ip() {
 	return apply_filters('x2board_remote_ip', $s_ip);
 }
 
-
-
 /**
  * Get is current user crawler
  *
@@ -886,32 +835,6 @@ function is_crawler($agent = NULL) {
 	}
 	return \X2board\Includes\Classes\IpFilter::filter($check_ip);
 }
-
-/**
- * Get a encoded url. Define a function to use Context::getUrl()
- *
- * getUrl() returns the URL transformed from given arguments of RequestURI
- * <ol>
- *  <li>argument format follows as (key, value).
- * ex) getUrl('key1', 'val1', 'key2',''): transform key1 and key2 to val1 and '' respectively</li>
- * <li>returns URL without the argument if no argument is given.</li>
- * <li>URL made of args_list added to RequestUri if the first argument value is ''.</li>
- * </ol>
- *
- * @return string
- */
-// function getUrl() {
-// function get_url() {  // this function is same with no_namespace.helper.php::x2b_get_url
-// 	$n_num_args = func_num_args();
-// 	$a_args_list = func_get_args();
-// 	if($n_num_args) {
-// 		$s_url = \X2board\Includes\Classes\Context::get_url($n_num_args, $a_args_list);
-// 	}	
-// 	else{ 
-// 		$s_url = \X2board\Includes\Classes\Context::get_request_uri();
-// 	}
-// 	return preg_replace('@\berror_return_url=[^&]*|\w+=(?:&|$)@', '', $s_url);
-// }
 
 /**
  * get WP post ID that matches x2b post
@@ -1028,6 +951,7 @@ function getNotEncodedUrl() {
 
 
 ///////////////////////////////
+
 // define an empty function to avoid errors when iconv function doesn't exist
 // if(!function_exists('iconv'))
 // {
@@ -1084,6 +1008,78 @@ function getNotEncodedUrl() {
 // 	'+1300' => '[GMT +13:00] Tonga Time, Phoenix Islands Time',
 // 	'+1400' => '[GMT +14:00] Line Island Time'
 // );
+
+/**
+ * 관리자인지 확인한다. from Kboard.class.php
+ * @param int $user_id
+ * @return boolean
+ */
+/*public function x2b_is_admin($n_user_id=''){
+	if($this->id && (is_user_logged_in() || $n_user_id)){
+		$a_admin_user = explode(',', $this->admin_user);
+		$a_admin_user = array_map('sanitize_text_field', $a_admin_user);
+		
+		if($n_user_id){
+			$o_user = get_userdata($n_user_id);
+		}
+		else{
+			$o_user = $this->current_user;
+		}
+		
+		if(in_array('administrator', kboard_current_user_roles($n_user_id))){
+			// 최고관리자 허용
+			return true;
+		}
+		else if(is_array($a_admin_user) && in_array($o_user->user_login, $a_admin_user)){
+			// 선택된 관리자 허용
+			return true;
+		}
+		else if(array_intersect($this->getAdminRoles(), kboard_current_user_roles($n_user_id))){
+			// 선택된 역할의 사용자 허용
+			return true;
+		}
+	}
+	return false;
+}*/
+
+/**
+ * Get a encoded url. Define a function to use Context::getUrl()
+ *
+ * getUrl() returns the URL transformed from given arguments of RequestURI
+ * <ol>
+ *  <li>argument format follows as (key, value).
+ * ex) getUrl('key1', 'val1', 'key2',''): transform key1 and key2 to val1 and '' respectively</li>
+ * <li>returns URL without the argument if no argument is given.</li>
+ * <li>URL made of args_list added to RequestUri if the first argument value is ''.</li>
+ * </ol>
+ *
+ * @return string
+ */
+// function getUrl() {
+// function get_url() {  // this function is same with no_namespace.helper.php::x2b_get_url
+// 	$n_num_args = func_num_args();
+// 	$a_args_list = func_get_args();
+// 	if($n_num_args) {
+// 		$s_url = \X2board\Includes\Classes\Context::get_url($n_num_args, $a_args_list);
+// 	}	
+// 	else{ 
+// 		$s_url = \X2board\Includes\Classes\Context::get_request_uri();
+// 	}
+// 	return preg_replace('@\berror_return_url=[^&]*|\w+=(?:&|$)@', '', $s_url);
+// }
+
+
+// function purifierHtml(&$content) {
+// 	require_once X2B_PATH.'includes/classes/security/Purifier.class.php';
+// 	$oPurifier = \X2board\Includes\Classes\Security\Purifier::getInstance();
+// 	// @see https://github.com/xpressengine/xe-core/issues/2278
+// 	$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
+// 	if($o_logged_info->is_admin !== 'Y') {
+// 		$oPurifier->setConfig('HTML.Nofollow', true);
+// 	}
+// 	unset($o_logged_info);
+// 	$oPurifier->purify($content);
+// }
 
 /**
  * Create a mobile instance of the module

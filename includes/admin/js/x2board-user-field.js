@@ -79,6 +79,16 @@ jQuery(document).ready(function(){
 			return li.item.clone();
 		},
 	});
+
+	// access permission configuration
+	jQuery('.x2board-grant-select').change(function(){
+		if(jQuery(this).val() == 'roles'){
+			jQuery(this).siblings('.x2board-permission-read-roles-view').removeClass('x2board-hide');
+		}
+		else{
+			jQuery(this).siblings('.x2board-permission-read-roles-view').addClass('x2board-hide');
+		}
+	});
 	
 	jQuery('.x2board-fields-header').click(function(){
 		x2board_fields_toggle(this, 'list-active');

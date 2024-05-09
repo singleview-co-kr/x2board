@@ -13,7 +13,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 	 * Manages Context such as request arguments/environment variables
 	 * It has dual method structure, easy-to use methods which can be called as self::methodname(),and methods called with static object.
 	 *
-	 * @author https://singleview.co.kr
+	 * @author XEHub (developers@xpressengine.com)
 	 */
 	class Context {
 		/**
@@ -257,29 +257,11 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 			$this->set( 'is_logged', is_user_logged_in() );
 			$this->set( 'logged_info', $o_logged_info );
 
-			$o_grant = new \stdClass();
-			$o_grant->is_site_admin = true;
-			$o_grant->manager = true; 
-			$o_grant->access = true;
-			$o_grant->is_admin = true;
-			$o_grant->list = true;
-			$o_grant->view = true; 
-			$o_grant->write_post = true;
-			$o_grant->write_comment = true;
-			// $o_grant->consultation_read = true;
+			// time translation for \X2board\Includes\zdate()
+			$this->set( 'unit_week', array( "Monday"=> "월", "Tuesday" => "화", "Wednesday" => "수", 
+											"Thursday" => "목", "Friday" => "금", "Saturday" => "토", "Sunday" =>"일" ) );
+			$this->set( 'unit_meridiem', array( "am"=> "오전", "pm" => "오후", "AM" => "오전", "PM" => "오후" ) );
 
-			// $o_module_info = new \stdClass();
-			// $o_module_info->module = 'board';
-			// $o_module_info->skin = 'sketchb2ook5';
-			// $o_module_info->admin_mail = '';
-			// $o_module_info->use_category = 'Y';
-			// $o_module_info->use_anonymous = 'Y';
-			// $o_module_info->use_status = '';
-			// $o_module_info->mobile_use_editor = '';
-			// $o_module_info->use_comment_validation = '';
-			// $o_module_info->list = true;
-			// $o_module_info->skin_vars = new \stdClass();
-			
 			if( $s_cmd_type == 'proc' ) {  // load controller priority
 				$s_cmd = isset( $_REQUEST['cmd'])?$_REQUEST['cmd'] : '';
 				$s_cmd_prefix = substr( $s_cmd, 0, 4 );
@@ -287,7 +269,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 				if( $s_cmd_prefix === 'proc' ) {  
 					$o_controller = \X2board\Includes\getController('board');
 					$n_board_id = sanitize_text_field(intval($_REQUEST['board_id']));
-					$o_controller->setModuleInfo($n_board_id, $o_grant);
+					$o_controller->setModuleInfo($n_board_id);
 					$next_page_url = $o_controller->get('s_wp_redirect_url');
 					if ( wp_redirect( $next_page_url ) ) {
 						unset($o_controller);
@@ -314,7 +296,7 @@ var_dump('detected view cmd:'. $s_cmd);
 			if( $s_cmd_prefix === '' || $s_cmd_prefix === 'view' ) {  // load view
 				$o_view = \X2board\Includes\getModule('board');
 // var_dump(get_the_ID());
-				$o_view->setModuleInfo(get_the_ID(), $o_grant);
+				$o_view->setModuleInfo(get_the_ID());
 				unset($o_view);
 			}
 

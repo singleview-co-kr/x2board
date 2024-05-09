@@ -16,11 +16,6 @@ if (!defined('ABSPATH')) {
 if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 
 	class ModuleObject extends BaseObject {
-		// private $_a_required_skinfile = array( '111confirm.php' => true, 'confirm_comment.php' => true, 'document.php' => true, 
-		// 									   'editor-fields.php' => true, 'editor.php' => true, 'editor_comment.php' => true, 
-		// 									   'latest.php' => true, 'list-category-tree-select.php' => true, 
-		// 									   'list-category-tree-tab.php' => true, 'list.php' => true, 'message.php' => true, 
-		// 									   'reply-template.php' => true);
 
 		// var $mid = NULL; ///< string to represent run-time instance of Module (XE Module)
 		var $module = NULL; ///< Class name of Xe Module that is identified by mid
@@ -39,52 +34,18 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 		var $module_config = NULL;
 		// var $ajaxRequestMethod = array('XMLRPC', 'JSON');
 		// var $gzhandler_enable = TRUE;
+		private $_a_default_grant = array('list' => "guest", 
+										  'view' => "guest", 
+										  'write_post' => "guest", 
+										  'write_comment' => "guest",	
+										  'consultation_read' => "manager");
 
 		/**
 		 * Cunstructor
 		 *
 		 * @return void
 		 */
-		public function __construct() {
-			// var_dump('ModuleObject::__construct');
-		}
-
-		/**
-		 * set message
-		 * @param string $message a message string
-		 * @param string $type type of message (error, info, update)
-		 * @return void
-		 * */
-		public function setMessage($message = 'success', $type = NULL)
-		{
-			parent::setMessage($message);
-			$this->setMessageType($type);
-		}
-
-		/**
-		 * set type of message
-		 * @param string $type type of message (error, info, update)
-		 * @return void
-		 * */
-		public function setMessageType($type)
-		{
-			$this->add('message_type', $type);
-		}
-
-		/**
-		 * get type of message
-		 * @return string $type
-		 * */
-		// function getMessageType()
-		// {
-		// 	$type = $this->get('message_type');
-		// 	$typeList = array('error' => 1, 'info' => 1, 'update' => 1);
-		// 	if(!isset($typeList[$type]))
-		// 	{
-		// 		$type = $this->getError() ? 'error' : 'info';
-		// 	}
-		// 	return $type;
-		// }
+		public function __construct() { }
 
 		/**
 		 * sett to set module information
@@ -93,10 +54,16 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 		 * @param object $xml_info object containing module description
 		 * @return void
 		 * */
-		public function setModuleInfo($n_board_id, $o_grant) { // , $o_module_info, $xml_info)
+		public function setModuleInfo($n_board_id) { // , $o_module_info, $xml_info)
 			// The default variable settings
 			// $this->mid = $module_info->mid;
 			// $this->module_srl = $module_info->module_srl;
+			
+			// {["list"]=> object(stdClass)#173 (2) { ["title"]=> string(6) "목록" ["default"]=> string(5) "guest" } 
+			// ["view"]=> object(stdClass)#182 (2) { ["title"]=> string(6) "열람" ["default"]=> string(5) "guest" } 
+			// ["write_document"]=> object(stdClass)#180 (2) { ["title"]=> string(10) "글 작성" ["default"]=> string(5) "guest" } 
+			// ["write_comment"]=> object(stdClass)#175 (2) { ["title"]=> string(13) "댓글 작성" ["default"]=> string(5) "guest" } 
+			// ["consultation_read"]=> object(stdClass)#176 (2) { ["title"]=> string(16) "상담글 조회" ["default"]=> string(7) "manager" } }
 
 			require_once X2B_PATH . 'includes\admin\tpl\default-settings.php';
 			require_once X2B_PATH . 'includes\admin\tpl\register-settings.php';
@@ -134,25 +101,20 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 			// $oModuleModel = getModel('module');
 			// permission settings. access, manager(== is_admin) are fixed and privilege name in XE
 			// $module_srl = Context::get('module_srl');
-			// if(!$module_info->mid && !is_array($module_srl) && preg_match('/^([0-9]+)$/', $module_srl))
-			// {
-				// $request_module = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
-				// if($request_module->module_srl == $module_srl)
-				// {
-				// 	$grant = $oModuleModel->getGrant($request_module, $logged_info);
-				// }
+			// if(!$module_info->mid && !is_array($module_srl) && preg_match('/^([0-9]+)$/', $module_srl)) {
+			// 	$request_module = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
+			// 	if($request_module->module_srl == $module_srl) {
+			// 		$grant = $oModuleModel->getGrant($request_module, $logged_info);
+			// 	}
 			// }
-			// else
-			// {
-				// $grant = $oModuleModel->getGrant($module_info, $logged_info); //, $xml_info);
+			// else {
+				$o_grant = $this->_get_grant(); //$module_info, $logged_info, $xml_info);
 				// have at least access grant
-				// if(substr_count($this->act, 'Member') || substr_count($this->act, 'Communication'))
-				// {
+				// if(substr_count($this->act, 'Member') || substr_count($this->act, 'Communication')) {
 				// 	$grant->access = 1;
 				// }
 			// }
-			// $grant = new \stdClass();
-			// $grant->access = true;
+
 			// display no permission if the current module doesn't have an access privilege
 			if(!isset($o_grant->access)) {
 				wp_die(__('msg_not_permitted', 'x2board'));
@@ -193,37 +155,230 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 		}
 
 		/**
-		 * 관리자인지 확인한다. from Kboard.class.php
-		 * @param int $user_id
-		 * @return boolean
+		 * @brief Return permission by using module info, xml info and member info
 		 */
-		public function is_admin($n_user_id=''){
-			if($this->id && (is_user_logged_in() || $n_user_id)){
-				$a_admin_user = explode(',', $this->admin_user);
-				$a_admin_user = array_map('sanitize_text_field', $a_admin_user);
-				
-				if($n_user_id){
-					$o_user = get_userdata($n_user_id);
+		private function _get_grant() {  //$module_info, $member_info, $xml_info = '') {
+			$o_grant = new \stdClass();
+			$o_grant->manager = false; 
+			$o_grant->access = false;
+			$o_grant->is_admin = false;
+			$o_grant->list = false;
+			$o_grant->view = false; 
+			$o_grant->write_post = false;
+			$o_grant->write_comment = false;
+			$o_grant->consultation_read = false;
+			// $o_grant->is_site_admin = true;
+
+			// if(!$xml_info) {
+			// 	$module = $module_info->module;
+			// 	$xml_info = $this->getModuleActionXml($module);
+			// }
+
+			// Set variables to grant group permission
+			$member_info = Context::get('logged_info');
+			// $n_module_srl = $this->module_info->board_id; // $module_srl = $module_info->module_srl;
+			if($member_info->ID) {
+				if(is_array($member_info->roles)) {  // $member_info->group_list  ->   $member_info->roles   array(1) { [1]=> string(12) "관리그룹" }
+					$group_list = array_values($member_info->roles);
 				}
-				else{
-					$o_user = $this->current_user;
-				}
-				
-				if(in_array('administrator', kboard_current_user_roles($n_user_id))){
-					// 최고관리자 허용
-					return true;
-				}
-				else if(is_array($a_admin_user) && in_array($o_user->user_login, $a_admin_user)){
-					// 선택된 관리자 허용
-					return true;
-				}
-				else if(array_intersect($this->getAdminRoles(), kboard_current_user_roles($n_user_id))){
-					// 선택된 역할의 사용자 허용
-					return true;
+				else {
+					$group_list = array();
 				}
 			}
-			return false;
+			else {
+				$group_list = array();
+			}
+// var_dump($group_list);
+			// If board_id doesn't exist(if unable to set permissions)
+			// if(!$module_srl) {
+			// 	$grant->access = true;
+			// 	if($this->isSiteAdmin($member_info, $module_info->site_srl)) {
+			// 		$grant->access = $grant->manager = $grant->is_site_admin = true;
+			// 	}
+			// 	$grant->is_admin = $grant->manager = ($member_info->is_admin == 'Y') ? true : false;
+			// }
+			// else {
+				// If module_srl exists
+				// Get a type of granted permission
+				// $o_grant->access = $o_grant->manager = $o_grant->is_site_admin = ($member_info->is_admin=='Y'||$this->isSiteAdmin($member_info, $module_info->site_srl))?true:false;
+				$o_grant->access = $o_grant->manager = $member_info->is_admin == 'Y' ? true : false;
+				$o_grant->is_admin = $member_info->is_admin == 'Y' ? true : false;
+				// If a just logged-in member is, check if the member is a module administrator
+				// if(!$o_grant->manager && $member_info->ID) {
+				// 	$args = new stdClass();
+				// 	$args->module_srl = $n_module_srl;
+				// 	$args->member_srl = $member_info->member_srl;
+				// 	$output = executeQuery('module.getModuleAdmin',$args);
+				// 	if($output->data && $output->data->member_srl == $member_info->ID) {
+				// 		$o_grant->manager = true;
+				// 	}
+				// }
+				// If not an administrator, get information from the DB and grant manager privilege.
+
+				if(!$o_grant->manager) {
+					// $args = new \stdClass();
+					// If planet, get permission settings from the planet home
+					// if($module_info->module == 'planet') {
+					// 	$output = executeQueryArray('module.getPlanetGrants', $args);
+					// }
+					// else {
+						// $args = new stdClass;
+						// $args->module_srl = $n_module_srl;
+						// $output = executeQueryArray('module.getModuleGrants', $args);
+					// }
+					$grant_exists = $granted = array();
+// [0] { ["name"]=> string(6) "access" ["group_srl"]=> int(-3) } 
+// [1] { ["name"]=> string(7) "manager" ["group_srl"]=> int(-3) } 
+// [2] { ["name"]=> string(4) "list" ["group_srl"]=> int(0) } 
+// [3] { ["name"]=> string(4) "view" ["group_srl"]=> int(0) } 
+// [4] { ["name"]=> string(13) "write_comment" ["group_srl"]=> int(0) } 
+// [5] { ["name"]=> string(14) "write_document" ["group_srl"]=> int(0) } }
+					$a_current_grant_info = array('access' => $this->module_info->grant_access,
+												  'manager' => $this->module_info->grant_manager,
+												  'list' => $this->module_info->grant_list, 
+												  'view' => $this->module_info->grant_view, 
+												  'write_post' => $this->module_info->grant_write_post, 
+												  'write_comment' => $this->module_info->grant_write_comment, 
+												  'consultation_read' => $this->module_info->grant_consultation_read );
+					
+					// Arrange names and groups who has privileges
+					foreach($a_current_grant_info as $s_grant_name => $group_srl) {
+						$grant_exists[$s_grant_name] = true;
+						if(isset($granted[$s_grant_name])) {
+							continue;
+						}
+
+						if($group_srl == X2B_LOGGEDIN_USERS) {  // Log-in member only  로그인 사용자
+							$granted[$s_grant_name] = true;
+							if($member_info->ID) {
+								$o_grant->{$s_grant_name} = true;
+							}
+						}
+						elseif($group_srl == X2B_ADMINISTRATOR) {   //  관리자만
+							$granted[$s_grant_name] = true;
+							$o_grant->{$s_grant_name} = $o_grant->is_admin;// || $o_grant->is_site_admin);
+						}
+						elseif($group_srl == X2B_ALL_USERS) {  //  모든 사용자
+							$granted[$s_grant_name] = true;
+							$o_grant->{$s_grant_name} = true;
+						}
+						elseif($group_srl == X2B_CUSTOMIZE) {  // If a target is a 선택 그룹 사용자
+							$o_grant->{$s_grant_name} = false;
+							$granted[$s_grant_name] = false;
+							// if($group_list && count($group_list) && in_array($group_srl, $group_list)) {
+							foreach($this->module_info->grant['board_grant_'.$s_grant_name] as $_ => $s_group_name) {
+								if( isset( $member_info->caps[$s_group_name] ) && $member_info->caps[$s_group_name] ) {
+									$o_grant->{$s_grant_name} = true;
+									$granted[$s_grant_name] = true;
+									break;
+								}
+							};
+						}
+						else {
+							wp_die(__('Invalid grant code: board_grant_'.$s_grant_name, 'x2board'));
+						}
+						// elseif($group_srl == -2) {  // Site-joined member only  가입한 사용자
+						// 	$granted[$s_grant_name] = true;
+						// 	// Do not grant any permission for non-logged member
+						// 	if(!$member_info->ID) {  // Log-in member
+						// 		$o_grant->{$s_grant_name} = false;
+						// 	}
+						// 	else {  // All of non-logged members
+						// 		$site_module_info = Context::get('site_module_info');
+						// 		// Permission granted if no information of the currently connected site exists
+						// 		if(!$site_module_info->site_srl) {
+						// 			$o_grant->{$s_grant_name} = true;
+						// 		}
+						// 		// Permission is not granted if information of the currently connected site exists
+						// 		elseif(count($group_list)) {
+						// 			$o_grant->{$s_grant_name} = true;
+						// 		}
+						// 	}
+						// }
+					}
+var_dump($o_grant);
+					// Separate processing for the virtual group access
+					if(!$grant_exists['access']) {
+						$o_grant->access = true;
+					}
+
+					foreach($this->_a_default_grant as  $s_grant_name => $s_default_grp) {
+						if(isset($grant_exists[$s_grant_name])) {
+							continue;
+						}
+						switch($s_default_grp) {
+							case 'guest' :
+								$o_grant->{$s_grant_name} = true;
+								break;
+							case 'member' :
+								if($member_info->ID) {
+									$o_grant->{$s_grant_name} = true;
+								}
+								else {
+									$o_grant->{$s_grant_name} = false;
+								}
+								break;
+							case 'manager' :
+							case 'root' :
+								if($member_info->is_admin == 'Y') {
+									$o_grant->{$s_grant_name} = true;
+								}
+								else {
+									$o_grant->{$s_grant_name} = false;
+								}
+								break;
+						}
+					}
+					unset($grant_exists);
+					unset($a_current_grant_info);
+				}
+
+				if($o_grant->manager) {  // allow all privileges for an administrator
+					$o_grant->access = true;
+					foreach($this->_a_default_grant as $s_grant_name => $s_default_grp) {
+						$o_grant->{$s_grant_name} = true;
+					}
+				}
+			// }
+			unset($member_info);
+// var_dump($o_grant);
+			return $o_grant;
 		}
+
+		/**
+		 * set message
+		 * @param string $message a message string
+		 * @param string $type type of message (error, info, update)
+		 * @return void
+		 * */
+		// public function setMessage($message = 'success', $type = NULL) {
+		// 	parent::setMessage($message);
+		// 	$this->setMessageType($type);
+		// }
+
+		/**
+		 * set type of message
+		 * @param string $type type of message (error, info, update)
+		 * @return void
+		 * */
+		// public function setMessageType($type) {
+		// 	$this->add('message_type', $type);
+		// }
+
+		/**
+		 * get type of message
+		 * @return string $type
+		 * */
+		// function getMessageType()
+		// {
+		// 	$type = $this->get('message_type');
+		// 	$typeList = array('error' => 1, 'info' => 1, 'update' => 1);
+		// 	if(!isset($typeList[$type]))
+		// 	{
+		// 		$type = $this->getError() ? 'error' : 'info';
+		// 	}
+		// 	return $type;
+		// }
 
 		/**
 		 * set the directory path of the skin directory

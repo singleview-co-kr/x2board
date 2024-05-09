@@ -375,68 +375,61 @@ function x2b_settings_permission() {
 			// 'options' => CRP_PLUGIN_URL . 'default.png',
 			'size'    => 'large',
 		),
-		'board_access_default'               => array(
-			'id'      => 'board_access_default',
+		'board_access'               => array(
+			'id'      => 'board_grant_access',
 			'name'    => esc_html__( 'Access permission', 'x2board' ),
 			// 'desc'    => esc_html__( '가입한 사용자는 분양형 가상 사이트에 가입한 로그인 사용자를 의미합니다.', 'x2board' ),
-			'type'    => 'multicheck',
-			'default' => array(	'admin' => 'admin',),
-			'options' => x2b_get_editable_roles(),
-			// 'options' => array(
-			// 	'0'            => esc_html__( 'All users', 'x2board' ),
-			// 	'-1'        => esc_html__( 'Loggedin users', 'x2board' ),
-			// 	'-2'        => esc_html__( 'Registerred users', 'x2board' ),
-			// 	'-3'        => esc_html__( 'Managers', 'x2board' ),
-			// 	'selected'        => esc_html__( 'Selected groups', 'x2board' ),
-			// ),
+			'type'    => 'grantselect',
+			'default' => X2B_ALL_USERS,
+			'options' => x2b_get_grants(),
 		),
-		'board_list_default'               => array(
-			'id'      => 'board_list_default',
+		'board_list'               => array(
+			'id'      => 'board_grant_list',
 			'name'    => esc_html__( 'list permission', 'x2board' ),
 			// 'desc'    => esc_html__( '', 'x2board' ),
-			'type'    => 'multicheck',
-			'default' => array(	'admin' => 'admin',),
-			'options' => x2b_get_editable_roles(),
+			'type'    => 'grantselect',
+			'default' => X2B_ALL_USERS,
+			'options' => x2b_get_grants(),
 		),
-		'board_view_default'               => array(
-			'id'      => 'board_view_default',
+		'board_view'               => array(
+			'id'      => 'board_grant_view',
 			'name'    => esc_html__( 'view permission', 'x2board' ),
 			// 'desc'    => esc_html__( '', 'x2board' ),
-			'type'    => 'multicheck',
-			'default' => array(	'admin' => 'admin',),
-			'options' => x2b_get_editable_roles(),
+			'type'    => 'grantselect',
+			'default' => X2B_ALL_USERS,
+			'options' => x2b_get_grants(),
 		),
-		'board_write_post_default'               => array(
-			'id'      => 'board_write_post_default',
+		'board_write_post'               => array(
+			'id'      => 'board_grant_write_post',
 			'name'    => esc_html__( 'write post permission', 'x2board' ),
 			// 'desc'    => esc_html__( '', 'x2board' ),
-			'type'    => 'multicheck',
-			'default' => array(	'admin' => 'admin',),
-			'options' => x2b_get_editable_roles(),
+			'type'    => 'grantselect',
+			'default' => X2B_ALL_USERS,
+			'options' => x2b_get_grants(),
 		),
-		'board_write_comment_default'               => array(
-			'id'      => 'board_write_comment_default',
+		'board_write_comment'               => array(
+			'id'      => 'board_grant_write_comment',
 			'name'    => esc_html__( 'write comment permission', 'x2board' ),
 			// 'desc'    => esc_html__( '', 'x2board' ),
-			'type'    => 'multicheck',
-			'default' => array(	'admin' => 'admin',),
-			'options' => x2b_get_editable_roles(),
+			'type'    => 'grantselect',
+			'default' => X2B_ALL_USERS,
+			'options' => x2b_get_grants(),
 		),
-		'board_consultation_read_default'               => array(
-			'id'      => 'board_consultation_read_default',
+		'board_consultation_read'               => array(
+			'id'      => 'board_grant_consultation_read',
 			'name'    => esc_html__( 'Consultation read permission', 'x2board' ),
 			// 'desc'    => esc_html__( '', 'x2board' ),
-			'type'    => 'multicheck',
-			'default' => array(	'admin' => 'admin',),
-			'options' => x2b_get_editable_roles(),
+			'type'    => 'grantselect',
+			'default' => X2B_ADMINISTRATOR,  // means Managers
+			'options' => x2b_get_grants(),
 		),
-		'board_manager_default'               => array(
-			'id'      => 'board_manager_default',
+		'board_manager'               => array(
+			'id'      => 'board_grant_manager',
 			'name'    => esc_html__( 'Manager permission', 'x2board' ),
 			// 'desc'    => esc_html__( '', 'x2board' ),
-			'type'    => 'multicheck',
-			'default' => array(	'admin' => 'admin',),
-			'options' => x2b_get_editable_roles(),
+			'type'    => 'grantselect',
+			'default' => X2B_ADMINISTRATOR,  // means Managers
+			'options' => x2b_get_grants(),
 		),
 	);
 
@@ -448,36 +441,6 @@ function x2b_settings_permission() {
 	 * @param array $settings Thumbnail settings array
 	 */
 	return apply_filters( 'x2b_settings_permission', $settings );
-}
-
-
-/**
- * Get the various skins.
- *
- * @since 2.6.0
- * @return array Style options.
- */
-function x2b_get_editable_roles() {
-
-	if (!function_exists('get_editable_roles')) {
-		require_once(ABSPATH . '/wp-admin/includes/user.php');
-	}
-
-	$a_roles = array();
-	$a_roles['all'] = esc_html__( 'All users', 'x2board' );
-	// $a_roles['loggedin_user'] = esc_html__( 'Loggedin users', 'x2board' ); // maybe subscribers of WP
-	foreach(get_editable_roles() as $roles_key=>$roles_value) {
-		$a_roles[$roles_key] = esc_html__( $roles_value['name'], 'x2board' );
-	}	
-
-	/**
-	 * Filter the array to allow privilege
-	 *
-	 * @since 2.6.0
-	 *
-	 * @param array $roles Different roles.
-	 */
-	return apply_filters( 'x2b_get_editable_roles', $a_roles );
 }
 
 
@@ -771,7 +734,6 @@ function x2b_upgrade_settings() {
 }
 
 
-
 /**
  * Get the various skins.
  *
@@ -798,7 +760,6 @@ function x2b_get_board_skins() {
 	 */
 	return apply_filters( 'x2b_get_board_skins', $a_skin_info );
 }
-
 
 
 /**
@@ -828,6 +789,7 @@ function x2b_get_editors() {
 	return apply_filters( 'x2b_get_editors', $a_skin_info );
 }
 
+
 /**
  * Get the various content styles.
  *
@@ -853,4 +815,59 @@ function x2b_get_content_styles() {
 	 * @param array $skins Different skins.
 	 */
 	return apply_filters( 'x2b_get_content_styles', $a_style_info );
+}
+
+
+/**
+ * Get x2b grants.
+ *
+ * @since 2.6.0
+ * @return array Style options.
+ */
+function x2b_get_grants() {
+
+	$a_roles = array();
+	$a_roles[X2B_ALL_USERS] = esc_html__( 'All users', 'x2board' );
+	$a_roles[X2B_LOGGEDIN_USERS] = esc_html__( 'Loggedin users', 'x2board' );
+	// $a_roles[X2B_REGISTERED_USERS] = esc_html__( 'Registered users', 'x2board' );
+	$a_roles[X2B_ADMINISTRATOR] = esc_html__( 'Administrator', 'x2board' );
+	$a_roles[X2B_CUSTOMIZE] = esc_html__( 'Customize', 'x2board' );
+	
+	/**
+	 * Filter the array to allow privilege
+	 *
+	 * @since 2.6.0
+	 *
+	 * @param array $roles Different roles.
+	 */
+	return apply_filters( 'x2b_get_grants', $a_roles );
+}
+
+/**
+ * Get the various skins.
+ *
+ * @since 2.6.0
+ * @return array Style options.
+ */
+function x2b_get_editable_roles() {
+
+	if (!function_exists('get_editable_roles')) {
+		require_once(ABSPATH . '/wp-admin/includes/user.php');
+	}
+
+	$a_roles = array();
+	$a_roles['all'] = esc_html__( 'All users', 'x2board' );
+	// $a_roles['loggedin_user'] = esc_html__( 'Loggedin users', 'x2board' ); // maybe subscribers of WP
+	foreach(get_editable_roles() as $roles_key=>$roles_value) {
+		$a_roles[$roles_key] = esc_html__( $roles_value['name'], 'x2board' );
+	}	
+
+	/**
+	 * Filter the array to allow privilege
+	 *
+	 * @since 2.6.0
+	 *
+	 * @param array $roles Different roles.
+	 */
+	return apply_filters( 'x2b_get_editable_roles', $a_roles );
 }

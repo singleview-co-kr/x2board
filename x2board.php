@@ -40,6 +40,14 @@ if ( !defined( 'X2B__FILE__' ) ) {
     define('X2B_URL', plugins_url('/', X2B__FILE__));
 }
 
+if ( !defined( 'X2B_ALL_USERS' ) ) {  // for grant privileges
+    define('X2B_ALL_USERS', '0');
+    define('X2B_LOGGEDIN_USERS', '-1');
+    // define('X2B_REGISTERED_USERS', '-2');
+    define('X2B_ADMINISTRATOR', '-3');
+    define('X2B_CUSTOMIZE', 'roles');
+}
+
 /*
  *----------------------------------------------------------------------------
  * Guest Service Functionality

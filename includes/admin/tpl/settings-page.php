@@ -352,6 +352,61 @@ function x2b_multicheck_callback( $args ) {
 
 
 /**
+ * Grantselect Callback
+ *
+ * Renders grant checkboxes.
+ *
+ * @since 2.6.0
+ *
+ * @param array $args Array of arguments.
+ * @return void
+ */
+function x2b_grantselect_callback( $args ) {
+	global $A_X2B_ADMIN_BOARD_SETTINGS;
+
+	if ( isset( $A_X2B_ADMIN_BOARD_SETTINGS[ $args['id'] ] ) ) {
+		$value = $A_X2B_ADMIN_BOARD_SETTINGS[ $args['id'] ];
+	} else {
+		$value = isset( $args['default'] ) ? $args['default'] : '';
+	}
+
+	if ( isset( $args['chosen'] ) ) {
+		$chosen = 'class="crp-chosen"';
+	} else {
+		$chosen = '';
+	}
+	
+	$html = sprintf( '<select id="%1$s" name="%1$s" %2$s class="x2board-grant-select"/>', esc_attr( $args['id'] ), $chosen );
+	foreach ( $args['options'] as $option => $name ) {
+		$html .= sprintf( '<option value="%1$s" %2$s>%3$s</option>', esc_attr( $option ), selected( $option, $value, false ), $name );
+	}
+	$html .= '</select>';
+
+	if( $value == X2B_CUSTOMIZE ) {
+		$s_hide_class = '';
+		$a_allowed_grant = $A_X2B_ADMIN_BOARD_SETTINGS['board_grant'][ $args['id'] ];
+	}
+	else {
+		$s_hide_class = 'x2board-hide';
+		$a_allowed_grant = array();
+	}
+
+	$html .= '<div class="x2board-permission-read-roles-view '.$s_hide_class.'">';
+	foreach(get_editable_roles() as $roles_key=>$roles_value) {
+		$s_mandatory = $roles_key=='administrator' ? 'onclick="return false" '.checked( true, true, false ) : '';
+		$s_checked = ( $roles_key != 'administrator' && in_array($roles_key, $a_allowed_grant)) ? checked( true, true, false ) : '';
+		$html .= '<label><input type="checkbox" name="grant['.esc_attr($args['id']).']['.X2B_CUSTOMIZE.'][]" class="field_data roles_checkbox" value="'.$roles_key.'" '.$s_mandatory.' '.$s_checked.'> '. _x($roles_value['name'], 'User role').'</label>';
+	}
+	
+	$html .='</div>';
+	$html .= '<p class="description">' . wp_kses_post( $args['desc'] ) . '</p>';
+
+	/** This filter has been defined in settings-page.php */
+	echo apply_filters( 'x2b_after_setting_output', $html, $args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+}
+
+
+/**
  * Radio Callback
  *
  * Renders radio boxes.
