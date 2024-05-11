@@ -372,6 +372,7 @@ function x2b_settings_permission() {
 			'name'    => esc_html__( 'Board admin email', 'x2board' ),
 			'desc'    => esc_html__( 'Comma separated admin email addresses', 'x2board' ),
 			'type'    => 'text',
+			'default' => '',
 			// 'options' => CRP_PLUGIN_URL . 'default.png',
 			'size'    => 'large',
 		),
@@ -532,6 +533,9 @@ function x2b_settings_extra() {
 			'type'    => 'multicheck',
 			'default' => false,
 			'options' => x2b_get_editable_roles(),
+			'mandatory' => array(
+				'administrator'            => 'mandatory',
+			),
 		),
 		'upload_file_grant'               => array(
 			'id'      => 'upload_file_grant',
@@ -540,6 +544,9 @@ function x2b_settings_extra() {
 			'type'    => 'multicheck',
 			'default' => false,
 			'options' => x2b_get_editable_roles(),
+			'mandatory' => array(
+				'administrator'            => 'mandatory',
+			),
 		),
 		'comment_editor_setup_header'					=> array(
 			'id'      => 'comment_editor_setup_header',
@@ -565,18 +572,24 @@ function x2b_settings_extra() {
 		'enable_comment_html_grant'               => array(
 			'id'      => 'enable_comment_html_grant',
 			'name'    => esc_html__( 'Allow comment HTML edit', 'x2board' ),
-			'desc'    => esc_html__( 'Allow comment HTML to whom', 'x2board' ),
+			'desc'    => esc_html__( 'Allow comment HTML to whom, No choice no restriction', 'x2board' ),
 			'type'    => 'multicheck',
 			'default' => false,
 			'options' => x2b_get_editable_roles(),
+			'mandatory' => array(
+				'administrator'            => 'mandatory',
+			),
 		),
 		'comment_upload_file_grant'               => array(
 			'id'      => 'comment_upload_file_grant',
 			'name'    => esc_html__( 'Allow comment upload file', 'x2board' ),
-			'desc'    => esc_html__( 'Allow comment upload file to whom', 'x2board' ),
+			'desc'    => esc_html__( 'Allow comment upload file to whom, No choice no restriction', 'x2board' ),
 			'type'    => 'multicheck',
 			'default' => false,
 			'options' => x2b_get_editable_roles(),
+			'mandatory' => array(
+				'administrator'            => 'mandatory',
+			),
 		),
 		'common_editor_setup_header'					=> array(
 			'id'      => 'common_editor_setup_header',
@@ -618,7 +631,24 @@ function x2b_settings_extra() {
 				'unchecked'   => 'N',
 			),
 		),
-		
+		'enable_default_component_grant'               => array(
+			'id'      => 'enable_default_component_grant',
+			'name'    => esc_html__( 'Allow default components', 'x2board' ),
+			'desc'    => esc_html__( 'Allow default components to whom, No choice no restriction', 'x2board' ),
+			'type'    => 'multicheck',
+			'default' => '',
+			'options' => x2b_get_editable_roles(),
+		),
+		'enable_component_grant'               => array(
+			'id'      => 'enable_component_grant',
+			'name'    => esc_html__( 'Allow components', 'x2board' ),
+			'desc'    => esc_html__( 'Allow components to whom, No choice no restriction', 'x2board' ),
+			'type'    => 'multicheck',
+			'default' => '',
+			'options' => x2b_get_editable_roles(),
+		),
+
+
 		'file_attachment_setup_header'	=> array(
 			'id'      => 'file_attachment_setup_header',
 			// 'name'    => esc_html__( 'Advanced setup', 'x2board' ),
@@ -856,7 +886,7 @@ function x2b_get_editable_roles() {
 	}
 
 	$a_roles = array();
-	$a_roles['all'] = esc_html__( 'All users', 'x2board' );
+	// $a_roles['all'] = esc_html__( 'All users', 'x2board' );
 	// $a_roles['loggedin_user'] = esc_html__( 'Loggedin users', 'x2board' ); // maybe subscribers of WP
 	foreach(get_editable_roles() as $roles_key=>$roles_value) {
 		$a_roles[$roles_key] = esc_html__( $roles_value['name'], 'x2board' );

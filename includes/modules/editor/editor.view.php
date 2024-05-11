@@ -75,6 +75,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorView')) {
 				$o_editor_conf->primary_key_name = 'post_id';
 				$o_editor_conf->post_editor_skin = $o_editor_conf->s_editor_type;
 				$o_editor_conf->post_editor_height = $o_current_module_info->post_editor_height;
+				$o_editor_conf->upload_file_grant = $o_current_module_info->upload_file_grant;
+				$o_editor_conf->enable_html_grant = $o_current_module_info->enable_html_grant;
 
 				$o_editor_conf->comment_editor_skin = $o_editor_conf->s_editor_type;
 				$o_editor_conf->comment_editor_height = $o_current_module_info->comment_editor_height;
@@ -82,8 +84,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorView')) {
 				$o_editor_conf->enable_comment_html_grant = $o_current_module_info->enable_comment_html_grant;
 				
 				$o_editor_conf->enable_autosave = $o_current_module_info->enable_autosave;
-				$o_editor_conf->enable_html_grant = $o_current_module_info->enable_html_grant;
-				$o_editor_conf->upload_file_grant = $o_current_module_info->upload_file_grant;
+				$o_editor_conf->enable_default_component_grant = $o_current_module_info->enable_default_component_grant != -1 ? $o_current_module_info->enable_default_component_grant : null;
+				$o_editor_conf->enable_component_grant = $o_current_module_info->enable_component_grant != -1 ? $o_current_module_info->enable_component_grant : null;
 
 				$o_editor_model = \X2board\Includes\getModel('editor');
 				echo $o_editor_model->get_board_editor($o_editor_conf); // $s_content_type, $n_current_post_id, 'comment_id', $o_editor_conf->s_content_field_name);
@@ -152,6 +154,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorView')) {
 				$o_editor_conf->enable_autosave = $o_current_module_info->enable_autosave;
 				$o_editor_conf->enable_html_grant = $o_current_module_info->enable_html_grant;
 				$o_editor_conf->upload_file_grant = $o_current_module_info->upload_file_grant;
+
+				$o_editor_conf->enable_default_component_grant = $o_current_module_info->enable_default_component_grant;
+				$o_editor_conf->enable_component_grant = $o_current_module_info->enable_component_grant;
 
 				$o_editor_model = \X2board\Includes\getModel('editor');
 				echo $o_editor_model->get_board_editor($o_editor_conf);

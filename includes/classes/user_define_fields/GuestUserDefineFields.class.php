@@ -879,7 +879,8 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 		}
 		
 		private function _get_post_category_list() {
-			return \X2board\Includes\Classes\Context::get('category_list');
+			$a_category = \X2board\Includes\Classes\Context::get('category_list');
+			return $a_category ? $a_category : array();
 		}
 	}
 }

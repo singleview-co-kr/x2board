@@ -296,7 +296,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 						// 	}
 						// }
 					}
-var_dump($o_grant);
+
 					// Separate processing for the virtual group access
 					if(!$grant_exists['access']) {
 						$o_grant->access = true;

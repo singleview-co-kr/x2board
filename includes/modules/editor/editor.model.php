@@ -50,36 +50,30 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorModel')) {
 		function get_board_editor($o_editor_config) { //$type = 'post', $upload_target_id, $primary_key_name, $content_key_name) {
 			// Get editor settings of the board
 			// $o_editor_config = $this->_get_editor_config($n_board_id);
-// var_Dump($o_editor_config);
 			$o_config = new \stdClass();
 			$o_config->module_type = $o_editor_config->module_type;
 			$upload_target_id = $o_editor_config->upload_target_id;
 			$primary_key_name = $o_editor_config->primary_key_name;
 			$content_key_name = $o_editor_config->s_content_field_name;
 
+			$o_config->content_style = null;  // isset($o_editor_config->content_style) ? $o_editor_config->content_style : null;
+			$o_config->content_font = null;  // isset($o_editor_config->content_font) ? $o_editor_config->content_font : null;
+			$o_config->content_font_size = null;  // isset($o_editor_config->content_font_size) ? $o_editor_config->content_font_size : null;
+			$o_config->sel_editor_colorset = null;  // isset($o_editor_config->sel_editor_colorset) ? $o_editor_config->sel_editor_colorset : null;
+			$o_config->enable_default_component_grant = $o_editor_config->enable_default_component_grant; //기본 컴포넌트 사용 권한  $o_editor_config->enable_default_component_grant;
+			$o_config->enable_component_grant = $o_editor_config->enable_component_grant; //확장 컴포넌트 사용 권한 $o_editor_config->enable_component_grant;
+
 			// Configurations listed according to a type
 			if($o_config->module_type == 'post') {
 				$o_config->editor_skin = $o_editor_config->post_editor_skin;
-				$o_config->content_style = null;  // isset($o_editor_config->content_style) ? $o_editor_config->content_style : null;
-				$o_config->content_font = null;  // isset($o_editor_config->content_font) ? $o_editor_config->content_font : null;
-				$o_config->content_font_size = null;  // isset($o_editor_config->content_font_size) ? $o_editor_config->content_font_size : null;
-				$o_config->sel_editor_colorset = null;  // isset($o_editor_config->sel_editor_colorset) ? $o_editor_config->sel_editor_colorset : null;
 				$o_config->upload_file_grant = $o_editor_config->upload_file_grant;
-				$o_config->enable_default_component_grant = array(); //$o_editor_config->enable_default_component_grant;
-				$o_config->enable_component_grant = array(); //$o_editor_config->enable_component_grant;
 				$o_config->enable_html_grant = $o_editor_config->enable_html_grant;
 				$o_config->editor_height = $o_editor_config->post_editor_height;
 				$o_config->enable_autosave = $o_editor_config->enable_autosave;
 			}
 			else {
 				$o_config->editor_skin = $o_editor_config->comment_editor_skin;
-				$o_config->content_style = null;  // isset($o_editor_config->comment_content_style) ? $o_editor_config->comment_content_style : null;
-				$o_config->content_font = null;  // isset($o_editor_config->content_font) ? $o_editor_config->content_font : null;
-				$o_config->content_font_size = null;  // isset($o_editor_config->content_font_size) ? $o_editor_config->content_font_size : null;
-				$o_config->sel_editor_colorset = null;  // isset($o_editor_config->sel_comment_editor_colorset) ? $o_editor_config->sel_comment_editor_colorset : null;
 				$o_config->upload_file_grant = $o_editor_config->comment_upload_file_grant;
-				$o_config->enable_default_component_grant = array(); //$o_editor_config->enable_comment_default_component_grant;
-				$o_config->enable_component_grant = array(); //$o_editor_config->enable_comment_component_grant;
 				$o_config->enable_html_grant = $o_editor_config->enable_comment_html_grant;
 				$o_config->editor_height = $o_editor_config->comment_editor_height;
 				$o_config->enable_autosave = 'N';
@@ -87,7 +81,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorModel')) {
 			$logged_info = \X2board\Includes\Classes\Context::get('logged_info');
 			// Check a group_list of the currently logged-in user for permission check
 			if(\X2board\Includes\Classes\Context::get('is_logged')) {
-				$group_list = $logged_info->group_list;
+				$group_list = $logged_info->caps;
 			}
 			else {
 				$group_list = array();
@@ -106,8 +100,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorModel')) {
 				$option->allow_fileupload = true;
 			}
 			elseif(count((array)$o_config->upload_file_grant)) {
-				foreach($group_list as $group_srl => $group_info) {
-					if(in_array($group_srl, $o_config->upload_file_grant)) {
+				foreach($group_list as $s_group_name => $_) {  // $group_list = Array(  [administrator] => 1 )
+					if( isset( $o_config->upload_file_grant[$s_group_name] ) && $o_config->upload_file_grant[$s_group_name] ) {  // if(in_array($group_srl, $o_config->upload_file_grant)) {
 						$option->allow_fileupload = true;
 						break;
 					}
@@ -121,9 +115,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorModel')) {
 			if($logged_info->is_admin=='Y') {
 				$option->enable_default_component = true;
 			}
-			elseif(count($o_config->enable_default_component_grant)) {
-				foreach($group_list as $group_srl => $group_info) {
-					if(in_array($group_srl, $o_config->enable_default_component_grant)) {
+			elseif(count((array)$o_config->enable_default_component_grant)) {
+				foreach($group_list as $s_group_name => $_) {  // $group_list = Array(  [administrator] => 1 )
+					if( isset( $o_config->enable_default_component_grant[$s_group_name] ) && $o_config->enable_default_component_grant[$s_group_name] ) {  // if(in_array($group_srl, $o_config->enable_default_component_grant)) {
 						$option->enable_default_component = true;
 						break;
 					}
@@ -137,9 +131,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorModel')) {
 			if($logged_info->is_admin=='Y') {
 				$option->enable_component = true;
 			}
-			elseif(count($o_config->enable_component_grant)) {
-				foreach($group_list as $group_srl => $group_info) {
-					if(in_array($group_srl, $o_config->enable_component_grant)) {
+			elseif(count((array)$o_config->enable_component_grant)) {
+				foreach($group_list as $s_group_name => $_) {  // $group_list = Array(  [administrator] => 1 )
+					if( isset( $o_config->enable_component_grant[$s_group_name] ) && $o_config->enable_component_grant[$s_group_name] ) {  // if(in_array($group_srl, $o_config->enable_component_grant)) {
 						$option->enable_component = true;
 						break;
 					}
@@ -154,8 +148,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorModel')) {
 				$enable_html = true;
 			}
 			elseif(count((array)$o_config->enable_html_grant)) {
-				foreach($group_list as $group_srl => $group_info) {
-					if(in_array($group_srl, $o_config->enable_html_grant)) {
+				foreach($group_list as $s_group_name => $_) {  // $group_list = Array(  [administrator] => 1 )
+					if( isset( $o_config->enable_html_grant[$s_group_name] ) && $o_config->enable_html_grant[$s_group_name] ) {  // if(in_array($group_srl, $o_config->enable_html_grant)) {
 						$enable_html = true;
 						break;
 					}
@@ -164,6 +158,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorModel')) {
 			else {
 				$enable_html = true;
 			}
+			unset($logged_info);
 
 			if($enable_html) {
 				$option->disable_html = false;
@@ -178,7 +173,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorModel')) {
 			// Other settings
 			$option->primary_key_name = $primary_key_name;
 			$option->content_key_name = $content_key_name;
-// var_dump($option);
+			unset($group_list);
 			unset($o_config);
 			return $this->_get_editor($upload_target_id, $option);
 		}
