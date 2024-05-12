@@ -96,6 +96,130 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 			include_once X2B_PATH .'includes/admin/tpl/board_list.php';
 		}
 
+		/**
+		 * 서버에 설정된 최대 업로드 크기를 반환한다.
+		 * @link http://stackoverflow.com/questions/13076480/php-get-actual-maximum-upload-size
+		 * @return int
+		 */
+		private function _get_upload_max_size(){
+			static $max_size = -1;
+			if($max_size < 0){
+				$max_size = $this->_parse_size(ini_get('post_max_size'));
+				$upload_max = $this->_parse_size(ini_get('upload_max_filesize'));
+				if($upload_max > 0 && $upload_max < $max_size){
+					$max_size = $upload_max;
+				}
+			}
+			return $max_size;
+		}
+
+		/**
+		 * 바이트로 크기를 변환한다.
+		 * @link http://stackoverflow.com/questions/13076480/php-get-actual-maximum-upload-size
+		 * @return int
+		 */
+		private function _parse_size($size){
+			$unit = preg_replace('/[^bkmgtpezy]/i', '', $size);
+			$size = preg_replace('/[^0-9\.]/', '', $size);
+			if($unit){
+				return round($size * pow(1024, stripos('bkmgtpezy', $unit[0])));
+			}
+			else{
+				return round($size);
+			}
+		}
+
+		/**
+		 * 업로드 가능한 파일 크기를 반환한다.
+		 */
+		private function _get_uploading_file_size(){
+			return intval(get_option('x2b_limit_file_size', $this->_get_upload_max_size()));
+		}
+
+		/**
+		 * 새글 알림 시간을 반환한다.
+		 * @return int
+		 */
+		private function _new_post_notify_time(){
+			return get_option('x2b_new_post_notify_time', '86400');
+		}
+
+		/**
+		 * 아이프레임 화이트리스트를 반환한다.
+		 * @param boolean $to_array
+		 */
+		private function _get_iframe_whitelist($to_array=false){
+			/*
+			* 허가된 도메인 호스트 (화이트리스트)
+			*/
+			$whitelist = 'google.com' . PHP_EOL;
+			$whitelist .= 'www.google.com' . PHP_EOL;
+			$whitelist .= 'youtube.com' . PHP_EOL;
+			$whitelist .= 'www.youtube.com' . PHP_EOL;
+			$whitelist .= 'maps.google.com' . PHP_EOL;
+			$whitelist .= 'maps.google.co.kr' . PHP_EOL;
+			$whitelist .= 'docs.google.com' . PHP_EOL;
+			$whitelist .= 'tv.naver.com' . PHP_EOL;
+			$whitelist .= 'serviceapi.nmv.naver.com' . PHP_EOL;
+			$whitelist .= 'serviceapi.rmcnmv.naver.com' . PHP_EOL;
+			$whitelist .= 'videofarm.daum.net' . PHP_EOL;
+			$whitelist .= 'tv.kakao.com' . PHP_EOL;
+			$whitelist .= 'player.vimeo.com' . PHP_EOL;
+			$whitelist .= 'w.soundcloud.com' . PHP_EOL;
+			$whitelist .= 'slideshare.net' . PHP_EOL;
+			$whitelist .= 'www.slideshare.net' . PHP_EOL;
+			$whitelist .= 'channel.pandora.tv' . PHP_EOL;
+			$whitelist .= 'mgoon.com' . PHP_EOL;
+			$whitelist .= 'www.mgoon.com' . PHP_EOL;
+			$whitelist .= 'tudou.com' . PHP_EOL;
+			$whitelist .= 'www.tudou.com' . PHP_EOL;
+			$whitelist .= 'player.youku.com' . PHP_EOL;
+			$whitelist .= 'videomega.tv' . PHP_EOL;
+			$whitelist .= 'mtab.clickmon.co.kr' . PHP_EOL;
+			$whitelist .= 'tab2.clickmon.co.kr';
+			
+			$iframe_whitelist_data = get_option('x2b_iframe_whitelist');
+			$iframe_whitelist_data = trim($iframe_whitelist_data);
+			
+			if(!$iframe_whitelist_data){
+				$iframe_whitelist_data = $whitelist;
+			}
+			
+			if($to_array){
+				$iframe_whitelist_data = explode(PHP_EOL, $iframe_whitelist_data);
+				return array_map('trim', $iframe_whitelist_data);
+			}
+			return $iframe_whitelist_data;
+		}
+
+		/**
+		 * 작성자 금지단어를 반환한다.
+		 * @param string $to_array
+		 */
+		private function _get_forbidden_nickname($to_array=false){
+			$name_filter = get_option('x2b_name_filter', '관리자, 운영자, admin, administrator');
+			
+			if($to_array){
+				$name_filter = explode(',', $name_filter);
+				return array_map('trim', $name_filter);
+			}
+			return $name_filter;
+		}
+
+		/**
+		 * 본문/제목/댓글 금지단어를 반환한다.
+		 * @param string $to_array
+		 */
+		private function _get_forbidden_word_in_contents($to_array=false){
+			$content_filter = get_option('x2b_content_filter', '');
+			if($to_array){
+				$content_filter = explode(',', $content_filter);
+				return array_map('trim', $content_filter);
+			}
+			return $content_filter;
+		}
+
+
 		public function prepare_items(){
 			$columns = $this->get_columns();
 			$hidden = array();

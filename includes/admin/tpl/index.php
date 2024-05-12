@@ -72,38 +72,7 @@
 				<p><button type="submit" class="button">다운로드 방식 변경</button></p>
 			</form>
 		</li>
-		<li id="kboard_limit_file_size">
-			<form method="post" onsubmit="return kboard_system_option_update(this)">
-				<input type="hidden" name="action" value="kboard_system_option_update">
-				
-				<h4>첨부파일의 최대 크기를 제한합니다.</h4>
-				<p>
-					서버에서 설정한 최대 크기를 넘을 수 없습니다.<br>
-					최대 크기는 <?php echo kboard_upload_max_size()?> 바이트(B) 입니다. <a href="https://search.naver.com/search.naver?query=<?php echo kboard_upload_max_size()?>+%EB%B0%94%EC%9D%B4%ED%8A%B8+%EB%A9%94%EA%B0%80%EB%B0%94%EC%9D%B4%ED%8A%B8+%EB%B3%80%ED%99%98" onclick="window.open(this.href);return false;">네이버 단위변환 보기</a><br>
-					첨부파일 업로드에 문제가 있다면 먼저 호스팅 관리자에게 문의 해보세요.
-				</p>
-				<p>
-					<input type="number" name="option[kboard_limit_file_size]" value="<?php echo kboard_limit_file_size()?>"> 바이트(B)
-					<button type="submit" class="button">변경</button>
-				</p>
-			</form>
-		</li>
-		<li id="kboard_allow_file_extensions">
-			<form method="post" onsubmit="return kboard_system_option_update(this)">
-				<input type="hidden" name="action" value="kboard_system_option_update">
-				
-				<h4>첨부파일의 종류를 제한합니다.</h4>
-				<p>
-					보안의 이유로 첨부파일의 종류를 제한합니다.<br>
-					허용할 파일의 확장자를 콤마(,)로 구분해서 추가해주세요.<br>
-					첨부파일 업로드에 문제가 있다면 먼저 호스팅 관리자에게 문의 해보세요.
-				</p>
-				<p>
-					<input type="text" name="option[kboard_allow_file_extensions]" value="<?php echo kboard_allow_file_extensions()?>" style="width:100%">
-					<button type="submit" class="button">확장자 업데이트</button>
-				</p>
-			</form>
-		</li>
+		
 		<li id="kboard_new_document_notify_time">
 			<form method="post" onsubmit="return kboard_system_option_update(this)">
 				<input type="hidden" name="action" value="kboard_system_option_update">
@@ -116,17 +85,17 @@
 				<p>
 					<select name="option[kboard_new_document_notify_time]">
 						<option value="1">비활성화</option>
-						<option value="3600"<?php if(kboard_new_document_notify_time() == '3600'):?> selected<?php endif?>>1시간</option>
-						<option value="10800"<?php if(kboard_new_document_notify_time() == '10800'):?> selected<?php endif?>>3시간</option>
-						<option value="21600"<?php if(kboard_new_document_notify_time() == '21600'):?> selected<?php endif?>>6시간</option>
-						<option value="43200"<?php if(kboard_new_document_notify_time() == '43200'):?> selected<?php endif?>>12시간</option>
-						<option value="86400"<?php if(kboard_new_document_notify_time() == '86400'):?> selected<?php endif?>>하루</option>
-						<option value="172800"<?php if(kboard_new_document_notify_time() == '172800'):?> selected<?php endif?>>2일</option>
-						<option value="259200"<?php if(kboard_new_document_notify_time() == '259200'):?> selected<?php endif?>>3일</option>
-						<option value="345600"<?php if(kboard_new_document_notify_time() == '345600'):?> selected<?php endif?>>4일</option>
-						<option value="432000"<?php if(kboard_new_document_notify_time() == '432000'):?> selected<?php endif?>>5일</option>
-						<option value="518400"<?php if(kboard_new_document_notify_time() == '518400'):?> selected<?php endif?>>6일</option>
-						<option value="604800"<?php if(kboard_new_document_notify_time() == '604800'):?> selected<?php endif?>>1주일</option>
+						<option value="3600"<?php if($this->_new_post_notify_time() == '3600'):?> selected<?php endif?>>1시간</option>
+						<option value="10800"<?php if($this->_new_post_notify_time() == '10800'):?> selected<?php endif?>>3시간</option>
+						<option value="21600"<?php if($this->_new_post_notify_time() == '21600'):?> selected<?php endif?>>6시간</option>
+						<option value="43200"<?php if($this->_new_post_notify_time() == '43200'):?> selected<?php endif?>>12시간</option>
+						<option value="86400"<?php if($this->_new_post_notify_time() == '86400'):?> selected<?php endif?>>하루</option>
+						<option value="172800"<?php if($this->_new_post_notify_time() == '172800'):?> selected<?php endif?>>2일</option>
+						<option value="259200"<?php if($this->_new_post_notify_time() == '259200'):?> selected<?php endif?>>3일</option>
+						<option value="345600"<?php if($this->_new_post_notify_time() == '345600'):?> selected<?php endif?>>4일</option>
+						<option value="432000"<?php if($this->_new_post_notify_time() == '432000'):?> selected<?php endif?>>5일</option>
+						<option value="518400"<?php if($this->_new_post_notify_time() == '518400'):?> selected<?php endif?>>6일</option>
+						<option value="604800"<?php if($this->_new_post_notify_time() == '604800'):?> selected<?php endif?>>1주일</option>
 					</select>
 					<button type="submit" class="button">변경</button>
 				</p>
@@ -193,7 +162,7 @@
 					형식에 맞춰서 한줄씩 도메인 주소를 입력해주세요.
 				</p>
 				<p>
-					<textarea rows="10" name="option[kboard_iframe_whitelist]"><?php echo kboard_iframe_whitelist()?></textarea>
+					<textarea rows="10" name="option[kboard_iframe_whitelist]"><?php echo $this->_get_iframe_whitelist()?></textarea>
 					<button type="submit" class="button">아이프레임 화이트리스트 업데이트</button>
 				</p>
 			</form>
@@ -209,7 +178,7 @@
 					단어를 콤마(,)로 구분해서 추가해주세요.
 				</p>
 				<p>
-					<textarea name="option[kboard_name_filter]" style="width:100%"><?php echo kboard_name_filter()?></textarea>
+					<textarea name="option[kboard_name_filter]" style="width:100%"><?php echo $this->_get_forbidden_nickname()?></textarea>
 					<button type="submit" class="button">금지단어 업데이트</button>
 				</p>
 				<p>
@@ -229,7 +198,7 @@
 					단어를 콤마(,)로 구분해서 추가해주세요.
 				</p>
 				<p>
-					<textarea name="option[kboard_content_filter]" style="width:100%"><?php echo kboard_content_filter()?></textarea>
+					<textarea name="option[kboard_content_filter]" style="width:100%"><?php echo $this->_get_forbidden_word_in_contents()?></textarea>
 					<button type="submit" class="button">금지단어 업데이트</button>
 				</p>
 				<p>
@@ -258,7 +227,7 @@
 				
 				<h4>네이버 API 설정</h4>
 				<p>
-					네이버에서 제공하는 API와 서비스를 KBoard(케이보드)에서 사용할 수 있습니다.<br>
+					네이버에서 제공하는 API와 서비스를 X2Board에서 사용할 수 있습니다.<br>
 					일부 스킨과 플러그인에서 사용됩니다.
 				</p>
 				<p>
@@ -274,7 +243,7 @@
 				
 				<h4>카카오 API 설정</h4>
 				<p>
-					카카오에서 제공하는 API와 서비스를 KBoard(케이보드)에서 사용할 수 있습니다.<br>
+					카카오에서 제공하는 API와 서비스를 X2Board에서 사용할 수 있습니다.<br>
 					일부 스킨과 플러그인에서 사용됩니다.
 				</p>
 				<p>
@@ -290,7 +259,7 @@
 				
 				<h4>구글 API 설정</h4>
 				<p>
-					구글에서 제공하는 API와 서비스를 KBoard(케이보드)에서 사용할 수 있습니다.<br>
+					구글에서 제공하는 API와 서비스를 X2Board에서 사용할 수 있습니다.<br>
 					일부 스킨과 플러그인에서 사용됩니다.
 				</p>
 				<p>
@@ -359,7 +328,7 @@
 				
 				<h4>이미지 최적화</h4>
 				<p>
-					KBoard(케이보드)에서 업로드되는 이미지를 최적화해 서버의 저장공간을 절약할 수 있습니다.<br>
+					X2Board에서 업로드되는 이미지를 최적화해 서버의 저장공간을 절약할 수 있습니다.<br>
 					KBoard 미디어 추가 기능과 게시판 첨부파일로 업로드되는 이미지에 적용됩니다.<br>
 					jpg, png 계열의 이미지 파일에 적용되며 gif 파일에는 적용되지 않습니다.<br>
 					필드가 빈 값일 경우 동작하지 않고 업로드 원본 그대로 저장합니다.<br>
@@ -379,10 +348,10 @@
 				
 				<h4>복사 방지 스크립트 실행</h4>
 				<p>
-					KBoard(케이보드)가 있는 페이지에서 복사 방지 스크립트를 실행합니다.<br>
+					X2Board가 있는 페이지에서 복사 방지 스크립트를 실행합니다.<br>
 					드래그 + 우클릭, 복사 방지 단계별로 설정할 수 있습니다.<br>
 					복사 방지는 클립보드에 복사된 값을 삭제하는 방식으로 복사가 실행되어도 값이 저장되지 않습니다.<br>
-					KBoard(케이보드) 동작하는 페이지 전체에 적용됩나다.<br>
+					X2Board 동작하는 페이지 전체에 적용됩나다.<br>
 					관리자를 제외한 나머지 모두에게 적용됩니다.<br>
 					일부 서버 환경에서는 동작하지 않을 수 있습니다.
 				</p>
