@@ -532,6 +532,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 			switch($type) {
 				// default fields
 				case 'title':
+					$s_name = strlen($s_name) ? $s_name : __($this->type, 'x2board');
 					$buff[] = '<div class="x2board-attr-row '.$s_default_class.' required">';
 					$buff[] = 	'<label class="attr-name" for="'.$s_meta_key.'"><span class="field-name">'.$s_name.'</span> <span class="attr-required-text">*</span></label>';
 					$buff[] = 	'<div class="attr-value">';
@@ -551,6 +552,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 					break;
 				case 'nick_name':
 					if(!is_user_logged_in()) {
+						$s_name = strlen($s_name) ? $s_name : __($this->type, 'x2board');
 						$buff[] = '<div class="x2board-attr-row '.$s_default_class.' required">';
 						$buff[] = 	'<label class="attr-name" for="x2board-input-member-display"><span class="field-name">'.$s_name.'</span> <span class="attr-required-text">*</span></label>';
 						$s_value = $o_post->nick_name ? esc_attr($o_post->nick_name) : $s_default_value;
@@ -569,6 +571,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 					}
 					break;
 				case 'category':
+					$s_name = strlen($s_name) ? $s_name : __($this->type, 'x2board');
 					$buff[] = '<div class="x2board-attr-row '.$s_default_class.' '.$s_required.'">';
 					$buff[] = '<label class="attr-name" for="'.$s_meta_key.'"><span class="field-name">'.$s_name.'</span></label>';
 					$buff[] = '<div class="attr-value">';
@@ -648,6 +651,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 					$buff[] = '</ul>';
 					break;
 				case 'option':
+					$s_name = strlen($s_name) ? $s_name : __($this->type, 'x2board');
 					$secret_checked_forced = true;
 					$buff[] = '<div class="x2board-attr-row '.$s_default_class.'">';
 					$buff[] = 	'<label class="attr-name" for="'.$s_meta_key.'"><span class="field-name">'.$s_name.'</span></label>';
