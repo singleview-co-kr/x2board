@@ -182,16 +182,16 @@ if (!class_exists('\\X2board\\Includes\\Classes\\AdminUnchosenDefaultUserDefineF
 				$s_html .=					'<div class="attr-row">
 												<label class="attr-name" for="'.$this->_s_field_type.'_default_value">'.__('Defaul value', 'x2board').'</label>
 												<div class="attr-value">';
-				if($this->_s_field_type == 'search') {
+				/*if($this->_s_field_type == 'search') {
 					$s_html .=						'<select id="'.$this->_s_field_type.'_default_value" class="field_data default_value">
 														<option value="1">'.__('Title and content', 'x2board').'</option>
 														<option value="2">'.__('Title (secret post)', 'x2board').'</option>
 														<option value="3">'.__('Hide from search', 'x2board').'</option>
 													</select>';
 				}
-				else {
+				else {*/
 					$s_html .=						'<input type="text" class="field_data default_value">';
-				}
+				// }
 				$s_html .=						'</div>
 											</div>';
 			}

@@ -710,7 +710,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 						// $buff[] = '<!-- 비밀글 비밀번호 필드 끝 -->';
 					}
 					break;
-				case 'search':
+				/*case 'search':
 						if(isset($field['hidden']) && $field['hidden'] == '1') {
 							$buff[] = '<input type="hidden" name="allow_search" value="'.$s_default_value.'">';
 						}
@@ -747,7 +747,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 							$buff[] = '</div>';
 							$buff[] = '</div>';
 						}
-					break;
+					break;*/
 				// extended user define fields
 				case 'text':
 					if(isset($field['hidden']) && $field['hidden']) {

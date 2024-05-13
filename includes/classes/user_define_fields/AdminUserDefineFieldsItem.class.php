@@ -390,7 +390,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\AdminUserDefineFieldsItem')) {
 				$s_html .=	 			'<div class="attr-row">
 											<label class="attr-name" for="'.esc_attr($this->_s_meta_key).'_default_value">'.__('Default value', 'x2board').'</label>
 											<div class="attr-value">';
-				if($this->_s_field_type == 'search') {
+				/*if($this->_s_field_type == 'search') {
 					$s_html .=	 				'<select id="'.esc_attr($this->_s_meta_key).'_default_value" name="fields[search][default_value]" class="field_data default_value">';
 					$s_selected = $this->_s_default_value == '1' ? 'selected' : '';
 					$s_html .=			 			'<option value="1" '.$s_selected.'>제목과 내용 검색허용</option>';
@@ -400,9 +400,9 @@ if (!class_exists('\\X2board\\Includes\\Classes\\AdminUserDefineFieldsItem')) {
 					$s_html .=			 			'<option value="3" '.$s_selected.'>통합검색 제외</option>
 												</select>';
 				}
-				else {
+				else {*/
 					$s_html .=			 		'<input type="text" id="'.esc_attr($this->_s_meta_key).'_default_value" name="fields['.esc_attr($this->_s_meta_key).'][default_value]" class="field_data default_value" value="'.$this->_s_default_value.'">';
-				}
+				//}
 				$s_html .=			 		'</div>
 										</div>';
 			}

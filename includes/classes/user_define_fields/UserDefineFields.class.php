@@ -116,7 +116,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 					'description' => '',
 					'close_button' => 'yes'
 				),
-				'search' => array(
+				/*'search' => array(
 					'field_type' => 'search',
 					'field_label' => __('WP Search', 'x2board'),
 					'field_name' => '',
@@ -129,7 +129,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 					'description' => '',
 					'hidden' => '',
 					'close_button' => ''
-				)
+				)*/
 			);
 
 			$this->_a_extends_fields = array(
