@@ -659,18 +659,32 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 				return $this->_disp_message( __('msg_not_permitted', 'x2board') );
 			}
 
+			// editor 스킨의 사용자 입력 field 출력
+			$o_post_model = \X2board\Includes\getModel('post');
+			$this->_default_fields = $o_post_model->get_default_fields();  // get_default_user_input_fields();
+			$this->_extends_fields = $o_post_model->get_extended_fields();  // get_extended_user_input_fields();
+			$a_user_input_field = $o_post_model->get_user_define_fields();
+			unset($o_post_model);
+			\X2board\Includes\Classes\Context::set('field', $a_user_input_field);
+			
+			$b_category_activated = false;
+			foreach($a_user_input_field as $_ => $o_user_field ) {
+				if($o_user_field->type == 'category') {
+					$b_category_activated = true;
+				}
+			}
 			/**
-			 * check if the category option is enabled not not
+			 * check if the category user define field is enabled or not
 			 **/
-			if($this->module_info->use_category=='Y') {
+			if( $b_category_activated ) {  // if($this->module_info->use_category=='Y') {
 				$o_category_model = \X2board\Includes\getModel('category');
 				$o_category_model->set_board_id(\X2board\Includes\Classes\Context::get('board_id'));
 				$a_linear_category = $o_category_model->build_linear_category();
-// var_dump($normal_category_list);
 				unset($o_category_model);
 				\X2board\Includes\Classes\Context::set('category_list', $a_linear_category);
 				unset($a_linear_category);
 			}
+			unset($a_user_input_field);
 
 			// GET parameter post_id from request
 			$n_post_id = \X2board\Includes\Classes\Context::get('post_id');
@@ -1072,22 +1086,6 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			}
 			unset($a_header);
 			// do_action('x2b_skin_editor_header_after', $content, $board);
-		}
-
-		/**
-		 * /includes/no_namespace.helper.php::x2b_write_post_prepare_single_user_field()를 통해서
-		 * editor 스킨의 사용자 입력 field 출력
-		 */
-		public function write_post_prepare_single_user_field() { 
-			$o_post_model = \X2board\Includes\getModel('post');
-			$this->_default_fields = $o_post_model->get_default_fields();  // get_default_user_input_fields();
-			$this->_extends_fields = $o_post_model->get_extended_fields();  // get_extended_user_input_fields();
-			$a_user_input_field = $o_post_model->get_user_define_fields();
-			unset($o_post_model);
-			\X2board\Includes\Classes\Context::set('field', $a_user_input_field);
-
-// var_dump( plugin_dir_url( __FILE__ ).'js/user_define_field.js');	
-			// wp_enqueue_script('x2board-user-define-fields', plugin_dir_url( __FILE__ ).'js/user_define_field.js', ['jquery'], X2B_VERSION, true);
 		}
 
 		/**

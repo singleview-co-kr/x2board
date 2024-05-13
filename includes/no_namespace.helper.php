@@ -30,7 +30,6 @@ function x2b_get_url() {  // this function is same with func.inc.php::get_url()
 function x2b_write_post_input_fields() {
 	$o_board_view = \X2board\Includes\getView('board');
 	$o_board_view->write_post_hidden_fields();
-	$o_board_view->write_post_prepare_single_user_field();
 	$a_field = \X2board\Includes\Classes\Context::get('field');
 	if($a_field) {
 		foreach( $a_field as $o_user_define_field ){

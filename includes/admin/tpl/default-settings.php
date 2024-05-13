@@ -277,7 +277,7 @@ function x2b_settings_general() {
 function x2b_settings_category() {
 
 	$settings = array(
-		'board_use_category'  => array(
+		/*'board_use_category'  => array(
 			'id'      => 'board_use_category',
 			'name'    => esc_html__( 'Use category', 'x2board' ),
 			'desc'    => esc_html__( 'Select to activate board category', 'x2board' ),
@@ -287,7 +287,7 @@ function x2b_settings_category() {
 				'checked' => 'Y',
 				'unchecked'   => 'N',
 			),
-		),
+		),*/
 		'board_hide_category'  => array(
 			'id'      => 'board_hide_category',
 			'name'    => esc_html__( 'Hide category', 'x2board' ),
