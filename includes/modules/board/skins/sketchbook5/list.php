@@ -7,12 +7,10 @@ if($post->is_exists()) {
 
 <div class="bd hover_effect" >
 	<!-- 카테고리 시작 -->
-	<?php
-	if( $this->module_info->use_category == 'Y') {
+	<?php if( $use_category ) {
 		$category_type = 'tree-tab';
 		x2b_include_skin("list-category-{$category_type}");
-	}
-	?>
+	} ?>
 	<!-- 카테고리 끝 -->
 	<table id="document-table" class="bd_lst bd_tb_lst bd_tb">
 		<caption class="blind"><?php echo __('List of Posts', 'x2board')?></caption>

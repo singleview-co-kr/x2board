@@ -79,9 +79,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			// {
 			// 	return $output;
 			// }
-// var_dump($obj);
 			$o_search_check = $this->_set_search_option($obj); //, $args);// , $query_id, $use_division);
-// var_dump($o_search_check);
 			$query_id = $o_search_check->s_query_id; // 'post.getPostList';   // basic document list query
 			if ($o_sort_check->is_user_define_field && substr_count($obj->search_target, 'extra_vars')) {
 			// 	$query_id = 'document.getDocumentListWithinExtraVarsExtraSort';
@@ -419,11 +417,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 				$G_X2B_CACHE['POST_LIST'][$n_post_id] = $this->get_post($n_post_id, false); //$o_post;
 				$this->_set_to_all_post_extra_vars();
 			}
-			global $G_X2B_CACHE;
 // var_dump($n_post_id);
 // var_dump($G_X2B_CACHE['EXTRA_VARS'][$n_post_id]);			
 			if(isset($G_X2B_CACHE['EXTRA_VARS'][$n_post_id])) {
-
 				if(is_array($G_X2B_CACHE['EXTRA_VARS'][$n_post_id])) {
 					ksort($G_X2B_CACHE['EXTRA_VARS'][$n_post_id]);
 				} 
@@ -692,7 +688,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 		 */
 		private function _set_search_option($searchOpt) {  // , &$args) { // , &$query_id, &$use_division) {
 			// Variable check
-// var_dump($searchOpt);
 			$args = new \stdClass();
 			$args->category_id = $searchOpt->category_id ? $searchOpt->category_id : null;
 			$args->order_type = $searchOpt->order_type;
@@ -955,7 +950,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 
 					$o_query->s_where = "WHERE `board_id` in (".$args->board_id.") ";
 					if( $args->exclude_board_id ) {
-						$o_query->s_where .= "AND `board_id` not in ('.$args->exclude_board_id.') ";
+						$o_query->s_where .= 'AND `board_id` not in ('.$args->exclude_board_id.') ';
 					}
 					if( isset( $args->list_order ) ) {
 						$o_query->s_where .= 'AND `list_order` >= '.$args->list_order;
@@ -1057,18 +1052,21 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			$o_query_rst->s_where = "WHERE ("; 
 			$o_query_rst->s_where .= "`posts`.`board_id` in (".$args->board_id.") ";   // "`board_id` = ".get_the_ID();
 
+			if( $args->category_id ) {
+				$o_query_rst->s_where .= 'AND `category_id` in ('.$args->category_id.') ';
+			}
 			if( isset( $args->statusList ) && is_array($args->statusList) ) {
-				$o_query_rst->s_where .= " AND `posts`.`status` in ('".implode("', '" , $args->statusList)."')"; // and `list_order` <= 2100000000";
+				$o_query_rst->s_where .= "AND `posts`.`status` in ('".implode("', '" , $args->statusList)."') "; // and `list_order` <= 2100000000";
 			}
 			if( $use_division ) {
-				$o_query_rst->s_where .= " AND ( `posts`.`list_order` >= ".$n_division." AND `posts`.`list_order` < ".$n_last_division." )";
+				$o_query_rst->s_where .= "AND ( `posts`.`list_order` >= ".$n_division." AND `posts`.`list_order` < ".$n_last_division." ) ";
 			}
 			if( $s_field_search_clause ) {
 				if( $query_id == 'post.getPostList' ) {
-					$o_query_rst->s_where .= " AND ".$s_field_search_clause;
+					$o_query_rst->s_where .= "AND ".$s_field_search_clause." ";
 				}
 				elseif( $query_id == 'post.getPostListWithExtraVars' ) {
-					$o_query_rst->s_where .= " AND ".$s_field_search_clause;
+					$o_query_rst->s_where .= "AND ".$s_field_search_clause." ";
 				}
 			}
 			$o_query_rst->s_where .= ") ";
@@ -1199,7 +1197,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			unset($o_category);
 
 			$a_category_id = array();
-			$s_category_label = trim($s_category_label);
+			// $s_category_label = trim(urldecode($s_category_label));
 			foreach($a_tree_category as $n_cat_id => $o_cat_info) {
 				if($o_cat_info->title == $s_category_label) {
 					$a_category_id[] = $n_cat_id;

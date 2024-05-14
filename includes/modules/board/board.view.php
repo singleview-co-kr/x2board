@@ -70,6 +70,22 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			}
 			unset($a_status);
 
+			// editor 스킨의 사용자 입력 field 출력
+			$o_post_model = \X2board\Includes\getModel('post');
+			$this->_default_fields = $o_post_model->get_default_fields();  // get_default_user_input_fields();
+			$this->_extends_fields = $o_post_model->get_extended_fields();  // get_extended_user_input_fields();
+			$a_user_input_field = $o_post_model->get_user_define_fields();
+			\X2board\Includes\Classes\Context::set('field', $a_user_input_field);
+			
+			$b_category_activated = false;
+			foreach($a_user_input_field as $_ => $o_user_field ) {
+				if($o_user_field->type == 'category') {
+					$b_category_activated = true;
+				}
+			}
+			unset($a_user_input_field);
+			\X2board\Includes\Classes\Context::set('use_category', $b_category_activated);
+
 			/**
 			 * use context::set to setup extra variables
 			 **/
@@ -509,8 +525,8 @@ var_dump(X2B_CMD_VIEW_POST);
 			}
 
 			// if the category is enabled, then get the category
-			if($this->module_info->use_category=='Y') {
-				$o_args->category_id = \X2board\Includes\Classes\Context::get('category');
+			if(\X2board\Includes\Classes\Context::get('use_category')) {
+				$o_args->category_id = trim(urldecode(\X2board\Includes\Classes\Context::get('category')));
 			}
 			else {
 				$o_args->category_id = null;
@@ -527,7 +543,7 @@ var_dump(X2B_CMD_VIEW_POST);
 			}
 // var_dump($o_args);
 			$o_post_model = \X2board\Includes\getModel('post');
-			// set the current page of documents
+			// set the current page of posts
 			// $document_srl = Context::get('document_srl');
 			$post_id = \X2board\Includes\Classes\Context::get('post_id');  //$g_a_x2b_query_param['post_id'];
 			if(!$o_args->page && $post_id) {
@@ -578,7 +594,7 @@ var_dump(X2B_CMD_VIEW_POST);
 		 **/
 		// function dispBoardCategoryList(){
 		private function _disp_category_list() {
-			if($this->module_info->use_category=='Y') { // check if the use_category option is enabled;  -1 deactivated
+			if(\X2board\Includes\Classes\Context::get('use_category')) { // check if the use_category option is enabled;  -1 deactivated
 				if(!$this->grant->list) { // check the grant
 					\X2board\Includes\Classes\Context::set('category_recursive', array());
 					return;
@@ -659,24 +675,10 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 				return $this->_disp_message( __('msg_not_permitted', 'x2board') );
 			}
 
-			// editor 스킨의 사용자 입력 field 출력
-			$o_post_model = \X2board\Includes\getModel('post');
-			$this->_default_fields = $o_post_model->get_default_fields();  // get_default_user_input_fields();
-			$this->_extends_fields = $o_post_model->get_extended_fields();  // get_extended_user_input_fields();
-			$a_user_input_field = $o_post_model->get_user_define_fields();
-			unset($o_post_model);
-			\X2board\Includes\Classes\Context::set('field', $a_user_input_field);
-			
-			$b_category_activated = false;
-			foreach($a_user_input_field as $_ => $o_user_field ) {
-				if($o_user_field->type == 'category') {
-					$b_category_activated = true;
-				}
-			}
 			/**
 			 * check if the category user define field is enabled or not
 			 **/
-			if( $b_category_activated ) {  // if($this->module_info->use_category=='Y') {
+			if( \X2board\Includes\Classes\Context::get('use_category') ) {  // if($this->module_info->use_category=='Y') {
 				$o_category_model = \X2board\Includes\getModel('category');
 				$o_category_model->set_board_id(\X2board\Includes\Classes\Context::get('board_id'));
 				$a_linear_category = $o_category_model->build_linear_category();

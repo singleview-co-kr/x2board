@@ -4,7 +4,7 @@
 <div class="cnb_n_list">
 	<div>
 		<div class="bd_cnb clear css3pie">
-			<a class="home" href="<?php echo x2b_get_url('page','','post_id','')?>" title="글 수 '000'"><i class="home ico_16px"><?php echo __('All', 'kboard')?></i></a>
+			<a class="home" href="<?php echo x2b_get_url()?>" title="글 수 '000'"><i class="home ico_16px"><?php echo __('All', 'kboard')?></i></a>
 			<div class="dummy_ie fr"></div>
 			<ul class="bubble bg_f_f9 css3pie" style="overflow: visible;">
 				<li class="cnbMore" style="visibility: hidden;"><a href="#" class="bubble" title="분류 더보기"><i class="fa fa-caret-down"></i></a></li>
