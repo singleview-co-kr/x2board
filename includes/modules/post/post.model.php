@@ -224,7 +224,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			$o_query->s_tables = '`'.$wpdb->prefix.'x2b_posts`';
 			// $o_query->s_columns = "`title`, `nick_name`, `regdate_dt`, `readed_count`, `is_notice`, `post_id`, `board_id`, `category_id`, `post_author`, `content`, `last_update_dt`, `comment_count`, `voted_count`, `uploaded_count`, `status`, `title_bold`, `title_color`, `tags`";
 			$o_query->s_columns = "*";
-			$o_query->s_where = "WHERE `board_id`=".$obj->wp_page_id." AND `is_notice`='Y' AND `status` in ('PUBLIC')"; // and `list_order` <= 2100000000";
+			$o_query->s_where = "WHERE `board_id`=".$obj->wp_page_id." AND `is_notice`='Y'"; // AND `status` in ('PUBLIC')"; // and `list_order` <= 2100000000";
 			$o_query->s_orderby = "ORDER BY `list_order` desc";
 			$output = \X2board\Includes\get_paginate_select($o_query); // $query_id, $args, $columnList);
 			unset($o_query);
