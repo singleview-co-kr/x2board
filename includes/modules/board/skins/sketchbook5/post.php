@@ -226,13 +226,11 @@ foreach( $post_list as $no => $o_post ) {
 			</div>
 		</div>
 		<!-- <div class="fdb_lst_wrp"><?php //echo $board->buildComment($content->uid)?></div> -->
-		<div class="fdb_lst_wrp">
+		<div class="fdb_lst_wrp"> 
 			<div id="kboard-comments-<?php echo $post->post_id?>" class="fdb_lst clear">
-				
-<!--------------------------------------------------->
-				<?php x2b_include_skin('_comment_write');?>
-<!--------------------------------------------------->
-				
+				<?php if($post->allow_comment() ) {
+					x2b_include_skin('_comment_write');
+				}?>
 			</div>
 			<?php if($post->get_comment_count() > 0):?>
 				<!-- <div id="cmtPosition" aria-live="polite">

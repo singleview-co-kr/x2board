@@ -488,11 +488,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 
 		// function allowComment()
 		public function allow_comment()	{
-			// init write, document is not exists. so allow comment status is true ??? 뭔소리?
+			// if post is not exists. so allow comment status is true ??? 뭔소리?
 			if(!$this->is_exists()) return true;
-			if($this->is_exists()) return true;
 			return $this->get('comment_status') == 'ALLOW' ? true : false;
-			// return $this->get('allow_comment') == 'Y' ? false : true;
 		}
 
 		/**

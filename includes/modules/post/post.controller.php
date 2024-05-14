@@ -247,18 +247,13 @@ var_dump('post controller init()');
 			$a_new_post['is_notice'] = sanitize_text_field($obj->is_notice); //isset($data['notice'])?sanitize_key($data['notice']):'';
 			$a_new_post['update_order'] = intval($obj->update_order);
 			$a_new_post['list_order'] = intval($obj->list_order);
-
-			// <option value="1" selected="">제목과 내용 검색허용</option>
-			// <option value="2">제목만 검색허용 (비밀글)</option>
-			// <option value="3">통합검색 제외</option>
-				
-			$a_new_post['allow_search'] = isset($obj->allow_search)?intval(($obj->allow_search && $obj->allow_search == '1' ) ? '2' : $obj->allow_search ): '1';
 			$a_new_post['status'] = sanitize_text_field($obj->status); //isset($data['status'])?sanitize_key($data['status']):'';
 			$a_new_post['comment_status'] = sanitize_text_field($obj->comment_status); 
 			// add user agent
 			$a_new_post['ua'] = wp_is_mobile() ? 'M' : 'P';
 			$a_new_post['ipaddress'] = \X2board\Includes\get_remote_ip();
-
+// var_dump($obj);
+// exit;
 			// 입력할 데이터 필터
 			// $data = apply_filters('x2board_insert_data', $a_new_post); //, $this->board_id);
 			

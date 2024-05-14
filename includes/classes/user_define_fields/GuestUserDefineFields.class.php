@@ -663,32 +663,36 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 						else {
 							$s_checked_disabled = null;
 						}
-
-						if($o_post->is_secret) {
+						$o_post_class = \X2board\Includes\getClass('post');
+						if($o_post->status == $o_post_class->get_config_status('secret')) {
 							$s_checked = 'checked';
 						}
 						else {
 							$s_checked = null;
 						}
-						$buff[] = '<label class="attr-value-option"><input type="checkbox" name="secret" value="true" onchange="x2board_toggle_password_field(this)" '.$s_checked_disabled.' '.$s_checked.'> '. __('Secret', 'x2board').'</label>';
+						unset($o_post_class);
+						$buff[] = '<label class="attr-value-option"><input type="checkbox" name="is_secret" value="Y" onchange="x2board_toggle_password_field(this)" '.$s_checked_disabled.' '.$s_checked.'> '. __('Secret', 'x2board').'</label>';
 					}
 					if($this->_is_this_accessible($this->notice_permission, $this->notice)) {
-						if($o_post->is_notice) {
+						if($o_post->is_notice == 'Y') {
 							$s_checked = 'checked';
 						}
 						else {
 							$s_checked = null;
 						}
-						$buff[] = '<label class="attr-value-option"><input type="checkbox" name="notice" value="true" '.$s_checked.'> '. __('Notice', 'x2board').'</label>';
+						$buff[] = '<label class="attr-value-option"><input type="checkbox" name="is_notice" value="Y" '.$s_checked.'> '. __('Notice', 'x2board').'</label>';
 					}
 					if($this->_is_this_accessible($this->allow_comment_permission, $this->allow_comment)) {
-						if($o_post->title) {
+
+						$o_comment_class = \X2board\Includes\getClass('comment');
+						if($o_post->comment_status == $o_comment_class->get_status_by_key('allow')) {
 							$s_checked = 'checked';
 						}
 						else {
 							$s_checked = null;
 						}
-						$buff[] = '<label class="attr-value-option"><input type="checkbox" name="allow_comment" value="true" '.$s_checked.'> '.__('Comment', 'x2board').'</label>';
+						unset($o_comment_class);
+						$buff[] = '<label class="attr-value-option"><input type="checkbox" name="allow_comment" value="Y" '.$s_checked.'> '.__('Allow comment', 'x2board').'</label>';
 					}
 							// if(isset($field['description']) && $field['description']){
 							// 	'<div class="description">'.esc_html($field['description']).'</div>';

@@ -87,7 +87,6 @@ dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_posts` (
 `notify_message` char(1) NOT NULL DEFAULT 'N',
 `status` varchar(20),
 `comment_status` varchar(10) NOT NULL DEFAULT 'ALLOW',
-`allow_search` char(1) NOT NULL DEFAULT '1',
 `ua` char(1) NOT NULL,
 `regdate_dt` datetime NOT NULL,
 `last_update_dt` datetime NOT NULL,

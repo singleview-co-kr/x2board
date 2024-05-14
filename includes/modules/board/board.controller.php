@@ -135,51 +135,18 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 				$this->add('s_wp_redirect_url', $this->_s_wp_post_guid.'?cmd='.X2B_CMD_VIEW_MESSAGE.'&message='.__('msg_not_permitted', 'x2board'));
 				return;
 			}
-			// $logged_info = Context::get('logged_info');
 
 			// setup variables
-			$obj = \X2board\Includes\Classes\Context::gets('board_id', 'post_id', 'title', 'content', 'status', 
-															'is_secret', // for XE board skin compatible
-															'secret',  // for Kboard skin compatible 
-															'is_notice',   // for XE board skin compatible
-															'notice',  // for Kboard skin compatible 
-															'password', 
-															'category_id',
-															'nick_name', 
-															'status',  // for XE board skin compatible
-															'allow_search',  // for Kboard skin compatible 
-															'comment_status',  // for XE board skin compatible
-															'allow_comment',  // for Kboard skin compatible 
+			$obj = \X2board\Includes\Classes\Context::gets('board_id', 'post_id', 'title', 'content', 'nick_name', 
+															'category_id','is_secret', 'is_notice', 'password', 
+															'allow_comment',
+															// 'status',  // for XE board skin compatible
 														);
 			if(is_null($obj->board_id) || intval($obj->board_id) <= 0) {
 				$this->add('s_wp_redirect_url', $this->_s_wp_post_guid.'?cmd='.X2B_CMD_VIEW_MESSAGE.'&message='.__('msg_invalid_request', 'x2board'));
 				return;
 			}
 
-			// keep is_notice only, kill noice
-			if( !is_null($obj->notice) ) {
-				$obj->is_notice = $obj->notice == 'true' ? 'Y' : '';
-				\X2board\Includes\Classes\Context::set('is_notice', $obj->is_notice);
-				\X2board\Includes\Classes\Context::set('notice', null);
-				unset($obj->notice);
-			}
-			// keep is_secret only, kill secret
-			if( !is_null($obj->secret) ) {
-				$obj->is_secret = $obj->secret == 'true' ? 'Y' : '';
-				\X2board\Includes\Classes\Context::set('is_secret', $obj->is_secret);
-				\X2board\Includes\Classes\Context::set('secret', null);
-				unset($obj->secret);
-			}
-			// keep comment_status only, kill allow_comment
-			if( !is_null($obj->allow_comment) ) {
-				$obj->comment_status = $obj->allow_comment == 'true' ? 'ALLOW' : 'DENY';
-				\X2board\Includes\Classes\Context::set('comment_status', $obj->comment_status);
-				\X2board\Includes\Classes\Context::set('allow_comment', null);
-				unset($obj->allow_comment);
-			}
-			else {
-				unset($obj->allow_comment);
-			}
 			// translate allow_search to status
 			if( !is_null($obj->allow_search) ) {
 				$o_post_class = \X2board\Includes\getClass('post');
@@ -194,37 +161,31 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 // var_dump($this->module_info->excerpted_title_length);
 			$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
 
-			/////////// tmporary test block begin /////////////
-			// $obj->is_notice = '';
-			// $obj->post_id = '';//23423;
 			$obj->post_author = $o_logged_info->ID;
-			// $obj->is_secret = '';
-			if( !isset($obj->status)){
-				$obj->status = 'PUBLIC'; // PUBLIC SECRET TEMP
-			}
 
-			if( !$obj->comment_status ) {
-				$obj->comment_status = 'DENY';
+			$o_comment_class = \X2board\Includes\getClass('comment');
+			if( $obj->allow_comment == 'Y' ) {
+				$obj->comment_status = $o_comment_class->get_status_by_key('allow'); //'ALLOW';
 			}
-			// $obj->comment_status = ''; // DENY ALLOW
-			// $obj->email_address = '';
-			// $obj->category_id = null;
-			/////////// tmporary test block end /////////////
+			else {
+				$obj->comment_status = $o_comment_class->get_status_by_key('deny'); // 'DENY';
+			}
+			unset($obj->allow_comment);
+			unset($o_comment_class);
 			
 			// $obj->module_srl = $this->module_srl;
 			if($obj->is_notice!='Y'||!$this->grant->manager) {
 				$obj->is_notice = 'N';
 			}
-			// $obj->commentStatus = $obj->comment_status;
 // var_dump($obj);
 // exit;
 			// $oModuleModel = getModel('module');
 			// $module_config = $oModuleModel->getModuleInfoByModuleSrl($obj->module_srl);
 
-			/////////// tmporary test block begin /////////////
-			$module_config = new \stdClass();
-			$module_config->mobile_use_editor = 'Y';
-			/////////// tmporary test block end /////////////
+/////////// tmporary test block begin /////////////
+$module_config = new \stdClass();
+$module_config->mobile_use_editor = 'Y';
+/////////// tmporary test block end /////////////
 
 			if($module_config->mobile_use_editor === 'Y') {
 				if(!isset($obj->use_editor)) $obj->use_editor = 'Y';
@@ -283,7 +244,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 				$bAnonymous = false;
 			}
 			unset($o_logged_info);
-			
+
+			$obj->status = $obj->is_secret == 'Y' ? 'SECRET' : 'PUBLIC';  // PUBLIC SECRET TEMP
 			if($obj->is_secret == 'Y' || strtoupper($obj->status) == 'SECRET') {
 				$use_status = $this->module_info->use_status; // explode('|@|', $this->module_info->use_status);
 				if(!is_array($use_status) || !in_array('SECRET', $use_status)) {
