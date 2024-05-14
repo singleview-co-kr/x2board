@@ -132,7 +132,7 @@ function enqueue_user_scripts(){
 		'cmd_file_delete' => X2B_CMD_PROC_AJAX_FILE_DELETE,
 		'nonce' => wp_create_nonce(X2B_AJAX_SECURITY),
 	);
-	wp_localize_script(X2B_JS_HANDLER_USER, 'x2board_ajax_info', apply_filters('x2board_settings', $a_ajax_info));
+	wp_localize_script(X2B_JS_HANDLER_USER, 'x2board_ajax_info', $a_ajax_info);
 	
 	// 번역 등록
 	// $localize = array(
@@ -809,7 +809,7 @@ function get_remote_ip() {
 			$s_ip = $_SERVER['REMOTE_ADDR'];
 		}
 	}
-	return apply_filters('x2board_remote_ip', $s_ip);
+	return $s_ip;
 }
 
 /**

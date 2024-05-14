@@ -131,7 +131,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postAdminModel')) {
 					</div>
 				</div>
 			</div>';
-			echo apply_filters( 'x2b_after_setting_output', $s_html );
+			echo $s_html;
 		}
 
 		/**

@@ -204,7 +204,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 					$b_new = true;
 				}
 			}
-			return apply_filters('x2board_is_new_post', $b_new, $this);
+			return $b_new;
 		}
 
 		public function get_nick_name() {
