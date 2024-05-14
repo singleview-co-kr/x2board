@@ -147,17 +147,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 				return;
 			}
 
-			// translate allow_search to status
-			if( !is_null($obj->allow_search) ) {
-				$o_post_class = \X2board\Includes\getClass('post');
-				$obj->status = $o_post_class->convert_kb_allow_search_2_xe_status($obj->allow_search);
-				unset($o_post_class);
-
-				\X2board\Includes\Classes\Context::set('status', $obj->status);
-				// \X2board\Includes\Classes\Context::set('allow_search', null);
-				// unset($obj->allow_search);
-			}
-// var_dump($_REQUEST); 
 // var_dump($this->module_info->excerpted_title_length);
 			$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
 

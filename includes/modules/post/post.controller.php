@@ -252,8 +252,7 @@ var_dump('post controller init()');
 			// add user agent
 			$a_new_post['ua'] = wp_is_mobile() ? 'M' : 'P';
 			$a_new_post['ipaddress'] = \X2board\Includes\get_remote_ip();
-// var_dump($obj);
-// exit;
+
 			// 입력할 데이터 필터
 			// $data = apply_filters('x2board_insert_data', $a_new_post); //, $this->board_id);
 			
@@ -1027,49 +1026,61 @@ var_dump('post controller init()');
 		}
 
 		/**
-		 * x2b post를 WP post에 복제함
+		 * x2b post를 WP post에 복제해야 하는가?
 		 * @param int $a_post_param
 		 */
-		private function _insert_wp_post($a_post_param){
-			// if($content_uid && $this->search>0 && $this->search<3){
-				$a_params = array(
-					'post_author'   => $a_post_param['post_author'],
-					'post_title'    => $a_post_param['title'],
-					'post_content'  => ( $a_post_param['status'] == 'SECRET' || $a_post_param['status'] == '2' ) ? '' : strip_tags( $a_post_param['content'] ), 
-					//($this->secret || $this->search==2)?'':$this->content,
-					'post_status'   => 'publish',
-					'comment_status'=> 'closed',
-					'ping_status'   => 'closed',
-					'post_name'     => $a_post_param['post_id'],
-					'post_parent'   => $a_post_param['board_id'],
-					'post_type'     => X2B_DOMAIN,
-					'post_date'     => $a_post_param['regdate_dt']
-				);
-				// if($regdate ) {
-				// 	$a_params['post_date'] = $regdate;
-				// }
-				$result = wp_insert_post($a_params, true);
-				if( is_wp_error( $result ) ) {
-					wp_die( $result->get_error_message() );
-					return false;
+		private function _is_post_public( $s_post_status ) {
+			$o_module_info = \X2board\Includes\Classes\Context::get('current_module_info');;
+			if( $o_module_info->grant_list == X2B_ALL_USERS ) { // || $o_module_info->grant_view == X2B_ALL_USERS ) {
+				$o_post_class = \X2board\Includes\getClass('post');
+				$s_post_status_public = $o_post_class->get_config_status('public');
+				unset($o_post_class);
+				if( $s_post_status == $s_post_status_public ) {
+					unset($o_module_info);
+					return true;
 				}
-				return $result; // new WP post ID
-				// add_action('kboard_document_insert', array($this, '_setPostThumbnail'), 10, 4);
-			// }
+			}
+			unset($o_module_info);
+			return false;
 		}
 
 		/**
-		 * get WP post ID that matches x2b post
+		 * x2b post를 WP post에 복제함
+		 * @param int $a_post_param
 		 */
-		// private function _get_wp_post_id($n_x2b_post_id) {
-		// 	global $wpdb;
-		// 	$n_x2b_post_id = esc_sql( $n_x2b_post_id );
-		// 	$n_wp_post_id = $wpdb->get_var("SELECT `ID` FROM `{$wpdb->prefix}posts` WHERE `post_name`='$n_x2b_post_id' AND `post_type`='".X2B_DOMAIN."'");
-		// 	if(!$n_wp_post_id){
-		// 		$n_wp_post_id = $wpdb->get_var("SELECT `ID` FROM `{$wpdb->prefix}posts` WHERE `post_name`='{$n_x2b_post_id}__trashed' AND `post_type`='".X2B_DOMAIN."'");
-		// 	}
-		// 	return intval($n_wp_post_id);
-		// }
+		private function _insert_wp_post($a_post_param) {
+			if( $this->_is_post_public($a_post_param['status']) ) {
+				$s_title = strip_tags( $a_post_param['title'] );
+				$s_post_content = strip_tags( $a_post_param['content'] );
+				$s_post_status = 'publish';
+			}
+			else {
+				$s_title = '';
+				$s_post_content = '';
+				$s_post_status = 'private';
+			}
+			
+			$a_params = array(
+				'post_author'   => $a_post_param['post_author'],
+				'post_title'    => $s_title, //$a_post_param['title'],
+				'post_content'  => $s_post_content, // ( $a_post_param['status'] == 'SECRET' || $a_post_param['status'] == '2' ) ? '' : strip_tags( $a_post_param['content'] ), 
+				'post_status'   => $s_post_status, // 'publish',
+				'comment_status'=> 'closed',
+				'ping_status'   => 'closed',
+				'post_name'     => $a_post_param['post_id'],
+				'post_parent'   => $a_post_param['board_id'],
+				'post_type'     => X2B_DOMAIN,
+				'post_date'     => $a_post_param['regdate_dt']
+			);
+			$result = wp_insert_post($a_params, true);
+			unset($a_params);
+			if( is_wp_error( $result ) ) {
+				wp_die( $result->get_error_message() );
+				return false;
+			}
+			// add_action('kboard_document_insert', array($this, '_setPostThumbnail'), 10, 4);
+			return $result; // new WP post ID
+		}
 
 		/**
 		 * x2b post를 WP post에 수정함
@@ -1078,17 +1089,30 @@ var_dump('post controller init()');
 		private function _update_wp_post($a_post_param){
 			$n_wp_post_id = \X2board\Includes\get_wp_post_id_by_x2b_post_id( $a_post_param['post_id'] );
 			$o_post = get_post( intval($n_wp_post_id) );
-			$o_post->post_content = $a_post_param['post_author'];
-			$o_post->post_title = $a_post_param['title'];
-			$o_post->post_content = ( $a_post_param['status'] == 'SECRET' || $a_post_param['status'] == '2' ) ? '' : strip_tags( $a_post_param['content'] );
+			$o_post->post_author = $a_post_param['post_author'];
+
+			if( $this->_is_post_public($a_post_param['status']) ) {
+				$s_title = strip_tags( $a_post_param['title'] );
+				$s_post_content = strip_tags( $a_post_param['content'] );
+				$s_post_status = 'publish';
+			}
+			else {
+				$s_title = '';
+				$s_post_content = '';
+				$s_post_status = 'private';
+			}
+
+			$o_post->post_title = $s_title; //$a_post_param['title'];
+			$o_post->post_content = $s_post_content; // ( $a_post_param['status'] == 'SECRET' || $a_post_param['status'] == '2' ) ? '' : strip_tags( $a_post_param['content'] );
+			$o_post->post_status = $s_post_status; // 'private';
 			$result = wp_update_post($o_post);
-// var_dump($result);
+			unset($o_post);
 			if( is_wp_error( $result ) ) {
 				wp_die( $result->get_error_message() );
 				return false;
 			}
-			return $result; // old WP post ID
 			// add_action('kboard_document_insert', array($this, '_setPostThumbnail'), 10, 4);
+			return $result; // old WP post ID
 		}
 
 		/**
