@@ -196,6 +196,20 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 				else {
 					$s_description = null;
 				}
+
+				if( isset($a_field['meta_key']) ) {
+					$s_meta_key = strlen($a_field['meta_key']) ? $a_field['meta_key'] : $s_uid;
+				}
+				else {
+					$s_meta_key = $s_uid;
+				}
+
+				if( isset($a_field['search']) ) {
+					$s_search = $a_field['search'] == 'Y' ? 'Y' : 'N';
+				}
+				else {
+					$s_search = 'N';
+				}
 			
 				$result = $wpdb->insert(
 					"{$wpdb->prefix}x2b_user_define_keys",
@@ -204,11 +218,11 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 						'var_idx'   => $n_var_seq++,
 						'var_name'   => strlen($a_field['field_name']) ? $a_field['field_name'] : $a_field['field_label'],
 						'var_type'  => $a_field['field_type'],
-						'eid'  => strlen($a_field['meta_key']) ? $a_field['meta_key'] : $s_uid,  // $a_field['meta_key'],
+						'eid'  => $s_meta_key, // strlen($a_field['meta_key']) ? $a_field['meta_key'] : $s_uid,  // $a_field['meta_key'],
 						'var_default'  => isset($a_field['default_value']) ? $a_field['default_value'] : null,  // $a_field['default_value'],
 						'var_desc'  => $s_description,  // $a_field['description'],
 						'var_is_required'  => isset($a_field['required']) ? $a_field['required'] : 'N',
-						'var_search'  => $a_field['search'] == 'Y' ? 'Y' : 'N',
+						'var_search'  => $s_search,  //$a_field['search'] == 'Y' ? 'Y' : 'N',
 						'json_param'  => $s_json_param //serialize($a_tmp_field)
 					),
 					array('%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')
