@@ -282,6 +282,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 
 		// function isGranted() {
 		public function is_granted() {
+// var_dump($_SESSION['x2b_own_post']);
 			if(isset($_SESSION['x2b_own_post'][$this->_n_wp_post_id])) {
 				return $this->grant_cache = true;
 			}

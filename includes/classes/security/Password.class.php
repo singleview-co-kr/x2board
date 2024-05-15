@@ -16,16 +16,14 @@ if (!defined('ABSPATH')) {
 
 if (!class_exists('\\X2board\\Includes\\Classes\\Security\\Password')) {
 
-	class Password
-	{
+	class Password {
 		/**
 		 * @brief Create a hash using the specified algorithm
 		 * @param string $password The password
 		 * @param string $algorithm The algorithm (optional)
 		 * @return string
 		 */
-		public function create_hash($password, $algorithm = null)
-		{
+		public function create_hash($password, $algorithm = null) {
 			if($algorithm === null) {
 				$algorithm = 'pbkdf2'; // $this->getCurrentlySelectedAlgorithm();
 			}
@@ -71,8 +69,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\Password')) {
 		 * @brief Return the currently configured work factor for bcrypt and other adjustable algorithms
 		 * @return int
 		 */
-		private function _get_work_factor()
-		{
+		private function _get_work_factor() {
 			return 8;
 			// if(function_exists('getModel'))
 			// {
@@ -99,22 +96,17 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\Password')) {
 		 * @param int $length The length of the hash (optional, default is 32)
 		 * @return string
 		 */
-		private function _pbkdf2($password, $salt, $algorithm = 'sha256', $iterations = 8192, $length = 24)
-		{
-			if(function_exists('hash_pbkdf2'))
-			{
+		private function _pbkdf2($password, $salt, $algorithm = 'sha256', $iterations = 8192, $length = 24)	{
+			if(function_exists('hash_pbkdf2')) {
 				return hash_pbkdf2($algorithm, $password, $salt, $iterations, $length, true);
 			}
-			else
-			{
+			else {
 				$output = '';
 				$block_count = ceil($length / strlen(hash($algorithm, '', true)));  // key length divided by the length of one hash
-				for($i = 1; $i <= $block_count; $i++)
-				{
+				for($i = 1; $i <= $block_count; $i++) {
 					$last = $salt . pack('N', $i);  // $i encoded as 4 bytes, big endian
 					$last = $xorsum = hash_hmac($algorithm, $last, $password, true);  // first iteration
-					for($j = 1; $j < $iterations; $j++)  // The other $count - 1 iterations
-					{
+					for($j = 1; $j < $iterations; $j++) { // The other $count - 1 iterations
 						$xorsum ^= ($last = hash_hmac($algorithm, $last, $password, true));
 					}
 					$output .= $xorsum;
@@ -137,23 +129,31 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\Password')) {
 		}
 
 		/**
-		 * @brief Compare two strings in constant time
-		 * @param string $a The first string
-		 * @param string $b The second string
-		 * @return bool
+		 * @brief Check the algorithm used to create a hash
+		 * @param string $hash The hash
+		 * @return string
 		 */
-		private function _strcmp_constant_time($a, $b)
-		{
-			$diff = strlen($a) ^ strlen($b);
-			$maxlen = min(strlen($a), strlen($b));
-			for($i = 0; $i < $maxlen; $i++)
-			{
-				$diff |= ord($a[$i]) ^ ord($b[$i]);
+		// function checkAlgorithm($hash)
+		public function check_algorithm($hash) {
+			if(preg_match('/^\$2[axy]\$([0-9]{2})\$/', $hash, $matches)) {
+				return 'bcrypt';
 			}
-			return $diff === 0;
+			elseif(preg_match('/^sha[0-9]+:([0-9]+):/', $hash, $matches)) {
+				return 'pbkdf2';
+			}
+			elseif(strlen($hash) === 32 && ctype_xdigit($hash)) {
+				return 'md5';
+			}
+			// elseif(strlen($hash) === 16 && ctype_xdigit($hash)) {
+			// 	return 'mysql_old_password';
+			// }
+			// elseif(strlen($hash) === 41 && $hash[0] === '*') {
+			// 	return 'mysql_password';
+			// }
+			else {
+				return false;
+			}
 		}
-
-////////////////////////		
 
 		/**
 		 * @brief Check if a password matches a hash
@@ -162,17 +162,15 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\Password')) {
 		 * @param string $algorithm The algorithm (optional)
 		 * @return bool
 		 */
-		public function checkPassword($password, $hash, $algorithm = null)
-		{
-			if($algorithm === null)
-			{
-				$algorithm = $this->checkAlgorithm($hash);
+		// public function checkPassword($password, $hash, $algorithm = null)
+		public function check_password($password, $hash, $algorithm = null) {
+			if($algorithm === null) {
+				$algorithm = $this->check_algorithm($hash);
 			}
 
 			$password = trim($password);
 
-			switch($algorithm)
-			{
+			switch($algorithm) {
 				case 'md5':
 					return md5($password) === $hash || md5(sha1(md5($password))) === $hash;
 
@@ -198,6 +196,22 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\Password')) {
 			}
 		}
 
+		/**
+		 * @brief Compare two strings in constant time
+		 * @param string $a The first string
+		 * @param string $b The second string
+		 * @return bool
+		 */
+		private function _strcmp_constant_time($a, $b) {
+			$diff = strlen($a) ^ strlen($b);
+			$maxlen = min(strlen($a), strlen($b));
+			for($i = 0; $i < $maxlen; $i++) {
+				$diff |= ord($a[$i]) ^ ord($b[$i]);
+			}
+			return $diff === 0;
+		}
+
+////////////////////////
 		/**
 		 * @brief Generate a cryptographically secure random string to use as a salt
 		 * @param int $length The number of bytes to return
@@ -269,39 +283,6 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\Password')) {
 					$salt = substr(base64_encode($output), 0, $length);
 					$replacements = chr(rand(65, 90)) . chr(rand(97, 122)) . rand(0, 9);
 					return strtr($salt, '+/=', $replacements);
-			}
-		}
-
-		/**
-		 * @brief Check the algorithm used to create a hash
-		 * @param string $hash The hash
-		 * @return string
-		 */
-		function checkAlgorithm($hash)
-		{
-			if(preg_match('/^\$2[axy]\$([0-9]{2})\$/', $hash, $matches))
-			{
-				return 'bcrypt';
-			}
-			elseif(preg_match('/^sha[0-9]+:([0-9]+):/', $hash, $matches))
-			{
-				return 'pbkdf2';
-			}
-			elseif(strlen($hash) === 32 && ctype_xdigit($hash))
-			{
-				return 'md5';
-			}
-			elseif(strlen($hash) === 16 && ctype_xdigit($hash))
-			{
-				return 'mysql_old_password';
-			}
-			elseif(strlen($hash) === 41 && $hash[0] === '*')
-			{
-				return 'mysql_password';
-			}
-			else
-			{
-				return false;
 			}
 		}
 

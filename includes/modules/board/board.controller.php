@@ -37,6 +37,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 			$s_cmd = \X2board\Includes\Classes\Context::get('cmd');
 			switch( $s_cmd ) {
 				case X2B_CMD_PROC_WRITE_POST:
+				case X2B_CMD_PROC_VERIFY_PASSWORD:
 				case X2B_CMD_PROC_MODIFY_POST:
 				case X2B_CMD_PROC_DELETE_POST:
 				case X2B_CMD_PROC_WRITE_COMMENT:
@@ -233,13 +234,18 @@ $module_config->mobile_use_editor = 'Y';
 				$bAnonymous = false;
 			}
 			unset($o_logged_info);
-
-			$obj->status = $obj->is_secret == 'Y' ? 'SECRET' : 'PUBLIC';  // PUBLIC SECRET TEMP
-			if($obj->is_secret == 'Y' || strtoupper($obj->status) == 'SECRET') {
+			
+			$o_post_model = \X2board\Includes\getModel('post');
+			$s_secret_status = $o_post_model->get_config_status('secret');
+			$s_public_status = $o_post_model->get_config_status('public');
+			unset($o_post_model);
+			
+			$obj->status = $obj->is_secret == 'Y' ? $s_secret_status : $s_public_status;  // PUBLIC SECRET TEMP
+			if($obj->is_secret == 'Y' || strtoupper($obj->status) == $s_secret_status) {
 				$use_status = $this->module_info->use_status; // explode('|@|', $this->module_info->use_status);
-				if(!is_array($use_status) || !in_array('SECRET', $use_status)) {
+				if(!is_array($use_status) || !in_array($s_secret_status, $use_status)) {
 					unset($obj->is_secret);
-					$obj->status = 'PUBLIC';
+					$obj->status = $s_public_status;
 				}
 			}
 
@@ -529,7 +535,54 @@ var_dump(X2B_CMD_PROC_WRITE_COMMENT);
 			// }
 		}
 
+		/**
+		 * @brief check the password for post and comment
+		 **/
+		// function procBoardVerificationPassword()
+		private function _proc_verify_password() {
+			// get the id number of the post and the comment
+			$s_password = \X2board\Includes\Classes\Context::get('password');
+			$n_post_id = \X2board\Includes\Classes\Context::get('post_id');
+			$n_comment_id = \X2board\Includes\Classes\Context::get('comment_id');
+			$o_member_model = \X2board\Includes\getModel('member');
 
+			if($n_comment_id) {  // if the comment exists
+				// get the comment information
+				$oCommentModel = getModel('comment');
+				$oComment = $oCommentModel->getComment($n_comment_id);
+				if(!$oComment->isExists()) {
+					$this->add('s_wp_redirect_url', $this->_s_wp_post_guid.'?cmd='.X2B_CMD_VIEW_MESSAGE.'&message='.__('msg_invalid_request', 'x2board'));
+					return;
+				}
+
+				// compare the comment password and the user input password
+				if(!$o_member_model->isValidPassword($oComment->get('password'),$s_password)) {
+					$this->add('s_wp_redirect_url', $this->_s_wp_post_guid.'?cmd='.X2B_CMD_VIEW_MESSAGE.'&message='.__('msg_invalid_password', 'x2board'));
+					return;
+				}
+				$oComment->setGrant();
+			} else {  // get the post information
+				$o_post_model = \X2board\Includes\getModel('post');
+				$o_post = $o_post_model->get_post($n_post_id);
+				unset($o_post_model);
+				if(!$o_post->is_exists()) {
+					$this->add('s_wp_redirect_url', $this->_s_wp_post_guid.'?cmd='.X2B_CMD_VIEW_MESSAGE.'&message='.__('msg_invalid_request', 'x2board'));
+					return;
+				}
+
+				// compare the post password and the user input password
+				if(!$o_member_model->validate_password($o_post->get('password'), $s_password)) {
+					$this->add('s_wp_redirect_url', $this->_s_wp_post_guid.'?cmd='.X2B_CMD_VIEW_MESSAGE.'&message='.__('msg_invalid_password', 'x2board'));
+					return;
+				}
+				$o_post->set_grant();
+				unset($o_post);
+				$this->add('s_wp_redirect_url', $this->_s_wp_post_guid.'?'.X2B_CMD_VIEW_MODIFY_POST.'/'.$n_post_id);
+			}
+			unset($o_member_model);	
+		}
+
+////////////////////////////////
 		/**
 		 * @brief vote
 		 **/
@@ -540,55 +593,6 @@ var_dump(X2B_CMD_PROC_WRITE_COMMENT);
 
 			$document_srl = Context::get('document_srl');
 			return $oDocumentController->updateVotedCount($document_srl);
-		}
-
-		/**
-		 * @brief check the password for document and comment
-		 **/
-		function procBoardVerificationPassword()
-		{
-			// get the id number of the document and the comment
-			$password = Context::get('password');
-			$document_srl = Context::get('document_srl');
-			$comment_srl = Context::get('comment_srl');
-
-			$oMemberModel = getModel('member');
-
-			// if the comment exists
-			if($comment_srl)
-			{
-				// get the comment information
-				$oCommentModel = getModel('comment');
-				$oComment = $oCommentModel->getComment($comment_srl);
-				if(!$oComment->isExists())
-				{
-					return new BaseObject(-1, 'msg_invalid_request');
-				}
-
-				// compare the comment password and the user input password
-				if(!$oMemberModel->isValidPassword($oComment->get('password'),$password))
-				{
-					return new BaseObject(-1, 'msg_invalid_password');
-				}
-
-				$oComment->setGrant();
-			} else {
-				// get the document information
-				$oDocumentModel = getModel('document');
-				$oDocument = $oDocumentModel->getDocument($document_srl);
-				if(!$oDocument->isExists())
-				{
-					return new BaseObject(-1, 'msg_invalid_request');
-				}
-
-				// compare the document password and the user input password
-				if(!$oMemberModel->isValidPassword($oDocument->get('password'),$password))
-				{
-					return new BaseObject(-1, 'msg_invalid_password');
-				}
-
-				$oDocument->setGrant();
-			}
 		}
 	}
 }

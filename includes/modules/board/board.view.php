@@ -714,9 +714,10 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 
 			// if the post is not granted, then back to the password input form
 			if($o_post->is_exists() && !$o_post->is_granted()) {
-				return $this->setTemplateFile('input_password_form');
+				echo $this->render_skin_file('input_password_form');
+				return;
 			}
-// var_dump($o_post->is_granted());
+var_dump($o_post->is_granted());
 			if(!$o_post->is_exists()) {
 				// $oModuleModel = getModel('module');
 				// $point_config = $oModuleModel->getModulePartConfig('point',$this->module_srl);
@@ -1036,7 +1037,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 
 			// if the comment is not granted, then back to the password input form
 			if(!$o_comment->is_granted()) {
-				return $this->setTemplateFile('input_password_form');
+				return $this->render_skin_file('input_password_form');
 			}
 
 			\X2board\Includes\Classes\Context::set('o_comment',$o_comment);

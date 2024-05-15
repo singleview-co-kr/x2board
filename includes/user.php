@@ -32,6 +32,7 @@ if ( !defined( 'X2B_CMD_VIEW_LIST' ) ) {
     // define POST controller cmd
     // this method should be registered into \x2board\includes\func.inc.php::init_proc_cmd()
     define('X2B_CMD_PROC_WRITE_POST', 'proc_write_post');
+    define('X2B_CMD_PROC_VERIFY_PASSWORD', 'proc_verify_password');
     define('X2B_CMD_PROC_MODIFY_POST', 'proc_modify_post');
     define('X2B_CMD_PROC_DELETE_POST', 'proc_delete_post');
     define('X2B_CMD_PROC_WRITE_COMMENT', 'proc_write_comment');  // include X2B_CMD_PROC_REPLY_COMMENT

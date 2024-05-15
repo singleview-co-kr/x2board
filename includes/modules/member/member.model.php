@@ -14,8 +14,7 @@ if ( !defined( 'ABSPATH' ) ) {
 
 if (!class_exists('\\X2board\\Includes\\Modules\\Member\\memberModel')) {
 
-	class memberModel extends member
-	{
+	class memberModel extends member {
 		/**
 		 * @brief Keep data internally which may be frequently called ...
 		 */
@@ -39,11 +38,31 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Member\\memberModel')) {
 			unset($o_password);
 			return $s_pw;
 		}
-		
+
+		/**
+		 * @brief Compare plain text password to the password saved in DB
+		 * @param string $hashed_password The hash that was saved in DB
+		 * @param string $password_text The password to check
+		 * @param int $member_srl Set this to member_srl when comparing a member's password (optional)
+		 * @return bool
+		 */
+		// function isValidPassword($hashed_password, $password_text, $member_srl=null)
+		public function validate_password($s_hashed_password, $s_password_text) {   // , $member_srl=null
+			// False if no password in entered
+			if(!$s_password_text)	{
+				return false;
+			}
+			// Check the password
+			$o_password = new \X2board\Includes\Classes\Security\Password();
+			$match = $o_password->check_password($s_password_text, $s_hashed_password);  // , $s_current_algorithm);
+			unset($o_password);
+			return $match; // bool
+		}
+///////////////////////////////		
 		/**
 		 * @brief Verify if nick name is denied
 		 */
-		function isDeniedNickName($nickName)
+		/*function isDeniedNickName($nickName)
 		{
 			$args = new stdClass();
 			$args->nick_name = $nickName;
@@ -65,8 +84,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Member\\memberModel')) {
 			}
 
 			return $output->data;
-		}
-///////////////////////////////
+		}*/
 
 		/**
 		 * @brief Return member's configuration
@@ -1110,62 +1128,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Member\\memberModel')) {
 		// 	if($oRst->data->is_register == 'Y')
 		// 		$this->add('isValid', 0);
 		// 	return new BaseObject();
-		// }
-
-		/**
-		 * @brief Compare plain text password to the password saved in DB
-		 * @param string $hashed_password The hash that was saved in DB
-		 * @param string $password_text The password to check
-		 * @param int $member_srl Set this to member_srl when comparing a member's password (optional)
-		 * @return bool
-		 */
-		// function isValidPassword($hashed_password, $password_text, $member_srl=null)
-		// {
-		// 	// False if no password in entered
-		// 	if(!$password_text)
-		// 	{
-		// 		return false;
-		// 	}
-			
-		// 	// Check the password
-		// 	$oPassword = new Password();
-		// 	$current_algorithm = $oPassword->checkAlgorithm($hashed_password);
-		// 	$match = $oPassword->checkPassword($password_text, $hashed_password, $current_algorithm);
-		// 	if(!$match)
-		// 	{
-		// 		return false;
-		// 	}
-			
-		// 	// Update the encryption method if necessary
-		// 	$config = $this->getMemberConfig();
-		// 	if($member_srl > 0 && $config->password_hashing_auto_upgrade != 'N')
-		// 	{
-		// 		$need_upgrade = false;
-				
-		// 		if(!$need_upgrade)
-		// 		{
-		// 			$required_algorithm = $oPassword->getCurrentlySelectedAlgorithm();
-		// 			if($required_algorithm !== $current_algorithm) $need_upgrade = true;
-		// 		}
-				
-		// 		if(!$need_upgrade)
-		// 		{
-		// 			$required_work_factor = $oPassword->getWorkFactor();
-		// 			$current_work_factor = $oPassword->checkWorkFactor($hashed_password);
-		// 			if($current_work_factor !== false && $required_work_factor > $current_work_factor) $need_upgrade = true;
-		// 		}
-				
-		// 		if($need_upgrade === true)
-		// 		{
-		// 			$args = new stdClass();
-		// 			$args->member_srl = $member_srl;
-		// 			$args->hashed_password = $this->hashPassword($password_text, $required_algorithm);
-		// 			$oMemberController = getController('member');
-		// 			$oMemberController->updateMemberPassword($args);
-		// 		}
-		// 	}
-			
-		// 	return true;
 		// }
 		
 		// function checkPasswordStrength($password, $strength)
