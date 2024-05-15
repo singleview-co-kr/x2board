@@ -110,7 +110,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 				unset($o_post_model);
 
 				if($parent_post_id != $o_post->post_id) {
-					return new \X2board\Includes\Classes\BaseObject( -1, __('msg_invalid_document', 'x2board') );
+					return new \X2board\Includes\Classes\BaseObject( -1, __('msg_invalid_post', 'x2board') );
 				}
 				if(!$o_post->allow_comment()) {
 					return new \X2board\Includes\Classes\BaseObject( -1, __('msg_invalid_request', 'x2board') );
@@ -500,9 +500,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 			// 	}
 			// }
 
+			$logged_info = \X2board\Includes\Classes\Context::get('logged_info');
 			// set modifier's information if logged-in and posting author and modifier are matched.
 			if(\X2board\Includes\Classes\Context::get('is_logged')) {
-				$logged_info = \X2board\Includes\Classes\Context::get('logged_info');
 				if($o_source_comment->comment_author == $logged_info->ID) {
 					$obj->comment_author = $logged_info->ID;
 					// $obj->user_name = $logged_info->user_name;
@@ -537,8 +537,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 
 			// remove iframe and script if not a top administrator on the session
 			if($logged_info->is_admin != 'Y') {
-				$obj->content = removeHackTag($obj->content);
+				$obj->content = \X2board\Includes\removeHackTag($obj->content);
 			}
+			unset($logged_info);
 
 			// begin transaction
 			// $oDB = DB::getInstance();
@@ -628,8 +629,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 		 * @return void
 		 */
 		// function addGrant($comment_srl)
-		private function _add_grant($comment_id) {
-			$_SESSION['own_comment'][$comment_id] = TRUE;
+		private function _add_grant($n_comment_id) {
+			$_SESSION['x2b_own_comment'][$n_comment_id] = TRUE;
 		}
 
 		/**

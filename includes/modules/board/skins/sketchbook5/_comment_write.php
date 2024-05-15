@@ -48,16 +48,6 @@ else {
 						<?php x2b_write_comment_editor(); ?>
 					</div>
 					<div class="text">
-						<?php
-						// 댓글 입력 필드 시작
-						ob_start();
-						?>
-						<?php if(is_user_logged_in()):?>
-							<input type="hidden" name="member_display" value="<?php echo 'member_display'?>">
-						<?php else:?>
-							<input type="text" id="comment_member_display_<?php echo $post->post_id?>" name="member_display" placeholder="<?php echo __('Author', 'x2board')?>" value="<?php //echo $temporary->member_display?>" class="itx n_p" required>
-							<input type="password" name="password" placeholder="<?php echo __('Password', 'x2board')?>" id="comment_password_<?php echo $post->post_id?>" class="itx n_p" required>
-						<?php endif?>
 						<?php if(false): //$board->useCAPTCHA()):?>
 							<?php if(kboard_use_recaptcha()):?>
 								<div class="comments-field field-recaptcha">
@@ -98,25 +88,23 @@ else {
 							<?php endif?>
 						</div>
 
-						<?php
-						if($mi_cmt_wrt != 'editor' ){
-							$s_style = 'display:none';
-						}
-						?>
+<?php if($mi_cmt_wrt != 'editor' ){
+	$s_style = 'display:none';
+} ?>
 						<div class="edit_opt clear" style="<?php echo $s_style?>">
 							<?php if(!is_user_logged_in()):?>
 							<span class="itx_wrp">
-								<label for="nick_name_{$oDocument->document_srl}">{$lang->writer}</label>
-								<input type="text" name="nick_name" id="nick_name_{$oDocument->document_srl}" class="itx n_p" />
+								<label for="nick_name_<?php echo $post->post_id?>"><?php echo __('Writer', 'x2board')?></label>
+								<input type="text" name="nick_name" id="nick_name_<?php echo $post->post_id?>" class="itx n_p" />
 							</span>
 							<span class="itx_wrp">
-								<label for="password_{$oDocument->document_srl}">{$lang->password}</label>
-								<input type="password" name="password" id="password_{$oDocument->document_srl}" class="itx n_p" />
+								<label for="password_<?php echo $post->post_id?>"><?php echo __('Password', 'x2board')?></label>
+								<input type="password" name="password" id="password_<?php echo $post->post_id?>" class="itx n_p" />
 							</span>
-							<span class="itx_wrp">
+							<!-- <span class="itx_wrp">
 								<label for="email_address_{$oDocument->document_srl}">{$lang->email_address}</label>
 								<input type="text" name="email_address" id="email_address_{$oDocument->document_srl}" class="itx m_h" />
-							</span>
+							</span> -->
 							<?php endif?>
 							
 						<?php if($mi_cmt_wrt == '____editor' ):?>
@@ -135,11 +123,6 @@ else {
 								<?php endif?>
 							</div>
 						</div>
-
-						<?php
-						// 댓글 입력 필드 출력
-						$field_html = ob_get_clean();
-						?>
 					</div>
 				</div>
 				<div class="wp-editor-tabs" style='float: right;'>

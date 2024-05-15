@@ -860,7 +860,9 @@ var_dump($o_post->is_granted());
 
 			// if the comment is not granted, then back to the password input form
 			if(!$o_comment->is_granted()) {
-				return $this->setTemplateFile('input_password_form');
+				// return $this->setTemplateFile('input_password_form');
+				echo $this->render_skin_file('input_password_form');
+				return;
 			}
 
 			// setup the comment variables on context

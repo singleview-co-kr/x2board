@@ -338,9 +338,10 @@ var_dump(X2B_CMD_PROC_WRITE_COMMENT);
 			// $obj = Context::getRequestVars();
 			// $obj->module_srl = $this->module_srl;
 			$obj = \X2board\Includes\Classes\Context::gets( 'board_id', 'parent_post_id', 
-															'content',
-															'parent_comment_id', 'comment_id', 'is_secret',
-															'use_editor', 'use_html', 'password' );
+															'content', 'password', 'nick_name',
+															'parent_comment_id', 'comment_id', 
+															'is_secret',
+															'use_editor', 'use_html' );
 
 			// if(!$this->module_info->use_status) {
 			// 	$this->module_info->use_status = 'PUBLIC';
@@ -548,19 +549,22 @@ var_dump(X2B_CMD_PROC_WRITE_COMMENT);
 
 			if($n_comment_id) {  // if the comment exists
 				// get the comment information
-				$oCommentModel = getModel('comment');
-				$oComment = $oCommentModel->getComment($n_comment_id);
-				if(!$oComment->isExists()) {
+				$o_comment_model = \X2board\Includes\getModel('comment');
+				$o_comment = $o_comment_model->get_comment($n_comment_id);
+				unset($o_comment_model);
+				if(!$o_comment->is_exists()) {
 					$this->add('s_wp_redirect_url', $this->_s_wp_post_guid.'?cmd='.X2B_CMD_VIEW_MESSAGE.'&message='.__('msg_invalid_request', 'x2board'));
 					return;
 				}
 
 				// compare the comment password and the user input password
-				if(!$o_member_model->isValidPassword($oComment->get('password'),$s_password)) {
+				if(!$o_member_model->validate_password($o_comment->get('password'), $s_password)) {
 					$this->add('s_wp_redirect_url', $this->_s_wp_post_guid.'?cmd='.X2B_CMD_VIEW_MESSAGE.'&message='.__('msg_invalid_password', 'x2board'));
 					return;
 				}
-				$oComment->setGrant();
+				$o_comment->set_grant();
+				unset($o_comment);
+				$this->add('s_wp_redirect_url', $this->_s_wp_post_guid.'?cmd='.X2B_CMD_VIEW_MODIFY_COMMENT.'&post_id='.$n_post_id.'&comment_id='.$n_comment_id);
 			} else {  // get the post information
 				$o_post_model = \X2board\Includes\getModel('post');
 				$o_post = $o_post_model->get_post($n_post_id);
