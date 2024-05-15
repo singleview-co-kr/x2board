@@ -393,7 +393,7 @@ var_dump(X2B_CMD_VIEW_POST);
 // var_Dump($_SESSION);						
 					}
 // var_dump($o_post->get('post_author'));
-					// if the consultation function is enabled, and the document is not a notice
+					// if the consultation function is enabled, and the post is not a notice
 					if($this->consultation && !$o_post->is_notice()) {
 						$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
 // var_dump($o_logged_info->ID);
@@ -403,8 +403,12 @@ var_dump(X2B_CMD_VIEW_POST);
 						unset($o_logged_info);
 					}
 
-					// if the document is TEMP saved, check Grant
-					if($o_post->get_status() == 'TEMP') {
+					$o_post_model = \X2board\Includes\getModel('post');
+					$s_temp_status = $o_post_model->get_config_status('temp');
+					unset($o_post_model);
+					
+					// if the post is TEMP saved, check Grant
+					if($o_post->get_status() == $s_temp_status) {
 						if(!$o_post->is_granted()) {
 							$o_post = $o_post_model->get_post(0);
 						}
@@ -420,7 +424,7 @@ var_dump(X2B_CMD_VIEW_POST);
 				$o_post = $o_post_model->get_post(0);
 			}
 
-			if($o_post->is_exists()) {  // check the document view grant
+			if($o_post->is_exists()) {  // check the post view grant
 				if(!$this->grant->view && !$o_post->is_granted()) {
 					$o_post = $o_post_model->get_post(0);
 					\X2board\Includes\Classes\Context::set('post_id','',true);
@@ -453,7 +457,7 @@ var_dump(X2B_CMD_VIEW_POST);
 			}
 			unset($o_post_model);
 
-			// setup the document oject on context
+			// setup the post oject on context
 			// $o_post->add('module_srl', $this->module_srl);
 			\X2board\Includes\Classes\Context::set('post', $o_post);
 
@@ -791,7 +795,7 @@ var_dump($o_post->is_granted());
 				return $this->_disp_message(__('msg_not_permitted', 'x2board'));
 			}
 
-			// get the document information
+			// get the post information
 			// $oDocumentModel = getModel('document');
 			$o_post_model = \X2board\Includes\getModel('post');
 			$o_post = $o_post_model->get_post($n_post_id);
@@ -805,14 +809,14 @@ var_dump($o_post->is_granted());
 				return $this->_disp_message(__('msg_not_allow_comment', 'x2board'));
 			}
 
-			// obtain the comment (create an empty comment document for comment_form usage)
+			// obtain the comment (create an empty comment post for comment_form usage)
 			$o_comment_model = \X2board\Includes\getModel('comment');
 			$o_source_comment = $o_comment = $o_comment_model->get_comment(0);
 			unset($o_comment_model);
 			$o_comment->add('parent_post_id', $n_post_id);
 			// $oComment->add('module_srl', $this->module_srl);
 
-			// setup document variables on context
+			// setup post variables on context
 			\X2board\Includes\Classes\Context::set('o_post', $o_post);
 			\X2board\Includes\Classes\Context::set('o_source_comment',$o_source_comment);
 			\X2board\Includes\Classes\Context::set('o_comment',$o_comment);
@@ -908,7 +912,7 @@ var_dump($o_post->is_granted());
 			// get the post_id from request
 			$n_post_id = \X2board\Includes\Classes\Context::get('post_id');
 
-			// if document exists, get the document information
+			// if post exists, get the post information
 			if($n_post_id) {
 				$o_post_model = \X2board\Includes\getModel('post');
 				$o_post = $o_post_model->get_post($n_post_id);
