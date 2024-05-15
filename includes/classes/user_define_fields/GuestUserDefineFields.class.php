@@ -686,13 +686,14 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 
 						$o_comment_class = \X2board\Includes\getClass('comment');
 						if($o_post->comment_status == $o_comment_class->get_status_by_key('allow')) {
-							$s_checked = 'checked';
+							$s_allow_checked = 'checked="checked"';
 						}
 						else {
-							$s_checked = null;
+							$s_disallow_checked = 'checked="checked"';
 						}
 						unset($o_comment_class);
-						$buff[] = '<label class="attr-value-option"><input type="checkbox" name="allow_comment" value="Y" '.$s_checked.'> '.__('Allow comment', 'x2board').'</label>';
+						$buff[] = '<label class="attr-value-option"><input name="allow_comment" id="allow_comment[Y]" type="radio" value="Y" '.$s_allow_checked.'>'.__('Allow comment', 'x2board').'</label>';
+						$buff[] = '<label class="attr-value-option"><input name="allow_comment" id="allow_comment[N]" type="radio" value="N" '.$s_disallow_checked.'>'.__('Disllow comment', 'x2board').'</label>';
 					}
 							// if(isset($field['description']) && $field['description']){
 							// 	'<div class="description">'.esc_html($field['description']).'</div>';

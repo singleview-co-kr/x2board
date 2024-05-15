@@ -561,9 +561,9 @@ var_dump('post controller init()');
 				$o_new_obj->ipaddress = $o_old_post->get('ipaddress');
 			}
 			// List variables
-			if(!$o_new_obj->comment_status) {
-				$o_new_obj->comment_status = 'DENY';
-			}
+			// if(!$o_new_obj->comment_status) {
+			// 	$o_new_obj->comment_status = 'DENY';
+			// }
 			// if(!$o_new_obj->commentStatus) {
 			// 	$o_new_obj->commentStatus = 'DENY';
 			// }

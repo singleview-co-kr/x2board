@@ -721,7 +721,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 				echo $this->render_skin_file('input_password_form');
 				return;
 			}
-var_dump($o_post->is_granted());
+			
 			if(!$o_post->is_exists()) {
 				// $oModuleModel = getModel('module');
 				// $point_config = $oModuleModel->getModulePartConfig('point',$this->module_srl);

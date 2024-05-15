@@ -154,11 +154,11 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 			$obj->post_author = $o_logged_info->ID;
 
 			$o_comment_class = \X2board\Includes\getClass('comment');
-			if( $obj->allow_comment == 'Y' ) {
-				$obj->comment_status = $o_comment_class->get_status_by_key('allow'); //'ALLOW';
+			if( $obj->allow_comment == 'N' ) {
+				$obj->comment_status = $o_comment_class->get_status_by_key('deny'); // 'DENY';
 			}
 			else {
-				$obj->comment_status = $o_comment_class->get_status_by_key('deny'); // 'DENY';
+				$obj->comment_status = $o_comment_class->get_status_by_key('allow'); //'ALLOW';
 			}
 			unset($obj->allow_comment);
 			unset($o_comment_class);
