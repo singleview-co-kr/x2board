@@ -651,7 +651,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 						$s_allow_checked = null;
 						$s_disallow_checked = null;
 						$o_comment_class = \X2board\Includes\getClass('comment');
-						if($o_post->comment_status == $o_comment_class->get_status_by_key('allow')) {
+						if(!$o_post->comment_status || $o_post->comment_status == $o_comment_class->get_status_by_key('allow')) {
 							$s_allow_checked = 'checked="checked"';
 						}
 						else {
