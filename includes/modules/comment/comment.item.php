@@ -240,11 +240,11 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentItem')) {
 		// function getUploadedFiles()
 		public function get_uploaded_files() {
 			if(($this->_is_secret() && !$this->is_accessible()) && !$this->is_granted()) {
-				return;
+				return array();
 			}
 
 			if(!$this->get('uploaded_count')) {
-				return;
+				return array();
 			}
 
 			$o_file_model = \X2board\Includes\getModel('file');
