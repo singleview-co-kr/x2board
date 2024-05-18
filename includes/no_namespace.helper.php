@@ -54,11 +54,7 @@ function x2b_write_comment_editor() {
 
 function x2b_write_comment_filebox() {
 	$o_editor_view = \X2board\Includes\getView('editor');
-	$o_comment = \X2board\Includes\Classes\Context::get('o_comment');
-	if( !$o_comment ) {
-		$o_comment = \X2board\Includes\Classes\Context::get('o_the_comment');
-	}
-
+	$o_comment = \X2board\Includes\Classes\Context::get('o_the_comment');
 	if( $o_comment ) {
 		$a_appended_file = $o_comment->get_uploaded_files();
 	}

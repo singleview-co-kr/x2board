@@ -825,7 +825,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			// setup post variables on context
 			\X2board\Includes\Classes\Context::set('o_post', $o_post);
 			\X2board\Includes\Classes\Context::set('o_source_comment',$o_source_comment);
-			\X2board\Includes\Classes\Context::set('o_comment',$o_comment);
+			\X2board\Includes\Classes\Context::set('o_the_comment',$o_comment);
 
 			/**
 			 * add JS filter
@@ -1052,7 +1052,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 				return $this->render_skin_file('input_password_form');
 			}
 
-			\X2board\Includes\Classes\Context::set('o_comment',$o_comment);
+			\X2board\Includes\Classes\Context::set('o_the_comment',$o_comment);
 
 			/**
 			 * add JS filters
