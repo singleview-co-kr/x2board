@@ -78,13 +78,19 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			\X2board\Includes\Classes\Context::set('field', $a_user_input_field);
 			
 			$b_category_activated = false;
+			$b_comment_activated = false;
 			foreach($a_user_input_field as $_ => $o_user_field ) {
 				if($o_user_field->type == 'category') {
 					$b_category_activated = true;
 				}
+				if($o_user_field->type == 'attach') {
+					$b_comment_activated = true;
+				}
 			}
 			unset($a_user_input_field);
 			\X2board\Includes\Classes\Context::set('use_category', $b_category_activated);
+			// set for comment attach feature
+			\X2board\Includes\Classes\Context::set('use_comment_attach', $b_comment_activated);
 
 			/**
 			 * use context::set to setup extra variables
@@ -1083,10 +1089,6 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			// if($product_id){
 			// 	$header['x2b_option_woocommerce_product_id'] = sprintf('<input type="hidden" name="x2b_option_woocommerce_product_id" value="%d">', $product_id);
 			// }
-			$o_file_controller = \X2board\Includes\getController('file');
-			$o_file_controller->set_upload_info($a_header['post_id'], $a_header['post_id']);
-			unset($o_file_controller);
-
 			wp_nonce_field('x2b_'.$a_header['cmd'], 'x2b_'.$a_header['cmd'].'_nonce');
 			
 			// $header = apply_filters('x2b_skin_editor_header', $header, $content, $board);
@@ -1114,6 +1116,115 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			return $a_field['field_label'];
 		}
 
+		/**
+		 * editor스킨의 hidden field 출력
+		 */
+		public static function write_comment_hidden_fields() { 
+			wp_nonce_field('x2b_'.X2B_CMD_PROC_WRITE_COMMENT, 'x2b_'.X2B_CMD_PROC_WRITE_COMMENT.'_nonce');
+
+			$header = array();
+			$a_header['cmd'] = X2B_CMD_PROC_WRITE_COMMENT;
+			$a_header['board_id'] = get_the_ID();
+
+			$o_post = \X2board\Includes\Classes\Context::get('post');
+			if(isset($o_post)) {  // insert a root comment
+				if($o_post->post_id) {  // this is mandatory
+					$a_header['parent_post_id'] = $o_post->post_id;
+					$a_header['editor_sequence'] = null;  // memory for a reserved editor_sequence to find comment id if uploading a file
+				}			
+				unset($o_post);
+				$a_header['content'] = null;
+			}
+			else {   // insert a child comment  or update the comment
+				$o_the_comment = \X2board\Includes\Classes\Context::get('o_the_comment');
+				$a_header['parent_post_id'] = $o_the_comment->get('parent_post_id');
+				$a_header['parent_comment_id'] = $o_the_comment->get('parent_comment_id');
+				$a_header['comment_id'] = $o_the_comment->get('comment_id');
+				$a_header['content'] = htmlspecialchars($o_the_comment->get('content'));
+				unset($o_the_comment);
+			}
+			unset($o_post);
+			
+			foreach( $a_header as $s_field_name => $s_field_value ) {
+				echo '<input type="hidden" name="'.$s_field_name.'" value="'.$s_field_value.'">' . "\n";
+			}
+			unset($a_header);
+			// $s_field = ob_get_clean();
+			// do_action('x2b_skin_editor_header_after', $content, $board);
+			// return apply_filters('x2board_comment_field', $s_field);
+		}
+
+
+	
+
+		
+		
+
+		/**
+		 * @brief display tag list
+		 **/
+		function dispBoardTagList()
+		{
+			// check if there is not grant fot view list, then alert an warning message
+			if(!$this->grant->list)
+			{
+				return $this->_disp_message('msg_not_permitted');
+			}
+
+			// generate the tag module model object
+			$oTagModel = getModel('tag');
+
+			$obj = new stdClass;
+			$obj->mid = $this->module_info->mid;
+			$obj->list_count = 10000;
+			$output = $oTagModel->getTagList($obj);
+
+			// automatically order
+			if(count($output->data))
+			{
+				$numbers = array_keys($output->data);
+				shuffle($numbers);
+
+				if(count($output->data))
+				{
+					foreach($numbers as $k => $v)
+					{
+						$tag_list[] = $output->data[$v];
+					}
+				}
+			}
+
+			Context::set('tag_list', $tag_list);
+
+			$oSecurity = new Security();
+			$oSecurity->encodeHTML('tag_list.');
+
+			$this->setTemplateFile('tag_list');
+		}
+
+		/**
+		 * @brief display board message
+		 **/
+		// function dispBoardMessage($s_msg) {
+		private function _disp_message($s_msg) {
+			\X2board\Includes\Classes\Context::set('message', $s_msg);
+			// setup the skin file
+			echo $this->render_skin_file('message');
+		}
+
+		/**
+		 * @brief the method for displaying the warning messages
+		 * display an error message if it has not  a special design
+		 **/
+		private function _alert_message($s_message) {
+			echo sprintf('<script> jQuery(function(){ alert("%s"); } );</script>', $s_message);
+		}
+
+
+
+
+	
+/////////////////////////////////////
 		/**
 		 * /includes/no_namespace.helper.php::x2b_write_post_input_fields()를 통해서
 		 * editor 스킨의 사용자 입력 field 출력
@@ -1296,114 +1407,6 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			include $s_skin_file_abs_path;
 		}*/
 
-		/**
-		 * editor스킨의 hidden field 출력
-		 */
-		public static function write_comment_hidden_fields() { 
-			wp_nonce_field('x2b_'.X2B_CMD_PROC_WRITE_COMMENT, 'x2b_'.X2B_CMD_PROC_WRITE_COMMENT.'_nonce');
-
-			$header = array();
-			$a_header['cmd'] = X2B_CMD_PROC_WRITE_COMMENT;
-			$a_header['board_id'] = get_the_ID();
-
-			$o_post = \X2board\Includes\Classes\Context::get('post');
-			if(isset($o_post)) {  // insert a root comment
-				if($o_post->post_id) {  // this is mandatory
-					$a_header['parent_post_id'] = $o_post->post_id;
-				}			
-				unset($o_post);
-				$a_header['content'] = null;
-			}
-			else {   // insert a child comment  or update the comment
-				$o_the_comment = \X2board\Includes\Classes\Context::get('o_the_comment');
-				$a_header['parent_post_id'] = $o_the_comment->get('parent_post_id');
-				$a_header['parent_comment_id'] = $o_the_comment->get('parent_comment_id');
-				$a_header['comment_id'] = $o_the_comment->get('comment_id');
-				$a_header['content'] = htmlspecialchars($o_the_comment->get('content'));
-				unset($o_the_comment);
-			}
-			unset($o_post);
-			
-			foreach( $a_header as $s_field_name => $s_field_value ) {
-				echo '<input type="hidden" name="'.$s_field_name.'" value="'.$s_field_value.'">' . "\n";
-			}
-			unset($a_header);
-			// $s_field = ob_get_clean();
-			// do_action('x2b_skin_editor_header_after', $content, $board);
-			// return apply_filters('x2board_comment_field', $s_field);
-		}
-
-
-	
-
-		
-		
-
-		/**
-		 * @brief display tag list
-		 **/
-		function dispBoardTagList()
-		{
-			// check if there is not grant fot view list, then alert an warning message
-			if(!$this->grant->list)
-			{
-				return $this->_disp_message('msg_not_permitted');
-			}
-
-			// generate the tag module model object
-			$oTagModel = getModel('tag');
-
-			$obj = new stdClass;
-			$obj->mid = $this->module_info->mid;
-			$obj->list_count = 10000;
-			$output = $oTagModel->getTagList($obj);
-
-			// automatically order
-			if(count($output->data))
-			{
-				$numbers = array_keys($output->data);
-				shuffle($numbers);
-
-				if(count($output->data))
-				{
-					foreach($numbers as $k => $v)
-					{
-						$tag_list[] = $output->data[$v];
-					}
-				}
-			}
-
-			Context::set('tag_list', $tag_list);
-
-			$oSecurity = new Security();
-			$oSecurity->encodeHTML('tag_list.');
-
-			$this->setTemplateFile('tag_list');
-		}
-
-		/**
-		 * @brief display board message
-		 **/
-		// function dispBoardMessage($s_msg) {
-		private function _disp_message($s_msg) {
-			\X2board\Includes\Classes\Context::set('message', $s_msg);
-			// setup the skin file
-			echo $this->render_skin_file('message');
-		}
-
-		/**
-		 * @brief the method for displaying the warning messages
-		 * display an error message if it has not  a special design
-		 **/
-		private function _alert_message($s_message) {
-			echo sprintf('<script> jQuery(function(){ alert("%s"); } );</script>', $s_message);
-		}
-
-
-
-
-	
-/////////////////////////////////////
 		/**
 		 * @brief  display the document file list (can be used by API)
 		 **/

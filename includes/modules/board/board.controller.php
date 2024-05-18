@@ -339,10 +339,9 @@ var_dump(X2B_CMD_PROC_WRITE_COMMENT);
 			// $obj->module_srl = $this->module_srl;
 			$obj = \X2board\Includes\Classes\Context::gets( 'board_id', 'parent_post_id', 
 															'content', 'password', 'nick_name',
-															'parent_comment_id', 'comment_id', 
+															'parent_comment_id', 'comment_id', 'editor_sequence',
 															'is_secret',
 															'use_editor', 'use_html' );
-
 			// if(!$this->module_info->use_status) {
 			// 	$this->module_info->use_status = 'PUBLIC';
 			// }
@@ -374,9 +373,7 @@ var_dump(X2B_CMD_PROC_WRITE_COMMENT);
 					$obj->use_html = 'N';
 				}
 			}
-// var_dump($this->module_info);
-// var_dump($obj);
-// exit;
+
 			// check if the post is existed
 			$o_post_model = \X2board\Includes\getModel('post');
 			$o_post = $o_post_model->get_post($obj->parent_post_id);
@@ -409,7 +406,13 @@ var_dump(X2B_CMD_PROC_WRITE_COMMENT);
 			// check the comment is existed
 			// if the comment is not existed, then generate a new sequence
 			if(!$obj->comment_id) {
-				$obj->comment_id = \X2board\Includes\getNextSequence();
+				$obj->comment_id = null; //\X2board\Includes\getNextSequence();
+				if($obj->editor_sequence) {
+					$obj->comment_id = $obj->editor_sequence;
+					if( $_SESSION['x2b_upload_info'][$obj->editor_sequence]->enabled ) { // this is from \includes\modules\file\file.controller.php::proc_file_upload();
+						$obj->comment_id = $_SESSION['x2b_upload_info'][$obj->editor_sequence]->upload_target_id;
+					}
+				}
 				$o_comment = new \stdClass();
 				$o_comment->comment_id = -1;  // means non-existing comment
 			} else {

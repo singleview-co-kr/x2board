@@ -180,18 +180,18 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorModel')) {
 
 		/**
 		 * @brief Return the editor template
-		 * You can call upload_target_srl when modifying content
-		 * The upload_target_srl is used for a routine to check if an attachment exists
+		 * You can call upload_target_id when modifying content
+		 * The upload_target_id is used for a routine to check if an attachment exists
 		 */
 		// function getEditor($upload_target_srl = 0, $option = null)
-		private function _get_editor($upload_target_srl = 0, $option = null) {
+		private function _get_editor($upload_target_id = 0, $option = null) {
 			/**
 			 * Editor's default options
 			 */
 			// Option setting to allow file upload
-			if($upload_target_srl) {
-				$option->editor_sequence = $upload_target_srl;
-			}
+			// if($upload_target_id) {
+			// 	$option->editor_sequence = $upload_target_id;
+			// }
 			if(!$option->allow_fileupload) {
 				$allow_fileupload = false;
 			}
@@ -280,10 +280,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorModel')) {
 			 * Check the automatic backup feature (do not use if the post is edited)
 			 */
 			$enable_autosave = false;
-error_log(print_r('should activate includes\modules\editor\editor.model.php::_get_saved_post()', true));
+error_log(print_r('should activate includes\modules\editor\editor.model.php::_get_saved_post() '.__FILE__.':'.__LINE__, true));
 			if($enable_autosave) {
 				// Extract auto-saved data
-				$saved_doc = $this->_get_saved_post($upload_target_srl);
+				$saved_doc = $this->_get_saved_post($upload_target_id);
 				// Context setting auto-saved data
 				\X2board\Includes\Classes\Context::set('saved_doc', $saved_doc);
 			}
@@ -292,15 +292,15 @@ error_log(print_r('should activate includes\modules\editor\editor.model.php::_ge
 			/**
 			 * Extract editor's unique number (in order to display multiple editors on a single page)
 			 */
-			if(isset($option->editor_sequence)) {
-				$editor_sequence = $option->editor_sequence;
-			}
-			else {
+			// if(isset($option->editor_sequence)) {
+			// 	$editor_sequence = $option->editor_sequence;
+			// }
+			// else {
 				if(!isset($_SESSION['_x2b_editor_sequence_'])) {
 					$_SESSION['_x2b_editor_sequence_'] = 1;
 				}
 				$editor_sequence = $_SESSION['_x2b_editor_sequence_'] ++;
-			}
+			// }
 
 			/**
 			 * Upload setting by using configuration of the file module internally
@@ -310,8 +310,8 @@ error_log(print_r('should activate includes\modules\editor\editor.model.php::_ge
 				$oFileModel = \X2board\Includes\getModel('file');
 				// Get upload configuration to set on SWFUploader
 				$file_config = $oFileModel->get_upload_config();
-				$file_config->allowed_attach_size = $file_config->allowed_attach_size*1024*1024;
-				$file_config->allowed_filesize = $file_config->allowed_filesize*1024*1024;
+				$file_config->allowed_attach_size = $file_config->allowed_attach_size*1048576; // 1024*1024;
+				$file_config->allowed_filesize = $file_config->allowed_filesize*1048576; // 1024*1024;
 
 				\X2board\Includes\Classes\Context::set('file_config',$file_config);
 				// Configure upload status such as file size
@@ -319,23 +319,24 @@ error_log(print_r('should activate includes\modules\editor\editor.model.php::_ge
 				\X2board\Includes\Classes\Context::set('upload_status', $upload_status);
 				// Upload enabled (internally caching)
 				$oFileController = \X2board\Includes\getController('file');
-				$oFileController->set_upload_info($editor_sequence, $upload_target_srl);
+				$oFileController->set_upload_info($editor_sequence, $upload_target_id);
 				unset($oFileController);
 				// Check if the file already exists
-				if($upload_target_srl) {
-					$files_count = $oFileModel->get_files_count($upload_target_srl);
+				if($upload_target_id) {
+					$files_count = $oFileModel->get_files_count($upload_target_id);
 				}
 				unset($oFileModel);
 			}
-			\X2board\Includes\Classes\Context::set('files_count', (int)$files_count);
+			// \X2board\Includes\Classes\Context::set('files_count', (int)$files_count);
 
-			\X2board\Includes\Classes\Context::set('allow_fileupload', $allow_fileupload);
+			// \X2board\Includes\Classes\Context::set('allow_fileupload', $allow_fileupload);
 			// Set editor_sequence value
 			\X2board\Includes\Classes\Context::set('editor_sequence', $editor_sequence);
-			// Set the document number to upload_target_srl for file attachments
-			// If a new document, upload_target_srl = 0. The value becomes changed when file attachment is requested
-			\X2board\Includes\Classes\Context::set('upload_target_srl', $upload_target_srl);
-			// Set the primary key valueof the document or comments
+
+			// Set the post number to upload_target_id for file attachments
+			// If a new post, upload_target_id = 0. The value becomes changed when file attachment is requested
+			// \X2board\Includes\Classes\Context::set('upload_target_srl', $upload_target_id);
+			// Set the primary key valueof the post or comments
 			\X2board\Includes\Classes\Context::set('editor_primary_key_name', $option->primary_key_name);
 			// Set content column name to sync contents
 			\X2board\Includes\Classes\Context::set('editor_content_key_name', $option->content_key_name);

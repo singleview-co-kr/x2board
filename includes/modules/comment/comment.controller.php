@@ -322,11 +322,16 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 
 			// creat the comment model object
 			$o_comment_model = \X2board\Includes\getModel('comment');
-
 			// get the number of all comments in the posting
 			$n_comment_count = $o_comment_model->get_comment_count($parent_post_id);
 			unset($o_comment_model);
-// var_dump($is_admin);
+			
+			// handle appended files
+			$o_file_controller = \X2board\Includes\getController('file');
+			$o_file_controller->set_files_valid($obj->comment_id);
+			unset($o_file_controller);
+			$this->update_uploaded_count($obj->comment_id);
+
 			// create the controller object of the document
 			$o_post_controller = \X2board\Includes\getController('post');
 
@@ -387,14 +392,13 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 			unset($a_new_comment);
 
 			// $this->sendEmailToAdminAfterInsertComment($obj);
-			//////////////////////////////////////////
 			///////////// begin - temp exception
 			if( !isset($output)){
 				$output = new \X2board\Includes\Classes\BaseObject();
 			}
 			///////////// end - temp exception
-			//////////////////////////////////////////
 			$output->add('comment_id', $obj->comment_id);
+			unset($obj);
 			return $output;
 		}
 
@@ -579,6 +583,12 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 			// 	return $output;
 			// }
 
+			// handle appended files
+			$o_file_controller = \X2board\Includes\getController('file');
+			$o_file_controller->set_files_valid($obj->comment_id);
+			unset($o_file_controller);
+			$this->update_uploaded_count($obj->comment_id);
+
 			// call a trigger (after)
 			// if($output->toBool())
 			// {
@@ -621,6 +631,26 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 				$use_validation = TRUE;
 			}
 			return $use_validation;
+		}
+
+		public function update_uploaded_count($n_comment_id) {
+			global $wpdb;
+			$o_file_model = \X2board\Includes\getModel('file');
+			// $a_post_id = array_unique($a_post_id);
+			// foreach($a_post_id AS $_ => $n_post_id) {
+				$fileCount = $o_file_model->get_files_count($n_comment_id);
+				// $args = new stdClass();
+				// $args->document_srl = $documentSrl;
+				// $args->uploaded_count = $fileCount;
+				// executeQuery('document.updateUploadedCount', $args);
+				$result = $wpdb->update( "{$wpdb->prefix}x2b_comments", 
+											array( 'uploaded_count' => $fileCount), 
+											array ( 'comment_id' => esc_sql(intval($n_comment_id )) ) );
+				if( $result < 0 || $result === false ){
+					return new \X2board\Includes\Classes\BaseObject(-1, $wpdb->last_error );
+				}
+			// }
+			unset($o_file_model);
 		}
 
 		/**

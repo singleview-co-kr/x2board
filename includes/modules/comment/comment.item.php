@@ -225,6 +225,35 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentItem')) {
 			return wpautop($s_content);
 		}
 
+		// function hasUploadedFiles()
+		public function has_uploaded_files() {
+			if(($this->_is_secret() && !$this->is_accessible()) && !$this->is_granted()) {
+				return FALSE;
+			}
+			return $this->get('uploaded_count') ? TRUE : FALSE;
+		}
+
+		/**
+		 * 댓글에 표시할 첨부파일을 반환한다.
+		 * @return object
+		 */
+		// function getUploadedFiles()
+		public function get_uploaded_files() {
+			if(($this->_is_secret() && !$this->is_accessible()) && !$this->is_granted()) {
+				return;
+			}
+
+			if(!$this->get('uploaded_count')) {
+				return;
+			}
+
+			$o_file_model = \X2board\Includes\getModel('file');
+			$file_list = $o_file_model->get_files($this->comment_id, array(), 'file_id', true);
+			unset($o_file_model);
+			return $file_list;
+		}
+
+
 		/**
 		 * Return the editor html
 		 * used in skins/comment_form.php
@@ -364,32 +393,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentItem')) {
 		function getUpdateGM()
 		{
 			return gmdate("D, d M Y H:i:s", $this->getUpdateTime());
-		}
-
-		function hasUploadedFiles()
-		{
-			if(($this->isSecret() && !$this->isAccessible()) && !$this->isGranted())
-			{
-				return FALSE;
-			}
-			return $this->get('uploaded_count') ? TRUE : FALSE;
-		}
-
-		function getUploadedFiles()
-		{
-			if(($this->isSecret() && !$this->isAccessible()) && !$this->isGranted())
-			{
-				return;
-			}
-
-			if(!$this->get('uploaded_count'))
-			{
-				return;
-			}
-
-			$oFileModel = getModel('file');
-			$file_list = $oFileModel->getFiles($this->comment_srl, array(), 'file_srl', TRUE);
-			return $file_list;
 		}
 
 		/**

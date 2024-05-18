@@ -1,6 +1,8 @@
 jQuery(function() {  // jquery.fileupload on document write screen
 	const n_board_id = jQuery("input[name=board_id]").val();
 	const n_post_id = jQuery("input[name=post_id]").val();
+	const n_editor_call_id = jQuery('.file-upload').data("editor_call_id");
+	const n_comment_id = jQuery("input[name=comment_id]").val();
     jQuery(".file-upload").fileupload({
         dataType: "json",
         // maxChunkSize: 2500000, // split upload for large file
@@ -9,8 +11,9 @@ jQuery(function() {  // jquery.fileupload on document write screen
 		formData: {'action': x2board_ajax_info.cmd_file_upload,
 				   'security':x2board_ajax_info.nonce,
 				   'board_id':n_board_id,
-				   'post_id':n_post_id },
-				    
+				   'post_id':n_post_id,
+				   'comment_id':n_comment_id,
+				   'editor_call_id':n_editor_call_id },
         add: function(e, data) {
             // check file total count
 			var maxFileCount = parseInt(jQuery(this).data("maxfilecount"));
@@ -66,12 +69,18 @@ jQuery(function() {  // jquery.fileupload on document write screen
             var res = data.result.files[0];
 			var file_id = res.file_id;
 			var thumbnail_abs_url = res.thumbnail_abs_url;
-			var file_type = res.file_type;			
+			var file_type = res.file_type;
+			let n_reserved_comment_id = res.reserved_comment_id;
             if (res.error !== "") {
                 data.context.remove();
                 alert(res.error);
                 return false;
             }
+			// memorize a reserved editor_sequence to find comment id if uploading a file
+			if( n_reserved_comment_id ){
+				jQuery("input[name=editor_sequence]").val(n_editor_call_id);
+			}
+
             jQuery(this.form)
                 .find("input[type=hidden]:last")
                 .after('<input type="hidden" name="upload_file_id[]" value="' + file_id + '">');
@@ -95,7 +104,7 @@ jQuery(function() {  // jquery.fileupload on document write screen
     jQuery(document).on("click", ".file-embed", function(e) {
         var $t   = jQuery(this);
         var thumbnail_abs_url  = $t.data("thumbnail_abs_url");
-		kboard_media_insert(thumbnail_abs_url);
+		x2board_media_insert(thumbnail_abs_url);
     });
     jQuery(document).on("click", ".file-delete", function(e) {
 		if(!confirm("파일을 삭제하시겠습니까?"))
@@ -108,6 +117,8 @@ jQuery(function() {  // jquery.fileupload on document write screen
 			'board_id':n_board_id,
 			'file_id':file_id,
 			'post_id':n_post_id,
+			'comment_id':n_comment_id,
+			'editor_call_id':n_editor_call_id,
 			'security':x2board_ajax_info.nonce},
 			function(res) {
 				if(typeof callback === 'function'){
@@ -131,7 +142,7 @@ jQuery(function() {  // jquery.fileupload on document write screen
     });
 });
 
-function kboard_media_insert(media_src){
+function x2board_media_insert(media_src){
 	if(media_src){
 		parent.kboard_editor_insert_media(media_src);
 	}

@@ -52,6 +52,24 @@ function x2b_write_comment_editor() {
 	unset($o_editor_view);
 }
 
+function x2b_write_comment_filebox() {
+	$o_editor_view = \X2board\Includes\getView('editor');
+	$o_comment = \X2board\Includes\Classes\Context::get('o_comment');
+	if( !$o_comment ) {
+		$o_comment = \X2board\Includes\Classes\Context::get('o_the_comment');
+	}
+
+	if( $o_comment ) {
+		$a_appended_file = $o_comment->get_uploaded_files();
+	}
+	else {
+		$a_appended_file = array();
+	}
+	echo $o_editor_view->get_attach_ux_html($a_appended_file);
+	unset($o_comment);
+	unset($o_editor_view);
+}
+
 /* function x2b_is_manager() {
 	if(is_user_logged_in() ) {
 		$o_grant = \X2board\Includes\Classes\Context::get('grant');

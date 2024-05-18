@@ -21,19 +21,19 @@
 					<span class="date" itemprop="dateCreated"><?php echo $comment->get_regdate()?></span>
 					<?php if($grant->manager):?><small class="m_no">(<?php echo $comment->get_ip_addr()?>)</small><?php endif?>
 					<?php
-					$n_attachment = count((array)$comment->attach);
-					if($n_attachment):?>
-					<a class="tg_btn2" href="#files_<?php echo $comment->uid?>"> 첨부 <small>(<?php echo $n_attachment?>)</small></a>
+					// $n_attachment = count((array)$comment->attach);
+					if($comment->has_uploaded_files()):?>
+					<a class="tg_btn2" href="#files_<?php echo $comment->uid?>"> 첨부 <small>(<?php echo $comment->get('uploaded_count')?>)</small></a>
 					<div id="files_<?php echo $comment->uid?>" class="cmt_files tg_cnt2" style="display: none;">
 						<button type="button" class="tg_blur2" style="position:absolute;top:0;left:0;border:0;background:none;width:1px;height:1px;overflow:hidden;"></button>
 						<button type="button" class="tg_close2" title="닫기" style="position:absolute;top:0;right:0;border:0;background:transparent;font:20px Tahoma,AppleGothic,sans-serif;color:#999;"><b class="ui-icon ui-icon-closethick">X</b></button>
 						<ul class="wrp">
-						<?php foreach($comment->attach as $_=>$attach_info):?>
+						<?php foreach($comment->get_uploaded_files() as $_=>$file):?>
 							<li>
 								<em>•</em>
-								<a class="bubble" href="<?php echo esc_url($attach_info['download_url'])?>"><?php echo esc_attr($attach_info['file_name'])?>
+								<a class="bubble" href="<?php echo esc_url($file->download_url)?>"><?php echo esc_attr($file->source_filename)?>
 									<span class="wrp" style="margin-left: -73px; bottom: 100%; display: none;">
-										<span class="speech">[File Size:<?php echo esc_attr(number_format($attach_info['file_size']/1000))?>KB/Download:<?php echo esc_attr(number_format($attach_info['download_count']))?>]</span><i class="edge"></i>
+										<span class="speech">[File Size:<?php echo esc_attr(number_format($file->file_size/1000))?>KB/Download:<?php echo esc_attr(number_format($file->download_count))?>]</span><i class="edge"></i>
 									</span>
 								</a>
 							</li>

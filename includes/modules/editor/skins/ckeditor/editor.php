@@ -58,7 +58,7 @@ if($content_font || $content_font_size) {
 <div class="get_editor">
 <div id="ckeditor_instance_<?php echo $editor_sequence?>" data-editor-sequence="<?php echo $editor_sequence ?>" data-editor-primary-key-name="<?php echo $editor_primary_key_name ?>" data-editor-content-key-name="<?php echo $editor_content_key_name ?>" style="min-height:<?php echo $editor_height ?>px;"></div>
 </div>
-<!-- <block cond="$allow_fileupload">
+<!-- <block cond="$allow_fileupload"> set in \includes\modules\editor\editor.model.php::_get_editor()
 	<include target="file_upload.html" />
 </block> -->
 
@@ -82,7 +82,7 @@ $lang_type = str_replace('jp','ja',$lang_type);
 				height: '<?php echo $editor_height?>',
 				skin: '<?php echo $colorset ?>',
 				contentsCss: '<?php echo $content_style_url?>/editor.css?<?php echo $editorContentCssFilemtime?>',
-				xe_editor_sequence: <?php echo $editor_sequence ?>,
+				x2b_editor_sequence: <?php echo $editor_sequence ?>,
 				toolbarCanCollapse: true,
 				language: "<?php echo $lang_type?>"
 			},

@@ -12,9 +12,11 @@
     <!-- onsubmit="return procFilter(this, insert_comment)" -->
 	<form action="<?php echo esc_url(x2b_get_url('cmd', '', 'post_id', ''))?>" method="post" class="write_comment">
 		<?php x2b_write_comment_hidden_fields(); ?>
-        <?php x2b_write_comment_editor(); ?>
+        <?php x2b_write_comment_editor(); 
+		if($use_comment_attach) { // set by user define field
+			x2b_write_comment_filebox();
+		}?>
 		<div class="write_author">
-
 <?php if(!$is_logged): ?>
 			<span class="item">
 				<label for="userName" class="iLabel"><?php echo __('writer', 'x2board')?></label>

@@ -44,6 +44,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 		 */
 		// function setUploadInfo($editor_sequence, $upload_target_srl=0)
 		public function set_upload_info($n_editor_sequence, $n_upload_target_id) {
+// unset($_SESSION['x2b_upload_info']);			
 			if(!isset($_SESSION['x2b_upload_info'][$n_editor_sequence])) {
 				$_SESSION['x2b_upload_info'][$n_editor_sequence] = new \stdClass();
 			}
@@ -67,19 +68,36 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 			$a_file_info = $_FILES['files'];
 // error_log(print_r($a_file_info, true));
 // error_log(print_r($_POST, true));
-// error_log(print_r(\X2board\Includes\Classes\Context::get('post_id'), true));
+// error_log(print_r(\X2board\Includes\Classes\Context::get('editor_sequence'), true));
 			// An error appears if not a normally uploaded file
 			if(!is_uploaded_file($a_file_info['tmp_name'])) {
 				exit();
 			}
 
 			// Basic variables setting
-			$n_post_id = intval(\X2board\Includes\Classes\Context::get('post_id'));
-			$editor_sequence = $n_post_id;  // Context::get('editor_sequence');
-			// $upload_target_id = intval(\X2board\Includes\Classes\Context::get('uploadTargetSrl'));
-			// if(!$upload_target_id) {
-			$upload_target_id = $n_post_id;
-			// }
+			$upload_target_id = null;
+			$n_comment_id = intval(\X2board\Includes\Classes\Context::get('comment_id'));
+			if($n_comment_id) {  // attachment of a old comment
+				$editor_sequence = \X2board\Includes\Classes\Context::get('editor_call_id'); // $n_post_id;  // Context::get('editor_sequence');
+				$upload_target_id = $n_comment_id;
+			}
+			else {
+				$n_post_id = intval(\X2board\Includes\Classes\Context::get('post_id'));
+				if( $n_post_id ) {  // if upload from post editor
+					$editor_sequence = \X2board\Includes\Classes\Context::get('editor_call_id'); // $n_post_id;  // Context::get('editor_sequence');
+					// $upload_target_id = intval(\X2board\Includes\Classes\Context::get('uploadTargetSrl'));
+					// if(!$upload_target_id) {
+					$upload_target_id = $n_post_id;
+					// }
+				}
+				else {  // attachment of a new comment
+					$editor_sequence = \X2board\Includes\Classes\Context::get('editor_call_id');
+					// $upload_target_id = intval(\X2board\Includes\Classes\Context::get('uploadTargetSrl'));
+					// if(!$upload_target_id) {
+					// $upload_target_id = $n_editor_sequence;
+				}
+			}
+
 			// $module_srl = $this->module_srl;
 			$n_board_id = intval(\X2board\Includes\Classes\Context::get('board_id'));
 // error_log(print_r($n_board_id, true));
@@ -154,6 +172,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 			$a_uploaded_file_info['thumbnail_abs_url'] = $s_download_url;
 			$a_uploaded_file_info['file_type'] = $output->get('file_type');
 			$a_uploaded_file_info['file_size'] = $output->get('file_size');
+			$a_uploaded_file_info['reserved_comment_id'] = $upload_target_id;
 			$a_uploaded_file_info['error'] = '';  // for ajax uploading error msg
 			
 			$upload_attach_files = array();  // reserved for multiple upload
@@ -370,17 +389,26 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 		 */
 		// function procFileDelete() {
 		public function proc_file_delete() {
-			// Basic variable setting(upload_target_srl and module_srl set)
-			$n_post_id = intval(\X2board\Includes\Classes\Context::get('post_id'));
-			$editor_sequence = $n_post_id;  // $editor_sequence = Context::get('editor_sequence');
-			// $upload_target_id = $n_post_id;
+			$n_comment_id = intval(\X2board\Includes\Classes\Context::get('comment_id'));
+			if($n_comment_id) {  // attachment of a old comment
+				$editor_sequence = \X2board\Includes\Classes\Context::get('editor_call_id');
+				$upload_target_id = $n_comment_id;
+			}
+			else {
+				$n_post_id = intval(\X2board\Includes\Classes\Context::get('post_id'));
+				if( $n_post_id ) {  // if upload from post editor
+					$editor_sequence = \X2board\Includes\Classes\Context::get('editor_call_id');
+					$upload_target_id = $n_post_id;
+				}
+				else {  // attachment of a new comment
+					$editor_sequence = \X2board\Includes\Classes\Context::get('editor_call_id');
+				}
+			}
 		
 			$file_id = \X2board\Includes\Classes\Context::get('file_id');
 			// $file_srls = \X2board\Includes\Classes\Context::get('file_srls');
 			// if($file_srls) $file_srl = $file_srls;
 			// Exit a session if there is neither upload permission nor information
-// error_log(print_r($file_id, true));
-// error_log(print_r($_SESSION['x2b_upload_info'], true));
 			if(!$_SESSION['x2b_upload_info'][$editor_sequence]->enabled) {
 				exit();
 			}
@@ -436,6 +464,52 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 		}
 
 		/**
+		 * Delete all attachments of a particular post or comment
+		 *
+		 * @param int $upload_target_srl Upload target srl to delete files
+		 * @return BaseObject
+		 */
+		// function deleteFiles($upload_target_srl)
+		public function delete_files($upload_target_id) {
+			// Get a list of attachements
+			$o_file_model = \X2board\Includes\getModel('file');
+			// $columnList = array('file_id', 'uploaded_filename', 'board_id');
+			$a_file_list = $o_file_model->get_files($upload_target_srl); //, $columnList);
+			unset($o_file_model);
+			// Success returned if no attachement exists
+			if(!is_array($a_file_list)||!count($a_file_list)) {
+				return new BaseObject();
+			}
+
+			// Delete the file
+			$path = array();
+			$file_count = count($a_file_list);
+			for($i=0;$i<$file_count;$i++) {
+				$this->_delete_file($a_file_list[$i]->file_srl);
+
+				$uploaded_filename = $a_file_list[$i]->uploaded_filename;
+				$path_info = pathinfo($uploaded_filename);
+				if(!in_array($path_info['dirname'], $path)) {
+					$path[] = $path_info['dirname'];
+				}
+			}
+
+			// Remove from the DB
+			$args = new \stdClass();
+			$args->upload_target_srl = $upload_target_srl;
+			$output = executeQuery('file.deleteFiles', $args);
+			if(!$output->toBool()) {
+				return $output;
+			}
+			
+			// Remove a file directory of the post or comment
+			for($i=0, $c=count($path); $i<$c; $i++) {
+				FileHandler::removeBlankDir($path[$i]);
+			}
+			return $output;
+		}
+
+		/**
 		 * Delete the single attachment
 		 *
 		 * @param int $o_file_info a file object to delete
@@ -452,7 +526,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 			// 	return;
 			// }
 
-			$a_post_id = array();
+			// $a_post_id = array();
 
 			// foreach($ids as $id) {
 				// $n_id = intval($id);
@@ -471,7 +545,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 				// $file_info = $output->data;
 
 				// if($file_info->upload_target_id) {
-					$a_post_id[] = $o_file_info->upload_target_id;
+					// $a_post_id[] = $o_file_info->upload_target_id;
 				// }
 
 				// $source_filename = $output->data->source_filename;
@@ -504,8 +578,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 				unset($fileSystemDirect);
 				// FileHandler::removeFile($o_file_info->uploaded_filename);
 			// }
-			$o_post_controller = \X2board\Includes\getController('post');
-			$o_post_controller->update_uploaded_count($a_post_id);
+			// $o_post_controller = \X2board\Includes\getController('post');
+			// $o_post_controller->update_uploaded_count($a_post_id);
 			return new \X2board\Includes\Classes\BaseObject();
 		}
 
@@ -860,48 +934,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 		// 	}
 
 		// 	$this->add('file_list', $fileList);
-		// }
-
-		/**
-		 * Delete all attachments of a particular document
-		 *
-		 * @param int $upload_target_srl Upload target srl to delete files
-		 * @return BaseObject
-		 */
-		// function deleteFiles($upload_target_srl)
-		// {
-		// 	// Get a list of attachements
-		// 	$oFileModel = getModel('file');
-		// 	$columnList = array('file_srl', 'uploaded_filename', 'module_srl');
-		// 	$file_list = $oFileModel->getFiles($upload_target_srl, $columnList);
-		// 	// Success returned if no attachement exists
-		// 	if(!is_array($file_list)||!count($file_list)) return new BaseObject();
-
-		// 	// Delete the file
-		// 	$path = array();
-		// 	$file_count = count($file_list);
-		// 	for($i=0;$i<$file_count;$i++)
-		// 	{
-		// 		$this->deleteFile($file_list[$i]->file_srl);
-
-		// 		$uploaded_filename = $file_list[$i]->uploaded_filename;
-		// 		$path_info = pathinfo($uploaded_filename);
-		// 		if(!in_array($path_info['dirname'], $path)) $path[] = $path_info['dirname'];
-		// 	}
-
-		// 	// Remove from the DB
-		// 	$args = new stdClass();
-		// 	$args->upload_target_srl = $upload_target_srl;
-		// 	$output = executeQuery('file.deleteFiles', $args);
-		// 	if(!$output->toBool()) return $output;
-			
-		// 	// Remove a file directory of the document
-		// 	for($i=0, $c=count($path); $i<$c; $i++)
-		// 	{
-		// 		FileHandler::removeBlankDir($path[$i]);
-		// 	}
-
-		// 	return $output;
 		// }
 
 		/**

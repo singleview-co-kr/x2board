@@ -611,44 +611,9 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 					unset($o_editor_view);
 					break;
 				case 'attach':
-					$o_module_info = \X2board\Includes\Classes\Context::get('current_module_info');;
-					$s_accept_file_types = str_replace(" ", "", $o_module_info->file_allowed_filetypes);
-					$s_accept_file_types = str_replace(",", "|", $s_accept_file_types);
-					$n_file_max_attached_count = intval($o_module_info->file_max_attached_count);
-					$n_file_allowed_filesize_mb = intval($o_module_info->file_allowed_filesize_mb);
-					unset($o_module_info);
-					wp_enqueue_style("x2board-jquery-fileupload", X2B_URL . 'common/jquery.fileupload/css/jquery.fileupload.css', [], X2B_VERSION);
-					// wp_enqueue_style("x2board-jquery-fileupload-ui", X2B_URL . 'common/jquery.fileupload/css/jquery.fileupload-ui.css', [], X2B_VERSION);
-					wp_enqueue_script('x2board-jquery-ui-widget', X2B_URL . 'common/jquery.fileupload/js/vendor/jquery.ui.widget.js', ['jquery'], X2B_VERSION, true);
-					wp_enqueue_script('x2board-jquery-iframe-transport', X2B_URL . 'common/jquery.fileupload/js/jquery.iframe-transport.js', ['jquery'], X2B_VERSION, true);
-					wp_enqueue_script('x2board-fileupload', X2B_URL . 'common/jquery.fileupload/js/jquery.fileupload.js', ['jquery'], X2B_VERSION, true);
-					wp_enqueue_script('x2board-fileupload-process', X2B_URL . 'common/jquery.fileupload/js/jquery.fileupload-process.js', ['jquery'], X2B_VERSION, true);
-					wp_enqueue_script('x2board-fileupload-caller', X2B_URL . 'common/jquery.fileupload/file-upload.js', ['jquery'], X2B_VERSION, true);
-					
-					$buff[] = '<input type="file" name="files" id="file_software" class="file-upload" data-maxfilecount="'.$n_file_max_attached_count.'" data-accpet_file_types="'.$s_accept_file_types.'" data-max_each_file_size_mb="'.$n_file_allowed_filesize_mb.'">';
-					$buff[] = '<ul class="file-list list-unstyled mb-0">';
-					foreach($o_post->get_uploaded_files() as $_ => $o_file_value) {
-						$buff[] = '<li class="file my-1 row">';
-						$buff[] = 	'<div class="file-name col-md-3">';
-						$buff[] = 		'<img src="'.$o_file_value->thumbnail_abs_url.'" class="attach_thumbnail">';
-						$buff[] = $o_file_value->source_filename;
-						$buff[] = 	'</div>';
-						$buff[] = 	'<div class="del-button col-md-1">';
-						if( $o_file_value->file_type !== 'image'){
-							$s_disabled = 'disabled="disabled"';
-						}
-						else {
-							$s_disabled = null;
-						}
-						$buff[] = 		'<button type="button" class="btn btn-sm btn-danger file-embed" data-thumbnail_abs_url="'.$o_file_value->thumbnail_abs_url.'" '.$s_disabled.'><i class="fa fa-plus"></i></button>';
-						$buff[] = 		'<button type="button" class="btn btn-sm btn-danger file-delete" data-file_id="'.$o_file_value->file_id.'"><i class="far fa-trash-alt"></i></button>';
-						$buff[] = 	'</div>';
-						$buff[] = 	'<div class="progress col-md-7 my-auto px-0">';
-						// $buff[] = 		'<div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 100%;"></div>';
-						$buff[] = 	'</div>';
-						$buff[] = '</li>';
-					}
-					$buff[] = '</ul>';
+					$o_editor_view = \X2board\Includes\getView('editor');
+					$buff[] = $o_editor_view->get_attach_ux_html($o_post->get_uploaded_files());
+					unset($o_editor_view);
 					break;
 				case 'option':
 					$s_name = strlen($s_name) ? $s_name : __($this->type, 'x2board');
@@ -683,7 +648,8 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 						$buff[] = '<label class="attr-value-option"><input type="checkbox" name="is_notice" value="Y" '.$s_checked.'> '. __('Notice', 'x2board').'</label>';
 					}
 					if($this->_is_this_accessible($this->allow_comment_permission, $this->allow_comment)) {
-
+						$s_allow_checked = null;
+						$s_disallow_checked = null;
 						$o_comment_class = \X2board\Includes\getClass('comment');
 						if($o_post->comment_status == $o_comment_class->get_status_by_key('allow')) {
 							$s_allow_checked = 'checked="checked"';

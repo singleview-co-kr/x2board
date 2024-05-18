@@ -119,7 +119,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileModel')) {
 
 			global $wpdb;
    			// $rows = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "posts");
-			$a_file_list = $wpdb->get_results("SELECT * FROM `{$wpdb->prefix}x2b_files` WHERE {$s_where} ORDER BY `file_id` ASC");
+			$a_file_list = $wpdb->get_results("SELECT * FROM `{$wpdb->prefix}x2b_files` WHERE {$s_where} ORDER BY `{$sortIndex}` ASC");
 			// $output = executeQueryArray('file.getFiles', $args, $columnList);
 			// if(!$output->data) {
 			// 	return;
