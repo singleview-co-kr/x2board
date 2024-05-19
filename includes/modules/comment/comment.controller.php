@@ -715,8 +715,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 				$wpdb->flush();
 			}
 
+			$commentSrlList = array();
 			if(count((array)$a_result)) {
-				$commentSrlList = array();
 				foreach($a_result as $comment) {
 					$commentSrlList[] = $comment->comment_id;
 					// call a trigger (before)
