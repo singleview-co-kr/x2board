@@ -473,40 +473,33 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 		public function delete_files($upload_target_id) {
 			// Get a list of attachements
 			$o_file_model = \X2board\Includes\getModel('file');
-			// $columnList = array('file_id', 'uploaded_filename', 'board_id');
-			$a_file_list = $o_file_model->get_files($upload_target_srl); //, $columnList);
+			$a_file_list = $o_file_model->get_files($upload_target_id, array('file_id', 'upload_target_id', 'uploaded_filename', 'board_id')); //, $columnList);
 			unset($o_file_model);
 			// Success returned if no attachement exists
 			if(!is_array($a_file_list)||!count($a_file_list)) {
-				return new BaseObject();
+				return new \X2board\Includes\Classes\BaseObject();
 			}
 
 			// Delete the file
-			$path = array();
-			$file_count = count($a_file_list);
-			for($i=0;$i<$file_count;$i++) {
-				$this->_delete_file($a_file_list[$i]->file_srl);
-
-				$uploaded_filename = $a_file_list[$i]->uploaded_filename;
-				$path_info = pathinfo($uploaded_filename);
+			$a_path_to_unset = array();
+			foreach( $a_file_list as $_ => $o_file ) {
+				$this->_delete_file($o_file);
+				$path_info = pathinfo($o_file->uploaded_filename); //$uploaded_filename);
 				if(!in_array($path_info['dirname'], $path)) {
-					$path[] = $path_info['dirname'];
+					$a_folder_info = explode($o_file->board_id, $path_info['dirname']);
+					// $a_path_to_unset[] = $a_folder_info[0].$o_file->board_id;
+					$a_path_to_unset[] = $path_info['dirname']; //.DIRECTORY_SEPARATOR.'..';
+					unset($a_folder_info);
 				}
-			}
-
-			// Remove from the DB
-			$args = new \stdClass();
-			$args->upload_target_srl = $upload_target_srl;
-			$output = executeQuery('file.deleteFiles', $args);
-			if(!$output->toBool()) {
-				return $output;
 			}
 			
 			// Remove a file directory of the post or comment
-			for($i=0, $c=count($path); $i<$c; $i++) {
-				FileHandler::removeBlankDir($path[$i]);
+			// for($i=0, $c=count($path); $i<$c; $i++) {
+			foreach( $a_path_to_unset as $s_dir_path ) {
+				\X2board\Includes\Classes\FileHandler::remove_blank_dir($s_dir_path);
 			}
-			return $output;
+			unset($a_path_to_unset);
+			return new \X2board\Includes\Classes\BaseObject();
 		}
 
 		/**

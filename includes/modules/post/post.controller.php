@@ -952,6 +952,11 @@ var_dump('post controller init()');
 			$s_post_thumbnail_dir = wp_get_upload_dir()['basedir'].DIRECTORY_SEPARATOR.X2B_DOMAIN.DIRECTORY_SEPARATOR.'thumbnails'.DIRECTORY_SEPARATOR.\X2board\Includes\getNumberingPath($n_post_id, 3);
 			$this->_o_wp_filesystem->delete($s_post_thumbnail_dir);
 
+			// Remove a attached file
+			$o_file_controller = \X2board\Includes\getController('file');
+			$o_file_controller->delete_files($n_post_id);
+			unset($o_file_controller);
+
 			// commit
 			// $oDB->commit();
 

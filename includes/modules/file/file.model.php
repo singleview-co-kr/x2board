@@ -113,22 +113,17 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileModel')) {
 			// $args->sort_index = $sortIndex;
 			$s_where = "`upload_target_id`=".$upload_target_id;
 			if($showValidOnly) {
-				// $args->isvalid = 'Y';
-				$s_where .= " AND `isvalid` = 'Y'";
+				$s_where .= " AND `isvalid` = 'Y'";  // $args->isvalid = 'Y';
 			}
-
+			if(count($columnList)) {
+				$s_columns = "`".implode("`, `", $columnList)."`";
+			}
+			else {
+				$s_columns = '*';
+			}
 			global $wpdb;
-   			// $rows = $wpdb->get_results("SELECT * FROM " . $wpdb->prefix . "posts");
-			$a_file_list = $wpdb->get_results("SELECT * FROM `{$wpdb->prefix}x2b_files` WHERE {$s_where} ORDER BY `{$sortIndex}` ASC");
-			// $output = executeQueryArray('file.getFiles', $args, $columnList);
-			// if(!$output->data) {
-			// 	return;
-			// }
-			//$file_list = $output->data;
-			// if($file_list && !is_array($file_list)) {
-			// 	$file_list = array($file_list);
-			// }
-
+			$a_file_list = $wpdb->get_results("SELECT {$s_columns} FROM `{$wpdb->prefix}x2b_files` WHERE {$s_where} ORDER BY `{$sortIndex}` ASC");
+			
 			foreach ($a_file_list as &$file) {
 				$file->source_filename = htmlspecialchars(stripslashes($file->source_filename));
 				$file->download_url = $this->get_download_url($file->file_id, $file->sid);				

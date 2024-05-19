@@ -128,6 +128,44 @@ if (!class_exists('\\X2board\\Includes\\Classes\\FileHandler')) {
 			return file_exists($s_filename) ? $s_filename : FALSE;
 		}
 
+		/**
+		 * Remove a directory only if it is empty
+		 *
+		 * @param string $path Path of the target directory
+		 * @return void
+		 */
+		// public static function removeBlankDir($path)
+		public static function remove_blank_dir($path) {
+			if(($path = self::is_x2b_dir($path)) === FALSE) {
+				return;
+			}
+
+			$files = array_diff(scandir($path), array('..', '.'));
+			if(count($files) < 1) {
+				rmdir($path);
+				return;
+			}
+
+			foreach($files as $file) {
+				if(($target = self::is_x2b_dir($path . DIRECTORY_SEPARATOR . $file)) === FALSE){
+					continue;
+				}
+				self::remove_blank_dir($target);
+			}
+		}
+
+		/**
+		 * Check it is dir
+		 *
+		 * @param string $dir Target dir path
+		 * @return bool Returns FALSE if the dir is not dir, or Returns full path of dir(string).
+		 */
+		// public static function isDir($path)
+		public static function is_x2b_dir($path) {
+			$path = self::_getRealPath($path);
+			return is_dir($path) ? $path : FALSE;
+		}
+
 
 		/**
 		 * Copy a directory to target
@@ -451,38 +489,6 @@ if (!class_exists('\\X2board\\Includes\\Classes\\FileHandler')) {
 			else
 			{
 				unlink($path);
-			}
-		}*/
-
-		/**
-		 * Remove a directory only if it is empty
-		 *
-		 * @param string $path Path of the target directory
-		 * @return void
-		 */
-		/*public static function removeBlankDir($path)
-		{
-			if(($path = self::isDir($path)) === FALSE)
-			{
-				return;
-			}
-
-			$files = array_diff(scandir($path), array('..', '.'));
-
-			if(count($files) < 1)
-			{
-				rmdir($path);
-				return;
-			}
-
-			foreach($files as $file)
-			{
-				if(($target = self::isDir($path . DIRECTORY_SEPARATOR . $file)) === FALSE)
-				{
-					continue;
-				}
-
-				self::removeBlankDir($target);
 			}
 		}*/
 
@@ -1103,18 +1109,6 @@ if (!class_exists('\\X2board\\Includes\\Classes\\FileHandler')) {
 		/*public static function hasContent($filename)
 		{
 			return (is_readable($filename) && (filesize($filename) > 0));
-		}*/
-
-		/**
-		 * Check it is dir
-		 *
-		 * @param string $dir Target dir path
-		 * @return bool Returns FALSE if the dir is not dir, or Returns full path of dir(string).
-		 */
-		/*public static function isDir($path)
-		{
-			$path = self::getRealPath($path);
-			return is_dir($path) ? $path : FALSE;
 		}*/
 
 		/**
