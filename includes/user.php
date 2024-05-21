@@ -58,7 +58,7 @@ if ( !defined( 'X2B_CACHE_PATH' ) ) {
 }
 
 if ( !defined( 'X2B_ATTACH_FILE_PATH' ) ) {
-    define('X2B_ATTACH_FILE_PATH', X2B_DOMAIN.'/attach');
+    define('X2B_ATTACH_FILE_PATH', X2B_DOMAIN.DIRECTORY_SEPARATOR.'attach');
 }
 
 global $G_X2B_CACHE;

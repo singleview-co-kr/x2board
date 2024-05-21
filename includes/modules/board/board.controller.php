@@ -138,10 +138,11 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 			}
 
 			// setup variables
-			$obj = \X2board\Includes\Classes\Context::gets('board_id', 'post_id', 'title', 'content', 'nick_name', 
-															'category_id','is_secret', 'is_notice', 'password', 
+			$obj = \X2board\Includes\Classes\Context::gets('board_id', 'post_id', 'title', ' title_bold', 'is_notice',
+															'content', 'nick_name', 'category_id', 'password', 
+															// 'is_secret', 
 															'allow_comment',
-															// 'status',  // for XE board skin compatible
+															'status',  // for XE board skin compatible
 														);
 			if(is_null($obj->board_id) || intval($obj->board_id) <= 0) {
 				$this->add('s_wp_redirect_url', $this->_s_wp_post_guid.'?cmd='.X2B_CMD_VIEW_MESSAGE.'&message='.__('msg_invalid_request', 'x2board'));
@@ -240,11 +241,12 @@ $module_config->mobile_use_editor = 'Y';
 			$s_public_status = $o_post_model->get_config_status('public');
 			unset($o_post_model);
 			
-			$obj->status = $obj->is_secret == 'Y' ? $s_secret_status : $s_public_status;  // PUBLIC SECRET TEMP
-			if($obj->is_secret == 'Y' || strtoupper($obj->status) == $s_secret_status) {
+			// $obj->status = $obj->is_secret == 'Y' ? $s_secret_status : $s_public_status;  // PUBLIC SECRET TEMP
+			// if($obj->is_secret == 'Y' || strtoupper($obj->status) == $s_secret_status) {
+			if(strtoupper($obj->status) == $s_secret_status) {
 				$use_status = $this->module_info->use_status; // explode('|@|', $this->module_info->use_status);
 				if(!is_array($use_status) || !in_array($s_secret_status, $use_status)) {
-					unset($obj->is_secret);
+					// unset($obj->is_secret);
 					$obj->status = $s_public_status;
 				}
 			}

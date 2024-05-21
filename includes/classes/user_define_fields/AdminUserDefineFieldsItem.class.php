@@ -1,12 +1,10 @@
 <?php
-namespace X2board\Includes\Classes;
-/* Copyright (C) XEHub <https://www.xehub.io> */
+/* Copyright (C) singleview.co.kr <https://singleview.co.kr> */
 
 /**
- * A class to handle extra variables used in posts, member and others
- *
- * @author XEHub (developers@xpressengine.com)
- */ 
+ * A class to handle extra variables used in posts
+ */
+namespace X2board\Includes\Classes;
 if (!defined('ABSPATH')) {
 	exit;
 } // Exit if accessed directly
@@ -33,8 +31,10 @@ if (!class_exists('\\X2board\\Includes\\Classes\\AdminUserDefineFieldsItem')) {
 
 		// optional
 		protected $_s_hidden = null;
-		protected $_s_secret_permission = null;
-		protected $_a_secret = array();
+		protected $_s_email_permission = null;
+		protected $_a_email = array();
+		// protected $_s_secret_permission = null;
+		// protected $_a_secret = array();
 		protected $_s_notice_permission = null;
 		protected $_a_notice = array();
 		protected $_s_allow_comment_permission = null;
@@ -76,12 +76,20 @@ if (!class_exists('\\X2board\\Includes\\Classes\\AdminUserDefineFieldsItem')) {
 			if(isset($a_single_field['hidden'])) {
 				$this->_s_hidden = $a_single_field['hidden'];
 			}
-			if(isset($a_single_field['secret_permission'])) {
-				$this->_s_secret_permission = $a_single_field['secret_permission'];
+
+			if(isset($a_single_field['email_permission'])) {
+				$this->_s_email_permission = $a_single_field['email_permission'];
 			}
-			if(isset($a_single_field['secret']) && is_array($a_single_field['secret']) ) {
-				$this->_a_secret = $a_single_field['secret'];
+			if(isset($a_single_field['email']) && is_array($a_single_field['email']) ) {
+				$this->_a_email = $a_single_field['email'];
 			}
+
+			// if(isset($a_single_field['secret_permission'])) {
+			// 	$this->_s_secret_permission = $a_single_field['secret_permission'];
+			// }
+			// if(isset($a_single_field['secret']) && is_array($a_single_field['secret']) ) {
+			// 	$this->_a_secret = $a_single_field['secret'];
+			// }
 			if(isset($a_single_field['notice_permission'])) {
 				$this->_s_notice_permission = $a_single_field['notice_permission'];
 			}
@@ -317,9 +325,21 @@ if (!class_exists('\\X2board\\Includes\\Classes\\AdminUserDefineFieldsItem')) {
 							</div>';
 			}
 			if($this->_s_field_type == 'option') {
-			// if(!is_null($this->_s_secret_permission)) { //if(isset($item['secret_permission'])) {
 				$s_html .= 	'<div class="attr-row">
-											<label class="attr-name" for="'.esc_attr($this->_s_meta_key).'_secret">'.__('Allow secret post', 'x2board').'</label>
+										<label class="attr-name" for="'.esc_attr($this->_s_meta_key).'_email">'.__('Allow email for a guest', 'x2board').'</label>
+											<div class="attr-value">
+												<select id="'.esc_attr($this->_s_meta_key).'_email" name="fields[option][email_permission]" class="field_data roles" onchange="x2board_fields_permission_roles_view(this)">';
+				$s_selected = $this->_s_email_permission == 'allow' ? 'selected' : '';
+				$s_html .= 							'<option value="allow" '.$s_selected.'>'.__('Allow', 'x2board').'</option>';
+				$s_selected = !$this->_s_email_permission || $this->_s_email_permission == 'disallow' ? 'selected' : '';
+				$s_html .= 							'<option value="disallow" '.$s_selected.'>'.__('Disallow', 'x2board').'</option>';
+				$s_html .= 						'</select>';
+				$s_html .=	 				'</div>
+										</div>';
+			// if(!is_null($this->_s_secret_permission)) { //if(isset($item['secret_permission'])) {
+				/*
+				$s_html .= 	'<div class="attr-row">
+										<label class="attr-name" for="'.esc_attr($this->_s_meta_key).'_secret">'.__('Allow secret post', 'x2board').'</label>
 											<div class="attr-value">
 												<select id="'.esc_attr($this->_s_meta_key).'_secret" name="fields[option][secret_permission]" class="field_data roles" onchange="x2board_fields_permission_roles_view(this)">';
 				$s_selected = $this->_s_secret_permission == 'all' ? 'selected' : '';
@@ -339,6 +359,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\AdminUserDefineFieldsItem')) {
 				$s_html .=	 					'</div>
 											</div>
 										</div>';
+										*/
 			// }
 			// if(!is_null($this->_s_notice_permission)) { //if(isset($item['notice_permission'])) {
 				$s_html .=	 			'<div class="attr-row">

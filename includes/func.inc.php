@@ -542,7 +542,7 @@ function zdate($str, $format = 'Y-m-d H:i:s', $conversion = TRUE) {
 		}
 	}
 	// If year value is less than 1970, handle it separately.
-	if((int) substr($str, 0, 4) < 1970) {
+	/*if((int) substr($str, 0, 4) < 1970) {
 		$hour = (int) substr($str, 8, 2);
 		$min = (int) substr($str, 10, 2);
 		$sec = (int) substr($str, 12, 2);
@@ -567,9 +567,9 @@ function zdate($str, $format = 'Y-m-d H:i:s', $conversion = TRUE) {
 		);
 		$string = strtr($format, $trans);
 	}
-	else { // if year value is greater than 1970, get unixtime by using ztime() for date() function's argument. 
+	else {*/ // if year value is greater than 1970, get unixtime by using ztime() for date() function's argument. 
 		$string = date($format, ztime($str));
-	}
+	//}
 	// change day and am/pm for each language
 	$a_unit_week = \X2board\Includes\Classes\Context::get( 'unit_week' ); //Context::getLang('unit_week');
 	$a_unit_meridiem = \X2board\Includes\Classes\Context::get( 'unit_meridiem' ); //Context::getLang('unit_meridiem');
@@ -601,9 +601,9 @@ function ztime($str) {
 	if(!$str) {
 		return;
 	}
-	if (strlen($str) === 9 || (strlen($str) === 10 && $str <= 2147483647)) {
- 		return intval($str);
- 	}
+	// if (strlen($str) === 9 || (strlen($str) === 10 && $str <= 2147483647)) {
+ 	// 	return intval($str);
+ 	// }
 	$hour = (int) substr($str, 8, 2);
 	$min = (int) substr($str, 10, 2);
 	$sec = (int) substr($str, 12, 2);
@@ -625,34 +625,8 @@ function ztime($str) {
  * @return int
  */
 function zgap() {
-	// $time_zone = $GLOBALS['_time_zone'];
-	// if($time_zone < 0) {
-	// 	$to = -1;
-	// }
-	// else {
-	// 	$to = 1;
-	// }
-	$min       = 60 * get_option('gmt_offset');
-	$sign      = $min < 0 ? "-" : "+";
-	$absmin    = abs($min);
-	$time_zone = sprintf("%s%02d%02d", $sign, $absmin/60, $absmin%60);
-	$to = $time_zone < 0 ? -1 : 1;
-	$t_hour = $absmin/60 * $to; // substr($time_zone, 1, 2) * $to;
-	$t_min = $absmin%60 * $to; // substr($time_zone, 3, 2) * $to;
-	$server_time_zone = date("O");
-	// if($server_time_zone < 0) {
-	// 	$so = -1;
-	// }
-	// else {
-	// 	$so = 1;
-	// }
-	$so = $server_time_zone < 0 ? -1 : 1;
-	$c_hour = substr($server_time_zone, 1, 2) * $so;
-	$c_min = substr($server_time_zone, 3, 2) * $so;
-	$g_min = $t_min - $c_min;
-	$g_hour = $t_hour - $c_hour;
-	$gap = $g_min * 60 + $g_hour * 60 * 60;
-	return $gap;
+	// this option set by \includes\admin\admin.php::register_timezone_gap()
+	return get_option( X2B_DOMAIN.'_timezone_gap');
 }
 
 /**
@@ -941,7 +915,89 @@ function getNotEncodedUrl() {
 	return preg_replace('@\berror_return_url=[^&]*|\w+=(?:&|$)@', '', $url);
 }
 
+/**
+ * Put a given tail after trimming string to the specified size
+ *
+ * @param string $string The original string to trim
+ * @param int $cut_size The size to be
+ * @param string $tail Tail to put in the end of the string after trimming
+ * @return string
+ */
+function cut_str($string, $cut_size = 0, $tail = '...') {
+	if($cut_size < 1 || !$string) {
+		return $string;
+	}
 
+	global $G_X2B_CACHE;
+	if(isset($G_X2B_CACHE['x2b_use_mb_strimwidth']) || function_exists('mb_strimwidth')) {
+		$GLOBALS['use_mb_strimwidth'] = TRUE;
+		return mb_strimwidth($string, 0, $cut_size + 4, $tail, 'utf-8');
+	}
+
+	$chars = array(12, 4, 3, 5, 7, 7, 11, 8, 4, 5, 5, 6, 6, 4, 6, 4, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 4, 4, 8, 6, 8, 6, 10, 8, 8, 9, 8, 8, 7, 9, 8, 3, 6, 7, 7, 11, 8, 9, 8, 9, 8, 8, 7, 8, 8, 10, 8, 8, 8, 6, 11, 6, 6, 6, 4, 7, 7, 7, 7, 7, 3, 7, 7, 3, 3, 6, 3, 9, 7, 7, 7, 7, 4, 7, 3, 7, 6, 10, 6, 6, 7, 6, 6, 6, 9);
+	$max_width = $cut_size * $chars[0] / 2;
+	$char_width = 0;
+
+	$string_length = strlen($string);
+	$char_count = 0;
+
+	$idx = 0;
+	while($idx < $string_length && $char_count < $cut_size && $char_width <= $max_width) {
+		$c = ord(substr($string, $idx, 1));
+		$char_count++;
+		if($c < 128) {
+			$char_width += (int) $chars[$c - 32];
+			$idx++;
+		}
+		else if(191 < $c && $c < 224) {
+			$char_width += $chars[4];
+			$idx += 2;
+		}
+		else {
+			$char_width += $chars[0];
+			$idx += 3;
+		}
+	}
+
+	$output = substr($string, 0, $idx);
+	if(strlen($output) < $string_length) {
+		$output .= $tail;
+	}
+	return $output;
+}
+
+/**
+ * If the recent post within a day, output format of YmdHis is "min/hours ago from now". If not within a day, it return format string.
+ *
+ * @param string $date Time value in format of YYYYMMDDHHIISS
+ * @param string $format If gap is within a day, returns this format.
+ * @return string
+ */
+function getTimeGap($date, $format = 'Y.m.d') {
+	// traslate yyyy-mm-dd hh:ii:ss' into 'yyyymmddhhiiss'
+	$date = preg_replace ("/[ \-\:]/i", "", $date);
+	$gap = $_SERVER['REQUEST_TIME'] + zgap() - ztime($date);
+	// $lang_time_gap = Context::getLang('time_gap');
+	$lang_time_gap = array("mins" => __('%d mins ago', 'x2board') , 
+						   "hours"=> __('%d hrs ago', 'x2board'));
+
+	// if($gap < 60) {
+	// 	$buff = sprintf($lang_time_gap['min'], (int) ($gap / 60) + 1);
+	// }
+	if($gap < 3600) { // 60 * 60
+		$buff = sprintf($lang_time_gap['mins'], (int) ($gap / 60) + 1);
+	}
+	elseif($gap < 7200 ) {  // 60 * 60 * 2
+		$buff = sprintf($lang_time_gap['hour'], (int) ($gap / 60 / 60) + 1);
+	}
+	// elseif($gap < 60 * 60 * 24) {
+	// 	$buff = sprintf($lang_time_gap['hours'], (int) ($gap / 60 / 60) + 1);
+	// }
+	else {
+		$buff = zdate($date, $format);
+	}
+	return $buff;
+}
 
 
 
@@ -1294,101 +1350,6 @@ function getNotEncodedUrl() {
 // function isSiteID($domain)
 // {
 // 	return preg_match('/^([a-zA-Z0-9\_]+)$/', $domain);
-// }
-
-/**
- * Put a given tail after trimming string to the specified size
- *
- * @param string $string The original string to trim
- * @param int $cut_size The size to be
- * @param string $tail Tail to put in the end of the string after trimming
- * @return string
- */
-// function cut_str($string, $cut_size = 0, $tail = '...')
-// {
-// 	if($cut_size < 1 || !$string)
-// 	{
-// 		return $string;
-// 	}
-
-// 	if($GLOBALS['use_mb_strimwidth'] || function_exists('mb_strimwidth'))
-// 	{
-// 		$GLOBALS['use_mb_strimwidth'] = TRUE;
-// 		return mb_strimwidth($string, 0, $cut_size + 4, $tail, 'utf-8');
-// 	}
-
-// 	$chars = array(12, 4, 3, 5, 7, 7, 11, 8, 4, 5, 5, 6, 6, 4, 6, 4, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 4, 4, 8, 6, 8, 6, 10, 8, 8, 9, 8, 8, 7, 9, 8, 3, 6, 7, 7, 11, 8, 9, 8, 9, 8, 8, 7, 8, 8, 10, 8, 8, 8, 6, 11, 6, 6, 6, 4, 7, 7, 7, 7, 7, 3, 7, 7, 3, 3, 6, 3, 9, 7, 7, 7, 7, 4, 7, 3, 7, 6, 10, 6, 6, 7, 6, 6, 6, 9);
-// 	$max_width = $cut_size * $chars[0] / 2;
-// 	$char_width = 0;
-
-// 	$string_length = strlen($string);
-// 	$char_count = 0;
-
-// 	$idx = 0;
-// 	while($idx < $string_length && $char_count < $cut_size && $char_width <= $max_width)
-// 	{
-// 		$c = ord(substr($string, $idx, 1));
-// 		$char_count++;
-// 		if($c < 128)
-// 		{
-// 			$char_width += (int) $chars[$c - 32];
-// 			$idx++;
-// 		}
-// 		else if(191 < $c && $c < 224)
-// 		{
-// 			$char_width += $chars[4];
-// 			$idx += 2;
-// 		}
-// 		else
-// 		{
-// 			$char_width += $chars[0];
-// 			$idx += 3;
-// 		}
-// 	}
-
-// 	$output = substr($string, 0, $idx);
-// 	if(strlen($output) < $string_length)
-// 	{
-// 		$output .= $tail;
-// 	}
-
-// 	return $output;
-// }
-
-/**
- * If the recent post within a day, output format of YmdHis is "min/hours ago from now". If not within a day, it return format string.
- *
- * @param string $date Time value in format of YYYYMMDDHHIISS
- * @param string $format If gap is within a day, returns this format.
- * @return string
- */
-// function getTimeGap($date, $format = 'Y.m.d')
-// {
-// 	$gap = $_SERVER['REQUEST_TIME'] + zgap() - ztime($date);
-
-// 	$lang_time_gap = Context::getLang('time_gap');
-// 	if($gap < 60)
-// 	{
-// 		$buff = sprintf($lang_time_gap['min'], (int) ($gap / 60) + 1);
-// 	}
-// 	elseif($gap < 60 * 60)
-// 	{
-// 		$buff = sprintf($lang_time_gap['mins'], (int) ($gap / 60) + 1);
-// 	}
-// 	elseif($gap < 60 * 60 * 2)
-// 	{
-// 		$buff = sprintf($lang_time_gap['hour'], (int) ($gap / 60 / 60) + 1);
-// 	}
-// 	elseif($gap < 60 * 60 * 24)
-// 	{
-// 		$buff = sprintf($lang_time_gap['hours'], (int) ($gap / 60 / 60) + 1);
-// 	}
-// 	else
-// 	{
-// 		$buff = zdate($date, $format);
-// 	}
-
-// 	return $buff;
 // }
 
 /**

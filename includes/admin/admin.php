@@ -30,6 +30,11 @@ if ( !defined( 'X2B_CMD_ADMIN_VIEW_IDX' ) ) {
 	define('X2B_CMD_ADMIN_PROC_REORDER_CATEGORY', 'x2b_proc_reorder_category');  // ajax
 }
 
+if ( !defined( 'X2B_ADMIN_ATTACH_FILE_PATH' ) ) {
+    define('X2B_ADMIN_ATTACH_FILE_PATH', X2B_DOMAIN.DIRECTORY_SEPARATOR.'admin');
+	define('X2B_ADMIN_ATTACH_FILE_URL', X2B_DOMAIN.'/admin');
+}
+
 /*  Plugins Activation Hook */
 function activate() {
 	require_once X2B_PATH . 'includes/admin/schemas/schemas.php';
@@ -113,6 +118,38 @@ function admin_init() {
 	add_action('wp_ajax_'.X2B_CMD_ADMIN_PROC_INSERT_CATEGORY, 'X2board\Includes\Admin\proc_admin_board' );  // ajax for sortable category UI
 	add_action('wp_ajax_'.X2B_CMD_ADMIN_PROC_MANAGE_CATEGORY, 'X2board\Includes\Admin\proc_admin_board' );  // ajax for sortable category UI
 	add_action('wp_ajax_'.X2B_CMD_ADMIN_PROC_REORDER_CATEGORY, 'X2board\Includes\Admin\proc_admin_board' );  // ajax for sortable category UI	
+
+	register_timezone_gap();
+}
+
+/**
+ * register timezone gap for \includes\func.inc.php::zgap()
+ *
+ * @return void
+ */
+function register_timezone_gap() {
+	// $time_zone = $GLOBALS['_time_zone'];
+	// if($time_zone < 0) {
+	// 	$to = -1;
+	// }
+	// else {
+	// 	$to = 1;
+	// }
+	$min       = 60 * get_option('gmt_offset');
+	$sign      = $min < 0 ? "-" : "+";
+	$absmin    = abs($min);
+	$time_zone = sprintf("%s%02d%02d", $sign, $absmin/60, $absmin%60);
+	$to = $time_zone < 0 ? -1 : 1;
+	$t_hour = $absmin/60 * $to; // substr($time_zone, 1, 2) * $to;
+	$t_min = $absmin%60 * $to; // substr($time_zone, 3, 2) * $to;
+	$server_time_zone = date("O");
+	$so = $server_time_zone < 0 ? -1 : 1;
+	$c_hour = substr($server_time_zone, 1, 2) * $so;
+	$c_min = substr($server_time_zone, 3, 2) * $so;
+	$g_min = $t_min - $c_min;
+	$g_hour = $t_hour - $c_hour;
+	$gap = $g_min * 60 + $g_hour * 60 * 60;
+	update_option( X2B_DOMAIN.'_timezone_gap', $gap );
 }
 	
 add_action( 'admin_init', 'X2board\Includes\Admin\admin_init' );

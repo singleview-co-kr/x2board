@@ -32,7 +32,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\post')) {
 		 * XE Status list
 		 * @var array
 		 */
-		var $statusList = array('private'=>'PRIVATE', 'public'=>'PUBLIC', 'secret'=>'SECRET', 'temp'=>'TEMP');
+		var $statusList = array('public'=>'PUBLIC', 'secret'=>'SECRET');  // ,'private'=>'PRIVATE', 'temp'=>'TEMP'
 
 		function __construct() {
 // var_dump('post claas');

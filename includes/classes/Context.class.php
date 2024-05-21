@@ -912,15 +912,15 @@ var_dump('detected view cmd:'. $s_cmd);
 				// }
 			}
 
-			if( is_null($get_vars['search_target'])){
+			if( isset($get_vars['search_target']) && is_null($get_vars['search_target'])){
 				unset($get_vars['search_target']);
 			}
-			if( is_null($get_vars['search_keyword'])){
+			if( isset($get_vars['search_keyword']) && is_null($get_vars['search_keyword'])){
 				unset($get_vars['search_keyword']);
 			}
 
 			// arrange args_list
-			for($i = 0, $c = count($args_list); $i < $c; $i += 2) {
+			for($i = 0, $c = count((array)$args_list); $i < $c; $i += 2) {
 				$key = $args_list[$i];
 				$val = trim($args_list[$i + 1]);
 // error_log(print_r($key, true));	
@@ -965,7 +965,7 @@ var_dump('detected view cmd:'. $s_cmd);
 				// if using rewrite mod
 				// if($self->allow_rewrite)
 				// {
-				$cmd = $get_vars['cmd'];
+				$cmd = isset( $get_vars['cmd'] ) ? $get_vars['cmd'] : ''; // $get_vars['cmd'];
 				$page = isset( $get_vars['page'] ) ? $get_vars['page'] : ''; // $get_vars['page'];
 				$post_id = isset( $get_vars['post_id'] ) ? $get_vars['post_id'] : '';
 				$s_category_title = isset( $get_vars['category'] ) ? $get_vars['category'] : '';
@@ -977,6 +977,7 @@ var_dump('detected view cmd:'. $s_cmd);
 					'cmd' => get_the_permalink().( strlen($cmd) > 0 ? '?'.$cmd : '' ),  // X2B_CMD_VIEW_LIST equals with blank cmd
 					'page' => get_the_permalink().'?p/'.$page,
 					'post_id' => get_the_permalink().'?'.X2B_CMD_VIEW_POST.'/'.$post_id,
+					'cmd.post_id.search_keyword.search_target' => get_the_permalink().'?'.X2B_CMD_VIEW_POST.'/'.$post_id,
 					'cmd.post_id' => '', // reserved for pretty post url  // get_the_permalink().'?'.$cmd.'/'.$post_id,
 					'cmd.page' => get_the_permalink().'?p/'.$page,
 					'category.cmd.post_id' => get_the_permalink().'?cat/'.$s_category_title,
@@ -987,8 +988,8 @@ var_dump('detected view cmd:'. $s_cmd);
 					// 'document_srl.mid.vid' => "$vid/$mid/$srl",
 					// 'act.document_srl.key.vid' => ($act == 'trackback') ? "$vid/$srl/$key/$act" : '',
 				);
-
-				$a_check_query = array( 'cmd', 'post_id', 'category', 'tag' );
+				// cmd.comment_id.page.post_id..
+				$a_check_query = array( 'cmd', 'post_id', 'category', 'tag', 'search_keyword', 'search_target' );
 				foreach( $a_check_query as $key_name ) {  // remove if null to avoid $target_map malfunction
 // if( $key_name == 'category'){
 	// error_log(print_r(strlen($get_vars[$key_name]) ==0, true));

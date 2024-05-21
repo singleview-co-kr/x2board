@@ -1,11 +1,11 @@
 <?php if(!defined('ABSPATH')) exit;?>
 <div class="wrap">
 	<div class="kboard-header-logo"></div>
-	<h1 class="wp-heading-inline"><?php echo __('KBoard : 대시보드', 'kboard')?></h1>
-	<a href="https://www.cosmosfarm.com" class="page-title-action" onclick="window.open(this.href);return false;"><?php echo __('Home', 'kboard')?></a>
-	<a href="https://www.cosmosfarm.com/threads" class="page-title-action" onclick="window.open(this.href);return false;"><?php echo __('Community', 'kboard')?></a>
-	<a href="https://www.cosmosfarm.com/support" class="page-title-action" onclick="window.open(this.href);return false;"><?php echo __('Support', 'kboard')?></a>
-	<a href="https://blog.cosmosfarm.com" class="page-title-action" onclick="window.open(this.href);return false;"><?php echo __('Blog', 'kboard')?></a>
+	<h1 class="wp-heading-inline"><?php echo __('X2Board : Dashboard', 'x2board')?></h1>
+	<a href="https://www.cosmosfarm.com" class="page-title-action" onclick="window.open(this.href);return false;"><?php echo __('Home', 'x2board')?></a>
+	<a href="https://www.cosmosfarm.com/threads" class="page-title-action" onclick="window.open(this.href);return false;"><?php echo __('Community', 'x2board')?></a>
+	<a href="https://www.cosmosfarm.com/support" class="page-title-action" onclick="window.open(this.href);return false;"><?php echo __('Support', 'x2board')?></a>
+	<a href="https://blog.cosmosfarm.com" class="page-title-action" onclick="window.open(this.href);return false;"><?php echo __('Blog', 'x2board')?></a>
 	
 	<hr class="wp-header-end">
 	
@@ -13,7 +13,7 @@
 		<?php //include 'welcome.php'?>
 	<!-- </div> -->
 	<h2 class="nav-tab-wrapper">
-		<a href="#" class="nav-tab nav-tab-active" onclick="return false;"><?php echo __('시스템 설정', 'kboard')?></a>
+		<a href="#" class="nav-tab nav-tab-active" onclick="return false;"><?php echo __('Plugin setup', 'x2board')?></a>
 	</h2>
 	<ul id="kboard-dashboard-options">
 		<li id="kboard_xssfilter">
@@ -38,7 +38,7 @@
 				<h4><?php echo get_option('kboard_fontawesome')?'Font Awesome 사용 중지되었습니다.':'Font Awesome 사용 가능합니다.'?></h4>
 				<p>
 					Font Awesome은 오픈소스 아이콘 폰트 입니다.<br>
-					KBoard의 게시판 스킨에 사용되고 있습니다.<br>
+					X2Board의 게시판 스킨에 사용되고 있습니다.<br>
 					테마의 레이아웃 또는 버튼이 깨지거나 다른 플러그인과 충돌이 발생되면 이 옵션을 비활성화해보세요.
 				</p>
 				<p><button type="submit" class="button">Font Awesome <?php echo get_option('kboard_fontawesome')?'활성화':'비활성화'?></button></p>
@@ -144,7 +144,7 @@
 				<p>
 					스킨파일 수정없이 새로운 디자인 속성을 추가할 수 있습니다.<br>
 					잘못된 CSS를 입력하게 되면 사이트 레이아웃이 깨질 수 있습니다.<br>
-					CSS 수정 관련 질문은 커뮤니티를 이용해 주세요. <a href="https://www.cosmosfarm.com/threads" onclick="window.open(this.href);return false;"><?php echo __('커뮤니티로 이동', 'kboard')?></a>
+					CSS 수정 관련 질문은 커뮤니티를 이용해 주세요. <a href="https://www.cosmosfarm.com/threads" onclick="window.open(this.href);return false;"><?php echo __('Go to the commnity', 'x2board')?></a>
 				</p>
 				<p>
 					<textarea rows="10" name="option[kboard_custom_css]"><?php echo get_option('kboard_custom_css')?></textarea>

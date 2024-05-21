@@ -1,10 +1,9 @@
 <?php
-/* Copyright (C) XEHub <https://www.xehub.io> */
-/* WP port by singleview.co.kr */
+/* Copyright (C) singleview.co.kr <https://singleview.co.kr> */
 
 /**
  * @class  boardModel
- * @author XEHub (developers@xpressengine.com)
+ * @author singleview.co.kr
  * @brief  board module  Model class
  **/
 namespace X2board\Includes\Modules\Board;
@@ -25,76 +24,79 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardModel')) {
 		 * @brief get the list configuration
 		 **/
 		// function getListConfig($module_srl)
-		// {
-		// 	$oModuleModel = getModel('module');
-		// 	$oDocumentModel = getModel('document');
+		/*public function get_list_config() {
+			$o_post_user_define_fields = new \X2board\Includes\Classes\UserDefineListFields();
+			$o_current_module_info = \X2board\Includes\Classes\Context::get('current_module_info');
+			$a_list_config = $o_post_user_define_fields->get_list_config($o_current_module_info->list_fields);
+			unset($o_post_user_define_fields);
+			unset($o_current_module_info);
+			return $a_list_config;
+		}*/
+		public function get_list_config() {
+			$a_list_config = array() ;
+			
+			// add seq number into list config
+			$o_field_no = new \stdClass();
+			$o_field_no->idx = -1;
+			$o_field_no->eid = 'no';
+			$o_field_no->var_type = 'no';
+			$o_field_no->var_name = 'no';
+			$a_list_config['no'] = $o_field_no;
 
-		// 	// get the list config value, if it is not exitsted then setup the default value
-		// 	$list_config = $oModuleModel->getModulePartConfig('board', $module_srl);
-		// 	if(!$list_config || count($list_config) <= 0)
-		// 	{
-		// 		$list_config = array( 'no', 'title', 'nick_name','regdate_dt','readed_count');
-		// 	}
+			// get the user define keys
+			$n_board_id = \X2board\Includes\Classes\Context::get('board_id');
+			$o_post_model = \X2board\Includes\getModel('post');
+			$inserted_extra_vars = $o_post_model->get_user_define_keys($n_board_id);
+			unset($o_post_model);
+			$o_post_user_define_fields = new \X2board\Includes\Classes\GuestUserDefineFields();
 
-		// 	// get the extra variables
-		// 	$inserted_extra_vars = $oDocumentModel->getExtraKeys($module_srl);
+			$a_ignore_field = array('option', 'content', 'attach', 'category' );
+			// extended user define field idx must be synced with \includes\modules\post\post.item.php::get_user_define_extended_fields()
+			$n_extended_idx = 1;
+			foreach($inserted_extra_vars as $key) {
+				if(!in_array($key->type, $a_ignore_field)) {
+					$o_field_tmp = new \stdClass();
+					$o_field_tmp->eid = $key->eid;
+					$o_field_tmp->var_name = $key->name;
+					$o_field_tmp->var_type = $key->type;
 
-		// 	foreach($list_config as $key)
-		// 	{
-		// 		if(preg_match('/^([0-9]+)$/',$key))
-		// 		{
-		// 			if($inserted_extra_vars[$key])
-		// 			{
-		// 				$output['extra_vars'.$key] = $inserted_extra_vars[$key];
-		// 			}
-		// 			else
-		// 			{
-		// 				continue;
-		// 			}
-		// 		}
-		// 		else
-		// 		{
-		// 			$output[$key] = new ExtraItem($module_srl, -1, Context::getLang($key), $key, 'N', 'N', 'N', null);
-		// 		}
-		// 	}
-		// 	return $output;
-		// }
+					$s_field_type = $o_post_user_define_fields->get_field_type($key->type);
+					if($s_field_type == 'default'){
+						$o_field_tmp->idx = -1;
+					}
+					else {
+						$o_field_tmp->idx = $n_extended_idx++;
+					}
+					$a_list_config[$key->type] = $o_field_tmp;
+				}
+			}
+			unset($inserted_extra_vars);
+			unset($o_post_user_define_fields);
 
-		/**
-		 * @brief return the default list configration value
-		 **/
-		// function getDefaultListConfig($module_srl)
-		// {
-		// 	// add virtual srl, title, registered date, update date, nickname, ID, name, readed count, voted count etc.
-		// 	$virtual_vars = array( 'no', 'title', 'regdate_dt', 'last_update_dt', 'last_post', 'nick_name',
-		// 			'user_id', 'user_name', 'readed_count', 'voted_count', 'blamed_count', 'thumbnail', 'summary', 'comment_status');
-		// 	foreach($virtual_vars as $key)
-		// 	{
-		// 		$extra_vars[$key] = new ExtraItem($module_srl, -1, Context::getLang($key), $key, 'N', 'N', 'N', null);
-		// 	}
+			// add nick_name into list config
+			$o_field_nick_name = new \stdClass();
+			$o_field_nick_name->idx = -1;
+			$o_field_nick_name->eid = 'nick_name';
+			$o_field_nick_name->var_type = 'nick_name';
+			$o_field_nick_name->var_name = 'nick_name';
+			$a_list_config['nick_name'] = $o_field_nick_name;
 
-		// 	// get the extra variables from the document model
-		// 	$oDocumentModel = getModel('document');
-		// 	$inserted_extra_vars = $oDocumentModel->getExtraKeys($module_srl);
+			// add readed_count into list config
+			$o_field_readed_count = new \stdClass();
+			$o_field_readed_count->idx = -1;
+			$o_field_readed_count->eid = 'readed_count';
+			$o_field_readed_count->var_type = 'readed_count';
+			$o_field_readed_count->var_name = 'readed_count';
+			$a_list_config['readed_count'] = $o_field_readed_count;
 
-		// 	if(count($inserted_extra_vars))
-		// 	{
-		// 		foreach($inserted_extra_vars as $obj)
-		// 		{
-		// 			$extra_vars['extra_vars'.$obj->idx] = $obj;
-		// 		}
-		// 	}
-
-		// 	return $extra_vars;
-
-		// }
-
-		/**
-		 * @brief return module name in sitemap
-		 **/
-		// function triggerModuleListInSitemap(&$obj)
-		// {
-		// 	array_push($obj, 'board');
-		// }
+			// add regdate_dt into list config
+			$o_field_regdate_dt = new \stdClass();
+			$o_field_regdate_dt->idx = -1;
+			$o_field_regdate_dt->eid = 'regdate_dt';
+			$o_field_regdate_dt->var_type = 'regdate_dt';
+			$o_field_regdate_dt->var_name = 'regdate_dt';
+			$a_list_config['regdate_dt'] = $o_field_regdate_dt;
+			return $a_list_config;
+		}
 	}
 }

@@ -31,7 +31,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 		// var $layout_file = ''; ///< name of layout file
 		// var $edited_layout_file = ''; ///< name of temporary layout files that is modified in an admin mode
 		// var $stop_proc = FALSE; ///< a flag to indicating whether to stop the execution of code.
-		var $module_config = NULL;
+		public $skin_vars = NULL;
 		// var $ajaxRequestMethod = array('XMLRPC', 'JSON');
 		// var $gzhandler_enable = TRUE;
 		private $_a_default_grant = array('list' => "guest", 
@@ -76,19 +76,29 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 			// unset unnecessary variables;
 			unset($o_rst->a_board_settings['board_title']);
 			unset($o_rst->a_board_settings['wp_page_title']);
+			
+			// set module_info
 			$this->module_info = new \stdClass();
+			$n_prefix_len = strlen(X2B_SKIN_VAR_IDENTIFIER);
 			foreach( $o_rst->a_board_settings as $s_key => $o_val ) {
+				if(substr($s_key, 0, $n_prefix_len) == X2B_SKIN_VAR_IDENTIFIER ) {
+					continue;
+				}
 				$s_key = str_replace('board_','',$s_key);
 				$this->module_info->$s_key = $o_val;
 			}
+
+			// set skin_vars
+			$this->skin_vars = (object)$o_rst->a_skin_vars;
 			unset($o_rst);
 
 			// for \includes\modules\file\file.model.php::get_upload_config() usage
 			$this->module_info->board_id = $n_board_id; 
 			Context::set('current_module_info', $this->module_info);
+			Context::set('lang_type', get_locale());
+			
 			// $this->module_info = (object)$o_rst->a_board_settings;
-// var_dump($this->module_info);
-// exit;
+
 			// $this->skin_vars = $o_module_info->skin_vars;
 
 			// $this->origin_module_info = $module_info;
@@ -445,7 +455,14 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 			}
 			ob_start();
 
+			// convert module_info into a skin-callable variable
 			extract(Context::getAll4Skin(), EXTR_SKIP);
+			
+			// convert skin_vars into a skin-callable variable via $skin_vars->var_id
+			$a_skin_vars = array('skin_vars' => $this->skin_vars);
+			extract($a_skin_vars, EXTR_SKIP);
+			unset($a_skin_vars);
+
 			include $s_skin_file_abs_path;
 			return ob_get_clean();
 		}

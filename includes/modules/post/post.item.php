@@ -14,9 +14,12 @@ namespace X2board\Includes\Modules\Post;
 
 if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 
+	require_once ( ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php' );
+	require_once ( ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php' );
+
 	class postItem extends \X2board\Includes\Classes\BaseObject	{
 		/**
-		 * Document number
+		 * post number
 		 * @var int
 		 */
 		// var $document_srl = 0;
@@ -41,6 +44,12 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 		private $_a_uploaded_file = array();
 
 		/**
+		 * memory for WP_Filesystem_Direct
+		 * @var array
+		 */
+		private $_o_fileSystemDirect = null;
+
+		/**
 		 * Constructor
 		 * @param int $post_id
 		 * @param bool $load_extra_vars
@@ -51,6 +60,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			$this->_n_wp_post_id = $post_id;
 			$this->_a_columnList = $columnList;
 			$this->_load_from_db($load_extra_vars);
+
+			if(!isset($_SESSION['x2b_post_management'])) {
+				$_SESSION['x2b_post_management'] = array();
+			}
 		}
 
 		// public function setAttribute($attribute, $load_extra_vars=true) {
@@ -196,7 +209,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 		}
 
 		public function is_new() {
-// var_dump($this);
 			$b_new = false;
 			if($this->post_id){
 				$n_expiration_sec = 86400; // kboard_new_document_notify_time();
@@ -207,10 +219,12 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			return $b_new;
 		}
 
+		// getNickName
 		public function get_nick_name() {
 			return htmlspecialchars($this->get('nick_name'), ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
 		}
 
+		// getRegdate
 		public function get_regdate($format = 'Y.m.d H:i:s') {
 			$dt_regdate = date_create($this->get('regdate_dt'));
 			$s_regdate = date_format($dt_regdate, $format);
@@ -227,12 +241,12 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 		
 		/**
 		 * Get data from database, and set the value to postItem object
-		 * @param bool $load_extra_vars
+		 * @param bool $load_extra_vars should be false not to reset $this->_n_wp_post_id for writing a new post case
 		 * @return void
 		 */
 		// function _loadFromDB($load_extra_vars = true) {
 		private function _load_from_db($load_extra_vars = true) {
-			if(!$this->_n_wp_post_id) {
+			if(!$this->_n_wp_post_id || !$load_extra_vars) {
 				return;
 			} 
 
@@ -356,23 +370,34 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 		public function get_title($cut_size = 0, $tail='...') {
 			if(!$this->_n_wp_post_id) return;
 
-			$title = $this->_get_title_text($cut_size, $tail);
+			$title = $this->get_title_text($cut_size, $tail);
 
 			$attrs = array();
 			$this->add('title_color', trim($this->get('title_color')));
-			if($this->get('title_bold')=='Y') $attrs[] = "font-weight:bold;";
-			if($this->get('title_color') && $this->get('title_color') != 'N') $attrs[] = "color:#".$this->get('title_color');
+			if($this->get('title_bold')=='Y') {
+				$attrs[] = "font-weight:bold;";
+			}
+			if($this->get('title_color') && $this->get('title_color') != 'N') {
+				$attrs[] = "color:#".$this->get('title_color');
+			}
 
-			if(count($attrs)) return sprintf("<span style=\"%s\">%s</span>", implode(';',$attrs), htmlspecialchars($title, ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
-			else return htmlspecialchars($title, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
+			if(count($attrs)) {
+				$s_title = sprintf("<span style=\"%s\">%s</span>", implode(';',$attrs), htmlspecialchars($title, ENT_COMPAT | ENT_HTML401, 'UTF-8', false));
+			}
+			else {
+				$s_title = htmlspecialchars($title, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
+			}
+			unset($attrs);
+			return esc_attr(wp_strip_all_tags($s_title));
 		}
 
-		private function _get_title_text($cut_size = 0, $tail='...') {
+		// getTitleText
+		public function get_title_text($cut_size = 0, $tail='...') {
 			if(!$this->_n_wp_post_id) {
 				return;
 			}
 			if($cut_size) {
-				$title = cut_str($this->get('title'), $cut_size, $tail);
+				$title = \X2board\Includes\cut_str($this->get('title'), $cut_size, $tail);
 			}
 			else {
 				$title = $this->get('title');
@@ -380,6 +405,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			return $title;
 		}
 
+		// getIpaddress
 		public function get_ip_addr() {
 			if($this->is_granted()) {
 				return $this->get('ipaddress');
@@ -387,6 +413,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			return '*' . strstr($this->get('ipaddress'), '.');
 		}
 
+		// getContent
 		public function get_content($add_popup_menu = false, $add_content_info = false, $resource_realpath = false, $add_xe_content_class = false, $stripEmbedTagException = false) {
 			if(!$this->_n_wp_post_id) {
 				return;
@@ -496,15 +523,18 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 
 		/**
 		 * Check whether to have a permission to write comment
-		 * Authority to write a comment and to write a document is separated
+		 * Authority to write a comment and to write a post is separated
 		 * @return bool
 		 */
-		public function is_enable_comment()
-		{
-			// Return false if not authorized, if a secret document, if the document is set not to allow any comment
-			if (!$this->allow_comment()) return false;
-			if(!$this->is_granted() && $this->is_secret()) return false;
-
+		// isEnableComment
+		public function is_enable_comment()	{
+			// Return false if not authorized, if a secret post, if the post is set not to allow any comment
+			if (!$this->allow_comment()) {
+				return false;
+			}
+			if(!$this->is_granted() && $this->is_secret()) {
+				return false;
+			}
 			return true;
 		}
 
@@ -558,7 +588,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 				return null;
 			}
 			$o_post_model = \X2board\Includes\getModel('post');
-			$a_skin_fields = $o_post_model->get_user_define_vars($this->_n_wp_post_id);
+			$inserted_extra_vars = $o_post_model->get_user_define_vars($this->_n_wp_post_id);
 			unset($o_post_model);
 
 			$o_post_user_define_fields = new \X2board\Includes\Classes\GuestUserDefineFields();
@@ -568,7 +598,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			$a_ignore_field_type = array_keys($a_default_fields);
 			unset($a_default_fields);
 			$a_user_define_extended_fields = array();
-			foreach($a_skin_fields as $n_seq=>$o_field){
+			foreach($inserted_extra_vars as $n_seq=>$o_field){
 				$field_type = (isset($o_field->type) && $o_field->type) ? $o_field->type : '';
 				if(in_array($field_type, $a_ignore_field_type) ){ // ignore default fields
 					continue;
@@ -576,13 +606,375 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 				if( is_null($o_field->value) ) {
 					continue;
 				}
-				$a_user_define_extended_fields[] = $o_field;
+				$a_user_define_extended_fields[$o_field->idx] = $o_field;
 			}
-			unset($a_skin_fields);
+			unset($inserted_extra_vars);
 			unset($a_ignore_field_type);
-// var_dump($a_user_define_extended_fields);			
 			return $a_user_define_extended_fields;
 		}
+
+		/**
+		 * Return the value obtained from getExtraImages with image tag
+		 * @param int $time_check
+		 * @return string
+		 */
+		
+		// function printExtraImages($time_check = 43200)
+		public function print_extra_images($time_check = 43200) {
+			if(!$this->_n_wp_post_id) {
+				return;
+			}
+			$buffs = $this->_get_extra_images($time_check);
+			if(!count($buffs)) {
+				return;
+			}
+
+			$s_path = sprintf('%s%s',X2B_URL, "includes/modules/post/tpl/icons/");
+			$buff = array();
+			foreach($buffs as $key => $val) {
+				$buff[] = sprintf('<img src="%s%s.gif" alt="%s" title="%s" style="margin-right:2px;" />', $s_path, $val, $val, $val);
+			}
+			return implode('', $buff);
+		}
+
+		/**
+		 * Functions to display icons for new post, latest update, secret(private) post, image/video/attachment
+		 * Determine new post and latest update by $time_interval
+		 * @param int $time_interval
+		 * @return array
+		 */
+		// function getExtraImages($time_interval = 43200)
+		private function _get_extra_images($time_interval = 43200) {
+			if(!$this->_n_wp_post_id) {
+				return;
+			}
+			// variables for icon list
+			$buffs = array();
+
+			$check_files = false;
+
+			// Check if secret post is
+			if($this->is_secret()) {
+				$buffs[] = "secret";
+			}
+
+			// Set the latest time
+			$time_check = date("YmdHis", $_SERVER['REQUEST_TIME']-$time_interval);
+
+			// Check new post
+			if($this->get('regdate_dt')>$time_check) {
+				$buffs[] = "new";
+			}
+			else if($this->get('last_update_dt')>$time_check) {
+				$buffs[] = "update";
+			}
+
+			// Check the attachment
+			if($this->has_uploaded_files()) {
+				$buffs[] = "file";
+			}
+
+			return $buffs;
+		}
+
+		// function hasUploadedFiles()
+		public function has_uploaded_files() {
+			if(!$this->_n_wp_post_id) {
+				return;
+			}
+			if($this->is_secret() && !$this->is_granted()) {
+				return false;
+			}
+			return $this->get('uploaded_count') ? true : false;
+		}
+
+		// function isCarted()
+		public function is_carted() {
+			if(isset($_SESSION['x2b_post_management'][$this->_n_wp_post_id])) {
+				return $_SESSION['x2b_post_management'][$this->_n_wp_post_id];
+			}
+			return false;
+		}
+
+		// function addCart()
+		public function add_cart() {
+			$_SESSION['x2b_post_management'][$this->_n_wp_post_id] = true;
+		}
+
+		// function removeCart()
+		public function remove_cart() {
+			unset($_SESSION['x2b_post_management'][$this->_n_wp_post_id]);
+		}
+
+		// function isEditable()
+		public function is_editable() {
+			if($this->is_granted() || !$this->get('post_author')) return true;
+			return false;
+		}
+
+		// function getSummary($str_size = 50, $tail = '...')
+		public function get_summary($str_size = 50, $tail = '...') {
+			$content = $this->get_content(FALSE, FALSE);
+			
+			$content = nl2br($content);
+
+			// For a newlink, inert a whitespace
+			$content = preg_replace('!(<br[\s]*/{0,1}>[\s]*)+!is', ' ', $content);
+
+			// Replace tags such as </p> , </div> , </li> and others to a whitespace
+			$content = str_replace(array('</p>', '</div>', '</li>', '-->'), ' ', $content);
+
+			// Remove Tags
+			$content = preg_replace('!<([^>]*?)>!is', '', $content);
+
+			// Replace < , >, "
+			$content = str_replace(array('&lt;', '&gt;', '&quot;', '&nbsp;'), array('<', '>', '"', ' '), $content);
+
+			// Delete  a series of whitespaces
+			$content = preg_replace('/ ( +)/is', ' ', $content);
+
+			// Truncate string
+			$content = trim(\X2board\Includes\cut_str($content, $str_size, $tail));
+
+			// Replace back < , <, "
+			$content = str_replace(array('<', '>', '"'),array('&lt;', '&gt;', '&quot;'), $content);
+
+			return $content;
+		}
+
+		// function getPermanentUrl()
+		public function get_permanent_url() {
+			return esc_url(\X2board\Includes\Classes\Context::get_url('cmd', X2B_CMD_VIEW_POST, 'post_id',$this->_n_wp_post_id));
+		}
+
+		/**
+		 * Return author's profile image
+		 * @return string
+		 */
+		// function getProfileImage()
+		public function get_profile_image() {
+			if(!$this->is_exists() || !$this->get('post_author')) {
+				return;
+			}
+			return get_avatar( $this->get('post_author'), 32 );
+		}
+
+		// function getExtraEidValue($eid)
+		public function get_user_define_eid_value($eid) {
+			$extra_vars = $this->get_user_define_extended_fields();
+			if($extra_vars)	{
+				// Handle extra variable(eid)
+				foreach($extra_vars as $idx => $key) {
+					$extra_eid[$key->eid] = $key;
+				}
+			}
+			if(isset($extra_eid)) {
+				if(is_array($extra_eid) && array_key_exists($eid,$extra_eid)) {
+					return $extra_eid[$eid]->getValue();
+				}
+			}
+			return '';
+		}
+
+		// function getExtraValueHTML($idx)
+		public function get_user_define_value_HTML($s_eid) {
+			$extra_vars = $this->get_user_define_extended_fields();
+			if(is_array($extra_vars) && array_key_exists($s_eid,$extra_vars)) {
+				return $extra_vars[$s_eid]->getValueHTML();
+			}
+			else {
+				return '';
+			}
+		}
+
+		// function thumbnailExists($width = 80, $height = 0, $type = '')
+		public function check_thumbnail($width = 80, $height = 0, $type = '') {
+			if(!$this->_n_wp_post_id) {
+				return false;
+			}
+			if(!$this->get_thumbnail($width, $height, $type)) {
+				return false;
+			}
+			return true;
+		}
+
+		// function getThumbnail($width = 80, $height = 0, $thumbnail_type = '')
+		public function get_thumbnail($width = 80, $height = 0, $thumbnail_type = '') {
+			// Return false if the post doesn't exist
+			if(!$this->_n_wp_post_id) return;
+
+			if($this->is_secret() && !$this->is_granted()) {
+				return;
+			}
+
+			// If not specify its height, create a square
+			if(!$height) {
+				$height = $width;
+			}
+// return;
+			// Return false if neither attachement nor image files in the post
+			$content = $this->get('content');
+			if(!$this->get('uploaded_count')) {
+				if(!$content) {
+					// $args = new \stdClass();
+					// $args->document_srl = $this->_n_wp_post_id;
+					// $output = executeQuery('document.getDocument', $args, array('content'));
+					// SELECT `content` FROM `xe_documents` as `documents` WHERE `document_srl` = ?
+					global $wpdb;
+					$o_row = $wpdb->get_row("SELECT `content` FROM `{$wpdb->prefix}x2b_posts` WHERE `post_id`={$this->_n_wp_post_id}");
+					if($o_row->content) {  // $output->toBool() && $output->data) {
+						$this->add('content', $o_row->content);
+					}
+					unset($o_row);
+				}
+				// if(!preg_match("!<img!is", $content)) {
+				// 	return;
+				// }
+			}
+
+			// Get thumbnai_type information from post module's configuration
+			if(!in_array($thumbnail_type, array('crop','ratio'))) {
+				$o_module_info = \X2board\Includes\Classes\Context::get('current_module_info');
+				$thumbnail_type = $o_module_info->thumbnail_type;
+				unset($o_module_info);
+			}
+
+			// Define thumbnail information
+			$n_board_id = \X2board\Includes\Classes\Context::get('board_id');
+			$s_rand_dir = \X2board\Includes\getNumberingPath($this->_n_wp_post_id, 3);
+			// $thumbnail_path = sprintf('files/thumbnails/%s',\X2board\Includes\getNumberingPath($this->_n_wp_post_id, 3));
+			$thumbnail_path = wp_get_upload_dir()['basedir'].DIRECTORY_SEPARATOR.X2B_DOMAIN.DIRECTORY_SEPARATOR.'thumbnails'.
+								DIRECTORY_SEPARATOR.$n_board_id.DIRECTORY_SEPARATOR.$s_rand_dir;
+			$thumbnail_file = sprintf('%s%dx%d.%s.jpg', $thumbnail_path, $width, $height, $thumbnail_type);
+			$thumbnail_lockfile = sprintf('%s%dx%d.%s.lock', $thumbnail_path, $width, $height, $thumbnail_type);
+
+			$thumbnail_url = wp_get_upload_dir()['baseurl'].'/'.X2B_DOMAIN.'/thumbnails/'.$n_board_id.'/'.$s_rand_dir;
+			$thumbnail_url = sprintf('%s%dx%d.%s.jpg', $thumbnail_url, $width, $height, $thumbnail_type);
+
+			// Return false if thumbnail file exists and its size is 0. Otherwise, return its path
+			if(file_exists($thumbnail_file) || file_exists($thumbnail_lockfile)) {
+				if(filesize($thumbnail_file) < 1) {
+					return FALSE;
+				}
+				else {
+					return $thumbnail_url . '?' . date('YmdHis', filemtime($thumbnail_file));
+				}
+			}
+
+			if( !file_exists( $thumbnail_path ) ) {
+				if(!wp_mkdir_p( $thumbnail_path ) ){
+					return FALSE;
+				}
+			}
+
+			// Create lockfile to prevent race condition
+			// FileHandler::writeFile($thumbnail_lockfile, '', 'w');
+			global $wp_filesystem;
+			$wp_filesystem->put_contents( $thumbnail_lockfile, '',
+										  FS_CHMOD_FILE // predefined mode settings for WP files
+										);
+
+			// Target File
+			$source_file = null;
+			$is_tmp_file = false;
+
+			// Find an iamge file among attached files if exists
+			if($this->has_uploaded_files()) {
+				$file_list = $this->get_uploaded_files();
+				$first_image = null;
+				foreach($file_list as $file) {
+					if($file->direct_download !== 'Y') {
+						continue;
+					}
+
+					if($file->cover_image === 'Y' && file_exists($file->uploaded_filename)) {
+						$source_file = $file->uploaded_filename;
+						break;
+					}
+
+					if($first_image) {
+						continue;
+					}
+
+					if(preg_match("/\.(jpe?g|png|gif|bmp)$/i", $file->source_filename)) {
+						if(file_exists($file->uploaded_filename)) {
+							$first_image = $file->uploaded_filename;
+						}
+					}
+				}
+
+				if(!$source_file && $first_image) {
+					$source_file = $first_image;
+				}
+			}
+			// If not exists, file an image file from the content
+			$is_tmp_file = false;
+			if(!$source_file) {
+				$random = new  \X2board\Includes\Classes\Security\Password();
+
+				preg_match_all("!<img[^>]*src=(?:\"|\')([^\"\']*?)(?:\"|\')!is", $content, $matches, PREG_SET_ORDER);
+
+				foreach($matches as $target_image) {
+					$target_src = trim($target_image[1]);
+					// if(preg_match('/\/(common|modules|widgets|addons|layouts|m\.layouts)\//i', $target_src)) continue;
+
+					if(!preg_match('/^(http|https):\/\//i',$target_src)) {
+						$target_src = Context::getRequestUri().$target_src;
+					}
+
+					$target_src = htmlspecialchars_decode($target_src);
+
+					$tmp_file = _XE_PATH_ . 'files/cache/tmp/' . $random->createSecureSalt(32, 'hex');
+					FileHandler::getRemoteFile($target_src, $tmp_file);
+					if(!file_exists($tmp_file)) continue;
+
+					$imageinfo = getimagesize($tmp_file);
+					list($_w, $_h) = $imageinfo;
+					if($imageinfo === false || ($_w < ($width * 0.3) && $_h < ($height * 0.3))) {
+						FileHandler::removeFile($tmp_file);
+						continue;
+					}
+
+					$source_file = $tmp_file;
+					$is_tmp_file = true;
+					break;
+				}
+			}
+
+			$output_file = null;
+			if($source_file) {
+				$output_file = \X2board\Includes\Classes\FileHandler::create_image_file($source_file, $thumbnail_file, $width, $height, 'jpg', $thumbnail_type);
+			}
+
+			// Remove source file if it was temporary
+			if($is_tmp_file) {
+				FileHandler::removeFile($source_file);
+			}
+
+			// Remove lockfile
+			// FileHandler::removeFile($thumbnail_lockfile);
+			
+			if(is_null($this->_o_fileSystemDirect) ) {
+				$this->_o_fileSystemDirect = new \WP_Filesystem_Direct(false);
+			}
+			$this->_o_fileSystemDirect->delete($thumbnail_lockfile);
+			// unset($fileSystemDirect);
+
+			
+
+			// Create an empty file if thumbnail generation failed
+			if(!$output_file) {
+				// FileHandler::writeFile($thumbnail_file, '','w');
+				$wp_filesystem->put_contents( $thumbnail_file, '',
+											  FS_CHMOD_FILE // predefined mode settings for WP files
+											);
+			}
+			return $thumbnail_url . '?' . date('YmdHis', filemtime($thumbnail_file));
+		}
+
+
+
+
 		
 
 		
@@ -609,12 +1001,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 		
 		
 
-		function isEditable()
-		{
-			if($this->isGranted() || !$this->get('member_srl')) return true;
-			return false;
-		}
-
+		/*
 		function useNotify()
 		{
 			return $this->get('notify_message')=='Y' ? true : false;
@@ -625,21 +1012,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			if(!$this->_n_wp_post_id) return false;
 			if($this->isCarted()) $this->removeCart();
 			else $this->addCart();
-		}
-
-		function addCart()
-		{
-			$_SESSION['document_management'][$this->_n_wp_post_id] = true;
-		}
-
-		function removeCart()
-		{
-			unset($_SESSION['document_management'][$this->_n_wp_post_id]);
-		}
-
-		function isCarted()
-		{
-			return $_SESSION['document_management'][$this->_n_wp_post_id];
 		}
 
 		function getUserID()
@@ -655,25 +1027,25 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 		function getLastUpdater()
 		{
 			return htmlspecialchars($this->get('last_updater'), ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
-		}
+		}*/
 
-		function getContentText($strlen = 0)
-		{
-			if(!$this->_n_wp_post_id) return;
+		// function getContentText($strlen = 0)
+		// {
+		// 	if(!$this->_n_wp_post_id) return;
 
-			if($this->isSecret() && !$this->isGranted() && !$this->isAccessible()) return Context::getLang('msg_is_secret');
+		// 	if($this->isSecret() && !$this->isGranted() && !$this->isAccessible()) return Context::getLang('msg_is_secret');
 
-			$result = $this->_check_accessible_from_status();
-			if($result) $_SESSION['accessible'][$this->_n_wp_post_id] = true;
+		// 	$result = $this->_check_accessible_from_status();
+		// 	if($result) $_SESSION['accessible'][$this->_n_wp_post_id] = true;
 
-			$content = $this->get('content');
-			$content = preg_replace_callback('/<(object|param|embed)[^>]*/is', array($this, '_checkAllowScriptAccess'), $content);
-			$content = preg_replace_callback('/<object[^>]*>/is', array($this, '_addAllowScriptAccess'), $content);
+		// 	$content = $this->get('content');
+		// 	$content = preg_replace_callback('/<(object|param|embed)[^>]*/is', array($this, '_checkAllowScriptAccess'), $content);
+		// 	$content = preg_replace_callback('/<object[^>]*>/is', array($this, '_addAllowScriptAccess'), $content);
 
-			if($strlen) return cut_str(strip_tags($content),$strlen,'...');
+		// 	if($strlen) return cut_str(strip_tags($content),$strlen,'...');
 
-			return htmlspecialchars($content);
-		}
+		// 	return htmlspecialchars($content);
+		// }
 
 		/**
 		 * Return transformed content by Editor codes
@@ -683,7 +1055,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 		 * @param bool $add_xe_content_class
 		 * @return string
 		 */
-		function getTransContent($add_popup_menu = true, $add_content_info = true, $resource_realpath = false, $add_xe_content_class = true)
+		/*function getTransContent($add_popup_menu = true, $add_content_info = true, $resource_realpath = false, $add_xe_content_class = true)
 		{
 			$oEditorController = getController('editor');
 
@@ -691,80 +1063,14 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			$content = $oEditorController->transComponent($content);
 
 			return $content;
-		}
+		}*/
 
-		function getSummary($str_size = 50, $tail = '...')
-		{
-			$content = $this->getContent(FALSE, FALSE);
-			
-			$content = nl2br($content);
-
-			// For a newlink, inert a whitespace
-			$content = preg_replace('!(<br[\s]*/{0,1}>[\s]*)+!is', ' ', $content);
-
-			// Replace tags such as </p> , </div> , </li> and others to a whitespace
-			$content = str_replace(array('</p>', '</div>', '</li>', '-->'), ' ', $content);
-
-			// Remove Tags
-			$content = preg_replace('!<([^>]*?)>!is', '', $content);
-
-			// Replace < , >, "
-			$content = str_replace(array('&lt;', '&gt;', '&quot;', '&nbsp;'), array('<', '>', '"', ' '), $content);
-
-			// Delete  a series of whitespaces
-			$content = preg_replace('/ ( +)/is', ' ', $content);
-
-			// Truncate string
-			$content = trim(cut_str($content, $str_size, $tail));
-
-			// Replace back < , <, "
-			$content = str_replace(array('<', '>', '"'),array('&lt;', '&gt;', '&quot;'), $content);
-
-			return $content;
-		}
-
-		function getExtraValue($idx)
+		/*function getExtraValue($idx)
 		{
 			$extra_vars = $this->getExtraVars();
 			if(is_array($extra_vars) && array_key_exists($idx,$extra_vars))
 			{
 				return $extra_vars[$idx]->getValue();
-			}
-			else
-			{
-				return '';
-			}
-		}
-
-		function getExtraValueHTML($idx)
-		{
-			$extra_vars = $this->getExtraVars();
-			if(is_array($extra_vars) && array_key_exists($idx,$extra_vars))
-			{
-				return $extra_vars[$idx]->getValueHTML();
-			}
-			else
-			{
-				return '';
-			}
-		}
-
-		function getExtraEidValue($eid)
-		{
-			$extra_vars = $this->getExtraVars();
-
-			if($extra_vars)
-			{
-				// Handle extra variable(eid)
-				foreach($extra_vars as $idx => $key)
-				{
-					$extra_eid[$key->eid] = $key;
-				}
-			}
-			
-			if(is_array($extra_eid) && array_key_exists($eid,$extra_eid))
-			{
-				return $extra_eid[$eid]->getValue();
 			}
 			else
 			{
@@ -791,238 +1097,47 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			}
 		}
 
-		function thumbnailExists($width = 80, $height = 0, $type = '')
-		{
-			if(!$this->_n_wp_post_id) return false;
-			if(!$this->getThumbnail($width, $height, $type)) return false;
-			return true;
-		}
-
 		public function getExtraVarsValue($key)
 		{
 			$extra_vals = unserialize($this->get('extra_vars'));
 			$val = $extra_vals->$key;
 			return $val;
-		}
-
-		function getThumbnail($width = 80, $height = 0, $thumbnail_type = '')
-		{
-			// Return false if the document doesn't exist
-			if(!$this->_n_wp_post_id) return;
-
-			if($this->isSecret() && !$this->isGranted())
-			{
-				return;
-			}
-
-			// If not specify its height, create a square
-			if(!$height) $height = $width;
-
-			// Return false if neither attachement nor image files in the document
-			$content = $this->get('content');
-			if(!$this->get('uploaded_count'))
-			{
-				if(!$content)
-				{
-					$args = new stdClass();
-					$args->document_srl = $this->_n_wp_post_id;
-					$output = executeQuery('document.getDocument', $args, array('content'));
-					if($output->toBool() && $output->data)
-					{
-						$content = $output->data->content;
-						$this->add('content', $content);
-					}
-				}
-
-				if(!preg_match("!<img!is", $content)) return;
-			}
-			// Get thumbnai_type information from document module's configuration
-			if(!in_array($thumbnail_type, array('crop','ratio')))
-			{
-				$config = $GLOBALS['__document_config__'];
-				if(!$config)
-				{
-					$oDocumentModel = getModel('document');
-					$config = $oDocumentModel->getDocumentConfig();
-					$GLOBALS['__document_config__'] = $config;
-				}
-				$thumbnail_type = $config->thumbnail_type;
-			}
-
-			// Define thumbnail information
-			$thumbnail_path = sprintf('files/thumbnails/%s',getNumberingPath($this->_n_wp_post_id, 3));
-			$thumbnail_file = sprintf('%s%dx%d.%s.jpg', $thumbnail_path, $width, $height, $thumbnail_type);
-			$thumbnail_lockfile = sprintf('%s%dx%d.%s.lock', $thumbnail_path, $width, $height, $thumbnail_type);
-			$thumbnail_url  = Context::getRequestUri().$thumbnail_file;
-
-			// Return false if thumbnail file exists and its size is 0. Otherwise, return its path
-			if(file_exists($thumbnail_file) || file_exists($thumbnail_lockfile))
-			{
-				if(filesize($thumbnail_file) < 1)
-				{
-					return FALSE;
-				}
-				else
-				{
-					return $thumbnail_url . '?' . date('YmdHis', filemtime($thumbnail_file));
-				}
-			}
-
-			// Create lockfile to prevent race condition
-			FileHandler::writeFile($thumbnail_lockfile, '', 'w');
-
-			// Target File
-			$source_file = null;
-			$is_tmp_file = false;
-
-			// Find an iamge file among attached files if exists
-			if($this->hasUploadedFiles())
-			{
-				$file_list = $this->getUploadedFiles();
-
-				$first_image = null;
-				foreach($file_list as $file)
-				{
-					if($file->direct_download !== 'Y') continue;
-
-					if($file->cover_image === 'Y' && file_exists($file->uploaded_filename))
-					{
-						$source_file = $file->uploaded_filename;
-						break;
-					}
-
-					if($first_image) continue;
-
-					if(preg_match("/\.(jpe?g|png|gif|bmp)$/i", $file->source_filename))
-					{
-						if(file_exists($file->uploaded_filename))
-						{
-							$first_image = $file->uploaded_filename;
-						}
-					}
-				}
-
-				if(!$source_file && $first_image)
-				{
-					$source_file = $first_image;
-				}
-			}
-			// If not exists, file an image file from the content
-			$is_tmp_file = false;
-			if(!$source_file)
-			{
-				$random = new Password();
-
-				preg_match_all("!<img[^>]*src=(?:\"|\')([^\"\']*?)(?:\"|\')!is", $content, $matches, PREG_SET_ORDER);
-
-				foreach($matches as $target_image)
-				{
-					$target_src = trim($target_image[1]);
-					if(preg_match('/\/(common|modules|widgets|addons|layouts|m\.layouts)\//i', $target_src)) continue;
-
-					if(!preg_match('/^(http|https):\/\//i',$target_src))
-					{
-						$target_src = Context::getRequestUri().$target_src;
-					}
-
-					$target_src = htmlspecialchars_decode($target_src);
-
-					$tmp_file = _XE_PATH_ . 'files/cache/tmp/' . $random->createSecureSalt(32, 'hex');
-					FileHandler::getRemoteFile($target_src, $tmp_file);
-					if(!file_exists($tmp_file)) continue;
-
-					$imageinfo = getimagesize($tmp_file);
-					list($_w, $_h) = $imageinfo;
-					if($imageinfo === false || ($_w < ($width * 0.3) && $_h < ($height * 0.3))) {
-						FileHandler::removeFile($tmp_file);
-						continue;
-					}
-
-					$source_file = $tmp_file;
-					$is_tmp_file = true;
-					break;
-				}
-			}
-
-			if($source_file)
-			{
-				$output_file = FileHandler::createImageFile($source_file, $thumbnail_file, $width, $height, 'jpg', $thumbnail_type);
-			}
-
-			// Remove source file if it was temporary
-			if($is_tmp_file)
-			{
-				FileHandler::removeFile($source_file);
-			}
-
-			// Remove lockfile
-			FileHandler::removeFile($thumbnail_lockfile);
-
-			// Create an empty file if thumbnail generation failed
-			if(!$output_file)
-			{
-				FileHandler::writeFile($thumbnail_file, '','w');
-			}
-
-			return $thumbnail_url . '?' . date('YmdHis', filemtime($thumbnail_file));
-		}
-
-		function hasUploadedFiles()
-		{
-			if(!$this->_n_wp_post_id) return;
-
-			if($this->isSecret() && !$this->isGranted()) return false;
-			return $this->get('uploaded_count')? true : false;
-		}
+		}*/
 
 		/**
 		 * Return Editor html
 		 * @return string
 		 */
-		function getEditor()
+		/*function getEditor()
 		{
 			$module_srl = $this->get('module_srl');
 			if(!$module_srl) $module_srl = Context::get('module_srl');
 
 			$oEditorModel = getModel('editor');
 			return $oEditorModel->getModuleEditor('document', $module_srl, $this->_n_wp_post_id, 'document_srl', 'content');
-		}
+		}*/
 
 		/**
 		 * Return comment editor's html
 		 * @return string
 		 */
-		function getCommentEditor()
+		/*function getCommentEditor()
 		{
 			if(!$this->isEnableComment()) return;
 
 			$oEditorModel = getModel('editor');
 			return $oEditorModel->getModuleEditor('comment', $this->get('module_srl'), $comment_srl, 'comment_srl', 'content');
-		}
-
-		/**
-		 * Return author's profile image
-		 * @return string
-		 */
-		function getProfileImage()
-		{
-			if(!$this->isExists() || !$this->get('member_srl')) return;
-			$oMemberModel = getModel('member');
-			$profile_info = $oMemberModel->getProfileImage($this->get('member_srl'));
-			if(!$profile_info) return;
-
-			return $profile_info->src;
-		}
+		}*/
 
 		/**
 		 * Change an image path in the content to absolute path
 		 * @param array $matches
 		 * @return mixed
 		 */
-		function replaceResourceRealPath($matches)
+		/*function replaceResourceRealPath($matches)
 		{
 			return preg_replace('/src=(["\']?)files/i','src=$1'.Context::getRequestUri().'files', $matches[0]);
-		}
+		}*/
 
 		// function isLocked()
 		// public function is_locked() {
@@ -1369,66 +1484,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 		// function getBrowserTitle()
 		// {
 		// 	return $this->getModuleName();
-		// }
-
-		/**
-		 * Return the value obtained from getExtraImages with image tag
-		 * @param int $time_check
-		 * @return string
-		 */
-		
-		// function printExtraImages($time_check = 43200)
-		// {
-		// 	if(!$this->_n_wp_post_id) return;
-
-		// 	$oDocumentModel = getModel('document');
-		// 	$documentConfig = $oDocumentModel->getDocumentConfig();
-		// 	if(Mobile::isFromMobilePhone()) {
-		// 		$iconSkin = $documentConfig->micons;
-		// 	}
-		// 	else {
-		// 		$iconSkin = $documentConfig->icons;
-		// 	}
-		// 	$path = sprintf('%s%s',getUrl(), "modules/document/tpl/icons/$iconSkin/");
-
-		// 	$buffs = $this->getExtraImages($time_check);
-		// 	if(!count($buffs)) return;
-
-		// 	$buff = array();
-		// 	foreach($buffs as $key => $val) {
-		// 		$buff[] = sprintf('<img src="%s%s.gif" alt="%s" title="%s" style="margin-right:2px;" />', $path, $val, $val, $val);
-		// 	}
-		// 	return implode('', $buff);
-		// }
-
-		/**
-		 * Functions to display icons for new post, latest update, secret(private) post, image/video/attachment
-		 * Determine new post and latest update by $time_interval
-		 * @param int $time_interval
-		 * @return array
-		 */
-		// function getExtraImages($time_interval = 43200)
-		// {
-		// 	if(!$this->_n_wp_post_id) return;
-		// 	// variables for icon list
-		// 	$buffs = array();
-
-		// 	$check_files = false;
-
-		// 	// Check if secret post is
-		// 	if($this->isSecret()) $buffs[] = "secret";
-
-		// 	// Set the latest time
-		// 	$time_check = date("YmdHis", $_SERVER['REQUEST_TIME']-$time_interval);
-
-		// 	// Check new post
-		// 	if($this->get('regdate')>$time_check) $buffs[] = "new";
-		// 	else if($this->get('last_update')>$time_check) $buffs[] = "update";
-
-		// 	// Check the attachment
-		// 	if($this->hasUploadedFiles()) $buffs[] = "file";
-
-		// 	return $buffs;
 		// }
 	}
 }

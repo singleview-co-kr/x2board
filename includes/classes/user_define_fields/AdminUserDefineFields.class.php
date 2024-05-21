@@ -1,12 +1,11 @@
 <?php
-namespace X2board\Includes\Classes;
-/* Copyright (C) XEHub <https://www.xehub.io> */
+/* Copyright (C) singleview.co.kr <https://singleview.co.kr> */
 
 /**
- * A class to handle extra variables used in posts, member and others
- *
- * @author XEHub (developers@xpressengine.com)
- */ 
+ * A class to handle extra variables used in posts
+ */
+namespace X2board\Includes\Classes;
+
 if (!defined('ABSPATH')) {
 	exit;
 } // Exit if accessed directly

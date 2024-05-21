@@ -1,12 +1,11 @@
 <?php
-/* Copyright (C) XEHub <https://www.xehub.io> */
-/* WP port by singleview.co.kr */
+/* Copyright (C) singleview.co.kr <https://singleview.co.kr> */
 
 /**
  * postAdminModel class
  * Post the module's admin model class
  *
- * @author XEHub (developers@xpressengine.com)
+ * @author singleview.co.kr
  * @package /modules/post
  * @version 0.1
  */

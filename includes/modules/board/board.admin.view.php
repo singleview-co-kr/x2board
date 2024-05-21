@@ -178,7 +178,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 			$whitelist .= 'mtab.clickmon.co.kr' . PHP_EOL;
 			$whitelist .= 'tab2.clickmon.co.kr';
 			
-			$iframe_whitelist_data = get_option('x2b_iframe_whitelist');
+			$iframe_whitelist_data = get_option(X2B_IFRAME_WHITELIST);
 			$iframe_whitelist_data = trim($iframe_whitelist_data);
 			
 			if(!$iframe_whitelist_data){

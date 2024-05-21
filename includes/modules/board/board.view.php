@@ -64,7 +64,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			}
 
 			$o_post_model = \X2board\Includes\getModel('post');
-			$a_status = $this->_get_status_name_list($o_post_model);
+			$a_status = $this->_get_status_name_list();
 			if(isset($a_status['SECRET'])) {
 				$this->module_info->secret = 'Y';  // for notify_message checkbox on post/comment editor
 			}
@@ -88,7 +88,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 				}
 			}
 			unset($a_user_input_field);
-			\X2board\Includes\Classes\Context::set('use_category', $b_category_activated);
+			\X2board\Includes\Classes\Context::set('use_category', $b_category_activated ? 'Y': 'N');
 			// set for comment attach feature
 			\X2board\Includes\Classes\Context::set('use_comment_attach', $b_comment_activated);
 
@@ -134,11 +134,14 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 				$s_template_path = sprintf("%sskins/%s/",$this->module_path, $this->module_info->skin);
 			}
 			$this->set_skin_path($s_template_path);
+			\X2board\Includes\Classes\Context::set('skin_path_abs', $this->skin_path);
 			\X2board\Includes\Classes\Context::set('skin_url', X2B_URL.'includes/modules/board/skins/'.$this->module_info->skin);
 
-			// 기본 style sheet 호출
-			wp_enqueue_style('x2board-sketchbook5-style', X2B_URL.'includes/modules/board/skins/'.$this->module_info->skin."/css/style.css", array(), X2B_VERSION, 'all');
-
+			// Avoid warning - Undefined variable: sort_index
+			if(!\X2board\Includes\Classes\Context::get('sort_index')) {
+				\X2board\Includes\Classes\Context::set('sort_index', null);
+			}
+			
 			//current_module_info있으므로 절대 생성하지 말것
 			// \X2board\Includes\Classes\Context::set('module_info', $this->module_info);  
 
@@ -331,8 +334,9 @@ var_dump(X2B_CMD_VIEW_LIST);
 			$this->_view_post();  // $this->dispBoardContentView();
 
 			// list config, columnList setting
-			// $oBoardModel = getModel('board');
-			// $this->listConfig = $oBoardModel->getListConfig($this->module_info->module_srl);
+			$o_board_model = \X2board\Includes\getModel('board');
+			$this->listConfig = $o_board_model->get_list_config(); //$this->module_info->module_srl);
+			unset($o_board_model);
 			if(!$this->listConfig) {
 				$this->listConfig = array();
 			}
@@ -355,13 +359,6 @@ var_dump(X2B_CMD_VIEW_LIST);
 			
 			// setup the skin file
 			echo $this->render_skin_file('list');
-		}
-
-		/**
-		 * @brief display post write form
-		 **/
-		private function _view_modify_post() {
-			$this->_view_write_post();
 		}
 
 		/**
@@ -411,7 +408,6 @@ var_dump(X2B_CMD_VIEW_POST);
 
 					$o_post_model = \X2board\Includes\getModel('post');
 					$s_temp_status = $o_post_model->get_config_status('temp');
-					unset($o_post_model);
 					
 					// if the post is TEMP saved, check Grant
 					if($o_post->get_status() == $s_temp_status) {
@@ -419,7 +415,7 @@ var_dump(X2B_CMD_VIEW_POST);
 							$o_post = $o_post_model->get_post(0);
 						}
 					}
-
+					unset($o_post_model);
 				}
 				else { // if the post is not existed, then alert a warning message					
 					\X2board\Includes\Classes\Context::set( 'post_id', '', true );
@@ -586,8 +582,8 @@ var_dump(X2B_CMD_VIEW_POST);
 			// }
 
 			// setup the list config variable on context
-			// Context::set('list_config', $this->listConfig);
-// var_dump($o_args);			
+			\X2board\Includes\Classes\Context::set('list_config', $this->listConfig);
+// var_dump($this->listConfig);			
 			// setup post list variables on context
 			$output = $o_post_model->get_post_list($o_args, $this->except_notice);  //, TRUE, $this->columnList);
 			unset($o_post_model);
@@ -611,8 +607,11 @@ var_dump(X2B_CMD_VIEW_POST);
 				}
 				$o_category_model = \X2board\Includes\getModel('category');
 				$o_category_model->set_board_id(\X2board\Includes\Classes\Context::get('board_id'));
-				\X2board\Includes\Classes\Context::set('category_recursive', $o_category_model->get_category_navigation()); // for category tab navigation
+				// \X2board\Includes\Classes\Context::set('category_recursive', $o_category_model->get_category_navigation()); // for category tab navigation
+				$a_linear_category = $o_category_model->build_linear_category();
 				unset($o_category_model);
+				\X2board\Includes\Classes\Context::set('category_list', $a_linear_category);
+				unset($a_linear_category);
 			}
 		}
 
@@ -678,6 +677,13 @@ var_dump(X2B_CMD_VIEW_POST);
 		/**
 		 * @brief display post write form
 		 **/
+		private function _view_modify_post() {
+			$this->_view_write_post();
+		}
+
+		/**
+		 * @brief display post write form
+		 **/
 		private function _view_write_post() {
 var_dump(X2B_CMD_VIEW_WRITE_POST);
 			// check grant
@@ -696,7 +702,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 				\X2board\Includes\Classes\Context::set('category_list', $a_linear_category);
 				unset($a_linear_category);
 			}
-			unset($a_user_input_field);
+			// unset($a_user_input_field);
 
 			// GET parameter post_id from request
 			$n_post_id = \X2board\Includes\Classes\Context::get('post_id');
@@ -705,14 +711,13 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			$o_post->set_post($n_post_id);
 
 			// if($oDocument->get('module_srl') == $oDocument->get('member_srl')) {
-// var_dump($o_post->get('board_id'));
 // var_dump($o_post->get('post_author'));
-			if($o_post->get('board_id') == $o_post->get('post_author')) {
-				$savedDoc = TRUE;
-			}
-			else {
-				$savedDoc = FALSE;
-			}
+			// if($o_post->get('board_id') == $o_post->get('post_author')) {
+			// 	$savedDoc = TRUE;
+			// }
+			// else {
+			// 	$savedDoc = FALSE;
+			// }
 			// $oDocument->add('module_srl', $this->module_srl);
 // var_dump($this->grant->write_post);
 			$o_post->add('board_id', \X2board\Includes\Classes\Context::get('board_id') ); // $this->board_id);
@@ -729,6 +734,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			}
 			
 			if(!$o_post->is_exists()) {
+				$o_post->set_post(\X2board\Includes\getNextSequence(), false); // reserve new post id for file appending
 				// $oModuleModel = getModel('module');
 				// $point_config = $oModuleModel->getModulePartConfig('point',$this->module_srl);
 				// unset($oModuleModel);
@@ -751,7 +757,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 				$o_post->add('status', $o_post_model->get_default_status());
 			}
 
-			$statusList = $this->_get_status_name_list($o_post_model);
+			$statusList = $this->_get_status_name_list();
 			if(count($statusList) > 0) {
 				\X2board\Includes\Classes\Context::set('status_list', $statusList);
 			}
@@ -780,13 +786,9 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			\X2board\Includes\Classes\Context::set('post', $o_post);
 			unset($o_post);
 			unset($o_post_model);
-			
-			// begin - for editor.view.php module usage	
-			\X2board\Includes\Classes\Context::set('skin_path_abs', $this->skin_path);
-			// end - for editor.view.php module usage	
 
 			// setup the skin file
-			echo $this->render_skin_file('editor_post');
+			echo $this->render_skin_file('write_form');
 		}
 
 		/**
@@ -891,10 +893,12 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 		}
 
 		// function _getStatusNameList(&$oDocumentModel)
-		private function _get_status_name_list($o_post_model) {
+		private function _get_status_name_list() {
 			$resultList = array();
 			if(!empty($this->module_info->use_status)) {
+				$o_post_model = \X2board\Includes\getModel('post');
 				$statusNameList = $o_post_model->get_status_name_list();
+				unset($o_post_model);
 				$statusList = $this->module_info->use_status;
 				if(is_array($this->module_info->use_status)) {
 					foreach($this->module_info->use_status as $key => $value) {
@@ -1071,14 +1075,13 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			$a_header = array();
 			$a_header['board_id'] = get_the_ID();
 			$o_post = \X2board\Includes\Classes\Context::get('post');
+			$a_header['post_id'] = $o_post->post_id;
 			if($o_post->post_id) {  // update a old post
 				$a_header['cmd'] = X2B_CMD_PROC_MODIFY_POST;
-				$a_header['post_id'] = $o_post->post_id;
 				$a_header['content'] = htmlspecialchars($o_post->content);
 			}
 			else { // write a new post
 				$a_header['cmd'] = X2B_CMD_PROC_WRITE_POST; 
-				$a_header['post_id'] = \X2board\Includes\getNextSequence(); // reserve new post id for file appending
 				$a_header['content'] = null;
 			}
 			unset($o_post);
@@ -1119,7 +1122,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 		/**
 		 * editor스킨의 hidden field 출력
 		 */
-		public static function write_comment_hidden_fields() { 
+		public static function write_comment_hidden_fields($b_embedded_editor=false) { 
 			wp_nonce_field('x2b_'.X2B_CMD_PROC_WRITE_COMMENT, 'x2b_'.X2B_CMD_PROC_WRITE_COMMENT.'_nonce');
 
 			$header = array();
@@ -1127,21 +1130,27 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			$a_header['board_id'] = get_the_ID();
 
 			$o_post = \X2board\Includes\Classes\Context::get('post');
-			if(isset($o_post)) {  // insert a root comment
-				if($o_post->post_id) {  // this is mandatory
-					$a_header['parent_post_id'] = $o_post->post_id;
-					$a_header['editor_sequence'] = null;  // memory for a reserved editor_sequence to find comment id if uploading a file
-				}			
-				unset($o_post);
+			if($b_embedded_editor) {  // for sketchbook5 embedded_editor editor
+				$a_header['parent_post_id'] = $o_post->post_id;
+				$a_header['parent_comment_id'] = null;
 				$a_header['content'] = null;
 			}
-			else {   // insert a child comment  or update the comment
-				$o_the_comment = \X2board\Includes\Classes\Context::get('o_the_comment');
-				$a_header['parent_post_id'] = $o_the_comment->get('parent_post_id');
-				$a_header['parent_comment_id'] = $o_the_comment->get('parent_comment_id');
-				$a_header['comment_id'] = $o_the_comment->get('comment_id');
-				$a_header['content'] = htmlspecialchars($o_the_comment->get('content'));
-				unset($o_the_comment);
+			else {
+				if(isset($o_post)) {  // insert a root comment
+					if($o_post->post_id) {  // this is mandatory
+						$a_header['parent_post_id'] = $o_post->post_id;
+						$a_header['editor_sequence'] = null;  // memory for a reserved editor_sequence to find comment id if uploading a file
+					}
+					$a_header['content'] = null;
+				}
+				else {   // insert a child comment  or update the comment
+					$o_the_comment = \X2board\Includes\Classes\Context::get('o_the_comment');
+					$a_header['parent_post_id'] = $o_the_comment->get('parent_post_id');
+					$a_header['parent_comment_id'] = $o_the_comment->get('parent_comment_id');
+					$a_header['comment_id'] = $o_the_comment->get('comment_id');
+					$a_header['content'] = htmlspecialchars($o_the_comment->get('content'));
+					unset($o_the_comment);
+				}
 			}
 			unset($o_post);
 			

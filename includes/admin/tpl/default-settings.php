@@ -684,6 +684,17 @@ function x2b_settings_extra() {
 			'type'    => 'textarea',
 			'options' => 'jpg, jpeg, gif, png, bmp, pjp, pjpeg, jfif, svg, webp, ico, zip, 7z, hwp, ppt, xls, doc, txt, pdf, xlsx, pptx, docx, torrent, smi, mp4, mp3',
 		),
+		'thumbnail_type'               => array(  // this param comes from /index.php?module=admin&act=dispAdminConfigGeneral
+			'id'      => 'thumbnail_type',
+			'name'    => esc_html__( 'Thumbnail type', 'x2board' ),
+			'desc'    => esc_html__( 'Choose how to create a thumbnail', 'x2board' ),
+			'type'    => 'radio',
+			'default' => 'crop',
+			'options' => array(
+				'crop'      => esc_html__( 'Crop(default)', 'x2board' ),
+				'ratio'       => esc_html__( 'Ratio', 'x2board' ),
+			),
+		),
 		'file_allow_outlink'               => array(
 			'id'      => 'file_allow_outlink',
 			'name'    => esc_html__( 'Allow external download', 'x2board' ),
@@ -738,9 +749,36 @@ function x2b_settings_extra() {
  * @return array Feed skin vars array
  */
 function x2b_settings_skin_vars() {
+	// First, we refer the options collection.
+	global $A_X2B_ADMIN_BOARD_SETTINGS;
 
-	$settings = array(
-	);
+	// prepare for blank skin vars case
+	$settings = array('skin_vars_setup_header'	=> array(
+		'id'      => 'skin_vars_setup_header',
+		'desc'    => esc_html__( 'The skin you choosed has no skin_vars.php', 'x2board' ),
+		'type'    => 'header',
+		'options' => false,
+	));
+
+	if($A_X2B_ADMIN_BOARD_SETTINGS && isset($A_X2B_ADMIN_BOARD_SETTINGS['board_skin'])){
+		$s_skin_vars_path = X2B_PATH . 'includes\modules\board\skins\\'.$A_X2B_ADMIN_BOARD_SETTINGS['board_skin'].'\skin_vars.php';
+		if( file_exists($s_skin_vars_path) ) {
+			require_once $s_skin_vars_path;
+			$a_tmp_settings = array('skin_vars_setup_header'	=> array(
+				'id'      => 'skin_vars_setup_header',
+				// 'name'    => esc_html__( 'Advanced setup', 'x2board' ),
+				'desc'    => esc_html__( 'You can access $skin_vars->var_id on the skin file', 'x2board' ),
+				'type'    => 'header',
+				'options' => false,
+			));
+			foreach($settings as $s_id => $a_skin_var ) { // this $settings from require_once()
+				$a_skin_var['id'] = X2B_SKIN_VAR_IDENTIFIER.$a_skin_var['id'];
+				$a_tmp_settings[X2B_SKIN_VAR_IDENTIFIER.$s_id] = $a_skin_var;
+			}
+			$settings = $a_tmp_settings;
+			unset($a_tmp_settings);
+		}
+	}
 
 	/**
 	 * Filters the Feed settings array

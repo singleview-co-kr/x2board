@@ -49,8 +49,8 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 					'class' => 'x2board-attr-option',
 					'meta_key' => 'option',
 					'search' => 'N',
-					'secret_permission' => '',
-					'secret' => array(),
+					// 'secret_permission' => '',
+					// 'secret' => array(),
 					'notice_permission' => 'roles',
 					'notice'=> array('administrator'),
 					'allow_comment_permission' => 'roles',
@@ -58,7 +58,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 					'description' => '',
 					'close_button' => 'yes'
 				),
-				'nick_name' => array(
+				/*'nick_name' => array(
 					'field_type' => 'nick_name',
 					'field_label' => __('Nickname', 'x2board'),
 					'field_name' => '',
@@ -70,7 +70,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 					'placeholder' => '',
 					'description' => '',
 					'close_button' => ''
-				),
+				),*/
 				'category' => array(
 					'field_type' => 'category',
 					'field_label' => __('Category', 'x2board'),
@@ -99,6 +99,8 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 					'class' => 'x2board-attr-content',
 					'meta_key' => 'content',
 					'search' => 'Y',
+					'email_permission' => '',
+					'email' => array(),
 					'placeholder' => '',
 					'description' => '',
 					'required' => '',
@@ -114,6 +116,18 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 					'permission' => '',
 					'roles' => array(),
 					'description' => '',
+					'close_button' => 'yes'
+				),
+				'tag' => array(
+					'field_type' => 'tag',
+					'field_label' => __('Tag', 'x2board'),
+					'field_name' => '',
+					'class' => 'x2board-attr-tag',
+					'meta_key' => 'tag',
+					'search' => 'Y',
+					'placeholder' => '',
+					'description' => '',
+					'required' => '',
 					'close_button' => 'yes'
 				),
 				/*'search' => array(

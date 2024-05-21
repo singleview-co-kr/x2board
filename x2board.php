@@ -19,18 +19,23 @@ if ( !defined( 'ABSPATH' ) ) {
 if ( !defined( 'X2B_VERSION' ) ) {
     define('X2B_VERSION', '0.0.1');
 }
-if ( !defined( 'X2B_ADMIN_PAGE_TITLE' ) ) {
-    define('X2B_ADMIN_PAGE_TITLE', __('x2Board', 'x2board'));
-}
 if ( !defined( 'X2B_DOMAIN' ) ) {
     define('X2B_DOMAIN', 'x2board');
+}
+if ( !defined( 'X2B_ADMIN_PAGE_TITLE' ) ) {
+    define('X2B_ADMIN_PAGE_TITLE', X2B_DOMAIN);
 }
 if ( !defined( 'X2B_PAGE_IDENTIFIER' ) ) {
     define('X2B_PAGE_IDENTIFIER', 'Keep this mark, x2board-installed');
 }
 
+if ( !defined( 'X2B_SKIN_VAR_IDENTIFIER' ) ) {
+    define('X2B_SKIN_VAR_IDENTIFIER', 'svs32_');  // svs is abbreviation of skin vars, 32 is meaningless seldom used string
+}
+
 if ( !defined( 'X2B_REWRITE_OPTION_TITLE' ) ) {
     define('X2B_REWRITE_OPTION_TITLE', X2B_DOMAIN.'_settings_rewrite');
+    define('X2B_IFRAME_WHITELIST', X2B_DOMAIN.'_iframe_whitelist');
 }
 
 if ( !defined( 'X2B__FILE__' ) ) {

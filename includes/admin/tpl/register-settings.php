@@ -30,10 +30,10 @@ function x2b_load_settings( $board_id ) { // $o_board_info ) {
 	$o_rst = new \stdClass();
 	$o_rst->b_ok = false;
 	$o_rst->a_board_settings = null;
-	$o_rst->s_x2b_setting_title = X2B_DOMAIN.'_settings_'.$board_id;
+	$o_rst->s_x2b_setting_board_title = X2B_DOMAIN.'_settings_board_'.$board_id;
+	$o_rst->s_x2b_setting_skin_vars_title = X2B_DOMAIN.'_settings_skin_vars_'.$board_id;
 
 	$n_board_id = intval( sanitize_text_field($board_id));
-// var_dump($n_board_id)	;
 	if( intval( $n_board_id ) == 0 ) {
 		return $o_rst;
 	}
@@ -45,7 +45,7 @@ function x2b_load_settings( $board_id ) { // $o_board_info ) {
 		return $o_rst;
 	}
 	
-	$a_board_settings = get_option( $o_rst->s_x2b_setting_title );
+	$a_board_settings = get_option( $o_rst->s_x2b_setting_board_title );
 	if( $a_board_settings === false ) {
 		$o_rst->a_board_settings = array();
 	}
@@ -54,6 +54,17 @@ function x2b_load_settings( $board_id ) { // $o_board_info ) {
 	$a_board_rewrite_settings = get_option( X2B_REWRITE_OPTION_TITLE );
 	$a_board_settings['board_use_rewrite'] = isset($a_board_rewrite_settings[$board_id]) ? 'Y' : 'N' ;
 	unset($a_board_rewrite_settings);
+
+	// load skin vars into $a_board_settings for an admin configuration UX
+	$a_skin_vars = get_option( $o_rst->s_x2b_setting_skin_vars_title );
+	if( $a_skin_vars !== false ) {
+		foreach( $a_skin_vars as $s_var_id => $o_val ) {
+			$a_board_settings[X2B_SKIN_VAR_IDENTIFIER.$s_var_id] = $o_val;
+		}
+	}
+	// load skin vars into $o_rst for a guest skin
+	$o_rst->a_skin_vars = $a_skin_vars;
+	unset($a_skin_vars);
 	
 	// insert ['board_title'] and ['wp_page_title'] into $a_board_settings
 	global $wpdb;
@@ -63,10 +74,9 @@ function x2b_load_settings( $board_id ) { // $o_board_info ) {
 	$a_board_settings['wp_page_title'] = $o_wp_page->post_title;
 	unset($o_wp_page);
 
+	// build up board settings into $a_board_settings
 	foreach ( \X2board\Includes\Admin\Tpl\x2b_get_registered_settings() as $tab => $settings ) {
-// var_Dump($tab);
 		foreach ( $settings as $option ) {
-// var_Dump($option);
 			// ignore header type field
 			if ( 'header' === $option['type'] ) {
 				continue;
@@ -93,8 +103,6 @@ function x2b_load_settings( $board_id ) { // $o_board_info ) {
 	}
 	$o_rst->b_ok = true;
 	$o_rst->a_board_settings = $a_board_settings;
-	// $a_board_settings['s_x2b_setting_title'] = $s_x2b_setting_title; // return setting title together, for admin usage only
-// var_Dump($o_rst);	
 	return $o_rst;
 }
 

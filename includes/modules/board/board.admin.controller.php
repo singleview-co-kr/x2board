@@ -80,7 +80,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 
 			$_POST = stripslashes_deep($_POST);
 
-			// handle [fields] specially
+			// handle user define [fields] specially
 			if( isset($_POST['fields'] ) ) {
 				$this->_proc_user_define_fields();
 				unset( $_POST['fields']);
@@ -88,8 +88,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 
 			$n_board_id = intval(sanitize_text_field($_POST['board_id'] ));
 			$o_rst = \X2board\Includes\Admin\Tpl\x2b_load_settings( $n_board_id );
-
-// var_dump($o_rst->s_x2b_setting_title);
 			if( $o_rst->b_ok === false ) {
 				return false;
 			}
@@ -123,14 +121,19 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 				}
 				unset($_POST['grant'][$s_grant_name]);
 			}
-			
+
+			// handle skin vars configuration specially
+			$this->_save_skin_vars($o_rst->s_x2b_setting_skin_vars_title);
+
 			// do not save params below
 			unset( $_POST['board_id']);
 			unset( $_POST['board_title']);
 			unset( $_POST['wp_page_title']);
 			$s_board_use_rewrite = $_POST['board_use_rewrite'];
 			unset( $_POST['board_use_rewrite']);
-			update_option( $o_rst->s_x2b_setting_title, $_POST );
+
+			// update WP option to x2board_settings_board_[board_id]
+			update_option( $o_rst->s_x2b_setting_board_title, $_POST );
 
 			// handle [board_use_rewrite] specially
 			$o_post = get_post( $n_board_id );
@@ -147,8 +150,136 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 				}
 			}
 			update_option( X2B_REWRITE_OPTION_TITLE, $a_board_rewrite_settings );
-// exit;
 			wp_redirect(admin_url('admin.php?page=x2b_disp_board_update&board_id=' . $n_board_id ));
+		}
+
+		/**
+		 * decide file type
+		 *
+		 * @param int $s_file_name
+		 * @return bool
+		 */
+		private function _save_skin_vars($s_x2b_setting_skin_vars_title) {
+			$n_board_id = intval(sanitize_text_field($_POST['board_id'] ));
+
+			// handle image type skin vars specially
+			$n_prefix_len = strlen(X2B_SKIN_VAR_IDENTIFIER);
+		
+			$a_valid_img_file = array();
+			foreach($_FILES as $s_skin_var_id => $a_file_info) {
+				// ignore if anormally uploaded file
+				if(!is_uploaded_file($a_file_info['tmp_name'])) {
+					continue;
+				}
+				if(substr($s_skin_var_id, 0, $n_prefix_len) != X2B_SKIN_VAR_IDENTIFIER ) {
+					continue;
+				}
+				$s_skin_var_id = str_replace(X2B_SKIN_VAR_IDENTIFIER, '', $s_skin_var_id);
+				$a_valid_img_file[$s_skin_var_id] = $a_file_info;
+			}
+
+			$s_attach_path = wp_get_upload_dir()['basedir'].DIRECTORY_SEPARATOR.X2B_ADMIN_ATTACH_FILE_PATH;
+			$s_attach_url = wp_get_upload_dir()['baseurl'].'/'.X2B_ADMIN_ATTACH_FILE_URL;
+			$s_skin_dir = md5($_POST['board_skin']);
+
+			$s_path = $s_attach_path.DIRECTORY_SEPARATOR.'images'.DIRECTORY_SEPARATOR.$n_board_id.DIRECTORY_SEPARATOR.$s_skin_dir;
+			$s_url = $s_attach_url.'/images/'.$n_board_id.'/'.$s_skin_dir;
+
+			$a_skin_var = array();
+			$a_old_skin_vars = get_option( $s_x2b_setting_skin_vars_title );
+			if( count($a_valid_img_file) ) {  // update file info if requested
+				// Get random number generator
+				require_once X2B_PATH . 'includes/classes/security/Password.class.php';
+				$o_random = new \X2board\Includes\Classes\Security\Password();
+				foreach($a_valid_img_file as $s_skin_var_id => $a_file_info) {
+					if( !$this->_is_image_file($a_file_info['name']) ) {
+						continue;
+					}
+					
+					// special character to '_'
+					// change to random file name. because window php bug. window php is not recognize unicode character file name - by cherryfilter
+					$ext = substr(strrchr($a_file_info['name'],'.'),1);
+					$_filename = $o_random->create_secure_salt(12, 'hex').'.'.$ext;
+					$filename  = $s_path.DIRECTORY_SEPARATOR.$_filename;
+					$idx = 1;
+					while(file_exists($filename)) {
+						$filename = $path.preg_replace('/\.([a-z0-9]+)$/i','_'.$idx.'.$1',$_filename);
+						$idx++;
+					}
+					
+					if( !file_exists( $s_path ) ) {
+						if(!wp_mkdir_p( $s_path ) ){
+							wp_die(__('msg_not_permitted_create', 'x2board') );
+						}
+					}
+					
+					// Move the file
+					if(!@move_uploaded_file($a_file_info['tmp_name'], $filename)) {
+						$_filename = $o_random->create_secure_salt(12, 'hex').'.'.$ext;
+						$filename  = $s_path.DIRECTORY_SEPARATOR.$_filename;
+						if(!@move_uploaded_file($a_file_info['tmp_name'], $filename)) {
+							wp_die(__('msg_file_upload_error', 'x2board') );
+						}
+					}
+
+					$a_skin_var[$s_skin_var_id] = array('abs_path'=>$filename, 'full_url'=>$s_url.'/'.$_filename);
+					// delete old file
+					wp_delete_file($a_old_skin_vars[$s_skin_var_id]['abs_path']);
+				}
+				unset($o_random);
+			}
+			else {  // keep old file info if no change
+				foreach($a_old_skin_vars as $s_skin_var_id => $o_val) {
+					if(is_array($o_val)) {
+						if(isset($o_val['abs_path']) && isset($o_val['full_url'])) {
+							$a_skin_var[$s_skin_var_id] = $o_val;
+						}
+					}
+				}
+			}
+			unset($a_valid_img_file);
+
+			// delete old image skin var, if requested
+			if( isset($_POST['delete_old_file'])) {
+				$a_files_to_delete = $_POST['delete_old_file'];
+				foreach($a_files_to_delete as $s_skin_var_id => $s_file_abs_path) {
+					wp_delete_file($s_file_abs_path);
+					if(substr($s_skin_var_id, 0, $n_prefix_len) == X2B_SKIN_VAR_IDENTIFIER ) {
+						$s_skin_var_id = str_replace(X2B_SKIN_VAR_IDENTIFIER, '', $s_skin_var_id);
+						if(isset($a_skin_var[$s_skin_var_id])) {
+							unset($a_skin_var[$s_skin_var_id]);
+						}
+					}
+				}
+			}
+			unset($a_old_skin_vars);
+
+			foreach( $_POST as $s_skin_var_id => $o_value) {
+				if(substr($s_skin_var_id, 0, $n_prefix_len) == X2B_SKIN_VAR_IDENTIFIER ) {
+					$s_skin_var_id = str_replace(X2B_SKIN_VAR_IDENTIFIER, '', $s_skin_var_id);
+					$a_skin_var[$s_skin_var_id] = $o_value;
+				}
+			}
+
+			// save option to x2board_settings_skin_vars_[board_id]
+			update_option( $s_x2b_setting_skin_vars_title, $a_skin_var );
+
+			// remove skin vars configuration from $_POST
+			foreach( $_POST as $s_skin_var_id => $o_value) {
+				if(substr($s_skin_var_id, 0, $n_prefix_len) == X2B_SKIN_VAR_IDENTIFIER ) {
+					unset($_POST[$s_skin_var_id]);
+				}
+			}
+		}
+
+		/**
+		 * decide file type
+		 *
+		 * @param int $s_file_name
+		 * @return bool
+		 */
+		private function _is_image_file($s_file_name) {
+			return preg_match("/\.(jpe?g|gif|png|wm[va]|mpe?g|avi|flv|mp[1-4]|as[fx]|wav|midi?|moo?v|qt|r[am]{1,2}|m4v)$/i", $s_file_name);
 		}
 
 		/**

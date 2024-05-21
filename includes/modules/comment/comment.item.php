@@ -133,7 +133,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentItem')) {
 				return TRUE;
 			}
 
-			if($this->is_granted() || !$this->_is_secret()) {
+			if($this->is_granted() || !$this->is_secret()) {
 				$this->set_accessible();
 				return TRUE;
 			}
@@ -151,7 +151,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentItem')) {
 		}
 
 		// function isSecret()
-		private function _is_secret() {
+		public function is_secret() {
 			return $this->get('is_secret') == 'Y' ? TRUE : FALSE;
 		}
 
@@ -189,7 +189,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentItem')) {
 		 */
 		// function getContent($add_popup_menu = TRUE, $add_content_info = TRUE, $add_xe_content_class = TRUE)
 		public function get_content() {
-			if($this->_is_secret() && !$this->is_accessible()) {
+			if($this->is_secret() && !$this->is_accessible()) {
 				return __('msg_is_secret', 'x2board');
 			}
 			$s_content = $this->get('content');
@@ -227,7 +227,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentItem')) {
 
 		// function hasUploadedFiles()
 		public function has_uploaded_files() {
-			if(($this->_is_secret() && !$this->is_accessible()) && !$this->is_granted()) {
+			if(($this->is_secret() && !$this->is_accessible()) && !$this->is_granted()) {
 				return FALSE;
 			}
 			return $this->get('uploaded_count') ? TRUE : FALSE;
@@ -239,7 +239,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentItem')) {
 		 */
 		// function getUploadedFiles()
 		public function get_uploaded_files() {
-			if(($this->_is_secret() && !$this->is_accessible()) && !$this->is_granted()) {
+			if(($this->is_secret() && !$this->is_accessible()) && !$this->is_granted()) {
 				return array();
 			}
 

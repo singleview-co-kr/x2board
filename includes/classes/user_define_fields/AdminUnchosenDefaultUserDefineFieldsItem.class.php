@@ -1,12 +1,10 @@
 <?php
-namespace X2board\Includes\Classes;
-/* Copyright (C) XEHub <https://www.xehub.io> */
+/* Copyright (C) singleview.co.kr <https://singleview.co.kr> */
 
 /**
- * A class to handle extra variables used in posts, member and others
- *
- * @author XEHub (developers@xpressengine.com)
- */ 
+ * A class to handle extra variables used in posts
+ */
+namespace X2board\Includes\Classes;
 if (!defined('ABSPATH')) {
 	exit;
 } // Exit if accessed directly
@@ -29,7 +27,8 @@ if (!class_exists('\\X2board\\Includes\\Classes\\AdminUnchosenDefaultUserDefineF
 		// optional
 		protected $_s_option_field = null;
 		protected $_a_roles = array();
-		protected $_s_secret_permission = null;
+		protected $_s_email_permission = null;
+		// protected $_s_secret_permission = null;
 		protected $_s_notice_permission = null;
 		protected $_a_notice = array();
 		protected $_s_placeholder = null;
@@ -67,9 +66,12 @@ if (!class_exists('\\X2board\\Includes\\Classes\\AdminUnchosenDefaultUserDefineF
 			if(isset($a_single_field['roles']) && is_array($a_single_field['roles']) ) {
 				$this->_a_roles = $a_single_field['roles'];
 			}
-			if(isset($a_single_field['secret_permission']) ) {
-				$this->_s_secret_permission = $a_single_field['secret_permission'];
+			if(isset($a_single_field['email_permission']) ) {
+				$this->_s_email_permission = $a_single_field['email_permission'];
 			}
+			// if(isset($a_single_field['secret_permission']) ) {
+			// 	$this->_s_secret_permission = $a_single_field['secret_permission'];
+			// }
 			if(isset($a_single_field['notice_permission']) ) {
 				$this->_s_notice_permission = $a_single_field['notice_permission'];
 			}
@@ -135,7 +137,8 @@ if (!class_exists('\\X2board\\Includes\\Classes\\AdminUnchosenDefaultUserDefineF
 												</div>
 											</div>';
 			}
-			if(!is_null($this->_s_secret_permission)) { // if(isset($item['secret_permission'])) {
+			
+			/*if(!is_null($this->_s_secret_permission)) { // if(isset($item['secret_permission'])) {
 				$s_html .=					'<div class="attr-row">
 												<label class="attr-name" for="'.$this->_s_field_type.'_secret">'.__('Secret post', 'x2board').'</label>
 												<div class="attr-value">
@@ -155,7 +158,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\AdminUnchosenDefaultUserDefineF
 				$s_html .=							'</div>
 												</div>
 											</div>';
-			}
+			}*/
 			if(!is_null($this->_s_notice_permission)) { // if(isset($item['notice_permission'])) {
 				$s_html .=					'<div class="attr-row">
 												<label class="attr-name" for="'.$this->_s_field_type.'-notice">'.__('Notice', 'x2board').'</label>
