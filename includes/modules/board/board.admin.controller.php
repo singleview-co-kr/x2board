@@ -1,4 +1,6 @@
 <?php
+/* Copyright (C) singleview.co.kr <https://singleview.co.kr> */
+
 /**
  * @class  boardAdminController
  * @author singleview.co.kr
@@ -11,6 +13,8 @@ if (!defined('ABSPATH')) {
 } // Exit if accessed directly
 
 if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) {
+
+	require_once X2B_PATH . 'includes\classes\user_define_fields\UserDefineListFields.class.php';
 
 	class boardAdminController {
 
@@ -86,6 +90,14 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 				unset( $_POST['fields']);
 			}
 
+			// handle list config [fields] specially
+			if( isset($_POST['board_list_fields'] ) ) {
+				$a_list_config = $this->_proc_list_fields_config();
+				unset( $_POST['board_list_fields']);
+				$_POST['board_list_fields'] = $a_list_config;
+				unset($a_list_config);
+			}
+
 			$n_board_id = intval(sanitize_text_field($_POST['board_id'] ));
 			$o_rst = \X2board\Includes\Admin\Tpl\x2b_load_settings( $n_board_id );
 			if( $o_rst->b_ok === false ) {
@@ -151,6 +163,29 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 			}
 			update_option( X2B_REWRITE_OPTION_TITLE, $a_board_rewrite_settings );
 			wp_redirect(admin_url('admin.php?page=x2b_disp_board_update&board_id=' . $n_board_id ));
+		}
+
+		private function _proc_list_fields_config() {
+			$o_user_define_list_fields = new \X2board\Includes\Classes\UserDefineListFields();
+			$a_list_config = array();
+			$n_extended_idx = 1;
+			foreach( $_POST['board_list_fields'] as $s_eid => $a_list_config_field) {
+				$o_field_tmp = new \stdClass();
+				$o_field_tmp->eid = $a_list_config_field['eid'];
+				$o_field_tmp->var_name = $a_list_config_field['var_name'];
+				$o_field_tmp->var_type = $a_list_config_field['var_type'];
+
+				$s_field_type = $o_user_define_list_fields->get_field_type($a_list_config_field['var_type']);
+				if($s_field_type == 'default'){
+					$o_field_tmp->idx = -1;
+				}
+				else {
+					$o_field_tmp->idx = $n_extended_idx++;
+				}
+				$a_list_config[$o_field_tmp->eid] = $o_field_tmp;
+			}
+			unset($o_user_define_list_fields);
+			return $a_list_config;
 		}
 
 		/**

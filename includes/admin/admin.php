@@ -255,7 +255,7 @@ function load_scripts( $hook ) {
 	);
 	// end - for admin sortable UI
 
-	// begin - for admin user field UI
+	// begin - for admin user define field UI
 	wp_register_script(
 		X2B_DOMAIN . '-user-field-scripts',
 		X2B_URL . 'includes/admin/js/x2board-user-field.js', 
@@ -263,7 +263,17 @@ function load_scripts( $hook ) {
 		X2B_VERSION,
 		true
 	);
-	// end - for admin user field UI
+	// end - for admin user define field UI
+
+	// begin - for admin list config field UI
+	wp_register_script(
+		X2B_DOMAIN . '-list-config-field-scripts',
+		X2B_URL . 'includes/admin/js/x2board-list-field.js', 
+		array(),
+		X2B_VERSION,
+		true
+	);
+	// end - for admin list config field UI
 
 	wp_register_style(
 		X2B_DOMAIN . '-admin-style',
@@ -283,6 +293,7 @@ function load_scripts( $hook ) {
 		wp_enqueue_script( X2B_DOMAIN . '-sortable-scripts' );
 		wp_enqueue_script( X2B_DOMAIN . '-nested-sortable' );
 		wp_enqueue_script( X2B_DOMAIN . '-user-field-scripts' );
+		wp_enqueue_script( X2B_DOMAIN . '-list-config-field-scripts' );
 		wp_enqueue_style( X2B_DOMAIN . '-admin-style' );
 		wp_localize_script (X2B_DOMAIN . '-sortable-scripts', 'x2board_admin_ajax_info', $a_ajax_info );
 		add_thickbox();

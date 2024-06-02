@@ -344,6 +344,17 @@ function x2b_settings_user_define_field() {
 				'unchecked'   => 'N',
 			),
 		),
+		'board_list_fields'  => array(
+			'id'      => 'board_list_fields',
+			'name'    => esc_html__( 'List fields', 'x2board' ),
+			'desc'    => esc_html__( '스킨에서 지원하는 경우, 목록 화면의 표시 항목과 순서를 선택를 할 수 있습니다.', 'x2board' ),
+			'type'    => 'wplistfieldui',
+			'options' => false,
+			'checked_value' => array(
+				'checked' => 'Y',
+				'unchecked'   => 'N',
+			),
+		),
 	);
 
 	/**

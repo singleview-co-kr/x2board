@@ -1,4 +1,6 @@
 <?php
+/* Copyright (C) singleview.co.kr <https://singleview.co.kr> */
+
 /**
  * @class  boardAdminView
  * @author singleview.co.kr
@@ -291,6 +293,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 			require_once X2B_PATH . 'includes\admin\tpl\settings-page.php';
 			require_once X2B_PATH . 'includes\admin\tpl\default-settings.php';
 			require_once X2B_PATH . 'includes\admin\tpl\register-settings.php';
+			require_once X2B_PATH . 'includes\modules\board\board.admin.model.php';
 			require_once X2B_PATH . 'includes\modules\category\category.admin.model.php';
 			require_once X2B_PATH . 'includes\modules\post\post.admin.model.php';
 	

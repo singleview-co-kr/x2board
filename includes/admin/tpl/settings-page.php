@@ -611,6 +611,12 @@ function x2b_wpuserfieldui_callback( $args ) {
 	unset($o_cat_admin_model);
 }
 
+function x2b_wplistfieldui_callback( $args ) {
+	$o_board_admin_model = new \X2board\Includes\Modules\Board\boardAdminModel();
+	echo $o_board_admin_model->render_user_field_ui();
+	unset($o_board_admin_model);
+}
+
 /**
  * Display the default thumbnail below the setting.
  *

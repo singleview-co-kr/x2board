@@ -1,12 +1,11 @@
 <?php
-namespace X2board\Includes\Classes;
-/* Copyright (C) XEHub <https://www.xehub.io> */
+/* Copyright (C) singleview.co.kr <https://singleview.co.kr> */
 
 /**
- * A class to handle extra variables used in posts, member and others
- *
- * @author XEHub (developers@xpressengine.com)
- */ 
+ * A class to handle extra variables used in posts
+ */
+namespace X2board\Includes\Classes;
+
 if (!defined('ABSPATH')) {
 	exit;
 } // Exit if accessed directly
@@ -39,8 +38,10 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 					'roles' => array(),
 					'default_value' => '',
 					'placeholder' => '',
-					'description' => '',
-					'close_button' => ''
+					'description' => '', // admin's memo
+					'introduction' => __('Intro title field', 'x2board'), // admin's memo
+					'close_button' => '',
+					'display_on_list' => true
 				),
 				'option' => array(
 					'field_type' => 'option',
@@ -55,8 +56,10 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 					'notice'=> array('administrator'),
 					'allow_comment_permission' => 'roles',
 					'allow_comment'=> array('administrator'),
-					'description' => '',
-					'close_button' => 'yes'
+					'description' => '', // admin's memo
+					'introduction' => __('Intro option field', 'x2board'), // admin's memo
+					'close_button' => 'yes',
+					'display_on_list' => false
 				),
 				/*'nick_name' => array(
 					'field_type' => 'nick_name',
@@ -68,8 +71,10 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 					'permission' => '',
 					'default_value' => '',
 					'placeholder' => '',
-					'description' => '',
-					'close_button' => ''
+					'description' => '', // admin's memo
+					'introduction' => __('Intro nick_name field', 'x2board'), // admin's memo
+					'close_button' => '',
+					'display_on_list' => true
 				),*/
 				'category' => array(
 					'field_type' => 'category',
@@ -81,8 +86,10 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 					'permission' => '',
 					'roles' => array(),
 					'option_field' => true,
-					'description' => '',
-					'close_button' => 'yes'
+					'description' => '', // admin's memo
+					'introduction' => __('Intro category field', 'x2board'), // admin's memo
+					'close_button' => 'yes',
+					'display_on_list' => false
 				),
 				// 'captcha' => array(
 				// 	'field_type' => 'captcha',
@@ -102,9 +109,11 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 					'email_permission' => '',
 					'email' => array(),
 					'placeholder' => '',
-					'description' => '',
+					'description' => '', // admin's memo
+					'introduction' => __('Intro content field', 'x2board'), // admin's memo
 					'required' => '',
-					'close_button' => 'yes'
+					'close_button' => 'yes',
+					'display_on_list' => false
 				),
 				'attach' => array(
 					'field_type' => 'attach',
@@ -115,8 +124,10 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 					'search' => 'N',
 					'permission' => '',
 					'roles' => array(),
-					'description' => '',
-					'close_button' => 'yes'
+					'description' => '', // admin's memo
+					'introduction' => __('Intro attach field', 'x2board'), // admin's memo
+					'close_button' => 'yes',
+					'display_on_list' => false
 				),
 				'tag' => array(
 					'field_type' => 'tag',
@@ -126,9 +137,11 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 					'meta_key' => 'tag',
 					'search' => 'Y',
 					'placeholder' => '',
-					'description' => '',
+					'description' => '', // admin's memo
+					'introduction' => __('Intro tag field', 'x2board'), // admin's memo
 					'required' => '',
-					'close_button' => 'yes'
+					'close_button' => 'yes',
+					'display_on_list' => false
 				),
 				/*'search' => array(
 					'field_type' => 'search',
@@ -140,9 +153,11 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 					'permission' => '',
 					'roles' => array(),
 					'default_value' => '',
-					'description' => '',
+					'description' => '', // admin's memo
+					'introduction' => __('Intro search field', 'x2board'), // admin's memo
 					'hidden' => '',
-					'close_button' => ''
+					'close_button' => '',
+					'display_on_list' => true
 				)*/
 			);
 
@@ -159,11 +174,13 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 					'roles' => array(),
 					'default_value' => '',
 					'placeholder' => '',
-					'description' => '',
+					'description' => '', // admin's memo
+					'introduction' => __('Intro text field', 'x2board'), // admin's memo
 					'required' => '',
 					'show_document' => '',
 					'hidden' => '',
-					'close_button' => 'yes'
+					'close_button' => 'yes',
+					'display_on_list' => true
 				),
 				'select' => array(
 					'field_type' => 'select',
@@ -177,10 +194,12 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 					'default_value' => '',
 					'permission' => '',
 					'roles' => array(),
-					'description' => '',
+					'description' => '', // admin's memo
+					'introduction' => __('Intro select field', 'x2board'), // admin's memo
 					'required' => '',
 					'show_document' => '',
-					'close_button' => 'yes'
+					'close_button' => 'yes',
+					'display_on_list' => true
 				),
 				'radio' => array(
 					'field_type' => 'radio',
@@ -194,10 +213,12 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 					'default_value' => '',
 					'permission' => '',
 					'roles' => array(),
-					'description' => '',
+					'description' => '', // admin's memo
+					'introduction' => __('Intro radio field', 'x2board'), // admin's memo
 					'required' => '',
 					'show_document' => '',
-					'close_button' => 'yes'
+					'close_button' => 'yes',
+					'display_on_list' => true
 				),
 				'checkbox' => array(
 					'field_type' => 'checkbox',
@@ -210,10 +231,12 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 					'row' => array(),
 					'permission' => '',
 					'roles' => array(),
-					'description' => '',
+					'description' => '', // admin's memo
+					'introduction' => __('Intro checkbox field', 'x2board'), // admin's memo
 					'required' => '',
 					'show_document' => '',
-					'close_button' => 'yes'
+					'close_button' => 'yes',
+					'display_on_list' => true
 				),
 				'textarea' => array(
 					'field_type' => 'textarea',
@@ -229,8 +252,10 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 					'placeholder' => '',
 					'required' => '',
 					'show_document' => '',
-					'description' => '',
-					'close_button' => 'yes'
+					'description' => '', // admin's memo
+					'introduction' => __('Intro textarea field', 'x2board'), // admin's memo
+					'close_button' => 'yes',
+					'display_on_list' => false
 				),
 				'wp_editor' => array(
 					'field_type' => 'wp_editor',
@@ -246,8 +271,10 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 					'placeholder' => '',
 					'required' => '',
 					'show_document' => '',
-					'description' => '',
-					'close_button' => 'yes'
+					'description' => '', // admin's memo
+					'introduction' => __('Intro wp_editor field', 'x2board'), // admin's memo
+					'close_button' => 'yes',
+					'display_on_list' => false
 				),
 				'html' => array(
 					'field_type' => 'html',
@@ -261,8 +288,10 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 					'roles' => array(),
 					'default_value' => '',
 					'show_document' => '',
-					'description' => '',
+					'description' => '', // admin's memo
+					'introduction' => __('Intro html field', 'x2board'), // admin's memo
 					'close_button' => 'yes',
+					'display_on_list' => false,
 					'html' => ''
 				),
 				'shortcode' => array(
@@ -277,8 +306,10 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 					'roles' => array(),
 					'default_value' => '',
 					'show_document' => '',
-					'description' => '',
+					'description' => '', // admin's memo
+					'introduction' => __('Intro shortcode field', 'x2board'), // admin's memo
 					'close_button' => 'yes',
+					'display_on_list' => false,
 					'shortcode' => ''
 				),
 				'date' => array(
@@ -295,8 +326,10 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 					'placeholder' => '',
 					'required' => '',
 					'show_document' => '',
-					'description' => '',
-					'close_button' => 'yes'
+					'description' => '', // admin's memo
+					'introduction' => __('Intro date field', 'x2board'), // admin's memo
+					'close_button' => 'yes',
+					'display_on_list' => false
 				),
 				'time' => array(
 					'field_type' => 'time',
@@ -312,8 +345,10 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 					'placeholder' => '',
 					'required' => '',
 					'show_document' => '',
-					'description' => '',
-					'close_button' => 'yes'
+					'description' => '', // admin's memo
+					'introduction' => __('Intro time field', 'x2board'), // admin's memo
+					'close_button' => 'yes',
+					'display_on_list' => false
 				),
 				'email' => array(
 					'field_type' => 'email',
@@ -329,9 +364,11 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 					'placeholder' => '',
 					'required' => '',
 					'show_document' => '',
-					'description' => '',
+					'description' => '', // admin's memo
+					'introduction' => __('Intro email field', 'x2board'), // admin's memo
 					'hidden' => '',
-					'close_button' => 'yes'
+					'close_button' => 'yes',
+					'display_on_list' => true
 				),
 				'address' => array(
 					'field_type' => 'address',
@@ -347,8 +384,10 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 					'placeholder' => '',
 					'required' => '',
 					'show_document' => '',
-					'description' => '',
-					'close_button' => 'yes'
+					'description' => '', // admin's memo
+					'introduction' => __('Intro address field', 'x2board'), // admin's memo
+					'close_button' => 'yes',
+					'display_on_list' => false
 				),
 				/*
 				'color' => array(
@@ -360,9 +399,10 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 					'permission' => '',
 					'roles' => array(),
 					'default_value' => '',
-					'description' => '',
+					'description' => '', // admin's memo
 					'show_document' => '',
-					'close_button' => 'yes'
+					'close_button' => 'yes',
+					'display_on_list' => true
 				)
 				*/
 			);
