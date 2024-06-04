@@ -686,9 +686,10 @@ var_dump('post controller init()');
 			// 	}
 			// }
 			// if temporary document, regdate_dt is now setting
-			if($o_old_post->get('status') == $this->get_config_status('temp')) {
-				$o_new_obj->regdate_dt = date('Y-m-d H:i:s', current_time('timestamp')); //date('YmdHis');
-			}
+			// remove TEMP post status
+			// if($o_old_post->get('status') == $this->get_config_status('temp')) {
+			// 	$o_new_obj->regdate_dt = date('Y-m-d H:i:s', current_time('timestamp')); //date('YmdHis');
+			// }
 
 			// Insert data into the DB
 			// $output = executeQuery('document.updateDocument', $o_new_obj);

@@ -753,12 +753,13 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 				$args->statusList = $searchOpt->statusList;
 			}
 			else {
-				if($o_logged_info->is_admin == 'Y' && !$searchOpt->wp_page_id) {  // wp_page_id is board_id
-					$args->statusList = array($this->get_config_status('secret'), $this->get_config_status('public'), $this->get_config_status('temp'));
-				}
-				else {
+				// remove TEMP post status
+				// if($o_logged_info->is_admin == 'Y' && !$searchOpt->wp_page_id) {  // wp_page_id is board_id
+				// 	$args->statusList = array($this->get_config_status('secret'), $this->get_config_status('public'), $this->get_config_status('temp'));
+				// }
+				// else {
 					$args->statusList = array($this->get_config_status('secret'), $this->get_config_status('public'));
-				}
+				// }
 			}
 // var_dump($args->statusList);
 			// Category is selected, further sub-categories until all conditions

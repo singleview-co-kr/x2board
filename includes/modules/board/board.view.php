@@ -375,6 +375,7 @@ var_dump(X2B_CMD_VIEW_POST);
 			// generate post model object
 			$o_post_model = \X2board\Includes\getModel('post'); // $oDocumentModel = getModel('document');
 
+			$o_post = null;
 			/**
 			 * if the post exists, then get the post information
 			 **/
@@ -406,16 +407,15 @@ var_dump(X2B_CMD_VIEW_POST);
 						unset($o_logged_info);
 					}
 
-					$o_post_model = \X2board\Includes\getModel('post');
+					/*
+					remove TEMP post status
 					$s_temp_status = $o_post_model->get_config_status('temp');
-					
 					// if the post is TEMP saved, check Grant
 					if($o_post->get_status() == $s_temp_status) {
 						if(!$o_post->is_granted()) {
 							$o_post = $o_post_model->get_post(0);
 						}
-					}
-					unset($o_post_model);
+					}*/
 				}
 				else { // if the post is not existed, then alert a warning message					
 					\X2board\Includes\Classes\Context::set( 'post_id', '', true );
