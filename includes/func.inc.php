@@ -11,8 +11,10 @@ if ( !defined( 'ABSPATH' ) ) {
  */
 
 function plugin_loaded(){
-	// if(!session_id() && !is_admin() ) { // && !wp_is_json_request()){
-	session_start();  // activate $_SESSION while AJAX execution
+	// && !wp_is_json_request()){
+	if(!session_id() && !is_admin()) { // prevent duplicated seesion activation
+		session_start();  // activate $_SESSION while AJAX execution
+	}
 	// 언어 파일 추가
 	// load_plugin_textdomain('x2board', false, X2B_PATH . 'languages');
 	register_post_type(X2B_DOMAIN, array(
