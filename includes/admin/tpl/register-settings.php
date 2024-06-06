@@ -117,15 +117,21 @@ function x2b_register_settings() {
 	
 	// First, we write the options collection.
 	global $A_X2B_ADMIN_BOARD_SETTINGS;
-
-	$o_rst = x2b_load_settings( $_GET['board_id'] ); //$o_board_info );
-	if ( false === $o_rst->b_ok ) { // for creating a new board
-		// add_option( X2B_DOMAIN.'_settings', x2b_settings_defaults() );
+	if( isset($_GET['board_id']) ) {  // update board configuration
+		$o_rst = x2b_load_settings( $_GET['board_id'] ); //$o_board_info );
+		if ( false === $o_rst->b_ok ) { // for creating a new board
+			// add_option( X2B_DOMAIN.'_settings', x2b_settings_defaults() );
+			$A_X2B_ADMIN_BOARD_SETTINGS = x2b_settings_defaults();
+		}
+		else {  // for updating a old board
+			$A_X2B_ADMIN_BOARD_SETTINGS = $o_rst->a_board_settings;
+		}
+	}
+	else {  // create new board
+		$_GET['board_id'] = null;  // prevent PHP Notice:  Undefined index: board_id
 		$A_X2B_ADMIN_BOARD_SETTINGS = x2b_settings_defaults();
 	}
-	else {  // for updating a old board
-		$A_X2B_ADMIN_BOARD_SETTINGS = $o_rst->a_board_settings;
-	}
+
 // var_dump($o_rst->a_board_settings);
 	unset($o_rst);
 
