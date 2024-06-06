@@ -281,23 +281,25 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 				}
 				wp_redirect(home_url());
 				exit;  // required to execute wp_redirect()
+			}  ///////// end of proc mode ////////////////////// 
+			elseif($s_cmd_type === 'admin_import' ) {
+				$o_controller = \X2board\Includes\getModule('board', 'controller');
+				$o_controller->setModuleInfo(intval($_POST['board_id']));
+				unset($o_controller);
 			}
-			///////// end of proc mode ////////////////////// 
-			///////// begin of view mode ////////////////////// 
-			// set frequently used skin vars
-			$this->set( 'board_id', get_the_ID() ); // x2board id is WP page ID  get_the_ID() work only view mode
-			// global $pagename;
-			// self::set( 'wp_page_name', $pagename ); // x2board URL is WP page name
-			
-			$this->_convert_pretty_command_uri(); // pretty url is for view only
-			$s_cmd = self::get('cmd');
-			$s_cmd_prefix = substr( $s_cmd, 0, 4 );
+			else {  ///////// begin of view mode ////////////////////// 
+				$s_cmd = self::get('cmd');
+				$s_cmd_prefix = substr( $s_cmd, 0, 4 );
+				if( $s_cmd_prefix === '' || $s_cmd_prefix === 'view' ) {  // load view
 var_dump('detected view cmd:'. $s_cmd);
-			if( $s_cmd_prefix === '' || $s_cmd_prefix === 'view' ) {  // load view
-				$o_view = \X2board\Includes\getModule('board');
-// var_dump(get_the_ID());
-				$o_view->setModuleInfo(get_the_ID());
-				unset($o_view);
+					// set frequently used skin vars
+					$this->set( 'board_id', get_the_ID() ); // x2board id is WP page ID  get_the_ID() work only view mode
+					// pretty url is for view only
+					$this->_convert_pretty_command_uri();
+					$o_view = \X2board\Includes\getModule('board');
+					$o_view->setModuleInfo(get_the_ID());
+					unset($o_view);
+				}
 			}
 
 			// $this->_setUploadedArgument();

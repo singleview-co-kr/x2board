@@ -142,7 +142,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\GuestUserDefineFields')) {
 				$o_misc_info->s_permission = isset($a_kb_field['permission']) ? $a_kb_field['permission'] : null;
 
 				if(isset($a_kb_field['notice_permission'])) {
-					$o_misc_info->b_email_permission = $a_kb_field['email_permission'] == 'allow' ? true : false;
+					$o_misc_info->b_email_permission = isset($a_kb_field['email_permission']) && $a_kb_field['email_permission'] == 'allow' ? true : false;
 				}
 				else {
 					$o_misc_info->b_email_permission = null;

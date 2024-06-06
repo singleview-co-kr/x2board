@@ -220,14 +220,14 @@ function enqueue_user_scripts(){
 	// wp_localize_script('kboard-script', 'kboard_localize_strings', apply_filters('kboard_localize_strings', $localize));
 }
 
-function _launch_x2b($s_cmd_type) {
-	global $G_X2B_CACHE;
-	$G_X2B_CACHE = array();
-
+/**
+ * \includes\modules\import\import.admin.controller.php::_proc_xml_file()에서 호출
+ */
+function load_modules() {
 	if ( !defined( '__DEBUG__' ) ) {
 		define('__DEBUG__', 0);
 	}
-	
+
 	// load common classes
 	require_once X2B_PATH . 'includes/classes/Context.class.php';
 	require_once X2B_PATH . 'includes/classes/BaseObject.class.php';
@@ -245,11 +245,20 @@ function _launch_x2b($s_cmd_type) {
 
 	// load modules
 	\X2board\Includes\Classes\ModuleHandler::auto_load_modules();
+}
+
+function _launch_x2b($s_cmd_type) {
+	global $G_X2B_CACHE;
+	$G_X2B_CACHE = array();
+
+	load_modules();
 
 	$o_context = \X2board\Includes\Classes\Context::getInstance();
 	
 	// if( wp_is_json_request() ) { 
-	if( $s_cmd_type == '' && isset($_POST['action']) ) {  // $_POST['action'] comes from AJAX only
+	// $s_cmd_type == '' is primarily for admin import
+	// $_POST['action'] comes from AJAX only
+	if( $s_cmd_type == '' && isset($_POST['action']) ) { 
 		$s_cmd_type = 'proc';  // ajax call
 		$_REQUEST['cmd'] = sanitize_text_field($_POST['action']);
 	}

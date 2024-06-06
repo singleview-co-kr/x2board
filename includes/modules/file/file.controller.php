@@ -115,7 +115,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 				$_SESSION['x2b_upload_info'][$editor_sequence]->upload_target_id = $upload_target_id = \X2board\Includes\getNextSequence();
 			}
 
-			$output = $this->_insert_file($a_file_info, $n_board_id, $upload_target_id);  // , $module_srl
+			$output = $this->insert_file($a_file_info, $n_board_id, $upload_target_id);  // , $module_srl
 			// Context::setResponseMethod('JSON');
 			// if($output->get('direct_download') === 'Y') {
 				// $this->add('download_url',$output->get('uploaded_filename'));
@@ -212,7 +212,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 		 * @return BaseObject
 		 */
 		// function insertFile($file_info, $module_srl, $upload_target_srl, $download_count = 0, $manual_insert = false)
-		private function _insert_file($file_info, $n_board_id, $upload_target_id, $download_count = 0, $manual_insert = false) {
+		public function insert_file($file_info, $n_board_id, $upload_target_id, $download_count = 0, $manual_insert = false) {
 			// Call a trigger (before)
 			// $trigger_obj = new stdClass;
 			// $trigger_obj->module_srl = $module_srl;

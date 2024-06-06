@@ -801,20 +801,20 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 		// function getThumbnail($width = 80, $height = 0, $thumbnail_type = '')
 		public function get_thumbnail($width = 80, $height = 0, $thumbnail_type = '') {
 			// Return false if the post doesn't exist
-			if(!$this->_n_wp_post_id) return;
+			if(!$this->_n_wp_post_id) return false;
 
 			if($this->is_secret() && !$this->is_granted()) {
-				return;
+				return false;
 			}
 
 			// If not specify its height, create a square
 			if(!$height) {
 				$height = $width;
 			}
-// return;
+
 			// Return false if neither attachement nor image files in the post
-			$content = $this->get('content');
 			if(!$this->get('uploaded_count')) {
+				$content = $this->get('content');
 				if(!$content) {
 					// $args = new \stdClass();
 					// $args->document_srl = $this->_n_wp_post_id;
@@ -823,13 +823,14 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 					global $wpdb;
 					$o_row = $wpdb->get_row("SELECT `content` FROM `{$wpdb->prefix}x2b_posts` WHERE `post_id`={$this->_n_wp_post_id}");
 					if($o_row->content) {  // $output->toBool() && $output->data) {
+						$content = $o_row->content;
 						$this->add('content', $o_row->content);
 					}
 					unset($o_row);
 				}
-				// if(!preg_match("!<img!is", $content)) {
-				// 	return;
-				// }
+				if(!preg_match("!<img!is", $content)) {
+					return false;
+				}
 			}
 
 			// Get thumbnai_type information from post module's configuration
@@ -959,8 +960,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			}
 			$this->_o_fileSystemDirect->delete($thumbnail_lockfile);
 			// unset($fileSystemDirect);
-
-			
 
 			// Create an empty file if thumbnail generation failed
 			if(!$output_file) {

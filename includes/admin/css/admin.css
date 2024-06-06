@@ -6,6 +6,11 @@
     background: url(../images/singleview-logo.png) left top no-repeat;
 }
 
+/* tab on the header */
+.tab-x2board-setting { display: none; }
+.tab-x2board-setting-active { display: block; }
+
+/* user define fields */
 .x2board-hide { display: none; }
 
 .x2board-category-setting-left,

@@ -96,13 +96,12 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 			// get a object of post model
 			// $o_post_model = \X2board\Includes\getModel('post');
 
-			// even for manual_inserted if password exists, hash it.
-			if($obj->password) {
+			// if password exists, hash it.
+			if(!$manual_inserted && $obj->password) {
 				$obj->password = \X2board\Includes\getModel('member')->hash_password($obj->password);
 			}
 
 			// get the original posting
-			// if(!$manual_inserted) {
 			if(!$manual_inserted) {
 				// get a object of post model
 				$o_post_model = \X2board\Includes\getModel('post');

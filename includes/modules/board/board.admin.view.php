@@ -88,6 +88,29 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 		}
 
 		/**
+		 * Display the board import UX
+		 **/
+		public function disp_board_import() {
+			$this->prepare_items();
+
+			wp_register_script(
+				X2B_DOMAIN . '-tab-scripts',
+				X2B_URL . 'includes/admin/js/x2board-setting-script.js',
+				array( 'jquery' ),
+				X2B_VERSION,
+				true
+			);
+			wp_enqueue_script( X2B_DOMAIN . '-tab-scripts' );
+
+			require_once X2B_PATH . 'includes\modules\import\import.admin.model.php';
+			$o_import_admin = new \X2board\Includes\Modules\Import\importAdminModel();
+			$n_cur_auto_increment = $o_import_admin->get_x2b_sequence();
+			unset($o_import_admin);
+
+			require_once X2B_PATH . 'includes/admin/tpl/board_import.php';
+		}
+
+		/**
 		 * @brief display the board module admin contents
 		 **/
 		public function disp_board_list() {
@@ -296,66 +319,58 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 			require_once X2B_PATH . 'includes\modules\board\board.admin.model.php';
 			require_once X2B_PATH . 'includes\modules\category\category.admin.model.php';
 			require_once X2B_PATH . 'includes\modules\post\post.admin.model.php';
+
+			wp_register_script(
+				X2B_DOMAIN . '-tab-scripts',
+				X2B_URL . 'includes/admin/js/x2board-config.js',
+				array( 'jquery', 'jquery-ui-tabs' ),
+				X2B_VERSION,
+				true
+			);
+			// begin - for admin sortable UI
+			wp_register_script(
+				X2B_DOMAIN . '-sortable-scripts',
+				X2B_URL . 'includes/admin/js/x2board-category-sortable.js', 
+				array(),
+				X2B_VERSION,
+				true
+			);
+			wp_register_script(
+				X2B_DOMAIN . '-nested-sortable', 
+				X2B_URL . 'includes/admin/js/jquery.mjs.nestedSortable.js', 
+				array('jquery', 'jquery-ui-sortable'), 
+				'2.1a'
+			);
+			// end - for admin sortable UI
+		
+			// begin - for admin user define field UI
+			wp_register_script(
+				X2B_DOMAIN . '-user-field-scripts',
+				X2B_URL . 'includes/admin/js/x2board-user-field.js', 
+				array(),
+				X2B_VERSION,
+				true
+			);
+			// end - for admin user define field UI
+		
+			// begin - for admin list config field UI
+			wp_register_script(
+				X2B_DOMAIN . '-list-config-field-scripts',
+				X2B_URL . 'includes/admin/js/x2board-list-field.js', 
+				array(),
+				X2B_VERSION,
+				true
+			);
+			// end - for admin list config field UI
+
+			wp_enqueue_script( X2B_DOMAIN . '-tab-scripts' );
+			wp_enqueue_script( X2B_DOMAIN . '-sortable-scripts' );
+			wp_enqueue_script( X2B_DOMAIN . '-nested-sortable' );
+			wp_enqueue_script( X2B_DOMAIN . '-user-field-scripts' );
+			wp_enqueue_script( X2B_DOMAIN . '-list-config-field-scripts' );
 	
 			\X2board\Includes\Admin\Tpl\x2b_register_settings();
 			\X2board\Includes\Admin\Tpl\x2b_options_page();
-
-			// global $wp_settings_fields;
-// var_dump($wp_settings_fields);
-
-			// if(!in_array($this->module_info->module, array('admin', 'board','blog','guestbook'))) {
-			// 	return $this->alertMessage('msg_invalid_request');
-			// }
-
-			// // get the skins list
-			// $oModuleModel = getModel('module');
-			// $skin_list = $oModuleModel->getSkins($this->module_path);
-			// Context::set('skin_list',$skin_list);
-
-			// $mskin_list = $oModuleModel->getSkins($this->module_path, "m.skins");
-			// Context::set('mskin_list', $mskin_list);
-
-			// // get the layouts list
-			// $oLayoutModel = getModel('layout');
-			// $layout_list = $oLayoutModel->getLayoutList();
-			// Context::set('layout_list', $layout_list);
-
-			// $mobile_layout_list = $oLayoutModel->getLayoutList(0,"M");
-			// Context::set('mlayout_list', $mobile_layout_list);
-
-			// $security = new Security();
-			// $security->encodeHTML('skin_list..title','mskin_list..title');
-			// $security->encodeHTML('layout_list..title','layout_list..layout');
-			// $security->encodeHTML('mlayout_list..title','mlayout_list..layout');
-
-			// // get document status list
-			// $oDocumentModel = getModel('document');
-			// $documentStatusList = $oDocumentModel->getStatusNameList();
-			// Context::set('document_status_list', $documentStatusList);
-
-			// $oBoardModel = getModel('board');
-
-			// // setup the extra vaiables
-			// $extra_vars = $oBoardModel->getDefaultListConfig($this->module_info->module_srl);
-			// Context::set('extra_vars', $extra_vars);
-
-			// // setup the list config (install the default value if there is no list config)
-			// Context::set('list_config', $oBoardModel->getListConfig($this->module_info->module_srl));
-
-			// // setup extra_order_target
-			// $module_extra_vars = $oDocumentModel->getExtraKeys($this->module_info->module_srl);
-			// $extra_order_target = array();
-			// foreach($module_extra_vars as $oExtraItem)
-			// {
-			// 	$extra_order_target[$oExtraItem->eid] = $oExtraItem->name;
-			// }
-			// Context::set('extra_order_target', $extra_order_target);
-
-			// $security = new Security();
-			// $security->encodeHTML('extra_vars..name','list_config..name');
-
-			// // set the template file
-			// $this->setTemplateFile('board_insert');
 		}
 
 		/**

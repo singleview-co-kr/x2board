@@ -21,10 +21,13 @@ if ( !defined( 'X2B_CMD_ADMIN_VIEW_IDX' ) ) {
 	define('X2B_CMD_ADMIN_VIEW_BOARD_LIST', 'x2b_disp_board_list');
 	define('X2B_CMD_ADMIN_VIEW_BOARD_INSERT', 'x2b_disp_board_insert');
 	define('X2B_CMD_ADMIN_VIEW_BOARD_UPDATE', 'x2b_disp_board_update');
+	define('X2B_CMD_ADMIN_VIEW_BOARD_IMPORT', 'x2b_disp_board_import');
 	
     // define admin controller cmd
     define('X2B_CMD_ADMIN_PROC_INSERT_BOARD', 'x2b_proc_insert_board');
 	define('X2B_CMD_ADMIN_PROC_UPDATE_BOARD', 'x2b_proc_update_board');
+	define('X2B_CMD_ADMIN_PROC_IMPORT_BOARD', 'x2b_proc_import_board');
+	define('X2B_CMD_ADMIN_PROC_UPDATE_SEQ', 'x2b_proc_update_seq');
 	define('X2B_CMD_ADMIN_PROC_INSERT_CATEGORY', 'x2b_proc_insert_category');  // ajax
 	define('X2B_CMD_ADMIN_PROC_MANAGE_CATEGORY', 'x2b_proc_manage_category');  // ajax
 	define('X2B_CMD_ADMIN_PROC_REORDER_CATEGORY', 'x2b_proc_reorder_category');  // ajax
@@ -65,30 +68,15 @@ function add_admin_pages_links() {
 	global $A_X2B_ADMIN_SETTINGS_PAGE;
 	$A_X2B_ADMIN_SETTINGS_PAGE = array();
 	
-	// $crp_settings_page = add_options_page(
-	// 	esc_html__( 'Contextual Related Posts', 'contextual-related-posts' ),
-	// 	esc_html__( 'Related Posts', 'contextual-related-posts' ),
-	// 	'manage_options',
-	// 	'crp_options_page',
-	// 	'crp_options_page'
-	// );
-	// add_action( "load-$crp_settings_page", 'crp_settings_help' ); // Load the settings contextual help.
-
-	// $crp_settings_tools = add_management_page(
-	// 	esc_html__( 'Contextual Related Posts Tools', 'contextual-related-posts' ),
-	// 	esc_html__( 'Related Posts Tools', 'contextual-related-posts' ),
-	// 	'manage_options',
-	// 	'crp_tools_page',
-	// 	'crp_tools_page'
-	// );
 	// add_action( "load-$crp_settings_tools", 'crp_settings_help' );
 	global $_wp_last_object_menu;
 	$_wp_last_object_menu++;
 	// visible admin page
 	add_menu_page(X2B_ADMIN_PAGE_TITLE, 'X2Board', 'manage_x2board', X2B_CMD_ADMIN_VIEW_IDX, 'X2board\Includes\Admin\disp_admin_board', 'dashicons-admin-post', $_wp_last_object_menu);
 	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(X2B_CMD_ADMIN_VIEW_IDX, X2B_ADMIN_PAGE_TITLE, __('Dashboard', 'x2board'), 'manage_x2board', X2B_CMD_ADMIN_VIEW_IDX, 'X2board\Includes\Admin\disp_admin_board' );
-	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(X2B_CMD_ADMIN_VIEW_IDX, X2B_ADMIN_PAGE_TITLE, __('Board list', 'x2board'), 'manage_x2board', X2B_CMD_ADMIN_VIEW_BOARD_LIST, 'X2board\Includes\Admin\disp_admin_board' );
 	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(X2B_CMD_ADMIN_VIEW_IDX, X2B_ADMIN_PAGE_TITLE, __('Create board', 'x2board'), 'manage_x2board', X2B_CMD_ADMIN_VIEW_BOARD_INSERT, 'X2board\Includes\Admin\disp_admin_board' );
+	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(X2B_CMD_ADMIN_VIEW_IDX, X2B_ADMIN_PAGE_TITLE, __('Board list', 'x2board'), 'manage_x2board', X2B_CMD_ADMIN_VIEW_BOARD_LIST, 'X2board\Includes\Admin\disp_admin_board' );
+	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(X2B_CMD_ADMIN_VIEW_IDX, X2B_ADMIN_PAGE_TITLE, __('Import board', 'x2board'), 'manage_x2board', X2B_CMD_ADMIN_VIEW_BOARD_IMPORT, 'X2board\Includes\Admin\disp_admin_board' );
 	// hidden admin page
 	// $A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(null, X2B_ADMIN_PAGE_TITLE, __('Configure the board', 'x2board'), 'manage_x2board', X2B_CMD_ADMIN_VIEW_BOARD_UPDATE, 'X2board\Includes\Admin\disp_admin_board' );
 	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_options_page(
@@ -115,6 +103,8 @@ function admin_init() {
 
 	add_action('admin_post_'.X2B_CMD_ADMIN_PROC_INSERT_BOARD, 'X2board\Includes\Admin\proc_admin_board' );
 	add_action('admin_post_'.X2B_CMD_ADMIN_PROC_UPDATE_BOARD, 'X2board\Includes\Admin\proc_admin_board' );
+	add_action('admin_post_'.X2B_CMD_ADMIN_PROC_IMPORT_BOARD, 'X2board\Includes\Admin\proc_admin_board' );
+	add_action('admin_post_'.X2B_CMD_ADMIN_PROC_UPDATE_SEQ, 'X2board\Includes\Admin\proc_admin_board' );
 	add_action('wp_ajax_'.X2B_CMD_ADMIN_PROC_INSERT_CATEGORY, 'X2board\Includes\Admin\proc_admin_board' );  // ajax for sortable category UI
 	add_action('wp_ajax_'.X2B_CMD_ADMIN_PROC_MANAGE_CATEGORY, 'X2board\Includes\Admin\proc_admin_board' );  // ajax for sortable category UI
 	add_action('wp_ajax_'.X2B_CMD_ADMIN_PROC_REORDER_CATEGORY, 'X2board\Includes\Admin\proc_admin_board' );  // ajax for sortable category UI	
@@ -232,48 +222,14 @@ add_filter( 'admin_footer_text', 'X2board\Includes\Admin\footer' );
 function load_scripts( $hook ) {
 	global $A_X2B_ADMIN_SETTINGS_PAGE;
 
+	// dummy script container to load $a_ajax_info below
 	wp_register_script(
-		X2B_DOMAIN . '-tab-scripts',
-		X2B_URL . 'includes/admin/js/admin-scripts.min.js',
-		array( 'jquery', 'jquery-ui-tabs', 'jquery-ui-datepicker' ),
-		X2B_VERSION,
-		true
-	);
-	// begin - for admin sortable UI
-	wp_register_script(
-		X2B_DOMAIN . '-sortable-scripts',
-		X2B_URL . 'includes/admin/js/x2board-category-sortable.js', 
+		X2B_DOMAIN . '-ajax-scripts',
+		null,
 		array(),
 		X2B_VERSION,
 		true
 	);
-	wp_register_script(
-		X2B_DOMAIN . '-nested-sortable', 
-		X2B_URL . 'includes/admin/js/jquery.mjs.nestedSortable.js', 
-		array('jquery', 'jquery-ui-sortable'), 
-		'2.1a'
-	);
-	// end - for admin sortable UI
-
-	// begin - for admin user define field UI
-	wp_register_script(
-		X2B_DOMAIN . '-user-field-scripts',
-		X2B_URL . 'includes/admin/js/x2board-user-field.js', 
-		array(),
-		X2B_VERSION,
-		true
-	);
-	// end - for admin user define field UI
-
-	// begin - for admin list config field UI
-	wp_register_script(
-		X2B_DOMAIN . '-list-config-field-scripts',
-		X2B_URL . 'includes/admin/js/x2board-list-field.js', 
-		array(),
-		X2B_VERSION,
-		true
-	);
-	// end - for admin list config field UI
 
 	wp_register_style(
 		X2B_DOMAIN . '-admin-style',
@@ -289,13 +245,9 @@ function load_scripts( $hook ) {
 	);
 
 	if ( in_array( $hook, $A_X2B_ADMIN_SETTINGS_PAGE, true ) ) {
-		wp_enqueue_script( X2B_DOMAIN . '-tab-scripts' );
-		wp_enqueue_script( X2B_DOMAIN . '-sortable-scripts' );
-		wp_enqueue_script( X2B_DOMAIN . '-nested-sortable' );
-		wp_enqueue_script( X2B_DOMAIN . '-user-field-scripts' );
-		wp_enqueue_script( X2B_DOMAIN . '-list-config-field-scripts' );
 		wp_enqueue_style( X2B_DOMAIN . '-admin-style' );
-		wp_localize_script (X2B_DOMAIN . '-sortable-scripts', 'x2board_admin_ajax_info', $a_ajax_info );
+		wp_enqueue_script( X2B_DOMAIN . '-ajax-scripts' );
+		wp_localize_script (X2B_DOMAIN . '-ajax-scripts', 'x2board_admin_ajax_info', $a_ajax_info );
 		add_thickbox();
 	}
 }

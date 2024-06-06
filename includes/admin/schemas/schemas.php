@@ -33,29 +33,11 @@ dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_mapper` (
 PRIMARY KEY (`board_id`)
 ) {$charset_collate};");
 
-// `module_srl` bigint(11) NOT NULL DEFAULT 0,  --- for XE document
-// `module_srl` bigint(11) NOT NULL DEFAULT 0,  --- for XE document
-// `category_id` bigint(20) unsigned DEFAULT 0,   --- it was category_srl
-// `lang_code` varchar(10) NOT NULL DEFAULT '',  --- for XE document
-// `trackback_count` bigint(11) NOT NULL DEFAULT 0,  --- for XE document
-// `user_id` varchar(80) DEFAULT NULL,   --- for XE document
-// `user_name` varchar(80) NOT NULL,   --- for XE document
-// `member_srl` bigint(11) NOT NULL,  --- for XE document
-// `post_author` bigint(20) unsigned NOT NULL DEFAULT 0,
-// `homepage` varchar(250) NOT NULL,  --- for XE document
-// `extra_vars` text DEFAULT NULL,  --- for XE document
-// `regdate` varchar(14) DEFAULT NULL,   --- for XE document
-// `last_update` varchar(14) DEFAULT NULL,   --- for XE document
-// `allow_trackback` char(1) NOT NULL DEFAULT 'Y',   --- for XE document
-// `notify_message` char(1) NOT NULL DEFAULT 'N',   --- for XE document
-
 dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_posts` (
 `post_id` bigint(20) unsigned NOT NULL,
-`module_srl` bigint(11) NOT NULL DEFAULT 0,
 `board_id` bigint(20) unsigned NOT NULL,
 `parent_post_id` bigint(20) unsigned NOT NULL DEFAULT 0,
 `category_id` bigint(20) unsigned DEFAULT 0,
-`lang_code` varchar(10) NOT NULL DEFAULT '',
 `is_notice` char(1) NOT NULL DEFAULT 'N',
 `title` varchar(127) NOT NULL,
 `title_bold` char(1) NOT NULL DEFAULT 'N',
@@ -65,26 +47,16 @@ dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_posts` (
 `voted_count` int(11) NOT NULL,
 `blamed_count` bigint(11) NOT NULL DEFAULT 0,
 `comment_count` int(10) unsigned NOT NULL,
-`trackback_count` bigint(11) NOT NULL DEFAULT 0,
 `uploaded_count` smallint(2) NOT NULL,
 `password` varchar(60) NOT NULL,
-`user_id` varchar(80) DEFAULT NULL,
-`user_name` varchar(80) NOT NULL,
 `nick_name` varchar(127) NOT NULL,
-`member_srl` bigint(11) NOT NULL,
 `post_author` bigint(20) unsigned NOT NULL DEFAULT 0,
 `email_address` varchar(25),
-`homepage` varchar(250) NOT NULL,
 `tags` varchar(256),
-`extra_vars` text DEFAULT NULL,
-`regdate` varchar(14) DEFAULT NULL,
-`last_update` varchar(14) DEFAULT NULL,
 `last_updater` varchar(80) DEFAULT NULL,
 `ipaddress` varchar(128) NOT NULL,
 `list_order` bigint(20) NOT NULL,
 `update_order` bigint(20) NOT NULL,
-`allow_trackback` char(1) NOT NULL DEFAULT 'Y',
-`notify_message` char(1) NOT NULL DEFAULT 'N',
 `status` varchar(20),
 `comment_status` varchar(10) NOT NULL DEFAULT 'ALLOW',
 `ua` char(1) NOT NULL,
@@ -112,24 +84,13 @@ KEY `idx_board_update_order` (`board_id`,`update_order`),
 KEY `idx_board_readed_count` (`board_id`,`readed_count`),
 KEY `idx_board_voted_count` (`board_id`,`voted_count`),
 KEY `idx_board_notice` (`board_id`,`is_notice`),
-KEY `idx_board_document_srl` (`board_id`,`post_id`),
+KEY `idx_board_post_id` (`board_id`,`post_id`),
 KEY `idx_board_blamed_count` (`board_id`,`blamed_count`),
 KEY `idx_board_status` (`board_id`,`status`)
 ) {$charset_collate};");
 
-// `module_srl` bigint(11) NOT NULL DEFAULT 0,  -- for XE
-// `voted_count` bigint(11) NOT NULL DEFAULT 0,  -- for XE
-// `blamed_count` bigint(11) NOT NULL DEFAULT 0,  -- for XE
-// `notify_message` char(1) NOT NULL DEFAULT 'N',  -- for XE
-// `user_id` varchar(80) DEFAULT NULL,  -- for XE
-// `user_name` varchar(80) NOT NULL,  -- for XE
-// `homepage` varchar(250) NOT NULL,  -- for XE
-// `regdate` varchar(14) DEFAULT NULL,  -- for XE
-// `last_update` varchar(14) DEFAULT NULL,  -- for XE
-
 dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_comments` (
 `comment_id` bigint(11) NOT NULL,
-`module_srl` bigint(11) NOT NULL DEFAULT 0,
 `board_id` bigint(11) NOT NULL DEFAULT 0,
 `parent_post_id` bigint(11) NOT NULL DEFAULT 0,
 `parent_comment_id` bigint(11) NOT NULL DEFAULT 0,
@@ -138,18 +99,11 @@ dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_comments` (
 `content` longtext NOT NULL,
 `voted_count` bigint(11) NOT NULL DEFAULT 0,
 `blamed_count` bigint(11) NOT NULL DEFAULT 0,
-`notify_message` char(1) NOT NULL DEFAULT 'N',
 `password` varchar(60) DEFAULT NULL,
-`user_id` varchar(80) DEFAULT NULL,
-`user_name` varchar(80) NOT NULL,
 `nick_name` varchar(80) NOT NULL,
-`member_srl` bigint(11) NOT NULL,
 `comment_author` bigint(11) NOT NULL,
 `email_address` varchar(250) NOT NULL,
-`homepage` varchar(250) NOT NULL,
 `uploaded_count` bigint(11) NOT NULL DEFAULT 0,
-`regdate` varchar(14) DEFAULT NULL,
-`last_update` varchar(14) DEFAULT NULL,
 `ipaddress` varchar(128) NOT NULL,
 `list_order` bigint(11) NOT NULL,
 `status` char(1) NOT NULL DEFAULT 1,

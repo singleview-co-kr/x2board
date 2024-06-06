@@ -32,6 +32,64 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 		}
 
 		/**
+		 * @brief update s2b_sequence before import 3rd-party board
+		 **/
+		public function proc_update_seq() {
+			check_admin_referer( X2B_CMD_ADMIN_PROC_UPDATE_SEQ );  // check nounce
+
+			if( isset($_POST['x2b_sequence_max_id']) ) {
+				require_once X2B_PATH . 'includes\modules\import\import.admin.controller.php';
+				$o_import_admin = new \X2board\Includes\Modules\Import\importAdminController();
+				$o_import_admin->set_x2b_sequence($_POST['x2b_sequence_max_id']);
+				unset($o_import_admin);
+			}
+			wp_redirect(admin_url('admin.php?page=x2b_disp_board_import'));
+		}
+
+		/**
+		 * @brief import 3rd-party board
+		 **/
+		public function proc_import_board() {
+			check_admin_referer( X2B_CMD_ADMIN_PROC_IMPORT_BOARD );  // check nounce
+
+			if( isset($_POST['board_id']) ) {
+				set_time_limit(3600);
+				ini_set('memory_limit', '-1');
+				header('Content-Type: text/html; charset=UTF-8');
+	
+				if(intval($_POST['board_id']) === 0 ) {
+					echo '<script>alert("'.__('Please designate the target board', 'x2board').'");</script>';
+				}
+				else {
+					$uploaded_file = $_FILES['xe_export_xml_file']['tmp_name'];
+					$uploaded_filename = basename($_FILES['xe_export_xml_file']['name']);
+					if(is_uploaded_file($uploaded_file)) {
+						$file_extension = explode('.', $uploaded_filename);
+						if(end($file_extension) == 'xml' || end($file_extension) == 'zip'){
+							require_once X2B_PATH . 'includes\modules\import\import.admin.controller.php';
+							$o_import_admin = new \X2board\Includes\Modules\Import\importAdminController();
+							$o_import_admin->set_board_id($_POST['board_id']);
+							$o_import_admin->import_xe_xml($uploaded_file, $file_extension[0]);
+							unset($o_import_admin);
+							echo '<script>alert("'.__('Succeed importing', 'x2board').'");</script>';
+						}
+						else{
+							echo '<script>alert("'.__('invalid xml file', 'x2board').'");</script>';
+						}
+						
+						// if($xmlfile) {
+						// 	unlink($xmlfile);
+						// }
+					}
+					else{
+						echo '<script>alert("'.__('Failed uploading a file', 'x2board').'");</script>';
+					}
+				}
+			}		
+			// wp_redirect(admin_url('admin.php?page=x2b_disp_board_list'));
+		}
+
+		/**
 		 * @brief delete board
 		 **/
 		public function proc_delete_board() {

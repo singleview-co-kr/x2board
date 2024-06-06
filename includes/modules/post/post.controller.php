@@ -55,7 +55,7 @@ var_dump('post controller init()');
 		 * @return object
 		 */
 		// function insertDocument($obj, $manual_inserted = false, $isRestore = false, $isLatest = true)
-		public function insert_post($obj, $manual_inserted = false, $isRestore = false, $isLatest = true) {
+		public function insert_post($obj, $manual_inserted = false) {
 			if(!$manual_inserted) {  // check WP nonce if a guest inserts a new post
 				$wp_verify_nonce = \X2board\Includes\Classes\Context::get('x2b_'.X2B_CMD_PROC_WRITE_POST.'_nonce');
 // var_dump($wp_verify_nonce);
@@ -99,15 +99,16 @@ var_dump('post controller init()');
 			if(!isset($obj->email_address)) {
 				$obj->email_address = '';
 			}
-			if(!$isRestore) {
-				$obj->ipaddress = $_SERVER['REMOTE_ADDR'];
-			}
+			// if(!$isRestore) {
+			// 	$obj->ipaddress = $_SERVER['REMOTE_ADDR'];
+			// }
 
 			// can modify regdate only manager
-			// $grant = Context::get('grant');
-			// if(!$grant->manager) {
-			// 	unset($obj->regdate_dt);
-			// }
+			$o_grant = \X2board\Includes\Classes\Context::get('grant');
+			if(!$o_grant->manager) {
+				unset($obj->regdate_dt);
+			}
+			unset($o_grant);
 
 			// Serialize the $extra_vars, check the extra_vars type, because duplicate serialized avoid
 			// if(!is_string($obj->extra_vars)) {
@@ -127,7 +128,7 @@ var_dump('post controller init()');
 			if(!$obj->post_id) {
 				$obj->post_id = \X2board\Includes\getNextSequence();
 			}
-			elseif(!$manual_inserted && !$isRestore && !\X2board\Includes\checkUserSequence($obj->post_id)) {
+			elseif(!$manual_inserted && !\X2board\Includes\checkUserSequence($obj->post_id)) {
 				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', 'x2board') );
 			}
 
@@ -149,12 +150,12 @@ var_dump('post controller init()');
 			// if(!$obj->readed_count) {
 			// 	$obj->readed_count = 0;
 			// }
-			if($isLatest) {
+			// if($isLatest) {
 				$obj->update_order = $obj->list_order = $obj->post_id * -1;
-			}
-			else {
-				$obj->update_order = $obj->list_order;
-			}
+			// }
+			// else {
+				// $obj->update_order = $obj->list_order;
+			// }
 
 			if( !isset($obj->password_is_hashed) ) {
 				$obj->password_is_hashed = false;
@@ -165,7 +166,7 @@ var_dump('post controller init()');
 			}
 			// Insert member's information only if the member is logged-in and not manually registered.
 			$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
-			if(\X2board\Includes\Classes\Context::get('is_logged') && !$manual_inserted && !$isRestore) {
+			if(\X2board\Includes\Classes\Context::get('is_logged') && !$manual_inserted) {
 				$obj->post_author = $o_logged_info->ID;
 
 				// user_id, user_name and nick_name already encoded
@@ -238,20 +239,29 @@ var_dump('post controller init()');
 			$a_new_post['nick_name'] = sanitize_text_field($obj->nick_name);
 			$a_new_post['title'] = sanitize_text_field($obj->title); // isset($data['title'])?kboard_safeiframe(kboard_xssfilter($data['title'])):'';
 			$a_new_post['content'] = $obj->content; // // sanitize_text_field eliminates all HTML tag  isset($data['content'])?kboard_safeiframe(kboard_xssfilter($data['content'])):'';
-			$a_new_post['regdate_dt'] = date('Y-m-d H:i:s', current_time('timestamp'));  // $n_cur_unix_timestamp; // isset($data['date'])?sanitize_key($data['date']):date('YmdHis', current_time('timestamp'));
-			$a_new_post['last_update_dt'] = $a_new_post['regdate_dt']; // $n_cur_unix_timestamp; //isset($data['update'])?sanitize_key($data['update']):$data['date'];
 			$a_new_post['readed_count'] = 0; //isset($data['view'])?intval($data['view']):0;
 			$a_new_post['comment_count'] = 0;//isset($data['comment'])?intval($data['comment']):0;
 			$a_new_post['voted_count'] = 0; //isset($data['vote'])?intval($data['vote']):0;
 			$a_new_post['category_id'] = intval($obj->category_id); //isset($data['category_id'])?intval($data['category_id']):0;
-			$a_new_post['is_notice'] = sanitize_text_field($obj->is_notice); //isset($data['notice'])?sanitize_key($data['notice']):'';
+			$a_new_post['is_notice'] = isset($obj->is_notice) ? sanitize_text_field($obj->is_notice) : 'N';
 			$a_new_post['update_order'] = intval($obj->update_order);
 			$a_new_post['list_order'] = intval($obj->list_order);
 			$a_new_post['status'] = sanitize_text_field($obj->status); //isset($data['status'])?sanitize_key($data['status']):'';
 			$a_new_post['comment_status'] = sanitize_text_field($obj->comment_status); 
-			// add user agent
-			$a_new_post['ua'] = wp_is_mobile() ? 'M' : 'P';
-			$a_new_post['ipaddress'] = \X2board\Includes\get_remote_ip();
+			
+			$s_cur_datetime = date('Y-m-d H:i:s', current_time('timestamp'));
+			if( $manual_inserted ){  // $obj->regdate_dt is set if import
+				$a_new_post['regdate_dt'] = isset($obj->regdate_dt) ? $obj->regdate_dt : $s_cur_datetime;
+				$a_new_post['last_update_dt'] = isset($obj->last_update_dt) ? $obj->last_update_dt : $s_cur_datetime;
+				$a_new_post['ua'] = $obj->ua;
+				$a_new_post['ipaddress'] = $obj->ipaddress;
+			}
+			else {
+				$a_new_post['last_update_dt'] = $a_new_post['regdate_dt'] = $s_cur_datetime;
+				// add user agent
+				$a_new_post['ua'] = wp_is_mobile() ? 'M' : 'P';
+				$a_new_post['ipaddress'] = \X2board\Includes\get_remote_ip();
+			}
 
 			// 입력할 데이터 필터
 			// $data = apply_filters('x2board_insert_data', $a_new_post); //, $this->board_id);
@@ -581,10 +591,11 @@ var_dump('post controller init()');
 			// if($o_new_obj->notify_message != 'Y') $o_new_obj->notify_message = 'N';
 			
 			// can modify regdate only manager
-			$grant = \X2board\Includes\Classes\Context::get('grant');
-			if(!$grant->manager) {
+			$o_grant = \X2board\Includes\Classes\Context::get('grant');
+			if(!$o_grant->manager) {
 				unset($o_new_obj->regdate_dt);
 			}
+			unset($o_grant);
 			
 			// Serialize the $extra_vars
 			// if(!is_string($o_new_obj->extra_vars)) $o_new_obj->extra_vars = serialize($o_new_obj->extra_vars);
@@ -1055,17 +1066,9 @@ var_dump('post controller init()');
 		 * @param int $a_post_param
 		 */
 		private function _insert_wp_post($a_post_param) {
-			if( $this->_is_post_public($a_post_param['status']) ) {
-				$s_title = strip_tags( $a_post_param['title'] );
-				$s_post_content = strip_tags( $a_post_param['content'] );
-				$s_post_status = 'publish';
-			}
-			else {
-				$s_title = '';
-				$s_post_content = '';
-				$s_post_status = 'private';
-			}
-			
+			$s_title = strip_tags( $a_post_param['title'] );
+			$s_post_content = strip_tags( $a_post_param['content'] );
+			$s_post_status = $this->_is_post_public($a_post_param['status']) ? 'publish' : 'private';
 			$a_params = array(
 				'post_author'   => $a_post_param['post_author'],
 				'post_title'    => $s_title, //$a_post_param['title'],
@@ -1082,7 +1085,6 @@ var_dump('post controller init()');
 			unset($a_params);
 			if( is_wp_error( $result ) ) {
 				wp_die( $result->get_error_message() );
-				return false;
 			}
 			// add_action('kboard_document_insert', array($this, '_setPostThumbnail'), 10, 4);
 			return $result; // new WP post ID
