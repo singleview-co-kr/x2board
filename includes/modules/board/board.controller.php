@@ -276,10 +276,10 @@ $module_config->mobile_use_editor = 'Y';
 				}
 				
 				// modify list_order if post status is temp
-				if($o_post->get('status') == 'TEMP') {
-					$obj->last_update_dt = $obj->regdate_dt = date('YmdHis');
-					$obj->update_order = $obj->list_order = (getNextSequence() * -1);
-				}
+				// if($o_post->get('status') == 'TEMP') {
+				// 	$obj->last_update_dt = $obj->regdate_dt = date('YmdHis');
+				// 	$obj->update_order = $obj->list_order = (getNextSequence() * -1);
+				// }
 				// generate post module의 controller object
 				$o_post_controller = \X2board\Includes\getController('post');
 				$output = $o_post_controller->update_post($o_post, $obj, true);
