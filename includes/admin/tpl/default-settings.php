@@ -516,6 +516,24 @@ function x2b_settings_extra() {
 				'Y'            => esc_html__( 'Activate', 'x2board' ),  // 사용
 			),
 		),
+		'comment_forbid_to_leave_comment_old_post_days'					=> array(
+			'id'      => 'comment_forbid_to_leave_comment_old_post_days',
+			'name'    => esc_html__( 'Forbid comment on old post', 'x2board' ),
+			'desc'    => esc_html__( 'Forbid to leave a comment on x days old post. Allow always if blank or 0', 'x2board' ),
+			'type'    => 'number',
+			'options' => '',
+		),
+		'allow_comment_for_admin_for_old_post'					=> array(
+			'id'      => 'allow_comment_for_admin_for_old_post',
+			'name'    => esc_html__( 'Let admin leave a comment always', 'x2board' ),
+			'desc'    => esc_html__( 'Let admin to leave a comment to an old post.', 'x2board' ),
+			'type'    => 'select',
+			'default' => 'N',
+			'options' => array(
+				'N'            => esc_html__( 'Dectivate', 'x2board' ),  // 미사용
+				'Y'            => esc_html__( 'Activate', 'x2board' ),  // 사용
+			),
+		),
 		'post_editor_setup_header'					=> array(
 			'id'      => 'post_editor_setup_header',
 			// 'name'    => esc_html__( 'Advanced setup', 'x2board' ),

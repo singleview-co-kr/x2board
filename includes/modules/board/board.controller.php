@@ -376,6 +376,12 @@ var_dump(X2B_CMD_PROC_WRITE_COMMENT);
 				return;
 			}
 			unset($o_post_model);
+
+			// check if new comment is allowed
+			if(!$o_post->is_enable_comment()) {
+				$this->add('s_wp_redirect_url', $this->_s_wp_post_guid.'?cmd='.X2B_CMD_VIEW_MESSAGE.'&message='.__('msg_comment_not_allowed', 'x2board'));
+				return;
+			}
 			
 			// For anonymous use, remove writer's information and notifying information
 			if($this->module_info->use_anonymous == 'Y') {

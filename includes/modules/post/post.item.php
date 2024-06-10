@@ -312,9 +312,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 
 			$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
 			if($o_logged_info->is_admin == 'Y') {
+				unset($o_logged_info);
 				return $this->grant_cache = true;
 			}
-
+			unset($o_logged_info);
 			// $oModuleModel = getModel('module');
 			// $grant = $oModuleModel->getGrant($oModuleModel->getModuleInfoByModuleSrl($this->get('module_srl')), $logged_info);
 			// if($grant->manager) return $this->grant_cache = true;
@@ -530,6 +531,31 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 		 */
 		// isEnableComment
 		public function is_enable_comment()	{
+			$o_module_info = \X2board\Includes\Classes\Context::get('current_module_info');
+			$n_forbid_comment_old_post_days = intval($o_module_info->comment_forbid_to_leave_comment_old_post_days);
+			$b_allow_comment_for_admin_for_old_post = $o_module_info->allow_comment_for_admin_for_old_post == 'Y' ? true : false;
+			unset($o_module_info);
+
+			$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
+			if($o_logged_info->is_admin == 'Y' && $b_allow_comment_for_admin_for_old_post ) { // allow admin to write comment
+				$b_check_comment_privilege = false;
+			}
+			else {
+				$b_check_comment_privilege = true;
+			}
+			unset($o_logged_info);
+
+			if( $b_check_comment_privilege && $n_forbid_comment_old_post_days > 0 ) {
+				$dt_target = date_create($this->get('regdate_dt'));
+				$dt_start = new \DateTime(date('Y-m-d'));
+				$dt_interval = date_diff($dt_start, $dt_target);
+				unset($dt_start);
+				unset($dt_target);
+				if( $dt_interval->days > $n_forbid_comment_old_post_days ) {
+					return false;
+				}
+			}
+
 			// Return false if not authorized, if a secret post, if the post is set not to allow any comment
 			if (!$this->allow_comment()) {
 				return false;
