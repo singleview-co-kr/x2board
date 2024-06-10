@@ -152,10 +152,12 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 		// function getComments() {
 		public function get_comments() {
 			if(!$this->get_comment_count()) {
-				return;
+				// return array to avoid Warning:  Invalid argument supplied for foreach() under any case
+				return array();
 			}
 			if( !$this->is_granted() && $this->is_secret() ) {
-				return;
+				// return array to avoid Warning:  Invalid argument supplied for foreach() under any case
+				return array();
 			}
 			// cpage is a number of comment pages
 			/////////////////////////////////////////////////////
@@ -171,9 +173,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			// Get a list of comments
 			$o_comment_model = \X2board\Includes\getModel('comment');
 			$output = $o_comment_model->get_comment_list($this->_n_wp_post_id, $cpage); //, $is_admin);
-// var_dump($output->page_navigation);			
 			if(!$output->toBool() || !count($output->data)) {
-				return;
+				// return array to avoid Warning:  Invalid argument supplied for foreach() under any case
+				return array();
 			}
 			// Create commentItem object from a comment list
 			// If admin priviledge is granted on parent posts, you can read its child posts.

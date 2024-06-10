@@ -66,16 +66,16 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 
 			// check if comment's module is using comment validation and set the publish status to 0 (false)
 			// for inserting query, otherwise default is 1 (true - means comment is published)
-			$using_validation = $this->isModuleUsingPublishValidation(); // $obj->module_srl);
+			$using_validation = $this->is_using_comment_validation(); // $obj->module_srl);
 			if(!$using_validation) {
 				$obj->status = 1;
 			}
 			else {
 				if($is_admin) {
-					$obj->status = 1;
+					$obj->status = 1; // tag as a validated comment
 				}
 				else {
-					$obj->status = 0;
+					$obj->status = 0;  // tag as a pending comment
 				}
 			}
 			// $obj->__isupdate = FALSE;
@@ -610,26 +610,19 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 		}
 		
 		/**
-		 * Check if module is using comment validation system
+		 * Check if the board activates validating comment policy
 		 * @param int $module_srl
 		 * @return bool
 		 */
 		// function isModuleUsingPublishValidation($module_srl = NULL)
-		public function isModuleUsingPublishValidation() { // $module_srl = NULL) {
-			return false;
-			// if($module_srl == NULL)	{
-			// 	return FALSE;
-			// }
-			// $oModuleModel = getModel('module');
-			// $module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
-			// $module_part_config = $oModuleModel->getModulePartConfig('comment', $module_info->module_srl);
-			$module_part_config = new \stdClass();
-
-			$use_validation = FALSE;
-			if(isset($module_part_config->use_comment_validation) && $module_part_config->use_comment_validation == "Y") {
-				$use_validation = TRUE;
+		public function is_using_comment_validation() { // $module_srl = NULL) {
+			$o_current_module_config = \X2board\Includes\Classes\Context::get('current_module_info');
+			$b_use_validation = FALSE;
+			if(isset($o_current_module_config->comment_use_validation) && $o_current_module_config->comment_use_validation == "Y") {
+				$b_use_validation = TRUE;
 			}
-			return $use_validation;
+			unset($o_current_module_config);
+			return $b_use_validation;
 		}
 
 		public function update_uploaded_count($n_comment_id) {

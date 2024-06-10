@@ -69,16 +69,16 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 
 			//check if module is using validation system
 			$o_comment_controller = \X2board\Includes\getController('comment');
-			$using_validation = $o_comment_controller->isModuleUsingPublishValidation(); //$module_srl);
+			$is_using_validation = $o_comment_controller->is_using_comment_validation();
 			unset($o_comment_controller);
-			if($using_validation) {
-				// $args->status = 1;
+			$s_where = "`parent_post_id`='$n_parent_post_id'";
+			if($is_using_validation) {
+				$s_where .= "AND status=1";
 			}
-
 			// $output = executeQuery('comment.getCommentCount', $args, NULL, 'master');
 			// $total_count = $output->data->count;
 			global $wpdb;
-			$count = $wpdb->get_var("SELECT count(*) as `count` FROM `{$wpdb->prefix}x2b_comments` WHERE `parent_post_id`='$n_parent_post_id'");
+			$count = $wpdb->get_var("SELECT count(*) as `count` FROM `{$wpdb->prefix}x2b_comments` WHERE {$s_where}");
 			return intval($count);
 		}
 
@@ -143,10 +143,11 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 
 			//check if module is using validation system
 			$o_comment_controller = \X2board\Includes\getController('comment');
-			$using_validation = $o_comment_controller->isModuleUsingPublishValidation($board_id);
+			$is_using_validation = $o_comment_controller->is_using_comment_validation();
 			unset($o_comment_controller);
-			if($using_validation) {
-				$args->status = 1;
+			$s_where_comment_status = null;
+			if($is_using_validation) {
+				$s_where_comment_status = "`comments`.`status`=1 AND ";
 			}
 
 			// call trigger (before)
@@ -159,9 +160,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 			// $output = executeQueryArray('comment.getCommentPageList', $args);
 			global $wpdb;
 			$o_query = new \stdClass();
-			$o_query->s_tables = '`'.$wpdb->prefix.'x2b_comments` as `comments` , `'.$wpdb->prefix.'x2b_comments_list` as `comments_list`';
+			$o_query->s_tables = '`'.$wpdb->prefix.'x2b_comments` as `comments`, `'.$wpdb->prefix.'x2b_comments_list` as `comments_list`';
 			$o_query->s_columns = "`comments`.*, `comments_list`.`depth` as `depth` ";
-			$o_query->s_where = "WHERE `comments_list`.`parent_post_id` = ".$n_parent_post_id." and `comments_list`.`comment_id` = `comments`.`comment_id` and `comments_list`.`head` >= 0 and `comments_list`.`arrange` >= 0 ";
+			$o_query->s_where = "WHERE {$s_where_comment_status} `comments_list`.`parent_post_id` = ".$n_parent_post_id." and `comments_list`.`comment_id` = `comments`.`comment_id` and `comments_list`.`head` >= 0 and `comments_list`.`arrange` >= 0 ";
 			$o_query->s_orderby = "ORDER BY `comments`.`status` desc, `comments_list`.`head` asc, `comments_list`.`arrange` asc";
 			$o_query->page = $page;
 			$o_query->list_count = $comment_count;
@@ -169,17 +170,23 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 			$output = \X2board\Includes\get_paginate_select($o_query);
 			// return if an error occurs in the query results
 			if(!$output->toBool()) {
-				return;
+				return $output;
 			}
 
 			// insert data into CommentPageList table if the number of results is different from stored comments
 			if(!$output->data) {
-				$this->_fix_comment_list($o_post->get('board_id'), $n_parent_post_id);
-				// $output = executeQueryArray('comment.getCommentPageList', $args);
-				$output = \X2board\Includes\get_paginate_select($o_query);
-				if(!$output->toBool()) {
-					return;
+				// try query without comments.status condition again then decide to fix comment list
+				$o_query->s_where = "WHERE `comments_list`.`parent_post_id` = ".$n_parent_post_id." and `comments_list`.`comment_id` = `comments`.`comment_id` and `comments_list`.`head` >= 0 and `comments_list`.`arrange` >= 0 ";
+				$o_rst_check = \X2board\Includes\get_paginate_select($o_query);
+				if(!$o_rst_check->data) {
+					$this->_fix_comment_list($o_post->get('board_id'), $n_parent_post_id);
+					// $output = executeQueryArray('comment.getCommentPageList', $args);
+					$output = \X2board\Includes\get_paginate_select($o_query);
+					if(!$output->toBool()) {
+						return $output;
+					}
 				}
+				unset($o_rst_check);
 			}
 			unset($o_query);
 
