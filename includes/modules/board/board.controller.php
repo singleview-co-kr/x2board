@@ -188,9 +188,8 @@ $module_config->mobile_use_editor = 'Y';
 			}
 
 			settype($obj->title, "string");
-			$n_excerpted_title_length = $this->module_info->excerpted_title_length ? (int)$this->module_info->excerpted_title_length : 20;
 			if($obj->title == '') {
-				$obj->title = cut_str(trim(strip_tags(nl2br($obj->content))),$n_excerpted_title_length,'...');
+				$obj->title = \X2board\Includes\cut_str(trim(strip_tags(nl2br($obj->content))),(int)$this->module_info->excerpted_title_length,'...');
 			}
 			//setup post title to 'Untitled'
 			if($obj->title == '') {

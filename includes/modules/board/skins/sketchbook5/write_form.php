@@ -183,8 +183,8 @@ button.x2board-default-button-medium:active { opacity: 0.7; }
 	</style>
 
 	<div id="x2board-default-editor" class="bd">
-	
-		<form class="x2board-form" action="<?php echo esc_url(x2b_get_url('cmd', '', 'post_id', ''))?>" method="post" onsubmit="return procFilter(this, window.insert)" class="bd_wrt bd_wrt_main clear">
+        <!-- onsubmit="return procFilter(this, window.insert)" -->
+		<form class="x2board-form" action="<?php echo esc_url(x2b_get_url('cmd', '', 'post_id', ''))?>" method="post" class="bd_wrt bd_wrt_main clear">
 			<?php x2b_write_post_input_fields(); ?>
 
 			<!--// Buttons -->
