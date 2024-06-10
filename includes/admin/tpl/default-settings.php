@@ -131,7 +131,7 @@ function x2b_settings_general() {
 		'board_mobile_use_editor'  => array(
 			'id'      => 'board_mobile_use_editor',
 			'name'    => esc_html__( 'Mobile editor', 'x2board' ),
-			'desc'    => esc_html__( 'Use WP editor for mobile', 'x2board' ),
+			'desc'    => esc_html__( 'Use WYSWYG editor for mobile', 'x2board' ),
 			'type'    => 'checkbox',
 			'options' => false,
 			'default' => 'N',

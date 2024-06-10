@@ -149,7 +149,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 				return;
 			}
 
-// var_dump($this->module_info->excerpted_title_length);
 			$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
 
 			$obj->post_author = $o_logged_info->ID;
@@ -172,13 +171,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 // exit;
 			// $oModuleModel = getModel('module');
 			// $module_config = $oModuleModel->getModuleInfoByModuleSrl($obj->module_srl);
-
-/////////// tmporary test block begin /////////////
-$module_config = new \stdClass();
-$module_config->mobile_use_editor = 'Y';
-/////////// tmporary test block end /////////////
-
-			if($module_config->mobile_use_editor === 'Y') {
+			if($this->module_info->mobile_use_editor === 'Y') {
 				if(!isset($obj->use_editor)) $obj->use_editor = 'Y';
 				if(!isset($obj->use_html)) $obj->use_html = 'Y';
 			}
