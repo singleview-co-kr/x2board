@@ -232,6 +232,7 @@ if(!isset($listStyle)){
 
 <!--%load_js_plugin("ui")-->
 <script type="text/javascript" src="<?php echo X2B_URL ?>/common/js/plugins/ui/jquery-ui.min.js?ver=<?php echo X2B_VERSION ?>" id="<?php echo X2B_DOMAIN ?>-sketchbook5-jquery-ui-js"></script>
+<link rel="stylesheet" href="<?php echo X2B_URL ?>/common/js/plugins/ui/jquery-ui.min.css?ver=<?php echo X2B_VERSION ?>" type='text/css' media='all' />
 
 <style data-id="bdCss">
 <?php if($mi->font): ?>
