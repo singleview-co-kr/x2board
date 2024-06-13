@@ -22,9 +22,9 @@
 				<input type="text" name="search_keyword" value="<?php echo htmlspecialchars($search_keyword)?>" class="itx srch_itx" />
 			</td>
 			<td>
-				<button type="submit" onclick="jQuery(this).parents('form').submit();return false" class="bd_btn"><?php echo __('cmd_search', 'x2board')?></button>
+				<button type="submit" onclick="jQuery(this).parents('form').submit();return false" class="bd_btn"><?php echo __('cmd_search', X2B_DOMAIN)?></button>
 				<?php if(isset($last_division)): ?>  <!-- cond="$last_division"  -->
-				<a class="bd_btn" href="<?php echo x2b_get_url('page',1,'post_id','','division',$last_division,'last_division','')?>"><?php echo __('cmd_search_next', 'x2board')?></a>
+				<a class="bd_btn" href="<?php echo x2b_get_url('page',1,'post_id','','division',$last_division,'last_division','')?>"><?php echo __('cmd_search_next', X2B_DOMAIN)?></a>
 				<?php endif?>
 			</td>
 		</tr>

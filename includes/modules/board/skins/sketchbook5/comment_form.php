@@ -20,9 +20,9 @@ wp_enqueue_script('x2board-sketchbook5-editor', $skin_url . '/js/editor.js', [],
 
 <?php else: ?><!--@else-->
 <div class="context_data">
-	<h3 class="title">&quot;<?php echo __('cmd_reply', 'x2board')?> <?php echo __('cmd_modify', 'x2board')?>&quot;</h3>
+	<h3 class="title">&quot;<?php echo __('cmd_reply', X2B_DOMAIN)?> <?php echo __('cmd_modify', X2B_DOMAIN)?>&quot;</h3>
 	<?php if(wp_is_mobile()): ?><!-- cond="wp_is_mobile()" -->
-		<p >※ <?php echo $lang->m_editor_notice?>.</p>
+		<p >※ <?php echo __('about_m_editor_notice', X2B_DOMAIN) ?>.</p>
 	<?php endif ?>
 </div>
 <div class="context_message" style="margin-bottom:40px"></div>
@@ -96,11 +96,11 @@ wp_enqueue_script('x2board-sketchbook5-editor', $skin_url . '/js/editor.js', [],
 	<div class="edit_opt">
 		<?php if(!$is_logged): ?><!-- <block cond="!$is_logged"> -->
 			<span class="itx_wrp">
-				<label for="nick_name"><?php echo __('writer', 'x2board')?></label>
+				<label for="nick_name"><?php echo __('lbl_writer', X2B_DOMAIN)?></label>
 				<input type="text" name="nick_name" id="nick_name" class="itx n_p" value="<?php echo esc_html($o_source_comment->get_nick_name())?>" />
 			</span>
 			<span class="itx_wrp">
-				<label for="password"><?php echo __('password', 'x2board')?></label>
+				<label for="password"><?php echo __('lbl_password', X2B_DOMAIN)?></label>
 				<input type="password" name="password" id="password" class="itx n_p" />
 			</span>	
 			<!-- <span class="itx_wrp">
@@ -112,12 +112,12 @@ wp_enqueue_script('x2board-sketchbook5-editor', $skin_url . '/js/editor.js', [],
 	<div class="opt_chk clear">
 		<?php if($mi->use_status!='PUBLIC'): ?><!-- <block cond="$mi->use_status!='PUBLIC'"> -->
 			<input type="checkbox" name="is_secret" value="Y" id="is_secret" <?php if($o_the_comment->get('is_secret')=='Y'): ?>checked="checked" <?php endif ?>/>
-			<label for="is_secret"><?php echo __('secret', 'x2board')?></label>
+			<label for="is_secret"><?php echo __('lbl_secret', X2B_DOMAIN)?></label>
 		<?php endif ?><!-- </block> -->
 	</div>
 	<div class="regist">
-		<button type="button" onclick="history.back()" class="bd_btn"><?php echo __('cmd_back', 'x2board')?></button>
-		<input type="submit" value="<?php echo __('cmd_registration', 'x2board')?>" class="bd_btn blue" />
+		<button type="button" onclick="history.back()" class="bd_btn"><?php echo __('cmd_back', X2B_DOMAIN)?></button>
+		<input type="submit" value="<?php echo __('cmd_submit', X2B_DOMAIN)?>" class="bd_btn blue" />
 	</div>
 </form>
 

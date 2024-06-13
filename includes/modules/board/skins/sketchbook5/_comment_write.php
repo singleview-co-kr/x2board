@@ -4,17 +4,17 @@
 
 <div class="cmt_editor" <?php if($mi->cmt_wrt_position=='cmt_wrt_btm' && $post->get_comment_count()):?>style="margin-top:30px"<?php endif ?>>
 
-<label for="editor_<?php echo $post->post_id?>" class="cmt_editor_tl fl"><em>✔</em><strong><?php echo __('write_comment', 'x2board')?></strong></label>
+<label for="editor_<?php echo $post->post_id?>" class="cmt_editor_tl fl"><em>✔</em><strong><?php echo __('cmd_write_comment', X2B_DOMAIN)?></strong></label>
 <!--// Editor Select -->
 <?php if($mi->select_editor!='N'):?><!-- cond="$mi->select_editor!='N'"  -->
-	<div class="editor_select bubble fr m_no" title="<?php echo $lang->noti_rfsh?>">
-		<a class="tg_btn2" href="#" data-href="#editor_select"><em class="fa fa-info-circle bd_info_icon"></em> <?php echo __('select_editor', 'x2board')?></a>
+	<div class="editor_select bubble fr m_no" title="<?php echo __('desc_noti_rfsh', X2B_DOMAIN) ?>">
+		<a class="tg_btn2" href="#" data-href="#editor_select"><em class="fa fa-info-circle bd_info_icon"></em> <?php echo __('cmd_select_editor', X2B_DOMAIN)?></a>
 		<?php if($rd_idx==0):?> <!-- cond="$rd_idx==0"  -->
 			<div id="editor_select" class="tg_cnt2 wrp m_no"><button type="button" class="tg_blur2"></button>
-				<a <?php if($mi->cmt_wrt=='simple'):?> class="on" <?php endif ?> href="#" onclick="jQuery.cookie('bd_editor','simple');location.reload();return false"><em>✔ </em><?php echo __('textarea', 'x2board')?></a>
-				<a <?php if($mi->cmt_wrt=='editor'):?> class="on" <?php endif ?> href="#" onclick="jQuery.cookie('bd_editor','editor');location.reload();return false"><em>✔ </em><?php echo __('wysiwyg', 'x2board')?></a>
+				<a <?php if($mi->cmt_wrt=='simple'):?> class="on" <?php endif ?> href="#" onclick="jQuery.cookie('bd_editor','simple');location.reload();return false"><em>✔ </em><?php echo __('lbl_textarea_editor_mode', X2B_DOMAIN)?></a>
+				<a <?php if($mi->cmt_wrt=='editor'):?> class="on" <?php endif ?> href="#" onclick="jQuery.cookie('bd_editor','editor');location.reload();return false"><em>✔ </em><?php echo __('lbl_wysiwyg_editor_mode', X2B_DOMAIN)?></a>
 				<?php if($mi->select_editor=='2' || $mi->cmt_wrt=='sns'):?><!-- cond="$mi->select_editor=='2' || $mi->cmt_wrt=='sns'"  -->
-					<a <?php if($mi->cmt_wrt=='sns'):?> class="on" <?php endif ?> href="#" onclick="jQuery.cookie('bd_editor','sns');location.reload();return false"><em>✔ </em><?php echo __('sxc_editor', 'x2board')?></a>
+					<a <?php if($mi->cmt_wrt=='sns'):?> class="on" <?php endif ?> href="#" onclick="jQuery.cookie('bd_editor','sns');location.reload();return false"><em>✔ </em><?php echo __('lbl_sxc_editor_mode', X2B_DOMAIN)?></a>
 				<?php endif ?>
 				<span class="edge"></span><button type="button" class="tg_blur2"></button>
 				<!--// ie8; --><i class="ie8_only bl"></i><i class="ie8_only br"></i>
@@ -39,21 +39,21 @@
 					<!-- <input type="hidden" id="htm_<?php //echo $post->post_id?>" value="n" /> -->
 					<textarea name="content" id="editor_<?php echo $post->post_id?>" cols="50" rows="4"></textarea>
 				</div>
-				<input type="submit" value="<?php echo __('cmd_submit', 'x2board')?>" class="bd_btn" />
+				<input type="submit" value="<?php echo __('cmd_submit', X2B_DOMAIN)?>" class="bd_btn" />
 			</div>
 		<?php endif ?>			
 		<div class="edit_opt clear" <?php if($mi->cmt_wrt!='editor'):?> style="display:none" <?php endif ?> >	<!-- |cond="$mi->cmt_wrt!='editor'" -->
 			<?php if(!$is_logged):?><!-- <block cond="!$is_logged"> -->
 				<span class="itx_wrp">
-					<label for="nick_name_<?php echo $post->post_id?>"><?php echo __('writer', 'x2board')?></label>
+					<label for="nick_name_<?php echo $post->post_id?>"><?php echo __('lbl_writer', X2B_DOMAIN)?></label>
 					<input type="text" name="nick_name" id="nick_name_<?php echo $post->post_id?>" class="itx n_p" />
 				</span>
 				<span class="itx_wrp">
-					<label for="password_<?php echo $post->post_id?>"><?php echo __('password', 'x2board')?></label>
+					<label for="password_<?php echo $post->post_id?>"><?php echo __('lbl_password', X2B_DOMAIN)?></label>
 					<input type="password" name="password" id="password_<?php echo $post->post_id?>" class="itx n_p" />
 				</span>
 				<span class="itx_wrp">
-					<label for="email_address_<?php echo $post->post_id?>"><?php echo __('email_address', 'x2board')?></label>
+					<label for="email_address_<?php echo $post->post_id?>"><?php echo __('lbl_email_address', X2B_DOMAIN)?></label>
 					<input type="text" name="email_address" id="email_address_<?php echo $post->post_id?>" class="itx m_h" />
 				</span>
 				<!-- <span class="itx_wrp">
@@ -62,16 +62,16 @@
 				</span> -->
 			<?php endif ?>	<!-- </block> -->
 			<?php if(!$is_logged):?><!-- cond="$mi->cmt_wrt=='editor'"  -->
-				<input type="submit" value="<?php echo __('cmd_submit', 'x2board')?>" class="bd_btn fr" />
+				<input type="submit" value="<?php echo __('cmd_submit', X2B_DOMAIN)?>" class="bd_btn fr" />
 			<?php endif ?>
 			<div class="opt_chk">
 				<!-- <block cond="$is_logged">
 					<input type="checkbox" name="notify_message" value="Y" id="notify_message_<?php //echo $post->post_id?>"  checked="checked"|cond="@in_array('notify',$mi->wrt_opt)" />		
-					<label for="notify_message_<?php //echo $post->post_id?>"><?php //echo __('notify', 'x2board')?></label>
+					<label for="notify_message_<?php //echo $post->post_id?>"><?php //echo __('notify', X2B_DOMAIN)?></label>
 				</block> -->
 				<?php if($mi->use_status!='PUBLIC'):?><!-- <block cond="$mi->use_status!='PUBLIC'"> -->
 					<input type="checkbox" name="is_secret" value="Y" id="is_secret_<?php echo $post->post_id?>" /> <!-- checked="checked"|cond="@in_array('secret',$mi->wrt_opt)" -->
-					<label for="is_secret_<?php echo $post->post_id?>"><?php echo __('secret', 'x2board')?></label>
+					<label for="is_secret_<?php echo $post->post_id?>"><?php echo __('lbl_secret', X2B_DOMAIN)?></label>
 				<!-- </block> -->
 				<?php endif ?>
 			</div>
@@ -81,10 +81,10 @@
 	<!--// 대댓글 -->
 	<?php if($rd_idx==0):?><!-- cond="$rd_idx==0"  -->
 		<div id="re_cmt">
-			<label for="editor_2" class="cmt_editor_tl fl"><i class="fa fa-share fa-flip-vertical re"></i><strong><?php echo __('write_comment', 'x2board')?></strong></label>
+			<label for="editor_2" class="cmt_editor_tl fl"><i class="fa fa-share fa-flip-vertical re"></i><strong><?php echo __('cmd_write_comment', X2B_DOMAIN)?></strong></label>
 			<div class="editor_select fr">
-				<a class="wysiwyg m_no" href="#"><em class="fa fa-info-circle bd_info_icon"></em> <?php echo __('use_wysiwyg', 'x2board')?></a>
-				<a class="close" href="#" onclick="jQuery('#re_cmt').fadeOut().parent().find('.re_comment').focus();return false"><i class="fa fa-times"></i> <?php echo __('cmd_close', 'x2board')?></a>
+				<a class="wysiwyg m_no" href="#"><em class="fa fa-info-circle bd_info_icon"></em> <?php echo __('cmd_use_wysiwyg', X2B_DOMAIN)?></a>
+				<a class="close" href="#" onclick="jQuery('#re_cmt').fadeOut().parent().find('.re_comment').focus();return false"><i class="fa fa-times"></i> <?php echo __('cmd_close', X2B_DOMAIN)?></a>
 			</div>
 			<form action="<?php echo esc_url(x2b_get_url('cmd', '', 'post_id', ''))?>" method="post" onsubmit="return procFilter(this,insert_comment)" class="bd_wrt clear">
 				<?php x2b_write_comment_hidden_fields_embeded_editor(); ?>
@@ -97,15 +97,15 @@
 				<div class="edit_opt">
 					<?php if(!$is_logged):?><!-- <block cond="!$is_logged"> -->
 						<span class="itx_wrp">
-							<label for="nick_name"><?php echo __('writer', 'x2board')?></label>
+							<label for="nick_name"><?php echo __('lbl_writer', X2B_DOMAIN)?></label>
 							<input type="text" name="nick_name" id="nick_name" class="itx n_p" />
 						</span>
 						<span class="itx_wrp">
-							<label for="password"><?php echo __('password', 'x2board')?></label>
+							<label for="password"><?php echo __('lbl_password', X2B_DOMAIN)?></label>
 							<input type="password" name="password" id="password" class="itx n_p" />
 						</span>	
 						<span class="itx_wrp">
-							<label for="email_address"><?php echo __('email_address', 'x2board')?></label>
+							<label for="email_address"><?php echo __('lbl_email_address', X2B_DOMAIN)?></label>
 							<input type="text" name="email_address" id="email_address" class="itx m_h" />
 						</span>	
 						<!-- <span class="itx_wrp">
@@ -113,16 +113,16 @@
 							<input type="text" name="homepage" id="homepage" class="itx m_h" />
 						</span> -->
 					<?php endif ?><!-- </block> -->
-					<input type="submit" value="<?php echo __('cmd_submit', 'x2board')?>" class="bd_btn fr" />
+					<input type="submit" value="<?php echo __('cmd_submit', X2B_DOMAIN)?>" class="bd_btn fr" />
 				</div>
 				<span class="opt_chk">
 					<!-- <block cond="$is_logged">
 						<input type="checkbox" name="notify_message" value="Y" id="notify_message" checked="checked"|cond="@in_array('notify',$mi->wrt_opt)" />
-						<label for="notify_message"><?php //echo __('notify', 'x2board')?></label>
+						<label for="notify_message"><?php //echo __('notify', X2B_DOMAIN)?></label>
 					</block> -->
 					<?php if($mi->use_status!='PUBLIC'):?><!-- <block cond="$mi->use_status!='PUBLIC'"> -->
 						<input type="checkbox" name="is_secret" value="Y" id="is_secret" /> <!-- checked="checked"|cond="@in_array('secret',$mi->wrt_opt)"  -->
-						<label for="is_secret"><?php echo __('secret', 'x2board')?></label>
+						<label for="is_secret"><?php echo __('lbl_secret', X2B_DOMAIN)?></label>
 					<?php endif ?><!-- </block> -->
 				</span>
 			</form>
@@ -134,13 +134,13 @@
 			<span class="profile img no_img">?</span>
 			<div class="text">
 				<?php if(!$is_logged):?><!-- cond="!$is_logged"  -->
-					<a class="cmt_disable bd_login" href="#"><?php echo __('write_comment', 'x2board')?> <?php echo __('msg_not_permitted', 'x2board')?> <?php echo __('bd_login', 'x2board')?></a>
+					<a class="cmt_disable bd_login" href="#"><?php echo __('cmd_write_comment', X2B_DOMAIN)?> <?php echo __('msg_not_permitted', X2B_DOMAIN)?> <?php echo __('desc_bd_login', X2B_DOMAIN) ?></a>
 				<?php endif ?>
 				<?php if($is_logged):?><!-- cond="$is_logged"  -->
-					<div class="cmt_disable bd_login"><?php echo __('write_comment', 'x2board')?> <?php echo __('msg_not_permitted', 'x2board')?></div>
+					<div class="cmt_disable bd_login"><?php echo __('cmd_write_comment', X2B_DOMAIN)?> <?php echo __('msg_not_permitted', X2B_DOMAIN)?></div>
 				<?php endif ?>					
 			</div>
-			<input type="button" value="<?php echo __('cmd_submit', 'x2board')?>" disabled="disabled" class="bd_btn" />
+			<input type="button" value="<?php echo __('cmd_submit', X2B_DOMAIN)?>" disabled="disabled" class="bd_btn" />
 		</div>
 	</div>
 <?php endif ?><!--@end-->

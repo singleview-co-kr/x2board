@@ -35,18 +35,18 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineListFields')) {
 		 */
 		public function __construct() {
 			parent::__construct();
-			$this->_a_available_list_columns = array( 'no' => __('Intro no field', 'x2board'), 
-													  'title' => __('Intro title field', 'x2board'),
-													  'regdate_dt' => __('Intro regdate_dt field', 'x2board'),
-													  'last_update_dt' => __('Intro last_update_dt field', 'x2board'),
-													  'nick_name' => __('Intro nick_name field', 'x2board'),
-													  'last_updater' => __('Intro last_updater field', 'x2board'),
-													  'readed_count' => __('Intro readed_count field', 'x2board'),
-													  'voted_count' => __('Intro voted_count field', 'x2board'),
-													  'blamed_count' => __('Intro blamed_count field', 'x2board'),
-													  'thumbnail' => __('Intro thumbnail field', 'x2board'),
-													  'summary' => __('Intro summary field', 'x2board'),
-													  'comment_status' => __('Intro comment_status field', 'x2board')
+			$this->_a_available_list_columns = array( 'no' => __('desc_user_define_field_no', X2B_DOMAIN), 
+													  'title' => __('desc_user_define_field_title', X2B_DOMAIN),
+													  'regdate_dt' => __('desc_user_define_field_regdate_dt', X2B_DOMAIN),
+													  'last_update_dt' => __('desc_user_define_field_last_update_dt', X2B_DOMAIN),
+													  'nick_name' => __('desc_user_define_field_nick_name', X2B_DOMAIN),
+													  'last_updater' => __('desc_user_define_field_last_updater', X2B_DOMAIN),
+													  'readed_count' => __('desc_user_define_field_readed_count', X2B_DOMAIN),
+													  'voted_count' => __('desc_user_define_field_voted_count', X2B_DOMAIN),
+													  'blamed_count' => __('desc_user_define_field_blamed_count', X2B_DOMAIN),
+													  'thumbnail' => __('desc_user_define_field_thumbnail', X2B_DOMAIN),
+													  'summary' => __('desc_user_define_field_summary', X2B_DOMAIN),
+													  'comment_status' => __('desc_user_define_field_comment_status', X2B_DOMAIN)
 													);  // 'user_id', 'user_name', 
 		}
 

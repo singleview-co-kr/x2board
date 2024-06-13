@@ -423,7 +423,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			}
 
 			if($this->is_secret() && !$this->is_granted() && !$this->is_accessible()) {
-				return __('Msg is secret', 'x2board');  //Context::getLang('msg_is_secret');
+				return __('msg_secret_post', X2B_DOMAIN);  //Context::getLang('msg_is_secret');
 			}
 
 			$result = $this->_check_accessible_from_status();

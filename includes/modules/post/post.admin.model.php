@@ -32,7 +32,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postAdminModel')) {
 			$o_current_user = wp_get_current_user();
 			if( !user_can( $o_current_user, 'administrator' ) || !current_user_can('manage_x2board') ) {
 				unset($o_current_user);
-				wp_die(__('You do not have permission.', 'x2board'));
+				wp_die(__('msg_no_permission', X2B_DOMAIN));
 			}
 			unset($o_current_user);
 			$this->_build_user_define_fields();
@@ -91,11 +91,11 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postAdminModel')) {
 							일부 스킨에서는 입력필드 설정이 적용되지 않습니다.
 						</div --->
 						<div class="x2board-fields-left">
-							<h3 class="x2board-fields-h3">'.__('Available field', 'x2board').'</h3>
+							<h3 class="x2board-fields-h3">'.__('lbl_available_user_define_fields', X2B_DOMAIN).'</h3>
 							<ul class="x2board-fields">
 								<li class="x2board-fields-default left">
 									<button type="button" class="x2board-fields-header">'.
-										__('Basic field', 'x2board').
+										__('lbl_basic_user_define_field', X2B_DOMAIN).
 										'<span class="fields-up">▲</span>
 										<span class="fields-down">▼</span>
 									</button>
@@ -105,7 +105,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postAdminModel')) {
 								</li>
 								<li class="x2board-fields-extension left">
 								<button type="button" class="x2board-fields-header">'.
-								__('Extended fields', 'x2board').
+								__('lbl_extended_user_define_field', X2B_DOMAIN).
 									'<span class="fields-up">▲</span>
 									<span class="fields-down">▼</span>
 								</button>
@@ -121,12 +121,12 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postAdminModel')) {
 				</div>
 				<div class="x2board-fields-right">
 					<div class="x2board-fields x2board-sortable-fields">
-						<h3 class="x2board-fields-h3">'.__('User define fields presentation', 'x2board').'</h3>
-						<div class="description">'.__('Drag from the left section to activate', 'x2board').'</div>
+						<h3 class="x2board-fields-h3">'.__('lbl_activated_input_fields', X2B_DOMAIN).'</h3>
+						<div class="description">'.__('lbl_drag_from_left', X2B_DOMAIN).'</div>
 						<ul class="x2board-skin-fields x2board-fields-sortable connected-sortable">';
 			$s_html .= $this->_render_user_define_fields();
 			$s_html .= 	'</ul>
-						<div class="description"><button type="button" class="button button-small" onclick="x2board_skin_fields_reset()">'.__('Reset configuration', 'x2board').'</button></div>
+						<div class="description"><button type="button" class="button button-small" onclick="x2board_skin_fields_reset()">'.__('cmd_reset_configuration', X2B_DOMAIN).'</button></div>
 					</div>
 				</div>
 			</div>';

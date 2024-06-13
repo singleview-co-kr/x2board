@@ -244,7 +244,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 						$uploaded_ext = strtolower(array_pop($uploaded_ext));
 
 						if(!in_array($uploaded_ext, $ext)) {
-							return $this->stop(__('msg_not_allowed_filetype', 'x2board'));
+							return $this->stop(__('msg_not_allowed_filetype', X2B_DOMAIN));
 						}
 					}
 
@@ -252,7 +252,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 					$allowed_attach_size = $config->allowed_attach_size * 1024 * 1024;
 					// An error appears if file size exceeds a limit
 					if($allowed_filesize < filesize($file_info['tmp_name'])) {
-						return new \X2board\Includes\Classes\BaseObject(-1, __('msg_exceeds_limit_size', 'x2board') );
+						return new \X2board\Includes\Classes\BaseObject(-1, __('msg_exceeds_limit_size', X2B_DOMAIN) );
 					}
 					// Get total file size of all attachements (from DB)
 					$size_args = new \stdClass;
@@ -260,7 +260,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 					$output = executeQuery('file.getAttachedFileSize', $size_args);
 					$attached_size = (int)$output->data->attached_size + filesize($file_info['tmp_name']);
 					if($attached_size > $allowed_attach_size) {
-						return new \X2board\Includes\Classes\BaseObject(-1, __('msg_exceeds_limit_size', 'x2board') );
+						return new \X2board\Includes\Classes\BaseObject(-1, __('msg_exceeds_limit_size', X2B_DOMAIN) );
 					}
 				}
 			}
@@ -311,13 +311,13 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 			// if(!FileHandler::makeDir($path)) {
 			if( !file_exists( $s_path ) ) {
 				if(!wp_mkdir_p( $s_path ) ){
-					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted_create', 'x2board') );
+					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_no_permission', X2B_DOMAIN) );
 				}
 			}
 
 			// Check uploaded file
 			if(!$manual_insert && !\X2board\Includes\checkUploadedFile($file_info['tmp_name'], $file_info['name'])) {
-				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_file_upload_error', 'x2board') );
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_upload_file_failed', X2B_DOMAIN) );
 			}
 			
 			// Move the file
@@ -332,7 +332,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 				if(!@move_uploaded_file($file_info['tmp_name'], $filename)) {
 					$filename = $s_path.$o_random->create_secure_salt(32, 'hex').'.'.$ext;
 					if(!@move_uploaded_file($file_info['tmp_name'], $filename)) {
-						return new \X2board\Includes\Classes\BaseObject(-1, __('msg_file_upload_error', 'x2board') );
+						return new \X2board\Includes\Classes\BaseObject(-1, __('msg_upload_file_failed', X2B_DOMAIN) );
 					}
 				}
 			}
@@ -634,8 +634,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 			$o_grant = \X2board\Includes\Classes\Context::get('grant');
 			if(isset($o_grant->access) && $o_grant->access !== true) {
 				unset($o_grant);
-				// return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', 'x2board') );
-				wp_die(__('msg_not_permitted', 'x2board'));
+				// return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', X2B_DOMAIN) );
+				wp_die(__('msg_not_permitted', X2B_DOMAIN));
 			}
 			unset($o_grant);
 
@@ -651,13 +651,13 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 			// If the requested file information is incorrect, an error that file cannot be found appears
 			if($file_obj->file_id!=$file_id || $file_obj->sid!=$sid) {
 				// return $this->stop('msg_file_not_found');
-				wp_die(__('msg_file_not_found', 'x2board'));
+				wp_die(__('msg_file_not_found', X2B_DOMAIN));
 			}
 			// Notify that file download is not allowed when standing-by(Only a top-administrator is permitted)
 			$logged_info = \X2board\Includes\Classes\Context::get('logged_info');
 			if($logged_info->is_admin != 'Y' && $file_obj->isvalid!='Y') {
 				// return $this->stop('msg_not_permitted_download');
-				wp_die(__('msg_not_permitted_download', 'x2board'));
+				wp_die(__('msg_not_permitted_download', X2B_DOMAIN));
 			}
 			unset($logged_info);
 			
@@ -711,7 +711,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 				}
 				if($o_appending_file_conf->file_allow_outlink != 'Y') {
 					// return $this->stop('msg_not_allowed_outlink');
-					wp_die(__('msg_not_allowed_outlink', 'x2board'));
+					wp_die(__('msg_not_allowed_outlink', X2B_DOMAIN));
 				}
 			}
 
@@ -729,7 +729,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 			if(is_array($o_appending_file_conf->file_download_grant) && $downloadGrantCount>0) {
 				if(!\X2board\Includes\Classes\Context::get('is_logged')) {
 					// return $this->stop('msg_not_permitted_download');
-					wp_die(__('msg_not_permitted_download', 'x2board'));
+					wp_die(__('msg_not_permitted_download', X2B_DOMAIN));
 				}
 
 				// $logged_info = \X2board\Includes\Classes\Context::get('logged_info');
@@ -813,13 +813,13 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 
 			if(!file_exists($uploaded_filename)) {
 				// return $this->stop('msg_file_not_found');
-				wp_die(__('msg_file_not_found', 'x2board'));
+				wp_die(__('msg_file_not_found', X2B_DOMAIN));
 			}
 
 			if(!$file_key || $_SESSION[$session_key][$file_id] != $file_key) {
 				unset($_SESSION[$session_key][$file_id]);
 				// return $this->stop('msg_invalid_request');
-				wp_die(__('msg_invalid_request', 'x2board'));
+				wp_die(__('msg_invalid_request', X2B_DOMAIN));
 			}
 
 			$file_size = $file_obj->file_size;
@@ -857,7 +857,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 			$fp = fopen($uploaded_filename, 'rb');
 			if(!$fp) {
 				// return $this->stop('msg_file_not_found');
-				wp_die(__('msg_file_not_found', 'x2board'));
+				wp_die(__('msg_file_not_found', X2B_DOMAIN));
 			}
 
 			header("Cache-Control: ");

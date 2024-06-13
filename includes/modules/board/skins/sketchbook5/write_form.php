@@ -190,19 +190,19 @@ button.x2board-default-button-medium:active { opacity: 0.7; }
 			<!--// Buttons -->
 			<div class="x2board-control">
 				<div class="center">
-					<button type="submit" class="x2board-default-button-medium blue"><?php echo __('cmd_submit', 'x2board')?></button>
-					<button type="button" class="x2board-default-button-medium white" onClick="history.back()"><?php echo __('cmd_back', 'x2board')?></button>
+					<button type="submit" class="x2board-default-button-medium blue"><?php echo __('cmd_submit', X2B_DOMAIN)?></button>
+					<button type="button" class="x2board-default-button-medium white" onClick="history.back()"><?php echo __('cmd_back', X2B_DOMAIN)?></button>
 				</div>
 			</div>
 			
 			<?php if(false):?>
 			<div class="regist">
 				<?php if(false):// $is_logged && !$post->is_exists() || $post->get('status')=='TEMP'): ?><!-- cond="$is_logged && !$post->is_exists() || $post->get('status')=='TEMP'" -->
-					<!-- <button type="button" onclick="doDocumentSave(this);" class="bd_btn temp"><?php //echo __('cmd_temp_save', 'x2board')?></button> -->
+					<!-- <button type="button" onclick="doDocumentSave(this);" class="bd_btn temp"><?php //echo __('cmd_temp_save', X2B_DOMAIN)?></button> -->
 				<?php endif ?>
-				<!-- <input type="button" value="<?php //echo __('cmd_preview', 'x2board')?>" onclick="doDocumentPreview(this);return false" class="bd_btn m_no" /> -->
-				<input type="submit" value="<?php echo __('cmd_submit', 'x2board')?>" class="bd_btn blue" />
-				<button type="button" onclick="history.back()" class="bd_btn cancle"><?php echo __('cmd_back', 'x2board')?></button>
+				<!-- <input type="button" value="<?php //echo __('cmd_preview', X2B_DOMAIN)?>" onclick="doDocumentPreview(this);return false" class="bd_btn m_no" /> -->
+				<input type="submit" value="<?php echo __('cmd_submit', X2B_DOMAIN)?>" class="bd_btn blue" />
+				<button type="button" onclick="history.back()" class="bd_btn cancle"><?php echo __('cmd_back', X2B_DOMAIN)?></button>
 			</div>
 			<?php endif ?>
 		</form>

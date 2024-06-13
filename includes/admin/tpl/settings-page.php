@@ -30,7 +30,7 @@ function x2b_options_page() {
 	ob_start();
 	?>
 	<div class="wrap">
-		<h1><?php esc_html_e( 'X2Board Settings', 'x2board' ); ?></h1>
+		<?php include 'header.php' ?>
 
 		<!-- <p>
 			<a class="x2b_button" href="<?php //echo admin_url( 'tools.php?page=x2b_tools_page' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>">
@@ -84,7 +84,7 @@ wp_nonce_field($s_action);
 					<?php
 						// Default submit button.
 						submit_button(
-							__( 'Save Changes', 'x2board' ),
+							__( 'cmd_save_change', X2B_DOMAIN ),
 							'primary',
 							'submit',
 							false
@@ -92,9 +92,9 @@ wp_nonce_field($s_action);
 
 						echo '&nbsp;&nbsp;';
 						// Reset button.
-						$confirm = esc_js( __( 'Do you really want to delete this board?', 'x2board' ) );
+						$confirm = esc_js( __( 'msg_delete_board', X2B_DOMAIN ) );
 						submit_button(
-							__( 'Delete Board', 'x2board' ),
+							__( 'cmd_delete_board', X2B_DOMAIN ),
 							'secondary',
 							'delete_board',
 							false,
@@ -138,12 +138,12 @@ wp_nonce_field($s_action);
  */
 function x2b_get_settings_sections() {
 	$x2b_settings_sections = array(
-		'general'           => __( 'Board info', 'x2board' ),
-		'category'          => __( 'Category info', 'x2board' ),
-		'user_define_field' => __( 'User define field', 'x2board' ),
-		'permission'        => __( 'Permission info', 'x2board' ),
-		'extra'             => __( 'Extra info', 'x2board' ),
-		'skin_vars'         => __( 'Skin info', 'x2board' ),
+		'general'           => __( 'lbl_board_info', X2B_DOMAIN ),
+		'category'          => __( 'lbl_category_info', X2B_DOMAIN ),
+		'user_define_field' => __( 'lbl_user_define_field', X2B_DOMAIN ),
+		'permission'        => __( 'lbl_permission_info', X2B_DOMAIN ),
+		'extra'             => __( 'lbl_extra_info', X2B_DOMAIN ),
+		'skin_vars'         => __( 'lbl_skin_info', X2B_DOMAIN ),
 	);
 
 	/**
@@ -167,7 +167,7 @@ function x2b_get_settings_sections() {
  */
 function x2b_missing_callback( $args ) {
 	/* translators: %s: Setting ID. */
-	printf( esc_html__( 'The callback function used for the <strong>%s</strong> setting is missing.', 'x2board' ), esc_html( $args['id'] ) );
+	printf( 'The callback function used for the <strong>%s</strong> setting is missing.', esc_html( $args['id'] ) );
 }
 
 
@@ -301,7 +301,7 @@ function x2b_checkbox_callback( $args ) {
 
 	$html  = sprintf( '<input type="hidden" name="%1$s" value="%2$s" />', sanitize_key( $args['id'] ), $s_unchecked_value );
 	$html .= sprintf( '<input type="checkbox" id="%1$s" name="%1$s" value="%2$s" %3$s />', sanitize_key( $args['id'] ), $s_checked_value, $checked );
-	$html .= ( (bool) $set !== (bool) $default ) ? '<em style="color:orange"> ' . esc_html__( 'Modified from default setting', 'x2board' ) . '</em>' : ''; // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
+	$html .= ( (bool) $set !== (bool) $default ) ? '<em style="color:orange"> ' . __( 'msg_modified_from_default_setting', X2B_DOMAIN ) . '</em>' : ''; // phpcs:ignore WordPress.PHP.StrictComparisons.LooseComparison
 	$html .= '<p class="description">' . wp_kses_post( $args['desc'] ) . '</p>';
 
 	/** This filter has been defined in settings-page.php */
@@ -533,8 +533,8 @@ function x2b_image_callback( $args ) {
 	$html = sprintf( '<input type="file" id="%1$s" name="%1$s" accept="image/gif, image/png, image/jpeg" />', $s_var_id );
 	if(isset($A_X2B_ADMIN_BOARD_SETTINGS[$s_var_id]['full_url'])) {
 		$html .= '<br />';
-		$html .= sprintf( '<img src="%1$s" style="max-width:200px" title="%2$s" alt="%2$s" />', esc_attr( $A_X2B_ADMIN_BOARD_SETTINGS[$s_var_id]['full_url'] ), esc_html__( 'thumbnail', 'x2board' ) );
-		$html .= '<label><input type="checkbox" name="delete_old_file['.$s_var_id.']" value="'.esc_attr( $A_X2B_ADMIN_BOARD_SETTINGS[$s_var_id]['abs_path'] ).'">'.esc_html__( 'Delete file', 'x2board' ).'</label>';
+		$html .= sprintf( '<img src="%1$s" style="max-width:200px" />', esc_attr( $A_X2B_ADMIN_BOARD_SETTINGS[$s_var_id]['full_url'] ) );
+		$html .= '<label><input type="checkbox" name="delete_old_file['.$s_var_id.']" value="'.esc_attr( $A_X2B_ADMIN_BOARD_SETTINGS[$s_var_id]['abs_path'] ).'">'.__( 'cmd_delete_file', X2B_DOMAIN ).'</label>';
 	}
 	$html .= '<p class="description">' . wp_kses_post( $args['desc'] ) . '</p>';
 
@@ -559,9 +559,9 @@ function x2b_wpsortableui_callback( $args ) {
 		<div class="col-wrap">
 			<div class="form-wrap">
 				<div class="x2board-update-category">
-					<h2>'.esc_html__( 'Update category', 'x2board' ).'</h2>
+					<h2>'.__( 'lbl_update_category', X2B_DOMAIN ).'</h2>
 					<div class="form-field form-required term-name-wrap">
-						<label for="update-category-name">'.esc_html__( 'Category to update', 'x2board' ).'</label>
+						<label for="update-category-name">'.__( 'lbl_update_category', X2B_DOMAIN ).'</label>
 						<input type="text" id="update-category-name" class="update_category_name" name="update_category_name">
 						<input type="hidden" id="current-category-name" class="update_category_name" name="current_category_name">
 						<input type="hidden" id="category-id" name="category_id" value="">
@@ -570,29 +570,29 @@ function x2b_wpsortableui_callback( $args ) {
 				</div>
 				
 				<div class="x2board-update-category btn">
-					<label><input type="checkbox" id="default-category" name="default-category" value="Y">'.esc_html__( 'Default Category', 'x2board' ).'</label>
-					<button type="button" class="button" onclick="x2board_category_handler(\'update\')">'.esc_html__( 'Update', 'x2board' ).'</button>
-					<button type="button" class="button" onclick="x2board_category_handler(\'remove\')">'.esc_html__( 'Remove', 'x2board' ).'</button>
+					<label><input type="checkbox" id="default-category" name="default-category" value="Y">'.__( 'lbl_default_category', X2B_DOMAIN ).'</label>
+					<button type="button" class="button" onclick="x2board_category_handler(\'update\')">'.__( 'cmd_update', X2B_DOMAIN ).'</button>
+					<button type="button" class="button" onclick="x2board_category_handler(\'remove\')">'.__( 'cmd_remove', X2B_DOMAIN ).'</button>
 				</div>
 				
 				<div class="x2board-new-category">
-					<h2>'.esc_html__( 'Add new category', 'x2board' ).'</h2>
+					<h2>'.__( 'cmd_add_new_category', X2B_DOMAIN ).'</h2>
 					<div class="form-field form-required term-name-wrap">
-						<label for="new-category-name">'.esc_html__( 'New category name', 'x2board' ).'</label>
+						<label for="new-category-name">'.__( 'lbl_new_category_name', X2B_DOMAIN ).'</label>
 						<input type="text" id="new-category-name" name="new_category">
 						<input type="hidden" id="new-parent-id">
 					</div>
 				</div>
 				
 				<div class="x2board-new-category-btn">
-					<button type="button" class="button-primary" onclick="x2board_category_handler(\'insert\')">'.esc_html__( 'Add new category', 'x2board' ).'</button>
+					<button type="button" class="button-primary" onclick="x2board_category_handler(\'insert\')">'.__( 'cmd_add_new_category', X2B_DOMAIN ).'</button>
 				</div>
 			</div>
 		</div>
 	</div>
 	<div class="x2board-category-setting-right">
 		<div class="x2board-category-setting-sortable">
-		<h2>'.esc_html__( 'Category status', 'x2board' ).'</h2>
+		<h2>'.__( 'lbl_category_status', X2B_DOMAIN ).'</h2>
 		<ul class="sortable">';
 	
 	$o_cat_admin_model = new \X2board\Includes\Modules\Category\categoryAdminModel();
@@ -765,7 +765,7 @@ function x2b_wplistfieldui_callback( $args ) {
 // 		} elseif ( isset( $args['default'] ) && $args['default'] === $name && ! isset( $A_X2B_ADMIN_BOARD_SETTINGS[ $args['id'] ] ) ) {
 // 			$checked = true;
 // 		}
-// 		$cropped = $option['crop'] ? __( ' cropped', 'x2board' ) : '';
+// 		$cropped = $option['crop'] ? __( ' cropped', X2B_DOMAIN ) : '';
 
 // 		$html .= sprintf(
 // 			'<input name="%1$s" id="%1$s[%2$s]" type="radio" value="%2$s" %3$s /> ',
@@ -972,7 +972,7 @@ function x2b_wplistfieldui_callback( $args ) {
 
 // 	if ( 'thumb_default' === $args['id'] && '' !== $thumb_default ) {
 // 		$html .= '<br />';
-// 		$html .= sprintf( '<img src="%1$s" style="max-width:200px" title="%2$s" alt="%2$s" />', esc_attr( $thumb_default ), esc_html__( 'Default thumbnail', 'x2board' ) );
+// 		$html .= sprintf( '<img src="%1$s" style="max-width:200px" title="%2$s" alt="%2$s" />', esc_attr( $thumb_default ), esc_html__( 'Default thumbnail', X2B_DOMAIN ) );
 // 	}
 
 // 	return $html;
@@ -994,11 +994,11 @@ function x2b_wplistfieldui_callback( $args ) {
 // 	$crp_styles = crp_get_option( 'crp_styles' );
 
 // 	if ( in_array( $crp_styles, array( 'rounded_thumbs', 'thumbs_grid' ), true ) && ( 'show_excerpt' === $args['id'] || 'show_author' === $args['id'] || 'show_date' === $args['id'] ) ) {
-// 		$html .= '<span style="color:red">' . esc_html__( 'This option cannot be changed because of the selected related posts style. To modify this option, you will need to select No styles or Text only in the Styles tab', 'x2board' ) . '</span>';
+// 		$html .= '<span style="color:red">' . esc_html__( 'This option cannot be changed because of the selected related posts style. To modify this option, you will need to select No styles or Text only in the Styles tab', X2B_DOMAIN ) . '</span>';
 // 	}
 
 // 	if ( in_array( $crp_styles, array( 'rounded_thumbs', 'thumbs_grid', 'text_only' ), true ) && 'post_thumb_op' === $args['id'] ) {
-// 		$html .= '<span style="color:red">' . esc_html__( 'This option cannot be changed because of the selected related posts style. To modify this option, you will need to select No styles in the Styles tab', 'x2board' ) . '</span>';
+// 		$html .= '<span style="color:red">' . esc_html__( 'This option cannot be changed because of the selected related posts style. To modify this option, you will need to select No styles in the Styles tab', X2B_DOMAIN ) . '</span>';
 // 	}
 
 // 	return $html;

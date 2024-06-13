@@ -123,7 +123,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentItem')) {
 
 		// function getNickName()
 		public function get_nick_name()	{
-			$s_nick_name = strlen($this->get('nick_name')) > 0 ? $this->get('nick_name') : __('No name', 'x2board');
+			$s_nick_name = strlen($this->get('nick_name')) > 0 ? $this->get('nick_name') : __('lbl_no_name', X2B_DOMAIN);
 			return \X2board\Includes\escape($s_nick_name, false);
 		}
 
@@ -190,7 +190,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentItem')) {
 		// function getContent($add_popup_menu = TRUE, $add_content_info = TRUE, $add_xe_content_class = TRUE)
 		public function get_content() {
 			if($this->is_secret() && !$this->is_accessible()) {
-				return __('msg_is_secret', 'x2board');
+				return __('msg_secret_post', X2B_DOMAIN);
 			}
 			$s_content = $this->get('content');
 			\X2board\Includes\stripEmbedTagForAdmin($s_content, $this->get('comment_author'));

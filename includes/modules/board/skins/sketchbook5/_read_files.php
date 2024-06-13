@@ -6,7 +6,7 @@
 	<table class="bd_tb">
 		<caption class="blind">Atachment</caption>
 		<tr>
-			<th scope="row" class="ui_font"><strong><?php echo __('uploaded_file', 'x2board')?></strong> <span class="fnt_count">'<b><?php echo $post->get('uploaded_count')?></b>'</span></th>
+			<th scope="row" class="ui_font"><strong><?php echo __('lbl_uploaded_file', X2B_DOMAIN)?></strong> <span class="fnt_count">'<b><?php echo $post->get('uploaded_count')?></b>'</span></th>
 			<td>
 				<?php if($mi->files_type == ' '):?><!-- cond="!$mi->files_type" -->
 					<ul>

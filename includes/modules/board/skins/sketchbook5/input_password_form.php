@@ -5,8 +5,8 @@
 	<input type="hidden" name="page" value="<?php echo intval($page)?>" />
 	<input type="hidden" name="post_id" value="<?php echo intval($post_id)?>" />
 	<input type="hidden" name="comment_id" value="<?php echo intval($comment_id)?>" />
-	<h1><?php echo __('msg_input_password', 'x2board')?></h1>
-	<input type="password" name="password" title="<?php echo __('password', 'x2board')?>" class="itx" />
-	<input class="bd_btn" type="submit" value="<?php echo __('cmd_input', 'x2board')?>" />
+	<h1><?php echo __('msg_input_password', X2B_DOMAIN)?></h1>
+	<input type="password" name="password" title="<?php echo __('lbl_password', X2B_DOMAIN)?>" class="itx" />
+	<input class="bd_btn" type="submit" value="<?php echo __('cmd_submit', X2B_DOMAIN)?>" />
 </form>
 <include target="_footer.html" />

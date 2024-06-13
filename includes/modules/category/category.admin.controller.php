@@ -29,7 +29,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Category\\categoryAdminControll
 			$o_current_user = wp_get_current_user();
 			if( !user_can( $o_current_user, 'administrator' ) || !current_user_can('manage_x2board') ) {
 				unset($o_current_user);
-				wp_die(__('You do not have permission.', 'x2board'));
+				wp_die(__('msg_no_permission', X2B_DOMAIN));
 			}
 			unset($o_current_user);
 		}
@@ -261,7 +261,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Category\\categoryAdminControll
 			if($tree_category){
 				foreach($tree_category as $key=>$value){
 					if( $value['is_default'] == 'Y' ){
-						$default_select = '('.esc_html__( 'Default category', 'x2board' ).')';
+						$default_select = '('.esc_html__( 'Default category', X2B_DOMAIN ).')';
 					}
 					else {
 						$default_select = '';

@@ -6,7 +6,7 @@
 		<?php //include 'welcome.php'?>
 	<!-- </div> -->
 	<h2 class="nav-tab-wrapper">
-		<a href="#" class="nav-tab nav-tab-active" onclick="return false;"><?php echo __('Plugin setup', 'x2board')?></a>
+		<a href="#" class="nav-tab nav-tab-active" onclick="return false;"><?php echo __('cmd_setup_plugin', X2B_DOMAIN)?></a>
 	</h2>
 	<ul id="kboard-dashboard-options">
 		<li id="kboard_xssfilter">
@@ -137,7 +137,7 @@
 				<p>
 					스킨파일 수정없이 새로운 디자인 속성을 추가할 수 있습니다.<br>
 					잘못된 CSS를 입력하게 되면 사이트 레이아웃이 깨질 수 있습니다.<br>
-					CSS 수정 관련 질문은 커뮤니티를 이용해 주세요. <a href="https://www.cosmosfarm.com/threads" onclick="window.open(this.href);return false;"><?php echo __('Go to the commnity', 'x2board')?></a>
+					CSS 수정 관련 질문은 커뮤니티를 이용해 주세요. <a href="https://www.cosmosfarm.com/threads" onclick="window.open(this.href);return false;"><?php echo __('cmd_goto_community', X2B_DOMAIN)?></a>
 				</p>
 				<p>
 					<textarea rows="10" name="option[kboard_custom_css]"><?php echo get_option('kboard_custom_css')?></textarea>
@@ -175,7 +175,7 @@
 					<button type="submit" class="button">금지단어 업데이트</button>
 				</p>
 				<p>
-					<input type="text" name="option[kboard_name_filter_message]" value="<?php echo get_option('kboard_name_filter_message', '')?>" style="width:100%" placeholder="<?php echo __('%s is not available.', 'kboard')?>">
+					<input type="text" name="option[kboard_name_filter_message]" value="<?php echo get_option('kboard_name_filter_message', '')?>" style="width:100%" placeholder="<?php echo __('msg_not_available', X2B_DOMAIN)?>">
 					<button type="submit" class="button">금지단어 메시지 업데이트</button>
 				</p>
 			</form>
@@ -195,7 +195,7 @@
 					<button type="submit" class="button">금지단어 업데이트</button>
 				</p>
 				<p>
-					<input type="text" name="option[kboard_content_filter_message]" value="<?php echo get_option('kboard_content_filter_message', '')?>" style="width:100%" placeholder="<?php echo __('%s is not available.', 'kboard')?>">
+					<input type="text" name="option[kboard_content_filter_message]" value="<?php echo get_option('kboard_content_filter_message', '')?>" style="width:100%" placeholder="<?php echo __('msg_not_available', X2B_DOMAIN)?>">
 					<button type="submit" class="button">금지단어 메시지 업데이트</button>
 				</p>
 			</form>

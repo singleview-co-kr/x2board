@@ -24,7 +24,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 			$o_current_user = wp_get_current_user();
 			if( !user_can( $o_current_user, 'administrator' ) || !current_user_can('manage_x2board') ) {
 				unset($o_current_user);
-				wp_die(__('You do not have permission.', 'x2board'));
+				wp_die(__('msg_no_permission', X2B_DOMAIN));
 			}
 			unset($o_current_user);
 		}
@@ -274,15 +274,15 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 		public function get_columns(){
 			return array(
 					'cb' => '<input type="checkbox">',
-					// 'thumbnail' => __('썸네일', 'x2board'),
-					'wp_page_id' => __('Installed WP page', 'x2board'),
-					'board_name' => __('Board name', 'x2board'),
-					// 'skin' => __('스킨', 'x2board'),
-					// 'permission_read' => __('읽기권한', 'x2board'),
-					// 'permission_write' => __('쓰기권한', 'x2board'),
-					// 'permission_comments_write' => __('댓글쓰기권한', 'x2board'),
-					'create_date' => __('Create date', 'x2board'),
-					// 'created' => __('생성일', 'x2board'),
+					// 'thumbnail' => __('썸네일', X2B_DOMAIN),
+					'wp_page_id' => __('lbl_installed_wp_page', X2B_DOMAIN),
+					'board_name' => __('name_x2board_title', X2B_DOMAIN),
+					// 'skin' => __('스킨', X2B_DOMAIN),
+					// 'permission_read' => __('읽기권한', X2B_DOMAIN),
+					// 'permission_write' => __('쓰기권한', X2B_DOMAIN),
+					// 'permission_comments_write' => __('댓글쓰기권한', X2B_DOMAIN),
+					'create_date' => __('lbl_create_date', X2B_DOMAIN),
+					// 'created' => __('생성일', X2B_DOMAIN),
 			);
 		}
 
@@ -290,10 +290,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 			switch( $column_name ) {
 				case 'wp_page_id':
 					$o_post = get_post(intval($item->wp_page_id)); 
-					return '<A HREF='.$o_post->guid.' target="_blank">'.__('Visit the page', 'x2board').' - '.$o_post->post_title.'</A>';
+					return '<A HREF='.$o_post->guid.' target="_blank">'.__('lbl_visit_page', X2B_DOMAIN).' - '.$o_post->post_title.'</A>';
 				case 'board_name':
 					$o_post = get_post(intval($item->wp_page_id)); 
-					return '<A HREF='.admin_url( 'admin.php?page='.X2B_CMD_ADMIN_VIEW_BOARD_UPDATE.'&board_id='.$o_post->ID ).'>'.__('Configure the board', 'x2board').' - '.$item->board_title.'</A>';
+					return '<A HREF='.admin_url( 'admin.php?page='.X2B_CMD_ADMIN_VIEW_BOARD_UPDATE.'&board_id='.$o_post->ID ).'>'.__('lbl_configure_board', X2B_DOMAIN).' - '.$item->board_title.'</A>';
 				case 'create_date':
 					return $item->$column_name;
 				default:

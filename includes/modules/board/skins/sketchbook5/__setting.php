@@ -69,104 +69,33 @@ if(wp_is_mobile()) {
 	if($mi->to_sns!='N') $mi->to_sns = 3;
 }
 
-$lang = new \stdClass();
-if($lang_type=='ko_KR') {
-	$lang->search_info = '검색창을 열고 닫습니다';
-	$lang->viewer = '뷰어로 보기';
-	$lang->with_viewer = '게시물을 뷰어로 보기';
-	$lang->with_viewer_info = '이 버튼을 활성화시키면, 목록에서 게시물 링크를 클릭 시 \'뷰어로 보기\'로 보게 됩니다';
-	$lang->go_cmt = '댓글로 가기';
-	$lang->more = '더보기';
-	$lang->use_wysiwyg = '에디터 사용하기';
-	$lang->sns_wrt = '설정된 SNS로 작성된 글을 동시에 발송합니다. 발송하려 하는 해당 SNS의 아이콘을 클릭하세요';
-	$lang->shortcut = '단축키';
-	$lang->larger = '크게';
-	$lang->smaller = '작게';
-	$lang->font = '글꼴';
-	$lang->best_font_dsc = '사이트 기본 글꼴을 유지합니다';
-	$lang->best_font = '기본글꼴';
-	$lang->window_font = '맑은고딕';
-	$lang->tahoma = '돋움';
-	$lang->select_editor = '에디터 선택하기';
-	$lang->textarea = '텍스트 모드';
-	$lang->wysiwyg = '에디터 모드';
-	$lang->sxc_editor = 'SNS 보내기';
-	$lang->noti_rfsh = '※ 주의 : 페이지가 새로고침됩니다';
-	$lang->bd_login = '로그인 하시겠습니까?';
-	$lang->link_site = '사이트';
-	$lang->link_site_viewer = '사이트를 뷰어로 보기';
-	$lang->score = '점';
-	$lang->cmd_deselect_all = '선택 해제';
-	$lang->m_editor_notice = 'HTML로 작성된 문서를 모바일 기기에서 수정하는 것을 권장하지 않습니다';
-	$lang->select_files_to_insert = '본문에 넣을 파일을 선택하세요';
-	$lang->m_img_upoad_1 = '본문 위에 넣기';
-	$lang->m_img_upoad_2 = '본문 아래에 넣기';
-}
-else {
-	$lang->search_info = 'Show or Hide search window';
-	$lang->viewer = 'Viewer';
-	$lang->with_viewer = 'Read with Viewer';
-	$lang->with_viewer_info = 'If this button is activated, when you click links in list, read with Viewer';
-	$lang->go_cmt = 'Go comment';
-	$lang->more = ', More';
-	$lang->use_wysiwyg = 'Write with WYSIWYG';
-	$lang->sns_wrt = 'If you send this post to your SNS, Click the SNS icon';
-	$lang->shortcut = 'Shortcut';
-	$lang->larger = 'Larger Font';
-	$lang->smaller = 'Smaller Font';
-	$lang->font = 'Font';
-	$lang->best_font_dsc = 'Default';
-	$lang->best_font = 'Default';
-	$lang->window_font = 'Segoe UI';
-	if($lang_type=='ja-JP') {
-        $lang->window_font = 'メイリオ';
-    }
-	$lang->tahoma = 'Tahoma';
-	$lang->select_editor = 'Select Editor';
-	$lang->textarea = 'Textarea';
-	$lang->wysiwyg = 'WYSIWYG';
-	$lang->sxc_editor = 'To SNS';
-	$lang->noti_rfsh = '※ Be careful of Refresh';
-	$lang->bd_login = 'Sign In?';
-	$lang->link_site = 'Website';
-	$lang->link_site_viewer = 'Go Website with Viewer';
-	$lang->score = ' Score';
-	$lang->cmd_deselect_all = 'Deselect';
-	$lang->m_editor_notice = 'It is not recommended to update an article on mobile devices';
-	$lang->select_files_to_insert = 'Select files to insert to content';
-	$lang->m_img_upoad_1 = 'Files + Content';
-	$lang->m_img_upoad_2 = 'Content + Files';
-	// $lang->cmd_vote = 'Like';
-	// $lang->cmd_vote_down = 'Dislike';
-}
-
 if(isset($listStyle)) {
     if($listStyle=='list') { 
         $mi->default_style = 'list';
     }
-    elseif($listStyle=='webzine') {
-        $mi->default_style = 'webzine';
-    }
     elseif($listStyle=='gallery') {
         $mi->default_style = 'gallery';
-    }
-    elseif($listStyle=='cloud_gall') {
-        $mi->default_style = 'cloud_gall';
     }
     elseif($listStyle=='guest') {
         $mi->default_style = 'guest';
     }
-    elseif($listStyle=='blog') {
-        $mi->default_style = 'blog';
-    }
     elseif($listStyle=='faq') {
         $mi->default_style = 'faq';
     }
-    elseif($listStyle=='viewer') {
-        $mi->default_style = 'viewer';
-    }
+    // elseif($listStyle=='webzine') {
+    //     $mi->default_style = 'webzine';
+    // }
+    // elseif($listStyle=='cloud_gall') {
+    //     $mi->default_style = 'cloud_gall';
+    // }
+    // elseif($listStyle=='blog') {
+    //     $mi->default_style = 'blog';
+    // }
+    // elseif($listStyle=='viewer') {
+    //     $mi->default_style = 'viewer';
+    // }
 }
-elseif(!in_array($mi->default_style,array('list','webzine','gallery','cloud_gall','guest','blog','faq','viewer'))) {
+elseif(!in_array($mi->default_style,array('list','gallery','guest','faq'))) {  // ,'webzine','cloud_gall','blog','viewer'
     $mi->default_style = 'list';
 }
 

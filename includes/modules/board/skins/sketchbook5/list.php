@@ -16,7 +16,7 @@ wp_enqueue_script(X2B_DOMAIN.'-sketchbook5-4', $skin_url . '/js/board.js', [], X
 
 <script>//<![CDATA[
 var lang_type = "<?php echo $lang_type?>";
-var bdLogin = "<?php if(!$is_logged): ?><?php echo $lang->bd_login ?>@<?php echo wp_login_url() ?><?php endif ?>";
+var bdLogin = "<?php if(!$is_logged): ?><?php echo __('desc_bd_login', X2B_DOMAIN) ?>@<?php echo wp_login_url() ?><?php endif ?>";
 jQuery(function(jQuery){
 	board('#bd_<?php echo $board_id?>_<?php echo intval($post->get('post_id'))?>');
 <?php if($mi->default_style!='viewer'): ?>
@@ -54,7 +54,7 @@ if($mi->default_style !='viewer'):
 <?php if($mi->select_lst_more): ?> select_lst_cloud<?php endif ?>" data-default_style="<?php echo $mi->default_style?>" 
 	<?php if($mi->link_board):?> data-link_board="<?php echo $mi->link_board ?>" <?php endif ?> 
 	<?php if($mi->bubble=='N'):?> data-bdBubble="N" <?php endif ?> 
-	<?php if($mi->lst_viewer=='Y'):?> data-lstViewer="<?php echo $lang->with_viewer ?>" <?php endif ?>
+	<?php if($mi->lst_viewer=='Y'):?> data-lstViewer="<?php echo __('cmd_with_viewer', X2B_DOMAIN) ?>" <?php endif ?>
 	data-bdFilesType="<?php echo $mi->files_type ?>" 
 	<?php if($mi->img_opt):?> data-bdImgOpt="Y" <?php endif ?>
 	<?php if($mi->img_link != ' ' && wp_is_mobile()):?> data-bdImgLink="Y" <?php endif ?>
@@ -84,16 +84,16 @@ if($mi->default_style !='viewer'):
 			?>
 			<a class="select tg_btn2" href="#" data-href=".bd_font_select"><b>T</b><strong>
 				<?php if($mi->font=='ng'):?>나눔고딕
-				<?php elseif($mi->font=='window_font'):?><?php echo $lang->window_font ?>
-				<?php elseif($mi->font=='tahoma'):?><?php echo $lang->tahoma ?>
-				<?php else:?><?php echo $lang->best_font ?><?php endif ?>
+				<?php elseif($mi->font=='window_font'):?><?php echo __('lbl_window_font', X2B_DOMAIN) ?>
+				<?php elseif($mi->font=='tahoma'):?><?php echo __('lbl_tahoma', X2B_DOMAIN) ?>
+				<?php else:?><?php echo __('lbl_best_font', X2B_DOMAIN) ?><?php endif ?>
 			</strong><span class="arrow down"></span></a>
 			<div class="bd_font_select tg_cnt2"><button type="button" class="tg_blur2"></button>
 				<ul>
-					<li class="ui_font<?php if($mi->font==' '):?> on<?php endif ?>"><a href="#" title="<?php echo $lang->best_font_dsc ?>"><?php echo $lang->best_font ?></a><em>✔</em></li>
+					<li class="ui_font<?php if($mi->font==' '):?> on<?php endif ?>"><a href="#" title="<?php echo __('about_best_font_dsc', X2B_DOMAIN) ?>"><?php echo __('lbl_best_font', X2B_DOMAIN) ?></a><em>✔</em></li>
 					<li class="ng<?php if($mi->font=='ng'):?> on<?php endif ?>"><a href="#">나눔고딕</a><em>✔</em></li>
-					<li class="window_font<?php if($mi->font=='window_font'):?> on<?php endif ?>"><a href="#"><?php echo $lang->window_font ?></a><em>✔</em></li>
-					<li class="tahoma<?php if($mi->font=='tahoma'):?> on<?php endif ?>"><a href="#"><?php echo $lang->tahoma ?></a><em>✔</em></li>
+					<li class="window_font<?php if($mi->font=='window_font'):?> on<?php endif ?>"><a href="#"><?php echo __('lbl_window_font', X2B_DOMAIN) ?></a><em>✔</em></li>
+					<li class="tahoma<?php if($mi->font=='tahoma'):?> on<?php endif ?>"><a href="#"><?php echo __('lbl_tahoma', X2B_DOMAIN) ?></a><em>✔</em></li>
 				</ul><button type="button" class="tg_blur2"></button>
 			</div>
 		</div>
@@ -103,31 +103,31 @@ if($mi->default_style !='viewer'):
 		<div class="bd_set fr m_btn_wrp m_no">
 <?php if($grant->view && $mi->default_style!='guest' && $mi->default_style!='blog'):?>	<!-- <block cond="$grant->view && $mi->default_style!='guest' && $mi->default_style!='blog'"> -->
 	<?php if($post->is_exists() && $mi->viewer == ' '):?>  <!-- cond="$oDocument->isExists() && !$mi->viewer" -->
-			<a class="bg_f_f9" href="#" onclick="window.open('<?php echo x2b_get_url('listStyle','viewer','page','')?>','viewer','width=9999,height=9999,scrollbars=yes,resizable=yes,toolbars=no');return false"><em>✔</em> <strong><?php echo $lang->viewer?></strong></a>
+			<a class="bg_f_f9" href="#" onclick="window.open('<?php echo x2b_get_url('listStyle','viewer','page','')?>','viewer','width=9999,height=9999,scrollbars=yes,resizable=yes,toolbars=no');return false"><em>✔</em> <strong><?php echo __('cmd_with_viewer', X2B_DOMAIN) ?></strong></a>
 	<?php endif ?>
 	<?php if($mi->link_board):?> <!--@if($mi->link_board)-->
 		<?php if($mi->viewer_with!='N'):?> <!-- cond="$mi->viewer_with!='N'" -->
-			<a class="viewer_with bubble<?php if($mi->viewer_with=='2' || $_COOKIE['cookie_viewer_with']=='Y'):?> on<?php endif ?>" href="#" title="<?php echo $lang->with_viewer_info?>."><em>✔</em> <strong><?php echo $lang->link_site_viewer?></strong></a>
+			<a class="viewer_with bubble<?php if($mi->viewer_with=='2' || $_COOKIE['cookie_viewer_with']=='Y'):?> on<?php endif ?>" href="#" title="<?php echo __('about_with_viewer_info', X2B_DOMAIN) ?>."><em>✔</em> <strong><?php echo __('cmd_link_site_viewer', X2B_DOMAIN) ?></strong></a>
 		<?php endif ?>
 	<?php else:?> <!--@else-->
 		<?php if($post->is_exists() && $mi->viewer_with!='N'):?>  	<!-- cond="!$oDocument->isExists() && $mi->viewer_with!='N'" -->
-			<a class="viewer_with rd_viewer bubble<?php if($mi->viewer_with=='2' || $_COOKIE['cookie_viewer_with']=='Y'):?> on<?php endif ?>" href="#" title="<?php echo $lang->with_viewer_info?>."><em>✔</em> <strong><?php echo $lang->with_viewer?></strong></a>
+			<a class="viewer_with rd_viewer bubble<?php if($mi->viewer_with=='2' || $_COOKIE['cookie_viewer_with']=='Y'):?> on<?php endif ?>" href="#" title="<?php echo __('about_with_viewer_info', X2B_DOMAIN) ?>."><em>✔</em> <strong><?php echo __('cmd_with_viewer', X2B_DOMAIN) ?></strong></a>
 		<?php endif ?>
 	<?php endif ?> <!--@end-->
 <?php endif ?>	<!-- </block> -->
 <?php if(!$post->is_exists()):?>	<!-- <block cond="!$oDocument->isExists()"> -->
 	<?php if($mi->srch_window == ' '):?>	<!-- cond="!$mi->srch_window"  -->
-			<a class="show_srch bubble" href="#" title="<?php echo $lang->search_info?>"><b class="ico_16px search"></b><?php echo __('cmd_search', 'x2board') ?></a>
+			<a class="show_srch bubble" href="#" title="<?php echo __('about_search_info', X2B_DOMAIN) ?>"><b class="ico_16px search"></b><?php echo __('cmd_search', X2B_DOMAIN) ?></a>
 	<?php endif ?>
 	<?php if($mi->write_btn == ' ' || ($mi->write_btn!='N' && $grant->write_post)):?>	<!-- cond="!$mi->write_btn || ($mi->write_btn!='N' && $grant->write_document)"  -->
-			<a href="<?php echo x2b_get_url('act','dispBoardWrite','post_id','')?>"><b class="ico_16px write"></b><?php echo __('cmd_write', 'x2board')?></a>
+			<a href="<?php echo x2b_get_url('act','dispBoardWrite','post_id','')?>"><b class="ico_16px write"></b><?php echo __('cmd_write', X2B_DOMAIN)?></a>
 	<?php endif ?>
 	<?php if($mi->font_btn=='2'):?>	<!-- cond="$mi->font_btn=='2'"  -->
-			<span class="font_select"><a class="select tg_btn2" href="#" data-href=".bd_font_select"><b class="tx_ico_chk">T</b><?php echo $lang->font?><i class="arrow down"></i></a></span>
+			<span class="font_select"><a class="select tg_btn2" href="#" data-href=".bd_font_select"><b class="tx_ico_chk">T</b><?php echo __('lbl_font', X2B_DOMAIN) ?><i class="arrow down"></i></a></span>
 	<?php endif ?>
 	<?php if($grant->manager):?>	<!-- <block cond="$grant->manager"> -->
-			<a href="<?php echo x2b_get_url('act','dispBoardAdminBoardInfo')?>"><b class="ico_16px setup"></b><?php echo __('cmd_setup', 'x2board')?></a>
-			<a class="m_no" href="<?php echo x2b_get_url('','module','document','act','dispDocumentManageDocument')?>" onclick="popopen(this.href,'managePost');return false"><b class="tx_ico_chk">✔</b><?php echo __('cmd_manage_post', 'x2board') ?></a>
+			<a href="<?php echo x2b_get_url('act','dispBoardAdminBoardInfo')?>"><b class="ico_16px setup"></b><?php echo __('cmd_setup', X2B_DOMAIN)?></a>
+			<a class="m_no" href="<?php echo x2b_get_url('','module','document','act','dispDocumentManageDocument')?>" onclick="popopen(this.href,'managePost');return false"><b class="tx_ico_chk">✔</b><?php echo __('cmd_manage_post', X2B_DOMAIN) ?></a>
 		<?php if($mi->default_style!='list'):?>	<!-- cond="$mi->default_style!='list'" -->
 			<input type="checkbox" onclick="XE.checkboxToggleAll({ doClick:true });" class="iCheck" title="Check All" />
 		<?php endif ?>			
@@ -191,17 +191,17 @@ foreach($category_list as $key=>$val) {
 }?>
 	<?php if($mi->cnb == ' '): ?>   <!-- cond="!$mi->cnb"  -->
 				<div class="bd_cnb clear css3pie<?php if($mi->cnb_open):?> open<?php endif ?>">
-					<a class="home" href="<?php echo x2b_get_url('category','','page','','post_id','')?>" title="<?php echo __('post_count', 'x2board')?> '<?php echo number_format($total_count)?>'"><i class="home ico_16px">Category</i></a>
+					<a class="home" href="<?php echo x2b_get_url('category','','page','','post_id','')?>" title="<?php echo __('lbl_post_count', X2B_DOMAIN)?> '<?php echo number_format($total_count)?>'"><i class="home ico_16px">Category</i></a>
 					<div class="dummy_ie fr"></div>
 					<ul class="bubble bg_f_f9 css3pie">
-						<li class="cnbMore"><a href="#" class="bubble" title="<?php echo __('category', 'x2board')?> <?php echo $lang->more?>"><i class="fa<?php if($mi->cnb_open):?> fa-caret-up<?php else:?> fa-caret-down<?php endif?>"></i></a></li>
+						<li class="cnbMore"><a href="#" class="bubble" title="<?php echo __('lbl_category', X2B_DOMAIN)?> <?php echo __('lbl_more', X2B_DOMAIN) ?>"><i class="fa<?php if($mi->cnb_open):?> fa-caret-up<?php else:?> fa-caret-down<?php endif?>"></i></a></li>
 		<?php foreach($cate_list as $key => $val): ?><!-- loop="$cate_list=>$key,$val"  -->
 						<li <?php if($category==$val->category_id): ?> class="on"<?php endif?>>
-							<a class="a1<?php if($category==$val->category_id):?> on<?php endif?>" href="<?php echo x2b_get_url('category',$val->category_id,'post_id','','page','')?>" title="<?php echo __('post_count', 'x2board')?> <?php if(!$mi->cnb_count):?> <?php echo $val->post_count?> <?php endif?>" <?php if($val->color!='transparent'): ?>style="color:<?php echo $val->color?>" <?php endif?>><?php echo $val->title?> <?php if($mi->cnb_count): ?> <small>(<?php echo $val->post_count?>)</small><?php endif?></a>
+							<a class="a1<?php if($category==$val->category_id):?> on<?php endif?>" href="<?php echo x2b_get_url('category',$val->category_id,'post_id','','page','')?>" title="<?php echo __('lbl_post_count', X2B_DOMAIN)?> <?php if(!$mi->cnb_count):?> <?php echo $val->post_count?> <?php endif?>" <?php if($val->color!='transparent'): ?>style="color:<?php echo $val->color?>" <?php endif?>><?php echo $val->title?> <?php if($mi->cnb_count): ?> <small>(<?php echo $val->post_count?>)</small><?php endif?></a>
 			<?php if( count($val->children) ): ?>  <!-- cond="count($val->children)" -->
 							<ul class="wrp">
 				<?php foreach($val->children as $idx => $item): ?>	<!-- loop="$val->children=>$idx,$item" -->
-								<li class="li2<?php if($category==$item->category_id):?> on<?php endif?>"><a href="<?php echo x2b_get_url('category',$item->category_id,'post_id','','page','')?>" title="<?php echo __('post_count', 'x2board')?> <?php if(!$mi->cnb_count):?> <?php echo $item->post_count?> <?php endif?>"  <?php if($val->color!='transparent'): ?>style="color:<?php echo $val->color?>" <?php endif?>><?php echo $item->title?> <?php if($mi->cnb_count): ?> <small>(<?php echo $val->post_count?>)</small><?php endif?></a></li>
+								<li class="li2<?php if($category==$item->category_id):?> on<?php endif?>"><a href="<?php echo x2b_get_url('category',$item->category_id,'post_id','','page','')?>" title="<?php echo __('lbl_post_count', X2B_DOMAIN)?> <?php if(!$mi->cnb_count):?> <?php echo $item->post_count?> <?php endif?>"  <?php if($val->color!='transparent'): ?>style="color:<?php echo $val->color?>" <?php endif?>><?php echo $item->title?> <?php if($mi->cnb_count): ?> <small>(<?php echo $val->post_count?>)</small><?php endif?></a></li>
 				<?php endforeach ?>
 							</ul>
 			<?php endif ?>
@@ -212,7 +212,7 @@ foreach($category_list as $key=>$val) {
 	<?php endif ?>
 	<?php if($mi->cnb=='cTab'): ?>   <!-- cond="$mi->cnb=='cTab'"  -->
 				<ul class="cTab clear">
-					<li class="home<?php if(!$category): ?> on<?php endif?>"><a href="<?php echo x2b_get_url('category','','page','','post_id','')?>" title="<?php echo __('post_count', 'x2board')?> <?php echo number_format($total_count)?>"><?php echo $lang->total?><?php if($mi->cnb_count):?> <small>(<?php echo number_format($total_count)?>)</small> <?php endif?></a></li>
+					<li class="home<?php if(!$category): ?> on<?php endif?>"><a href="<?php echo x2b_get_url('category','','page','','post_id','')?>" title="<?php echo __('lbl_post_count', X2B_DOMAIN)?> <?php echo number_format($total_count)?>"><?php echo __('lbl_total', X2B_DOMAIN) ?><?php if($mi->cnb_count):?> <small>(<?php echo number_format($total_count)?>)</small> <?php endif?></a></li>
 		<?php foreach($cate_list as $key => $val): ?>	<!-- loop="$cate_list=>$key,$val"  -->
 					<li <?php if($category==$val->category_id): ?> class="on"<?php endif?>>
 						<a href="<?php echo x2b_get_url('category',$val->category_id,'post_id','','page','')?>" <?php if($val->color!='transparent'):?> style="color:<?php echo $val->color?>" <?php endif?>><?php echo $val->title?> <?php if($mi->cnb_count):?><small>(<?php echo $val->post_count?>)</small><?php endif?></a>
@@ -230,7 +230,7 @@ foreach($category_list as $key=>$val) {
 	<?php if($mi->cnb=='cnb3' || $mi->cnb=='cnb4'): ?>   <!-- cond="$mi->cnb=='cnb3' || $mi->cnb=='cnb4'" -->
 				<ul class="cnb3 <?php echo $mi->cnb?> <?php echo $mi->cnb3_align?> clear">
 					<li class="home<?php if(!$category):?> on<?php endif?>">
-						<a href="<?php echo x2b_get_url('category','','page','','post_id','')?>" title="<?php echo __('post_count', 'x2board')?> <?php echo number_format($total_count)?>"><?php echo$lang->total?> <?php if($mi->cnb_count):?> <small>(<?php echo number_format($total_count)?>)</small><?php endif?></a></li>
+						<a href="<?php echo x2b_get_url('category','','page','','post_id','')?>" title="<?php echo __('lbl_post_count', X2B_DOMAIN)?> <?php echo number_format($total_count)?>"><?php echo __('lbl_total', X2B_DOMAIN) ?> <?php if($mi->cnb_count):?> <small>(<?php echo number_format($total_count)?>)</small><?php endif?></a></li>
 		<?php foreach($cate_list as $key => $val): ?> <!-- loop="$cate_list=>$key,$val"  -->
 							<li <?php if($category==$val->category_id): ?> class="on"<?php endif?>><a href="<?php echo x2b_get_url('category',$val->category_id,'post_id','','page','')?>" <?php if($val->color!='transparent'):?> style="color:<?php echo $val->color?>" <?php endif?>><?php echo $val->title?><?php if($mi->cnb_count):?><small>(<?php echo $val->post_count?>)</small><?php endif?></a>
 		<?php endforeach ?>
@@ -303,7 +303,7 @@ else {
 				<?php endif ?>
 				<div class="fl">
 					<?php if(in_array('home', $mi->btm_mn)):?><!-- cond="@in_array('home',$mi->btm_mn)"  -->
-						<a class="btn_img fl" href="<?php echo x2b_get_url('','mid',$mid,'page',$page,'post_id','','listStyle',$listStyle)?>"><i class="fa fa-bars"></i> <?php echo __('cmd_list', 'x2board')?></a>
+						<a class="btn_img fl" href="<?php echo x2b_get_url('','mid',$mid,'page',$page,'post_id','','listStyle',$listStyle)?>"><i class="fa fa-bars"></i> <?php echo __('cmd_list', X2B_DOMAIN)?></a>
 					<?php endif ?>
 					<!--// 하단 검색창 -->
 					<?php if($mi->srch_btm!='N' && !wp_is_mobile()):?><!-- cond="$mi->srch_btm!='N' && !Mobile::isMobileCheckByAgent()"  -->
@@ -312,7 +312,7 @@ else {
 							<input type="hidden" name="category" value="{$category}" />
 							<span class="btn_img itx_wrp">
 								<button type="submit" onclick="jQuery(this).parents('form.bd_srch_btm').submit();return false;" class="ico_16px search">Search</button>
-								<label for="bd_srch_btm_itx_<?php echo $board_id ?>"><?php echo __('cmd_search', 'x2board')?></label>
+								<label for="bd_srch_btm_itx_<?php echo $board_id ?>"><?php echo __('cmd_search', X2B_DOMAIN)?></label>
 								<input type="text" name="search_keyword" id="bd_srch_btm_itx_<?php echo $board_id ?>" class="bd_srch_btm_itx srch_itx" value="<?php echo htmlspecialchars($search_keyword)?>" />
 							</span>
 							<span class="btn_img select">
@@ -323,21 +323,21 @@ else {
 								</select>
 							</span>
 							<?php if(isset($last_division)):?><!-- cond="$last_division"  -->
-								<a class="btn_img bg_f_f9" href="<?php echo x2b_get_url('page',1,'post_id','','division',$last_division,'last_division','')?>"><?php echo __('cmd_search_next', 'x2board')?></a>
+								<a class="btn_img bg_f_f9" href="<?php echo x2b_get_url('page',1,'post_id','','division',$last_division,'last_division','')?>"><?php echo __('cmd_search_next', X2B_DOMAIN)?></a>
 							<?php endif ?>
 						</form>
 					<?php endif ?>
 				</div>
 				<div class="fr">
-					<?php if(in_array('tag',$mi->btm_mn)):?><!-- cond="@in_array('tag',$mi->btm_mn)"  -->
-						<a class="btn_img m_no" href="<?php echo x2b_get_url('act','dispBoardTagList')?>"><i class="fa fa-tag"></i> <?php echo __('tag', 'x2board')?></a>
+					<?php if(in_array('lbl_tag',$mi->btm_mn)):?><!-- cond="@in_array('tag',$mi->btm_mn)"  -->
+						<a class="btn_img m_no" href="<?php echo x2b_get_url('act','dispBoardTagList')?>"><i class="fa fa-tag"></i> <?php echo __('lbl_tag', X2B_DOMAIN)?></a>
 					<?php endif?>
 					<?php if( $mi->write_btm_btn == ' ' || ($mi->write_btm_btn!='N' && $grant->write_post)):?><!-- cond="!$mi->write_btm_btn || ($mi->write_btm_btn!='N' && $grant->write_document)"  -->
-						<a class="btn_img" href="<?php echo x2b_get_url('cmd', X2B_CMD_VIEW_WRITE_POST, 'post_id', '', 'page', '')?>"><i class="ico_16px write"></i> <?php echo __('cmd_write', 'x2board')?></a>
+						<a class="btn_img" href="<?php echo x2b_get_url('cmd', X2B_CMD_VIEW_WRITE_POST, 'post_id', '', 'page', '')?>"><i class="ico_16px write"></i> <?php echo __('cmd_write', X2B_DOMAIN)?></a>
 					<?php endif ?>
 					<?php if($grant->manager):?><!-- <block cond="$grant->manager"> -->
-						<a class="btn_img" href="<?php echo admin_url('admin.php?page=x2b_disp_board_update&board_id='.$board_id);?>"><i class="ico_16px setup"></i> <?php echo __('cmd_setup', 'x2board')?></a>
-						<a class="btn_img" id='btn_control_panel'><i class="tx_ico_chk">✔</i> <?php echo __('cmd_manage_post', 'x2board')?></a> 	<!-- onclick="popopen(this.href,'manageDocument');return false" -->
+						<a class="btn_img" href="<?php echo admin_url('admin.php?page=x2b_disp_board_update&board_id='.$board_id);?>"><i class="ico_16px setup"></i> <?php echo __('cmd_setup', X2B_DOMAIN)?></a>
+						<a class="btn_img" id='btn_control_panel'><i class="tx_ico_chk">✔</i> <?php echo __('cmd_manage_post', X2B_DOMAIN)?></a> 	<!-- onclick="popopen(this.href,'manageDocument');return false" -->
 					<?php endif?><!-- </block> -->
 				</div>
 			</div>
@@ -368,9 +368,9 @@ else {
 		<?php if( $page==$prev_page ):?><!-- cond="$page==$prev_page"  -->
 			<strong class="direction"><i class="fa fa-angle-left"></i> Prev</strong>
 		<?php endif?>
-		<a class="frst_last bubble<?php if($page==1):?> this<?php endif?>" href="<?php echo x2b_get_url('page','','post_id','','division',$division,'last_division',$last_division)?>" title="<?php echo __('first_page', 'x2board')?>">1</a>
+		<a class="frst_last bubble<?php if($page==1):?> this<?php endif?>" href="<?php echo x2b_get_url('page','','post_id','','division',$division,'last_division',$last_division)?>" title="<?php echo __('lbl_first_page', X2B_DOMAIN)?>">1</a>
 		<?php if( $page>($mi->page_count)/2+2 ):?>	<!-- cond="$page>($mi->page_count)/2+2"  -->
-			<span class="bubble"><a href="#" class="tg_btn2" data-href=".bd_go_page" title="<?php echo __('go_page', 'x2board')?>">...</a></span>
+			<span class="bubble"><a href="#" class="tg_btn2" data-href=".bd_go_page" title="<?php echo __('cmd_go_page', X2B_DOMAIN)?>">...</a></span>
 		<?php endif?>
 
 		<?php while($page_no = $page_navigation->getNextPage()) {  // <block loop="$page_no=$page_navigation->getNextPage()" cond="$page_no!=1 && $page_no!=$page_navigation->last_page">
@@ -388,11 +388,11 @@ else {
 		
 		<!-- cond="($page+($mi->page_count+1)/2<$page_navigation->last_page) && ($mi->page_count+1<$page_navigation->last_page)"  -->
 		<?php if( ($page+($mi->page_count+1)/2<$page_navigation->n_last_page) && ($mi->page_count+1<$page_navigation->n_last_page) ):?>
-			<span class="bubble"><a href="#" class="tg_btn2" data-href=".bd_go_page" title="<?php echo __('cmd_go_to_page', 'x2board')?>">...</a></span>
+			<span class="bubble"><a href="#" class="tg_btn2" data-href=".bd_go_page" title="<?php echo __('cmd_go_page', X2B_DOMAIN)?>">...</a></span>
 		<?php endif?>
 		
 		<?php if( $page_navigation->n_last_page!=1 ):?><!-- cond="$page_navigation->last_page!=1"  -->
-			<a class="frst_last bubble<?php if($page==$page_navigation->n_last_page):?> this<?php endif?>" href="<?php echo x2b_get_url('page',$page_navigation->n_last_page,'post_id','','division',$division,'last_division',$last_division)?>" title="<?php echo __('last_page', 'x2board')?>"><?php echo $page_navigation->n_last_page?></a>
+			<a class="frst_last bubble<?php if($page==$page_navigation->n_last_page):?> this<?php endif?>" href="<?php echo x2b_get_url('page',$page_navigation->n_last_page,'post_id','','division',$division,'last_division',$last_division)?>" title="<?php echo __('lbl_last_page', X2B_DOMAIN)?>"><?php echo $page_navigation->n_last_page?></a>
 		<?php endif?>
 
 		<?php if( $page!=$next_page ):?> <!-- cond="$page!=$next_page" -->
@@ -419,9 +419,9 @@ else {
 		//&& $board->isTreeCategoryActive()):?>
 	<!-- 게시판 관리 기능 시작 -->
 	<div clas1s="x2board-control" id='panel_control' style="margin-top:12px; display:none;">
-		<button type="button" id='btn_move_category' data-board-id='<?php echo $board_id?>' class="x2board-default-button-small"><?php echo __('Move Category to', 'x2board')?></button>
+		<button type="button" id='btn_move_category' data-board-id='<?php echo $board_id?>' class="x2board-default-button-small"><?php echo __('Move Category to', X2B_DOMAIN)?></button>
 		<select name="target_category">
-			<option value=""><?php echo __('Category select', 'x2board')?></option>
+			<option value=""><?php echo __('lbl_select_category', X2B_DOMAIN)?></option>
 			<?//php foreach($board->getCategoryList() as $cat_id=>$option_val):?>
 				<option value="<? // echo $cat_id?>">
 				<?// echo str_repeat("&nbsp;&nbsp;",$option_val->depth)?> <?// echo $option_val->category_name?> (<? // echo $option_val->document_count?>)

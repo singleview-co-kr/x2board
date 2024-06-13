@@ -13,10 +13,10 @@
 	<input type="hidden" name="board_id" value="<?php echo intval($board_id)?>" />
 	<input type="hidden" name="page" value="<?php echo intval($page)?>" />
 	<input type="hidden" name="post_id" value="<?php echo intval($post_id)?>" />
-	<h1><?php echo __('Do you want to delete?', 'x2board')?></h1>
+	<h1><?php echo __('cmd_confirm_delete', X2B_DOMAIN)?></h1>
 	<div class="btnArea">
-		<input type="submit" class="btn" value="<?php echo __('Delete', 'x2board')?>" />
-		<button type="button" class="btn" onclick="history.back()"><?php echo __('Cancel', 'x2board')?></button>
+		<input type="submit" class="btn" value="<?php echo __('cmd_delete', X2B_DOMAIN)?>" />
+		<button type="button" class="btn" onclick="history.back()"><?php echo __('cmd_cancel', X2B_DOMAIN)?></button>
 	</div>
 </form>
 <!-- <include target="_footer.html" /> -->

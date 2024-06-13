@@ -37,13 +37,13 @@ $_SESSION['x2b_upload_info'][$editor_sequence]->upload_target_id = $upload_targe
 <script type="text/javascript" src="<?php echo $skin_url ?>/js/ajaxfileupload.js?ver=<?php echo X2B_VERSION ?>" id="<?php echo X2B_DOMAIN ?>-sketchbook5-ajaxfileupload-js"></script>
 
 <script>//<![CDATA[
-var lang_confirm_delete ='<?php echo __('confirm_delete', 'x2board')?>';
+var lang_confirm_delete ='<?php echo __('cmd_confirm_delete', X2B_DOMAIN)?>';
 var allowedFileTypes = '<?php if($grant->manager): ?>*.*<?php else: ?><?php echo $current_module_info->file_allowed_filetypes ?><?php endif ?>';
 //]]></script>
 
 <?php if($post_id): ?><!-- <block cond="$document_srl"> -->
 	<div class="context_data">
-		<h3>※ <?php echo $lang->m_editor_notice ?></h3>
+		<h3>※ <?php echo __('about_m_editor_notice', X2B_DOMAIN) ?></h3>
 	</div>
 	<div class="context_message"><br /></div>
 <?php endif ?><!-- </block> -->
@@ -67,7 +67,7 @@ var allowedFileTypes = '<?php if($grant->manager): ?>*.*<?php else: ?><?php echo
 				<td>
 					<?php if($mi->use_category=='Y' && $category_list): ?><!-- cond="$mi->use_category=='Y' && $category_list"  -->
 						<select name="category_id" class="category">
-							<option value=""><?php echo __('category', 'x2board')?></option>
+							<option value=""><?php echo __('lbl_category', X2B_DOMAIN)?></option>
 							<?php foreach($category_list as $val): ?><!-- loop="$category_list => $val"  -->
 								<option <?php if(!$val->grant): ?> disabled="disabled" <?php endif ?> value="<?php echo $val->category_id ?>" <?php if($val->grant && $val->selected||$val->category_id==$post->get('category_id')): ?> selected="selected" <?php endif ?> >
 									<?php echo str_repeat("&nbsp;&nbsp;",$val->depth)?> <?php echo $val->title?> (<?php echo $val->post_count?>)
@@ -78,14 +78,14 @@ var allowedFileTypes = '<?php if($grant->manager): ?>*.*<?php else: ?><?php echo
 				</td>
 				<td width="100%">
 					<span class="itx_wrp">
-						<label for="postTitle"><?php echo __('title', 'x2board')?></label>
+						<label for="postTitle"><?php echo __('lbl_title', X2B_DOMAIN)?></label>
 						<?php if($post->get_title_text()){
 							$s_title = htmlspecialchars($post->get_title_text());
 						}
 						else {
 							$s_title = null;
 						}?> 
-						<input type="text" name="title" class="itx" id="postTitle" title="<?php echo __('title', 'x2board')?>" value="<?php echo $s_title ?>" />
+						<input type="text" name="title" class="itx" id="postTitle" title="<?php echo __('lbl_title', X2B_DOMAIN)?>" value="<?php echo $s_title ?>" />
 					</span>
 				</td>
 			</tr>
@@ -93,7 +93,7 @@ var allowedFileTypes = '<?php if($grant->manager): ?>*.*<?php else: ?><?php echo
 
 		<?php if(count($extra_keys)): ?><!-- cond="count($extra_keys)"  -->
 			<table class="et_vars exForm bd_tb">
-				<caption><strong><em>*</em></strong> <small>: <?php echo __('is_required', 'x2board')?></small></caption>
+				<caption><strong><em>*</em></strong> <small>: <?php echo __('lbl_required', X2B_DOMAIN)?></small></caption>
 				<?php foreach($extra_keys as $key => $val): ?><!-- loop="$extra_keys=>$key,$val" -->
 					<tr>
 						<th scope="row"><?php if($val->is_required=='Y'): ?><em>*</em><?php endif ?> <?php echo $val->name ?></th>
@@ -156,7 +156,7 @@ var allowedFileTypes = '<?php if($grant->manager): ?>*.*<?php else: ?><?php echo
 		<?php if($allow_fileupload): ?><!-- cond="$allow_fileupload" -->
 			<div id="mUpload">
 				<div class="bg_f_f9 clear">
-					<strong class="fl"><?php echo __('edit_upload_file', 'x2board')?></strong> <button type="button" class="bd_btn fr" onclick="jQuery('#Filedata').click()"><?php echo __('upload_file', 'x2board')?></button>
+					<strong class="fl"><?php //echo __('edit_upload_file', X2B_DOMAIN)?></strong> <button type="button" class="bd_btn fr" onclick="jQuery('#Filedata').click()"><?php //echo __('upload_file', X2B_DOMAIN)?></button>
 				</div>
 				<ul id="files" class="clear">
 					<block cond="$post->hasUploadedFiles()" loop="$post->getUploadedFiles()=>$key,$file">
@@ -174,16 +174,16 @@ var allowedFileTypes = '<?php if($grant->manager): ?>*.*<?php else: ?><?php echo
 					
 					<li id="loading"></li>
 					<li class="info clear<!--@if($post->hasUploadedFiles())--> is_img<!--@end-->">
-						<span><?php echo __('no_files', 'x2board')?></span>
+						<span><?php // echo __('no_files', X2B_DOMAIN)?></span>
 						<div cond="!$mi->m_editor">
-							<button type="button" class="all bd_btn" id="mEditorSelect"><i class="fa fa-check"></i> <span><?php echo __('cmd_select_all', 'x2board')?></span><span><?php echo $lang->cmd_deselect_all ?></span></button>
-							<button type="button" class="insert bd_btn" id="mEditorInsert"><i class="fa fa-arrow-up"></i> <?php echo __('edit_link_file', 'x2board')?></button>
-							<button type="button" class="delete bd_btn" id="mEditorDelete"><i class="fa fa-trash-o"></i> <?php echo __('edit_delete_selected', 'x2board')?></button>
+							<button type="button" class="all bd_btn" id="mEditorSelect"><i class="fa fa-check"></i> <span><?php //echo __('cmd_select_all', X2B_DOMAIN)?></span><span><?php // echo $lang->cmd_deselect_all ?></span></button>
+							<button type="button" class="insert bd_btn" id="mEditorInsert"><i class="fa fa-arrow-up"></i> <?php //echo __('edit_link_file', X2B_DOMAIN)?></button>
+							<button type="button" class="delete bd_btn" id="mEditorDelete"><i class="fa fa-trash-o"></i> <?php //echo __('edit_delete_selected', X2B_DOMAIN)?></button>
 						</div>
 						<div cond="$mi->m_editor==2">
-							<p><i class="tx_ico_chk">✔</i><?php echo __('select_files_to_insert', 'x2board')?></p>
-							<input type="radio" name="m_img_upoad" id="m_img_upoad_1" checked="checked" /><label for="m_img_upoad_1"><?php echo $lang->m_img_upoad_1 ?></label>
-							<input type="radio" name="m_img_upoad" id="m_img_upoad_2" /><label for="m_img_upoad_2"><?php echo $lang->m_img_upoad_2 ?></label>
+							<p><i class="tx_ico_chk">✔</i><?php // echo __('select_files_to_insert', X2B_DOMAIN)?></p>
+							<input type="radio" name="m_img_upoad" id="m_img_upoad_1" checked="checked" /><label for="m_img_upoad_1"><?php //echo $lang->m_img_upoad_1 ?></label>
+							<input type="radio" name="m_img_upoad" id="m_img_upoad_2" /><label for="m_img_upoad_2"><?php //echo $lang->m_img_upoad_2 ?></label>
 						</div>
 					</li>
 				</ul>
@@ -192,7 +192,7 @@ var allowedFileTypes = '<?php if($grant->manager): ?>*.*<?php else: ?><?php echo
 		<!--// 태그 -->
 		<div class="tag itx_wrp">
 			<span class="itx_wrp">
-				<label for="tags"><?php echo __('tag', 'x2board')?> : <?php echo __('about_tag', 'x2board')?></label>
+				<label for="tags"><?php //echo __('lbl_tag', X2B_DOMAIN)?> : <?php //echo __('about_tag', X2B_DOMAIN)?></label>
 				<input type="text" name="tags" id="tags" value="<?php echo htmlspecialchars($post->get('tags')) ?>" class="itx" />
 			</span>
 		</div>
@@ -201,15 +201,15 @@ var allowedFileTypes = '<?php if($grant->manager): ?>*.*<?php else: ?><?php echo
 		<div class="edit_opt">
 			<?php if(!$is_logged): ?><!-- <block cond="!$is_logged"> -->
 				<span class="itx_wrp">
-					<label for="nick_name"><?php echo __('writer', 'x2board')?></label>
+					<label for="nick_name"><?php //echo __('lbl_writer', X2B_DOMAIN)?></label>
 					<input type="text" name="nick_name" id="nick_name" value="<?php echo $post->get_nick_name() ?>" class="itx n_p" />
 				</span>
 				<span class="itx_wrp">
-					<label for="password"><?php echo __('password', 'x2board')?></label>
+					<label for="password"><?php //echo __('lbl_password', X2B_DOMAIN)?></label>
 					<input type="password" name="password" id="password" class="itx n_p" />
 				</span>
 				<span class="itx_wrp">
-					<label for="email_address"><?php echo __('email_address', 'x2board')?></label>
+					<label for="email_address"><?php //echo __('lbl_email_address', X2B_DOMAIN)?></label>
 					<input type="text" name="email_address" id="email_address" value="<?php echo htmlspecialchars($post->get('email_address')) ?>" class="itx m_h" />
 				</span>
 				<!-- <span class="itx_wrp">
@@ -224,12 +224,12 @@ var allowedFileTypes = '<?php if($grant->manager): ?>*.*<?php else: ?><?php echo
 			<?php if($grant->manager): ?><!-- cond="$grant->manager"  -->
 				<div class="section">
 					<input type="checkbox" name="is_notice" value="Y" <?php if($post->is_notice()): ?> checked="checked" <?php endif ?> id="is_notice" />
-					<label for="is_notice"><?php echo __('notice', 'x2board')?></label>
+					<label for="is_notice"><?php// echo __('lbl_notice', X2B_DOMAIN)?></label>
 				</div>
 			<?php endif ?>
 			<div class="section">
 				<input type="checkbox" name="comment_status" value="ALLOW" <?php if($post->allow_comment()): ?> checked="checked" <?php endif ?> id="comment_status" />
-				<label for="comment_status"<?php echo __('allow_comment', 'x2board')?>></label>
+				<label for="comment_status"><?php //echo __('allow_comment', X2B_DOMAIN)?></label>
 				<!-- <input type="checkbox" name="allow_trackback" value="Y" checked="checked"|cond="$oDocument->allowTrackback()" id="allow_trackback" />
 				<label for="allow_trackback">{$lang->allow_trackback}</label> -->
 			</div>
@@ -260,14 +260,14 @@ var allowedFileTypes = '<?php if($grant->manager): ?>*.*<?php else: ?><?php echo
 	</form>
 	<!--// SocialXE -->
 	<!-- <div cond="$mi->cmt_wrt=='sns'" class="sns_wrt">
-		<p>※ <?php //echo __('allow_comment', 'x2board')?></p>
+		<p>※ <?php //echo __('allow_comment', X2B_DOMAIN)?></p>
 		<img class="zbxe_widget_output" widget="socialxe_info" colorset="{$mi->colorset}" skin="default"  />
 	</div> -->
 <?php endif ?>
 	<!--// Buttons -->
 	<div class="regist">
 		<!-- <button cond="$is_logged && !$oDocument->isExists() || $oDocument->get('status')=='TEMP'" type="button" onclick="doDocumentSave(this);" class="bd_btn temp">{$lang->cmd_temp_save}</button> -->
-        <input type="submit" id="frmSubmit" value="<?php echo __('cmd_submit', 'x2board')?>" class="bd_btn blue" onclick="frmSubmit();return false;" />
-		<button type="button" onclick="history.back();" class="bd_btn cancle"><?php echo __('cmd_back', 'x2board')?></button>
+        <input type="submit" id="frmSubmit" value="<?php //echo __('cmd_submit', X2B_DOMAIN)?>" class="bd_btn blue" onclick="frmSubmit();return false;" />
+		<button type="button" onclick="history.back();" class="bd_btn cancle"><?php //echo __('cmd_back', X2B_DOMAIN)?></button>
 	</div>
 </div>

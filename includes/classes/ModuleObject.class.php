@@ -70,7 +70,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 			$o_rst = \X2board\Includes\Admin\Tpl\x2b_load_settings($n_board_id);
 			if( $o_rst->b_ok === false ) {
 				unset($o_rst);
-				wp_die(__('Invalid module configuration.', 'x2board'));
+				wp_die(__('msg_invalid_configuration', X2B_DOMAIN));
 			}
 
 			// unset unnecessary variables;
@@ -127,7 +127,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 
 			// display no permission if the current module doesn't have an access privilege
 			if(!isset($o_grant->access)) {
-				wp_die(__('msg_not_permitted', 'x2board'));
+				wp_die(__('msg_not_permitted', X2B_DOMAIN));
 			}
 
 			// checks permission and action if you don't have an admin privilege
@@ -285,7 +285,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 							};
 						}
 						else {
-							wp_die(__('Invalid grant code: board_grant_'.$s_grant_name, 'x2board'));
+							wp_die(__('msg_invalid_grant_code', X2B_DOMAIN).': board_grant_'.$s_grant_name);
 						}
 						// elseif($group_srl == -2) {  // Site-joined member only  가입한 사용자
 						// 	$granted[$s_grant_name] = true;
@@ -451,7 +451,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\ModuleObject')) {
 
 			$s_skin_file_abs_path = $this->skin_path . $this->skin_file;
 			if( !file_exists( $s_skin_file_abs_path ) ) {
-				echo sprintf(__('%s file does not exist.', 'x2board'), $s_skin_file_abs_path);
+				echo sprintf(__('msg_file_not_exists', X2B_DOMAIN), $s_skin_file_abs_path);
 			}
 			ob_start();
 

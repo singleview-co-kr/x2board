@@ -15,8 +15,9 @@ function plugin_loaded(){
 	if(!session_id() && !is_admin()) { // prevent duplicated seesion activation
 		session_start();  // activate $_SESSION while AJAX execution
 	}
-	// 언어 파일 추가
-	// load_plugin_textdomain('x2board', false, X2B_PATH . 'languages');
+	// third parameter should be relative path to WP_PLUGIN_DIR
+	load_plugin_textdomain(X2B_DOMAIN, false, DIRECTORY_SEPARATOR.X2B_DOMAIN.DIRECTORY_SEPARATOR.'common'.DIRECTORY_SEPARATOR.'languages');
+
 	register_post_type(X2B_DOMAIN, array(
 		'labels' => array('name'=>X2B_DOMAIN),
 		'show_ui'=> false,
@@ -873,7 +874,7 @@ function stripEmbedTagForAdmin(&$s_content, $writer_member_id) {
 				return;
 			}
 		}
-		$security_msg = "<div style='border: 1px solid #DDD; background: #FAFAFA; text-align:center; margin: 1em 0;'><p style='margin: 1em;'>" . __('security_warning_embed', 'x2board') . "</p></div>";
+		$security_msg = "<div style='border: 1px solid #DDD; background: #FAFAFA; text-align:center; margin: 1em 0;'><p style='margin: 1em;'>" . __('msg_security_warning_embed', X2B_DOMAIN) . "</p></div>";
 		$s_content = preg_replace('/<object[^>]+>(.*?<\/object>)?/is', $security_msg, $s_content);
 		$s_content = preg_replace('/<embed[^>]+>(\s*<\/embed>)?/is', $security_msg, $s_content);
 		// $content = preg_replace('/<img[^>]+editor_component="multimedia_link"[^>]*>(\s*<\/img>)?/is', $security_msg, $content);
@@ -990,8 +991,8 @@ function getTimeGap($date, $format = 'Y.m.d') {
 	$date = preg_replace ("/[ \-\:]/i", "", $date);
 	$gap = $_SERVER['REQUEST_TIME'] + zgap() - ztime($date);
 	// $lang_time_gap = Context::getLang('time_gap');
-	$lang_time_gap = array("mins" => __('%d mins ago', 'x2board') , 
-						   "hours"=> __('%d hrs ago', 'x2board'));
+	$lang_time_gap = array("mins" => __('lbl_mins_ago', X2B_DOMAIN),
+						   "hours"=> __('lbl_hrs_ago', X2B_DOMAIN));
 
 	// if($gap < 60) {
 	// 	$buff = sprintf($lang_time_gap['min'], (int) ($gap / 60) + 1);

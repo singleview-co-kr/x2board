@@ -94,7 +94,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\AdminExtendedUserDefineFieldsIt
 											</button>
 										</div>
 										<div class="x2board-fields-toggle">
-											<button type="button" class="fields-remove" title="'. __('Remove', 'x2board').'">X</button>
+											<button type="button" class="fields-remove" title="'. __('cmd_remove', X2B_DOMAIN).'">X</button>
 										</div>
 									</div>
 									<div class="x2board-fields-content">
@@ -102,14 +102,14 @@ if (!class_exists('\\X2board\\Includes\\Classes\\AdminExtendedUserDefineFieldsIt
 										<input type="hidden" class="field_data field_label" value="'.esc_attr($this->_s_field_label).'">';
 			if( $this->_is_multiline_fields() ) {
 				$s_html .=				 '<div class="attr-row">
-											<label class="attr-name">'.__('Field label', 'x2board').'</label>
+											<label class="attr-name">'.__('lbl_field_label', X2B_DOMAIN).'</label>
 											<div class="attr-value"><input type="text" class="field_data field_name" placeholder="'.esc_attr($this->_s_field_label).'"></div>
 										</div>';
 				// if(isset($item['meta_key'])){
 					$s_html .= 			'<div class="attr-row">
-											<label class="attr-name">'.__('Meta key', 'x2board').'</label>
+											<label class="attr-name">'.__('lbl_meta_key', X2B_DOMAIN).'</label>
 											<div class="attr-value"><input type="text" class="field_data meta_key" placeholder="meta_key"></div>
-											<div class="description">'.__('※ Will be set automatically if blank, and the value is fixed after saving.', 'x2board').'</div>
+											<div class="description">※ '.__('about_meta_key', X2B_DOMAIN).'</div>
 										</div>';
 				// }
 				$s_html .= '<div class="attr-row">
@@ -125,19 +125,19 @@ if (!class_exists('\\X2board\\Includes\\Classes\\AdminExtendedUserDefineFieldsIt
 						</div>';
 				if(isset($this->_s_show_document)) {
 					$s_html .= '<input type="hidden" class="field_data show_document" value="">
-							<label><input type="checkbox" class="field_data show_document" value="1">'.__('Display on post content', 'x2board').'</label>';
+							<label><input type="checkbox" class="field_data show_document" value="1">'.__('lbl_display_on_content', X2B_DOMAIN).'</label>';
 				}
 			}
 			else {
 				$s_html .= '<div class="attr-row">
-							<label class="attr-name">'.__('Field label', 'x2board').'</label>
+							<label class="attr-name">'.__('lbl_field_label', X2B_DOMAIN).'</label>
 							<div class="attr-value"><input type="text" class="field_data field_name" placeholder="'.esc_attr($this->_s_field_label).'"></div>
 						</div>';
 				// if(isset($item['meta_key'])) {
 					$s_html .= '<div class="attr-row">
-								<label class="attr-name">'.__('Meta key', 'x2board').'</label>
+								<label class="attr-name">'.__('lbl_meta_key', X2B_DOMAIN).'</label>
 								<div class="attr-value"><input type="text" class="field_data meta_key" placeholder="meta_key"></div>
-								<div class="description">'.__('※ Will be set automatically if blank, and the value is fixed after saving.', 'x2board').'</div>
+								<div class="description">※ '.__('about_meta_key', X2B_DOMAIN).'</div>
 							</div>';
 				// }
 				if(!empty($this->_a_row)) {
@@ -145,7 +145,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\AdminExtendedUserDefineFieldsIt
 					$s_html .= '<div class="x2board-radio-reset">
 								<div class="attr-row option-wrap">
 									<div class="attr-name option">
-										<label for="'.$uniq_id.'">'.__('Label', 'x2board').'</label>
+										<label for="'.$uniq_id.'">'.__('lbl_label', X2B_DOMAIN).'</label>
 									</div>
 									<div class="attr-value">
 										<input type="text" id="'.$uniq_id.'" class="field_data option_label">
@@ -158,10 +158,10 @@ if (!class_exists('\\X2board\\Includes\\Classes\\AdminExtendedUserDefineFieldsIt
 					else {
 						$s_html .= 			'<input type="radio" name="'.$this->_s_field_type.'" class="field_data default_value" value="1">';
 					}
-					$s_html .= 			__('Default value', 'x2board');
+					$s_html .= 			__('lbl_default_value', X2B_DOMAIN);
 					$s_html .= 			'</label>';
 					if($this->_s_field_type == 'radio' || $this->_s_field_type == 'select') {
-						$s_html .= 		'<span style="vertical-align:middle;cursor:pointer;" onclick="x2board_radio_reset(this)">· '.__('Reset', 'x2board').'</span>';
+						$s_html .= 		'<span style="vertical-align:middle;cursor:pointer;" onclick="x2board_radio_reset(this)">· '.__('cmd_reset', X2B_DOMAIN).'</span>';
 					}
 					$s_html .= 		'</div>
 									</div>
@@ -169,12 +169,12 @@ if (!class_exists('\\X2board\\Includes\\Classes\\AdminExtendedUserDefineFieldsIt
 				}
 				if(!empty($this->_a_roles)) {
 					$s_html .=	 '<div class="attr-row">
-									<label class="attr-name">'.__('Whom to diplay', 'x2board').'</label>
+									<label class="attr-name">'.__('msg_whom_to_show', X2B_DOMAIN).'</label>
 									<div class="attr-value">
 										<select class="field_data roles" onchange="x2board_fields_permission_roles_view(this)">
-											<option value="all" selected>'.__('All', 'x2board').'</option>
-											<option value="author">'.__('Loggedin user', 'x2board').'</option>
-											<option value="roles">'.__('Choose below', 'x2board').'</option>
+											<option value="all" selected>'.__('opt_role_all_users', X2B_DOMAIN).'</option>
+											<option value="author">'.__('opt_role_loggedin_users', X2B_DOMAIN).'</option>
+											<option value="roles">'.__('opt_role_customize', X2B_DOMAIN).'</option>
 										</select>
 										<div class="x2board-permission-read-roles-view x2board-hide">';
 					foreach(get_editable_roles() as $roles_key=>$roles_value) {
@@ -187,7 +187,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\AdminExtendedUserDefineFieldsIt
 				}
 				if(!is_null($this->_s_default_value) && !empty($this->_a_row)) {
 					$s_html .= '<div class="attr-row">
-								<label class="attr-name">'.__('Default value', 'x2board').'</label>
+								<label class="attr-name">'.__('lbl_default_value', X2B_DOMAIN).'</label>
 								<div class="attr-value"><input type="text" class="field_data default_value"></div>
 							</div>';
 				}
@@ -199,7 +199,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\AdminExtendedUserDefineFieldsIt
 				}
 				if(!is_null($this->_s_description)) {
 					$s_html .= '<div class="attr-row">
-								<label class="attr-name">'.__('Description', 'x2board').'</label>
+								<label class="attr-name">'.__('lbl_description', X2B_DOMAIN).'</label>
 								<div class="attr-value">
 									<input type="text" class="field_data field_description" value="'.$this->_s_description.'">
 								</div>
@@ -207,23 +207,23 @@ if (!class_exists('\\X2board\\Includes\\Classes\\AdminExtendedUserDefineFieldsIt
 				}
 				if(!is_null($this->_s_custom_class)) {
 					$s_html .= '<div class="attr-row">
-								<label class="attr-name">'.__('CSS class', 'x2board').'</label>
+								<label class="attr-name">'.__('lbl_css_class', X2B_DOMAIN).'</label>
 								<div class="attr-value"><input type="text" class="field_data custom_class"></div>
 							</div>';
 				}
 				$s_html .= '<div class="attr-row">';
 				if(!is_null($this->_s_required)) {
 					$s_html .= '<input type="hidden" class="field_data required" value="">
-							<label><input type="checkbox" class="field_data required" value="1">'.__('Required', 'x2board').'</label>';
+							<label><input type="checkbox" class="field_data required" value="1">'.__('lbl_required', X2B_DOMAIN).'</label>';
 				}
 				if(isset($this->_s_show_document)) {
 					$s_html .= '<input type="hidden" class="field_data show_document" value="">
-							<label><input type="checkbox" class="field_data show_document" value="1">'.__('Display on post content', 'x2board').'</label>';
+							<label><input type="checkbox" class="field_data show_document" value="1">'.__('lbl_display_on_content', X2B_DOMAIN).'</label>';
 				}
 				if(isset($this->_s_hidden)) {
 					$s_hidden_filed_notifier = $this->_s_field_type == 'text' ? '(hidden)' : '';
 					$s_html .= '<input type="hidden" class="field_data hidden" value="">
-							<label><input type="checkbox" class="field_data hidden" value="1">'.__('Hiding', 'x2board').''.$s_hidden_filed_notifier.'</label>';
+							<label><input type="checkbox" class="field_data hidden" value="1">'.__('lbl_hiding', X2B_DOMAIN).''.$s_hidden_filed_notifier.'</label>';
 				}
 				$s_html .= '</div>';
 			}

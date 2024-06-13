@@ -12,7 +12,7 @@ else{
 }?>
 <?php if(!$post_list && !$notice_list): ?><!-- cond="!$document_list && !$notice_list"  -->
 <p class="no_doc">
-	<?php echo __('no_posts', 'x2board')?>
+	<?php echo __('msg_no_posts', X2B_DOMAIN)?>
 </p>
 <?php endif ?>
 
@@ -24,23 +24,23 @@ else{
 		<tr>
 	<?php foreach( $list_config as $_ => $val ):?><!-- <block loop="$list_config=>$key,$val"> -->
 		<?php if($val->var_type=='no' && $val->idx==-1): ?><!-- cond="$val->type=='no'" -->
-			<th scope="col" class="no"><span><a href="<?php echo x2b_get_url('order_type',$order_type)?>" title="<?php if($order_type=="desc"):?><?php echo __('order_desc', 'x2board')?><?php else:?><?php echo __('order_asc', 'x2board')?><?php endif ?>"><?php echo __('Number', 'x2board')?></a></span></th>
+			<th scope="col" class="no"><span><a href="<?php echo x2b_get_url('order_type',$order_type)?>" title="<?php if($order_type=="desc"):?><?php echo __('lbl_order_desc', X2B_DOMAIN)?><?php else:?><?php echo __('lbl_order_asc', X2B_DOMAIN)?><?php endif ?>"><?php echo __('lbl_number', X2B_DOMAIN)?></a></span></th>
 		<?php elseif($val->var_type=='title' && $val->idx==-1): ?><!-- <block cond="$val->type=='title'"> -->
 			<?php if($mi->show_cate == ' ' && $mi->use_category=='Y'): ?><!-- cond="!$mi->show_cate && $mi->use_category=='Y'"  -->
-			<th scope="col" class="m_no"><span><?php echo __('Category', 'x2board')?></span></th>
+			<th scope="col" class="m_no"><span><?php echo __('lbl_category', X2B_DOMAIN)?></span></th>
 			<?php endif ?>
-			<th scope="col" class="title"><span><a href="<?php echo x2b_get_url('sort_index','title','order_type',$order_type)?>"><?php if($mi->link_board == ' '):?><?php echo __('title', 'x2board')?><?php else:?><?php echo $lang->link_site ?><?php endif ?><?php if($sort_index=='title'):?><i class="arrow <?php echo $order_icon?>"></i><?php endif ?></a></span></th>
+			<th scope="col" class="title"><span><a href="<?php echo x2b_get_url('sort_index','title','order_type',$order_type)?>"><?php if($mi->link_board == ' '):?><?php echo __('lbl_title', X2B_DOMAIN)?><?php else:?><?php echo __('lbl_link_site', X2B_DOMAIN) ?><?php endif ?><?php if($sort_index=='title'):?><i class="arrow <?php echo $order_icon?>"></i><?php endif ?></a></span></th>
 		<?php elseif($val->var_type=='nick_name' && $val->idx==-1): ?><!-- cond="$val->type=='nick_name'" -->
-			<th scope="col"><span><?php echo __('writer', 'x2board')?></span></th>
+			<th scope="col"><span><?php echo __('lbl_writer', X2B_DOMAIN)?></span></th>
 		<?php elseif($val->var_type=='regdate_dt' && $val->idx==-1): ?><!-- cond="$val->type=='regdate'" -->
-			<th scope="col" ><span><a href="<?php echo x2b_get_url('sort_index','regdate','order_type',$order_type)?>"><?php echo __('date', 'x2board')?><?php if($sort_index=='regdate'):?><i class="arrow <?php echo $order_icon?>"></i><?php endif ?></a></span></th>
+			<th scope="col" ><span><a href="<?php echo x2b_get_url('sort_index','regdate','order_type',$order_type)?>"><?php echo __('lbl_date', X2B_DOMAIN)?><?php if($sort_index=='regdate'):?><i class="arrow <?php echo $order_icon?>"></i><?php endif ?></a></span></th>
 		<?php elseif($val->var_type=='last_update_dt' && $val->idx==-1): ?><!-- cond="$val->type=='last_update'"  -->
-			<th scope="col" class="m_no"><span><a href="<?php echo x2b_get_url('sort_index','last_update','order_type',$order_type)?>"><?php echo __('last_update', 'x2board')?><?php if($sort_index=='last_update'):?><i class="arrow <?php echo $order_icon?>"></i><?php endif ?></a></span></th>
+			<th scope="col" class="m_no"><span><a href="<?php echo x2b_get_url('sort_index','last_update','order_type',$order_type)?>"><?php echo __('lbl_last_update', X2B_DOMAIN)?><?php if($sort_index=='last_update'):?><i class="arrow <?php echo $order_icon?>"></i><?php endif ?></a></span></th>
 		<!-- <th scope="col" cond="$val->type=='last_post'" class="m_no"><span>{$lang->last_post}</span></th> -->
 		<?php elseif($val->var_type=='readed_count' && $val->idx==-1): ?><!-- cond="$val->type=='readed_count'"  -->
-			<th scope="col" class="m_no"><span><a href="<?php echo x2b_get_url('sort_index','readed_count','order_type',$order_type)?>"><?php echo __('readed_count', 'x2board')?><?php if($sort_index=='readed_count'):?><i class="arrow <?php echo $order_icon?>"></i><?php endif ?></a></span></th>
+			<th scope="col" class="m_no"><span><a href="<?php echo x2b_get_url('sort_index','readed_count','order_type',$order_type)?>"><?php echo __('lbl_readed_count', X2B_DOMAIN)?><?php if($sort_index=='readed_count'):?><i class="arrow <?php echo $order_icon?>"></i><?php endif ?></a></span></th>
 		<?php elseif($val->var_type=='voted_count' && $val->idx==-1): ?><!-- cond="$val->type=='voted_count'"  -->
-			<th scope="col" class="m_no"><span><a href="<?php echo x2b_get_url('sort_index','voted_count','order_type',$order_type)?>"><?php echo __('voted_count', 'x2board')?><?php if($sort_index=='voted_count'):?><i class="arrow <?php echo $order_icon?>"></i><?php endif ?></a></span></th>
+			<th scope="col" class="m_no"><span><a href="<?php echo x2b_get_url('sort_index','voted_count','order_type',$order_type)?>"><?php echo __('lbl_voted_count', X2B_DOMAIN)?><?php if($sort_index=='voted_count'):?><i class="arrow <?php echo $order_icon?>"></i><?php endif ?></a></span></th>
 		<?php else: ?>	<!-- cond="$val->idx!=-1" -->
 			<?php if($val->eid!='link_url' && $val->idx!=-1): ?><!-- cond="$val->eid!='link_url'" -->
 			<th scope="col" class="m_no"><span><a href="<?php echo x2b_get_url('sort_index',$val->eid,'order_type',$order_type)?>"><?php echo $val->var_name ?></a></span></th>
@@ -67,7 +67,7 @@ else{
 		<?php foreach( $list_config as $_ => $val ):?><!-- <block loop="$list_config=>$key,$val"> -->
 			<?php if($val->var_type=='no'): ?><!-- cond="$val->type=='no'"  -->
 				<td class="no">
-					<?php if($post_id==$post->post_id): ?>&raquo;<?php endif ?>	<?php if($post_id!=$post->post_id): ?><strong ><?php echo __('notice', 'x2board')?></strong><?php endif ?>	
+					<?php if($post_id==$post->post_id): ?>&raquo;<?php endif ?>	<?php if($post_id!=$post->post_id): ?><strong ><?php echo __('lbl_notice', X2B_DOMAIN)?></strong><?php endif ?>	
 				</td>
 			<?php endif ?>
 			<?php if($val->var_type=='title'): ?><!-- <block cond="$val->type=='title'"> -->
@@ -77,7 +77,7 @@ else{
 				<td class="title">
 					<a href="<?php echo x2b_get_url('cmd', X2B_CMD_VIEW_POST, 'post_id',$post->post_id, 'listStyle', $listStyle, 'cpage','')?>"><strong><?php echo $post->get_title($mi->subject_cut_size)?></strong></a>
 					<?php if($mi->link_board == ' '): ?><!-- <block cond="!$mi->link_board"> -->
-					<a cond="$post->get_comment_count()" href="<?php echo x2b_get_url('cmd', X2B_CMD_VIEW_POST, 'post_id', $post->post_id)?>#<?php echo $post->post_id?>_comment" class="replyNum" title="<?php echo __('comment', 'x2board')?>"><?php echo $post->get_comment_count()?></a>
+					<a cond="$post->get_comment_count()" href="<?php echo x2b_get_url('cmd', X2B_CMD_VIEW_POST, 'post_id', $post->post_id)?>#<?php echo $post->post_id?>_comment" class="replyNum" title="<?php echo __('lbl_comment', X2B_DOMAIN)?>"><?php echo $post->get_comment_count()?></a>
 					<!-- <a cond="$post->getTrackbackCount()" href="<?php //echo esc_url('post_id', $post->post_id)?>#{$post->post_id}_trackback" class="trackbackNum" title="{$lang->trackback}">{$post->getTrackbackCount()}</a> -->
 					<?php endif ?><!-- </block> -->
 					<span class="extraimages"><?php echo $post->print_extra_images($mi->duration_new)?></span>
@@ -109,7 +109,7 @@ else{
 			<?php if($val->idx!=-1): ?><!-- cond="$val->idx!=-1"  -->
 				<td <?php if($val->eid!='link_url'): ?> class="m_no" <?php endif ?>>
 				<?php if($val->eid=='rating'): ?>
-						<span class="starRating" title="<?php echo $post->get_user_define_value_HTML($val->idx)?> <?php echo $lang->score?>"><span style="width:<?php echo $post->get_user_define_value_HTML($val->idx)*10 ?>%"><?php echo $post->get_user_define_value_HTML($val->idx)?></span></span>
+						<span class="starRating" title="<?php echo $post->get_user_define_value_HTML($val->idx)?> <?php echo __('lbl_score', X2B_DOMAIN) ?>"><span style="width:<?php echo $post->get_user_define_value_HTML($val->idx)*10 ?>%"><?php echo $post->get_user_define_value_HTML($val->idx)?></span></span>
 				<?php else: ?><!--@else-->
 					<?php echo $post->get_user_define_value_HTML($val->idx)?>
 				<?php endif ?><!--@end--></td>
@@ -168,7 +168,7 @@ else{
 				<?php endif ?><!--@end-->
 				<?php if($mi->link_board == ' '): ?><!-- <block cond="$mi->link_board == ' '"> -->
 					<?php if($post->get_comment_count()): ?><!-- cond="$post->get_comment_count()"  -->
-						<a href="<?php echo x2b_get_url('cmd', X2B_CMD_VIEW_POST, 'post_id', $post->post_id)?>#<?php echo $post->post_id?>_comment" class="replyNum" title="<?php echo __('comment', 'x2board')?>"><?php echo $post->get_comment_count()?></a>
+						<a href="<?php echo x2b_get_url('cmd', X2B_CMD_VIEW_POST, 'post_id', $post->post_id)?>#<?php echo $post->post_id?>_comment" class="replyNum" title="<?php echo __('lbl_comment', X2B_DOMAIN)?>"><?php echo $post->get_comment_count()?></a>
 					<?php endif ?>
 				<?php endif ?><!-- </block> -->
 						<span class="extraimages"><?php echo $post->print_extra_images($mi->duration_new)?>
@@ -177,7 +177,7 @@ else{
 						<?php endif ?>
 						</span>
 						<?php if($mi->link_board != ' ' && $post->is_editable()): ?><!-- cond="$mi->link_board && $post->isEditable()"  -->
-						<a class="link_modify" href="<?php echo x2b_get_url('cmd', X2B_CMD_VIEW_POST, 'post_id',$post->post_id)?>"><?php echo __('cmd_modify', 'x2board')?></a>
+						<a class="link_modify" href="<?php echo x2b_get_url('cmd', X2B_CMD_VIEW_POST, 'post_id',$post->post_id)?>"><?php echo __('cmd_modify', X2B_DOMAIN)?></a>
 						<?php endif ?>
 					</td>
 			<?php endif ?><!-- </block> -->
@@ -205,7 +205,7 @@ else{
 			<?php if($val->idx!=-1): ?><!-- cond="$val->idx!=-1"  -->
 			<td class="<?php if($val->eid=='link_url'):?>link_url<?php else: ?>m_no<?php endif?>">
 				<?php if($val->eid=='rating'):?>
-					<span class="starRating" title="<?php echo $post->get_user_define_value_HTML($val->idx)?><?php echo $lang->score?>"><span style="width:<?php echo $post->get_user_define_value_HTML($val->idx)*10?>%"><?php echo $post->get_user_define_value_HTML($val->idx)?></span></span>
+					<span class="starRating" title="<?php echo $post->get_user_define_value_HTML($val->idx)?><?php echo __('lbl_score', X2B_DOMAIN) ?>"><span style="width:<?php echo $post->get_user_define_value_HTML($val->idx)*10?>%"><?php echo $post->get_user_define_value_HTML($val->idx)?></span></span>
 				<?php else:?><!--@else-->
 					<?php echo $post->get_user_define_value_HTML($val->idx)?>
 				<?php endif?><!--@end-->

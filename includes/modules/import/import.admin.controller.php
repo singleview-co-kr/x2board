@@ -16,8 +16,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Import\\importAdminController')
 
 	class importAdminController {
 
-		// const SVBOARD_TMP = 'svboard_tmp';
-		// const KBOARD_ATTACHED = 'kboard_attached';
 		private $_s_wp_upload_base_dir = null;
 		private $_n_board_id = null;
 		private $_o_fileSystemDirect = null;

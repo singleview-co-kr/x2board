@@ -60,10 +60,10 @@ var_dump('post controller init()');
 				$wp_verify_nonce = \X2board\Includes\Classes\Context::get('x2b_'.X2B_CMD_PROC_WRITE_POST.'_nonce');
 // var_dump($wp_verify_nonce);
 				if( is_null( $wp_verify_nonce ) ){
-					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request1', 'x2board') );
+					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', X2B_DOMAIN).'1' );
 				}
 				if( !wp_verify_nonce($wp_verify_nonce, 'x2b_'.X2B_CMD_PROC_WRITE_POST) ){
-					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request2', 'x2board') );
+					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', X2B_DOMAIN).'2' );
 				}
 			}
 
@@ -129,7 +129,7 @@ var_dump('post controller init()');
 				$obj->post_id = \X2board\Includes\getNextSequence();
 			}
 			elseif(!$manual_inserted && !\X2board\Includes\checkUserSequence($obj->post_id)) {
-				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', 'x2board') );
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', X2B_DOMAIN) );
 			}
 
 			// Set to 0 if the category_id doesn't exist
@@ -139,7 +139,7 @@ var_dump('post controller init()');
 				$a_linear_category = $o_category_model->build_linear_category();
 				unset($o_category_model);
 				if(count($a_linear_category) > 0 && !$a_linear_category[$obj->category_id]->grant) {
-					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', 'x2board') );
+					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', X2B_DOMAIN) );
 				}
 				if(count($a_linear_category) > 0 && !$a_linear_category[$obj->category_id]) {
 					$obj->category_id = 0;
@@ -184,7 +184,7 @@ var_dump('post controller init()');
 			}
 			// If no tile extracted from the contents, leave it untitled.
 			if($obj->title == '') {
-				$obj->title = __('Untitled', 'x2board'); //'Untitled';
+				$obj->title = __('lbl_untitled', X2B_DOMAIN);
 			}
 // Remove XE's own tags from the contents.
 // $obj->content = preg_replace('!<\!--(Before|After)(Document|Comment)\(([0-9]+),([0-9]+)\)-->!is', '', $obj->content);
@@ -201,7 +201,7 @@ var_dump('post controller init()');
 			}
 			// An error appears if both log-in info and user name don't exist.
 			if(!$o_logged_info->ID && !$obj->nick_name) {
-				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request3', 'x2board') );
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', X2B_DOMAIN).'3' );
 			}
 			unset($o_logged_info);
 
@@ -272,11 +272,11 @@ var_dump('post controller init()');
 			// 	$obj->post_id = getNextSequence();
 			// }
 			// elseif(!$manual_inserted && !$isRestore && !checkUserSequence($obj->post_id)) {
-			// return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', 'x2board') );
+			// return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', X2B_DOMAIN) );
 			// }
 
 			// if(!$data['member_display']){
-			// 	$data['member_display'] = __('Anonymous', 'x2board');
+			// 	$data['member_display'] = __('Anonymous', X2B_DOMAIN);
 			// }
 
 			// $status_list = kboard_content_status_list();
@@ -386,7 +386,7 @@ var_dump('post controller init()');
 			// $a_new_post['post_id'] = $n_new_wp_post_id;
 			if( $this->_insert_wp_post($a_new_post) === false ) {
 				unset($a_new_post);
-				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_wp_post_registration_failed', 'x2board') );
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_wp_post_registration_failed', X2B_DOMAIN) );
 			}
 
 			$o_rst = new \X2board\Includes\Classes\BaseObject();
@@ -416,7 +416,7 @@ var_dump('post controller init()');
 // var_dump($o_user_input_value);
 // var_dump($eid);
 			if(!$n_board_id || !$n_post_id || !$var_idx || !isset($o_user_input_value)) {
-				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request1', 'x2board') );
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', X2B_DOMAIN).'1' );
 			}
 			// if(!$lang_code) $lang_code = Context::getLangType();
 		
@@ -508,20 +508,20 @@ var_dump('post controller init()');
 		// function updateDocument($source_obj, $obj, $manual_updated = FALSE)
 		public function update_post($o_old_post, $o_new_obj, $manual_updated = FALSE) {
 			// if(!$manual_updated && !checkCSRF()) {
-			// 	return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', 'x2board') );
+			// 	return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', X2B_DOMAIN) );
 			// }
 			if(!$manual_updated) {  // check WP nonce if a guest update a old post
 				$wp_verify_nonce = \X2board\Includes\Classes\Context::get('x2b_'.X2B_CMD_PROC_MODIFY_POST.'_nonce');
 				if( is_null( $wp_verify_nonce ) ){
-					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request1', 'x2board') );
+					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', X2B_DOMAIN).'1' );
 				}
 				if( !wp_verify_nonce($wp_verify_nonce, 'x2b_'.X2B_CMD_PROC_MODIFY_POST) ){
-					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request2', 'x2board') );
+					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', X2B_DOMAIN).'2' );
 				}
 			}
 
 			if(!$o_old_post->post_id || !$o_new_obj->post_id) {
-				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', 'x2board') );
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', X2B_DOMAIN) );
 			}
 			if(!$o_new_obj->status && $o_new_obj->is_secret == 'Y') {
 				$o_new_obj->status = 'SECRET';
@@ -655,7 +655,7 @@ var_dump('post controller init()');
 			}
 			// If no tile extracted from the contents, leave it untitled.
 			if($o_new_obj->title == '') {
-				$o_new_obj->title = __('Untitled', 'x2board'); //'Untitled';
+				$o_new_obj->title = __('lbl_untitled', X2B_DOMAIN); //'Untitled';
 			}
 			// Remove XE's own tags from the contents.
 			// $o_new_obj->content = preg_replace('!<\!--(Before|After)(Document|Comment)\(([0-9]+),([0-9]+)\)-->!is', '', $o_new_obj->content);
@@ -730,7 +730,7 @@ var_dump('post controller init()');
 			
 			if( $this->_update_wp_post($a_new_post) === false ) {
 				unset($a_new_post);
-				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_wp_post_update_failed', 'x2board') );
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_wp_post_update_failed', X2B_DOMAIN) );
 			}
 			unset($a_ignore_key);
 // exit;
@@ -888,15 +888,15 @@ var_dump('post controller init()');
 				unset($o_post_model);
 			}
 			else if($isEmptyTrash && $o_post == null) {
-				return new \X2board\Includes\Classes\BaseObject(-1, __('post is not exists', 'x2board') );
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_post', X2B_DOMAIN) );
 			}
 
 			if(!$o_post->is_exists() || $o_post->post_id != $n_post_id) {
-				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_post', 'x2board') );
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_post', X2B_DOMAIN) );
 			}
 			// Check if a permossion is granted
 			if(!$o_post->is_granted()) {
-				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', 'x2board') );
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', X2B_DOMAIN) );
 			}
 
 			//if empty trash, post already deleted, therefore post not delete
@@ -1280,7 +1280,7 @@ var_dump($wpdb->last_error);
 		// function secureDocumentExtraVars($nModuleSrl, $nVarIdx, $sBeginYyyymmdd, $sEndYyyymmdd)
 		public function secure_post_user_defined_vars($nModuleSrl, $nVarIdx, $sBeginYyyymmdd, $sEndYyyymmdd) {
 			if(!$nModuleSrl || !$nVarIdx) {
-				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', 'x2board') );
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', X2B_DOMAIN) );
 			}
 				
 			$oArg = new stdClass();

@@ -33,12 +33,12 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileModel')) {
 			// Display upload status
 			$upload_status = sprintf(
 				'%s : %s/ %s<br /> %s : %s (%s : %s)',
-				__('allowed_attach_size', 'x2board'), //Context::getLang('allowed_attach_size'),
+				__('lbl_allowed_attach_size', X2B_DOMAIN), //Context::getLang('allowed_attach_size'),
 				\X2board\Includes\Classes\FileHandler::filesize($attached_size),
 				\X2board\Includes\Classes\FileHandler::filesize($file_config->allowed_attach_size*1024*1024),
-				__('allowed_filesize', 'x2board'), //Context::getLang('allowed_filesize'),
+				__('lbl_allowed_filesize', X2B_DOMAIN), //Context::getLang('allowed_filesize'),
 				\X2board\Includes\Classes\FileHandler::filesize($file_config->allowed_filesize*1024*1024),
-				__('allowed_filetypes', 'x2board'), //Context::getLang('allowed_filetypes'),
+				__('lbl_allowed_filetypes', X2B_DOMAIN), //Context::getLang('allowed_filetypes'),
 				$file_config->allowed_filetypes
 			);
 			return $upload_status;

@@ -558,7 +558,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 			switch($type) {
 				// default fields
 				case 'title':
-					$s_name = strlen($s_name) ? $s_name : __($this->type, 'x2board');
+					$s_name = strlen($s_name) ? $s_name : __($this->type, X2B_DOMAIN);
 					$buff[] = '<div class="x2board-attr-row '.$s_default_class.' required">';
 					$buff[] = 	'<label class="attr-name" for="'.$s_meta_key.'"><span class="field-name">'.$s_name.'</span> <span class="attr-required-text">*</span></label>';
 					$buff[] = 	'<div class="attr-value">';
@@ -578,7 +578,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 					break;
 				/*case 'nick_name':
 					if(!is_user_logged_in()) {
-						$s_name = strlen($s_name) ? $s_name : __($this->type, 'x2board');
+						$s_name = strlen($s_name) ? $s_name : __($this->type, X2B_DOMAIN);
 						$buff[] = '<div class="x2board-attr-row '.$s_default_class.' required">';
 						$buff[] = 	'<label class="attr-name" for="x2board-input-member-display"><span class="field-name">'.$s_name.'</span> <span class="attr-required-text">*</span></label>';
 						$s_value = $o_post->nick_name ? esc_attr($o_post->nick_name) : $s_default_value;
@@ -591,19 +591,19 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 						$buff[] = 	'<div class="attr-value"><input type="text" id="x2board-input-nick-name" name="nick_name" class="required" value="'.$s_value.' '.$s_placeholder.'"></div>';
 						$buff[] = '</div>';
 						$buff[] = '<div class="x2board-attr-row x2board-attr-password">';
-						$buff[] = 	'<label class="attr-name" for="x2board-input-password">'.__('Password', 'x2board').' <span class="attr-required-text">*</span></label>';
-						$buff[] = 	'<div class="attr-value"><input type="password" id="x2board-input-password" name="password" value="" placeholder="'.__('Password', 'x2board').'..."></div>';
+						$buff[] = 	'<label class="attr-name" for="x2board-input-password">'.__('lbl_password', X2B_DOMAIN).' <span class="attr-required-text">*</span></label>';
+						$buff[] = 	'<div class="attr-value"><input type="password" id="x2board-input-password" name="password" value="" placeholder="'.__('lbl_password', X2B_DOMAIN).'..."></div>';
 						$buff[] = '</div>';
 					}
 					break;*/
 				case 'category':
-					$s_name = strlen($s_name) ? $s_name : __($this->type, 'x2board');
+					$s_name = strlen($s_name) ? $s_name : __($this->type, X2B_DOMAIN);
 					$buff[] = '<div class="x2board-attr-row '.$s_default_class.' '.$s_required.'">';
 					$buff[] = '<label class="attr-name" for="'.$s_meta_key.'"><span class="field-name">'.$s_name.'</span></label>';
 					$buff[] = '<div class="attr-value">';
 					$buff[] = 	'<div class="x2board-tree-category-wrap">';
 					$buff[] = 		'<select id="category_id" name="category_id" class="category">';
-					$buff[] = 			'<option value="">'.__('Category select', 'x2board').'</option>';
+					$buff[] = 			'<option value="">'.__('lbl_select_category', X2B_DOMAIN).'</option>';
 					$category_list = $this->_get_post_category_list();
 					foreach($category_list as $cat_id=>$option_val) {
 						if($option_val->grant && $option_val->selected || $o_post->category_id == $cat_id){
@@ -640,13 +640,13 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 					$buff[] = '<div class="edit_opt">';
 					if(!is_user_logged_in()) {
 						$buff[] = '<div class="x2board-attr-row">';
-						$buff[] = 	'<label class="attr-name" for="nick_name"><span class="field-name">'.__('Writer', 'x2board').'</span></label>';
+						$buff[] = 	'<label class="attr-name" for="nick_name"><span class="field-name">'.__('lbl_writer', X2B_DOMAIN).'</span></label>';
 						$buff[] = 	'<div class="attr-value">';
-						$buff[] = 		'<input type="text" name="nick_name" id="nick_name" value="'.$o_post->get_nick_name().'" placeholder="'. __('Writer', 'x2board').'" />';
+						$buff[] = 		'<input type="text" name="nick_name" id="nick_name" value="'.$o_post->get_nick_name().'" placeholder="'. __('lbl_writer', X2B_DOMAIN).'" />';
 						$buff[] = 	'</div>';
 						$buff[] = '</div>';
 						$buff[] = '<div class="x2board-attr-row">';
-						$buff[] = 	'<label class="attr-name" for="password"><span class="field-name">'.__('Password', 'x2board').'</span></label>';
+						$buff[] = 	'<label class="attr-name" for="password"><span class="field-name">'.__('lbl_password', X2B_DOMAIN).'</span></label>';
 						$buff[] = 	'<div class="attr-value">';
 						$buff[] = 		'<input type="text" name="password" id="password" />';
 						$buff[] = 	'</div>';
@@ -660,7 +660,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 					unset($o_editor_view);
 					break;
 				case 'option': 	// 글쓰기 옵션 체크 
-					$s_name = strlen($s_name) ? $s_name : __($this->type, 'x2board');
+					$s_name = strlen($s_name) ? $s_name : __($this->type, X2B_DOMAIN);
 					if($this->_is_this_accessible($this->notice_permission, $this->notice)) {
 						$buff[] = '<div class="x2board-attr-row '.$s_default_class.'">';
 						$buff[] = 	'<label class="attr-name" for="'.$s_meta_key.'"><span class="field-name">'.$s_name.'</span></label>';
@@ -668,8 +668,8 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 						// wp_enqueue_script('x2board-jpicker', X2B_URL . 'common/js/plugins/ui.colorpicker/jpicker-1.1.6.min.js', array(), X2B_VERSION, true);
 						// wp_enqueue_script('x2board-xe_colorpicker', X2B_URL . 'common/js/plugins/ui.colorpicker/xe_colorpicker.js', array(), X2B_VERSION, true);
 						// wp_enqueue_style('x2board-ui.colorpicker', X2B_URL."common/js/plugins/ui.colorpicker/css/jPicker-1.1.6.min.css", array(), X2B_VERSION, 'all');
-						// $buff[] = '<span class="itx_wrp color_wrp" title="'.__('title_color', 'x2board').'">';
-						// $buff[] = 	'<label for="title_color">'.__('title_color', 'x2board').'</label>';
+						// $buff[] = '<span class="itx_wrp color_wrp" title="'.__('title_color', X2B_DOMAIN).'">';
+						// $buff[] = 	'<label for="title_color">'.__('title_color', X2B_DOMAIN).'</label>';
 
 						// $s_title_color = $o_post->get('title_color')!='N' ? $o_post->get('title_color') : null;
 						// $buff[] = 	'<input type="text" name="title_color" id="title_color" class="itx color-indicator" value="'.$s_title_color.'"/>';
@@ -677,11 +677,11 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 
 						$s_checked = $o_post->get('title_bold')=='Y' ? 'checked="checked"' : null;
 						$buff[] = '<input type="checkbox" name="title_bold" id="title_bold" value="Y" '.$s_checked.'/>';
-						$buff[] = '<label for="title_bold">'.__('title_bold', 'x2board').'</label>';
+						$buff[] = '<label for="title_bold">'.__('lbl_title_bold', X2B_DOMAIN).'</label>';
 						
 						$s_checked = $o_post->is_notice() ? 'checked="checked"' : null;
 						$buff[] = '<input type="checkbox" name="is_notice" value="Y" id="is_notice" '.$s_checked.' />';
-						$buff[] = '<label class="attr-value-option" for="is_notice">'.__('Notice', 'x2board').'</label>';
+						$buff[] = '<label class="attr-value-option" for="is_notice">'.__('lbl_notice', X2B_DOMAIN).'</label>';
 						$buff[] = '</div>';
 					}
 					
@@ -699,8 +699,8 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 						$buff[] = '<div class="x2board-attr-row '.$s_default_class.'">';
 						$buff[] = 	'<label class="attr-name" for="'.$s_meta_key.'"><span class="field-name">'.$s_name.'</span></label>';
 						$buff[] = 	'<div class="attr-value">';
-						$buff[] = '<label class="attr-value-option"><input name="allow_comment" id="allow_comment[Y]" type="radio" value="Y" '.$s_allow_checked.'>'.__('Allow comment', 'x2board').'</label>';
-						$buff[] = '<label class="attr-value-option"><input name="allow_comment" id="allow_comment[N]" type="radio" value="N" '.$s_disallow_checked.'>'.__('Disllow comment', 'x2board').'</label>';
+						$buff[] = '<label class="attr-value-option"><input name="allow_comment" id="allow_comment[Y]" type="radio" value="Y" '.$s_allow_checked.'>'.__('lbl_allow_comment', X2B_DOMAIN).'</label>';
+						$buff[] = '<label class="attr-value-option"><input name="allow_comment" id="allow_comment[N]" type="radio" value="N" '.$s_disallow_checked.'>'.__('lbl_disallow_commentt', X2B_DOMAIN).'</label>';
 						$buff[] = '</div>';
 					}
 
@@ -728,7 +728,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 							$buff[] = '<div class="x2board-attr-row '.$s_default_class.'">';
 							$buff[] = 	'<label class="attr-name" for="'.$s_meta_key.'"><span class="field-name">'.$s_name.'</span></label>';
 							$buff[] = 	'<div class="attr-value">';
-							$buff[] = 		'<input type="text" name="email_address" id="email_address" value="'. htmlspecialchars($o_post->get('email_address')).'" placeholder="'. __('email_address', 'x2board').'" />';
+							$buff[] = 		'<input type="text" name="email_address" id="email_address" value="'. htmlspecialchars($o_post->get('email_address')).'" placeholder="'. __('lbl_email_address', X2B_DOMAIN).'" />';
 							$buff[] = 	'</div>';
 							$buff[] = '</div>';
 						}
@@ -754,7 +754,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 							$s_checked = null;
 						}
 						unset($o_post_class);
-						// $buff[] = '<label class="attr-value-option"><input type="checkbox" name="is_secret" value="Y" onchange="x2board_toggle_password_field(this)" '.$s_checked_disabled.' '.$s_checked.'> '. __('Secret', 'x2board').'</label>';
+						// $buff[] = '<label class="attr-value-option"><input type="checkbox" name="is_secret" value="Y" onchange="x2board_toggle_password_field(this)" '.$s_checked_disabled.' '.$s_checked.'> '. __('Secret', X2B_DOMAIN).'</label>';
 					}*/
 					/*if($this->_is_this_accessible($this->notice_permission, $this->notice)) {
 						if($o_post->is_notice == 'Y') {
@@ -763,7 +763,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 						else {
 							$s_checked = null;
 						}
-						// $buff[] = '<label class="attr-value-option"><input type="checkbox" name="is_notice" value="Y" '.$s_checked.'> '. __('Notice', 'x2board').'</label>';
+						// $buff[] = '<label class="attr-value-option"><input type="checkbox" name="is_notice" value="Y" '.$s_checked.'> '. __('lbl_notice', X2B_DOMAIN).'</label>';
 					}*/
 					/*if($this->_is_this_accessible($this->allow_comment_permission, $this->allow_comment)) {
 						$s_allow_checked = null;
@@ -776,8 +776,8 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 							$s_disallow_checked = 'checked="checked"';
 						}
 						unset($o_comment_class);
-						$buff[] = '<label class="attr-value-option"><input name="allow_comment" id="allow_comment[Y]" type="radio" value="Y" '.$s_allow_checked.'>'.__('Allow comment', 'x2board').'</label>';
-						$buff[] = '<label class="attr-value-option"><input name="allow_comment" id="allow_comment[N]" type="radio" value="N" '.$s_disallow_checked.'>'.__('Disllow comment', 'x2board').'</label>';
+						$buff[] = '<label class="attr-value-option"><input name="allow_comment" id="allow_comment[Y]" type="radio" value="Y" '.$s_allow_checked.'>'.__('Allow comment', X2B_DOMAIN).'</label>';
+						$buff[] = '<label class="attr-value-option"><input name="allow_comment" id="allow_comment[N]" type="radio" value="N" '.$s_disallow_checked.'>'.__('Disllow comment', X2B_DOMAIN).'</label>';
 					}*/
 							// if(isset($field['description']) && $field['description']){
 							// 	'<div class="description">'.esc_html($field['description']).'</div>';
@@ -797,19 +797,19 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 							$s_style = null;
 						}
 						$buff[] = '<div class="x2board-attr-row x2board-attr-password secret-password-row" '.$s_style.'>';
-						$buff[] = 	'<label class="attr-name" for="x2board-input-password">'. __('Password', 'x2board').' <span class="attr-required-text">*</span></label>';
-						$buff[] = 	'<div class="attr-value"><input type="password" id="x2board-input-password" name="password" value="" placeholder="'. __('Password', 'x2board').'..."></div>';
+						$buff[] = 	'<label class="attr-name" for="x2board-input-password">'. __('lbl_password', X2B_DOMAIN).' <span class="attr-required-text">*</span></label>';
+						$buff[] = 	'<div class="attr-value"><input type="password" id="x2board-input-password" name="password" value="" placeholder="'. __('lbl_password', X2B_DOMAIN).'..."></div>';
 						$buff[] = '</div>';
 						// $buff[] = '<!-- 비밀글 비밀번호 필드 끝 -->';
 					}*/
 					break;
 				case 'tag':
-					$s_name = strlen($s_name) ? $s_name : __($this->type, 'x2board');
+					$s_name = strlen($s_name) ? $s_name : __($this->type, X2B_DOMAIN);
 					$buff[] = '<div class="x2board-attr-row '.$s_default_class.' required">';
-					$buff[] = 	'<label class="attr-name" for="tags">'.__('Tag', 'x2board').'</label>';
+					$buff[] = 	'<label class="attr-name" for="tags">'.__('lbl_tag', X2B_DOMAIN).'</label>';
 					$buff[] = 	'<div class="attr-value">';
 					$s_value = $o_post->get('tags') ? esc_attr(htmlspecialchars($post->get('tags'))) : null;
-					$buff[] = 		'<input type="text" name="tags" id="tags" placeholder="'.__('about_tag', 'x2board').'" value="'.$s_value.'">';
+					$buff[] = 		'<input type="text" name="tags" id="tags" placeholder="'.__('about_tag', X2B_DOMAIN).'" value="'.$s_value.'">';
 					$buff[] = 	'</div>';
 					$buff[] = '</div>';
 					break;
@@ -828,21 +828,21 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 							else {
 								$selected_1 = null;
 							}
-							$buff[] = 		'<option value="1" '.$selected_1.'>'.__('Public', 'x2board').'</option>';
+							$buff[] = 		'<option value="1" '.$selected_1.'>'.__('Public', X2B_DOMAIN).'</option>';
 							if($o_post->allow_search == '2') {
 								$selected_2 = 'selected';
 							}
 							else {
 								$selected_2 = null;
 							}
-							$buff[] = 		'<option value="2" '.$selected_2.'>'. __('Only title (secret post)', 'x2board').'</option>';
+							$buff[] = 		'<option value="2" '.$selected_2.'>'. __('Only title (secret post)', X2B_DOMAIN).'</option>';
 							if($o_post->allow_search == '3') {
 								$selected_3 = 'selected';
 							}
 							else {
 								$selected_3 = null;
 							}
-							$buff[] = 		'<option value="3" '.$selected_3.'>'.__('Exclusion', 'x2board').'</option>';
+							$buff[] = 		'<option value="3" '.$selected_3.'>'.__('Exclusion', X2B_DOMAIN).'</option>';
 							$buff[] = 	'</select>';
 									// if(isset($field['description']) && $field['description']){
 									// 	'<div class="description">'.esc_html($field['description']).'</div>';
@@ -895,7 +895,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 						$buff[] = 	'<label class="attr-name" for="'.$s_meta_key.'"><span class="field-name">'.$s_name.'</span>'.$s_tmp_required.'</label>';
 						$buff[] = 	'<div class="attr-value">';
 						$buff[] = 		'<select id="'.$s_meta_key.'" name="'.$s_meta_key.'"class="'.$s_required.'">';
-						$buff[] = 		'<option value="">'.__('Select', 'x2board').'</option>';
+						$buff[] = 		'<option value="">'.__('cmd_select', X2B_DOMAIN).'</option>';
 						foreach($this->row as $option_key=>$option_value) {
 							if(isset($option_value['label']) && $option_value['label']) {
 								if($o_post->{$s_meta_key}) {

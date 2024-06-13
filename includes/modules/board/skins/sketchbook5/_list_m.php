@@ -4,7 +4,7 @@
 
 <ol class="<?php echo $mi->zine_info_icon ?> bd_lst bd_zine zine zine1 bd_m_lst img_load<?php echo $mi->tmb_effect ?>">
 	<?php if(!$post_list && !$notice_list): ?><!-- cond="!$post_list && !$notice_list"  -->
-		<li class="no_doc"><?php echo __('no_posts', 'x2board')?></li>
+		<li class="no_doc"><?php echo __('msg_no_posts', X2B_DOMAIN)?></li>
 	<?php endif ?>
 	<!--// 공지 목록 -->
 	<?php if($notice_list): ?><!-- cond="$notice_list"  -->
@@ -136,7 +136,7 @@
 						<input type="checkbox" name="cart" value="<?php echo $post->post_id ?>" title="Check" onclick="doAddDocumentCart(this)" <?php if($post->is_carted()): ?> checked="checked" <?php endif ?>/> <!-- |cond="$post->isCarted()" -->
 					<?php endif ?>
 					<?php if($mi->link_board != ' ' && $post->is_editable()): ?><!-- cond="$mi->link_board && $post->isEditable()"  -->
-						<a class="link_modify" href="<?php echo x2b_get_url('act','dispBoardWrite','post_id',$post->post_id,'comment_id','') ?>"><?php echo __('cmd_modify', 'x2board')?></a>
+						<a class="link_modify" href="<?php echo x2b_get_url('act','dispBoardWrite','post_id',$post->post_id,'comment_id','') ?>"><?php echo __('cmd_modify', X2B_DOMAIN)?></a>
 					<?php endif ?>
 				</div>
 			</div>

@@ -50,7 +50,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorView')) {
 		public static function get_post_editor_html($n_current_post_id, $s_placeholder =null) {   // $s_content_type, $s_required =null, 
 			$o_editor_conf = new \stdClass();
 			// if( is_null( $n_current_post_id ) ) {
-			// 	wp_die( __('invalid current post id', 'x2board') );
+			// 	wp_die( __('invalid current post id', X2B_DOMAIN) );
 			// }
 
 			$o_current_module_info = \X2board\Includes\Classes\Context::get('current_module_info');
@@ -59,7 +59,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorView')) {
 			$o_editor_conf->s_editor_type = isset( $o_current_module_info->post_editor_skin ) ? $o_current_module_info->post_editor_skin : 'ckeditor';
 			$o_editor_conf->n_editor_height = isset( $o_current_module_info->post_editor_height ) ? $o_current_module_info->post_editor_height : 500;
 			// $o_editor_conf->s_required = isset( $s_required ) ? $s_required : '';
-			$o_editor_conf->s_placeholder = isset( $s_placeholder ) ? $s_placeholder : __('Type what you think', 'x2board');
+			$o_editor_conf->s_placeholder = isset( $s_placeholder ) ? $s_placeholder : __('msg_type_what_you_think', X2B_DOMAIN);
 			// $o_editor_conf->s_editor_uid = isset( $o_editor_conf_in_arg->s_editor_uid ) ? $o_editor_conf_in_arg->s_editor_uid : '';
 			$o_editor_conf->n_textarea_rows = isset( $o_current_module_info->textarea_rows ) ? $o_current_module_info->textarea_rows : 50;
 
@@ -104,7 +104,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorView')) {
 							 esc_attr($o_editor_conf->s_content_field_name), 
 							 esc_attr($o_editor_conf->s_placeholder), 
 							 esc_textarea($o_editor_conf->s_content));
-				// echo '<textarea class="comment-textarea" cols="50" rows="'.$textarea_rows.'" style="overflow: hidden; min-height: 4em; height: 46px; width: 100%;" name="'.$content_field_name.'" placeholder="'.__('Add a comment', 'x2board').'..." required>'.esc_textarea($content).'</textarea>';
+				// echo '<textarea class="comment-textarea" cols="50" rows="'.$textarea_rows.'" style="overflow: hidden; min-height: 4em; height: 46px; width: 100%;" name="'.$content_field_name.'" placeholder="'.__('Add a comment', X2B_DOMAIN).'..." required>'.esc_textarea($content).'</textarea>';
 			}
 			$s_editor_html = ob_get_clean();
 			unset($o_editor_conf);
@@ -117,7 +117,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorView')) {
 		public static function get_comment_editor_html() {
 			$o_editor_conf = new \stdClass();
 			// if( is_null( $n_current_post_id ) ) {
-			// 	wp_die( __('invalid current post id', 'x2board') );
+			// 	wp_die( __('invalid current post id', X2B_DOMAIN) );
 			// }
 
 			$o_current_module_info = \X2board\Includes\Classes\Context::get('current_module_info');
@@ -128,7 +128,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorView')) {
 			$o_editor_conf->n_editor_height = isset( $o_current_module_info->comment_editor_height ) ? $o_current_module_info->comment_editor_height : 300;
 		
 			$o_editor_conf->s_required = isset( $s_required ) ? $s_required : '';
-			$o_editor_conf->s_placeholder = isset( $s_placeholder ) ? $s_placeholder : __('Type what you think', 'x2board');
+			$o_editor_conf->s_placeholder = isset( $s_placeholder ) ? $s_placeholder : __('msg_type_what_you_think', X2B_DOMAIN);
 			// $o_editor_conf->s_editor_uid = isset( $o_editor_conf_in_arg->s_editor_uid ) ? $o_editor_conf_in_arg->s_editor_uid : '';
 			$o_editor_conf->n_textarea_rows = isset( $o_current_module_info->textarea_rows ) ? $o_current_module_info->textarea_rows : 50;
 
@@ -168,7 +168,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorView')) {
 							 esc_attr($o_editor_conf->s_content_field_name), 
 							 esc_attr($o_editor_conf->s_placeholder), 
 							 esc_textarea($o_editor_conf->s_content));
-				// echo '<textarea class="comment-textarea" cols="50" rows="'.$textarea_rows.'" style="overflow: hidden; min-height: 4em; height: 46px; width: 100%;" name="'.$content_field_name.'" placeholder="'.__('Add a comment', 'x2board').'..." required>'.esc_textarea($content).'</textarea>';
+				// echo '<textarea class="comment-textarea" cols="50" rows="'.$textarea_rows.'" style="overflow: hidden; min-height: 4em; height: 46px; width: 100%;" name="'.$content_field_name.'" placeholder="'.__('Add a comment', X2B_DOMAIN).'..." required>'.esc_textarea($content).'</textarea>';
 			}
 			// $s_editor_html = ob_get_clean();
 			unset($o_editor_conf);
@@ -469,7 +469,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorView')) {
 				wp_editor($content, $editor_uid, array('media_buttons'=>$o_grant->is_admin, 'textarea_name'=>$content_field_name, 'editor_height'=>$editor_height));  //  'editor_class'=>'comment-textarea'
 			}
 			else {
-				echo '<textarea class="comment-textarea" cols="50" rows="'.$textarea_rows.'" style="overflow: hidden; min-height: 4em; height: 46px; width: 100%;" name="'.$content_field_name.'" placeholder="'.__('Add a comment', 'x2board').'..." required>'.esc_textarea($content).'</textarea>';
+				echo '<textarea class="comment-textarea" cols="50" rows="'.$textarea_rows.'" style="overflow: hidden; min-height: 4em; height: 46px; width: 100%;" name="'.$content_field_name.'" placeholder="'.__('Add a comment', X2B_DOMAIN).'..." required>'.esc_textarea($content).'</textarea>';
 			}
 			unset($o_grant);
 
@@ -529,7 +529,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorView')) {
 				// unset($o_post);
 				$o_editor_conf->s_content = $o_comment->content;
 				$o_editor_conf->n_editor_height = 400;*/
-				// $s_editor_html = $this->get_editor_html('comment', 1234, null, __('Add a comment', 'x2board').'...' );//$o_editor_conf);
+				// $s_editor_html = $this->get_editor_html('comment', 1234, null, __('Add a comment', X2B_DOMAIN).'...' );//$o_editor_conf);
 				// unset($o_editor_conf);
 		// 	}
 		// 	unset($o_comment);
@@ -571,7 +571,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorView')) {
 
 		/*public function get_comment_editor() {
 			$o_rst = new \stdClass();
-			$o_rst->s_comment_editor_html = null;//$this->get_editor_html('comment', 1234, null, __('Add a comment', 'x2board').'...' ); //$o_editor_conf);
+			$o_rst->s_comment_editor_html = null;//$this->get_editor_html('comment', 1234, null, __('Add a comment', X2B_DOMAIN).'...' ); //$o_editor_conf);
 			// unset($o_editor_conf);
 
 			// $o_rst->s_comment_hidden_field_html = $this->_ob_get_comment_hidden_fields();

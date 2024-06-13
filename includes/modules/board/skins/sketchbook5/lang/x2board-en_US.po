@@ -1,0 +1,4567 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: x2board\n"
+"POT-Creation-Date: 2024-06-14 19:42+0900\n"
+"PO-Revision-Date: 2024-06-15 15:43+0900\n"
+"Last-Translator: singleviewcokr <singleviewcokr@gmail.com>\n"
+"Language-Team: \n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.4.4\n"
+"X-Poedit-KeywordsList: _;__;gettext;gettext_noop\n"
+"X-Poedit-Basepath: ../..\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: sketchbook5/_comment.php:6 sketchbook5/_comment.php:12
+#: sketchbook5/_list_normal.php:80 sketchbook5/_list_normal.php:171
+#: sketchbook5/_read.php:69 sketchbook5/_read.php:97
+msgid "lbl_comment"
+msgstr "comment"
+
+#: sketchbook5/_comment.php:6 sketchbook5/_comment.php:12
+msgid "cmd_view"
+msgstr "view post"
+
+#: sketchbook5/_comment.php:53 sketchbook5/_read_files.php:9
+#: sketchbook5/_read_nav.php:44
+msgid "lbl_uploaded_file"
+msgstr "appended files"
+
+#: sketchbook5/_comment.php:55 sketchbook5/_comment_write.php:87
+#: sketchbook5/_read_nav.php:20
+msgid "cmd_close"
+msgstr "close"
+
+#: sketchbook5/_comment.php:72 sketchbook5/_read.php:200
+msgid "msg_secret_post"
+msgstr "secret post"
+
+#: sketchbook5/_comment.php:74 sketchbook5/_comment_write.php:52
+#: sketchbook5/_comment_write.php:104 sketchbook5/_read.php:202
+#: sketchbook5/comment_form.php:103 sketchbook5/input_password_form.php:9
+msgid "lbl_password"
+msgstr "password"
+
+#: sketchbook5/_comment.php:76 sketchbook5/_comment_write.php:42
+#: sketchbook5/_comment_write.php:65 sketchbook5/_comment_write.php:116
+#: sketchbook5/_comment_write.php:143 sketchbook5/_read.php:204
+#: sketchbook5/comment_form.php:120 sketchbook5/input_password_form.php:10
+#: sketchbook5/write_form.php:193 sketchbook5/write_form.php:204
+msgid "cmd_submit"
+msgstr "submit"
+
+#: sketchbook5/_comment.php:85 sketchbook5/_read.php:379
+msgid "cmd_declare"
+msgstr "declare"
+
+#: sketchbook5/_comment.php:86 sketchbook5/_comment.php:102
+#: sketchbook5/_read.php:368
+msgid "cmd_vote"
+msgstr "like"
+
+#: sketchbook5/_comment.php:87 sketchbook5/_comment.php:103
+#: sketchbook5/_read.php:373
+msgid "cmd_vote_down"
+msgstr "dislike"
+
+#: sketchbook5/_comment.php:90
+msgid "cmd_comment_do"
+msgstr "let the comment"
+
+#: sketchbook5/_comment.php:93 sketchbook5/_list_m.php:139
+#: sketchbook5/_list_normal.php:180 sketchbook5/_read_nav.php:50
+#: sketchbook5/comment_form.php:23
+msgid "cmd_modify"
+msgstr "modify"
+
+#: sketchbook5/_comment.php:94 sketchbook5/_read_nav.php:51
+#: sketchbook5/delete_form.php:18
+msgid "cmd_delete"
+msgstr "delete"
+
+#: sketchbook5/_comment.php:97 sketchbook5/_comment_write.php:137
+#: sketchbook5/_comment_write.php:140
+msgid "msg_not_permitted"
+msgstr "you are not permitted"
+
+#: sketchbook5/_comment.php:97 sketchbook5/comment_form.php:23
+msgid "cmd_reply"
+msgstr "reply"
+
+#: sketchbook5/_comment.php:114 sketchbook5/list.php:371
+msgid "lbl_first_page"
+msgstr "first page"
+
+#: sketchbook5/_comment.php:123 sketchbook5/_comment.php:124
+#: sketchbook5/list.php:395
+msgid "lbl_last_page"
+msgstr "last page"
+
+#: sketchbook5/_comment_write.php:7 sketchbook5/_comment_write.php:84
+#: sketchbook5/_comment_write.php:137 sketchbook5/_comment_write.php:140
+msgid "cmd_write_comment"
+msgstr "write comment"
+
+#: sketchbook5/_comment_write.php:10 sketchbook5/_read.php:433
+msgid "desc_noti_rfsh"
+msgstr "※ Caution: page will be refreshed"
+
+#: sketchbook5/_comment_write.php:11 sketchbook5/_read.php:434
+msgid "cmd_select_editor"
+msgstr "select an editor"
+
+#: sketchbook5/_comment_write.php:14 sketchbook5/_read.php:438
+msgid "lbl_textarea_editor_mode"
+msgstr "textarea mode"
+
+#: sketchbook5/_comment_write.php:15 sketchbook5/_read.php:440
+msgid "lbl_wysiwyg_editor_mode"
+msgstr "editor mode"
+
+#: sketchbook5/_comment_write.php:17 sketchbook5/_read.php:442
+msgid "lbl_sxc_editor_mode"
+msgstr "send to sns"
+
+#: sketchbook5/_comment_write.php:48 sketchbook5/_comment_write.php:100
+#: sketchbook5/_list_normal.php:34 sketchbook5/comment_form.php:99
+msgid "lbl_writer"
+msgstr "writer"
+
+#: sketchbook5/_comment_write.php:56 sketchbook5/_comment_write.php:108
+msgid "lbl_email_address"
+msgstr "email address"
+
+#: sketchbook5/_comment_write.php:74 sketchbook5/_comment_write.php:125
+#: sketchbook5/comment_form.php:115
+msgid "lbl_secret"
+msgstr "secret post"
+
+#: sketchbook5/_comment_write.php:86
+msgid "cmd_use_wysiwyg"
+msgstr "use wysiwyg editor"
+
+#: sketchbook5/_comment_write.php:137 sketchbook5/list.php:19
+msgid "desc_bd_login"
+msgstr "would you like to login"
+
+#: sketchbook5/_list_m.php:7 sketchbook5/_list_normal.php:15
+msgid "msg_no_posts"
+msgstr "no posts"
+
+#: sketchbook5/_list_normal.php:27
+msgid "lbl_order_desc"
+msgstr "order descending"
+
+#: sketchbook5/_list_normal.php:27
+msgid "lbl_order_asc"
+msgstr "order ascending"
+
+#: sketchbook5/_list_normal.php:27
+msgid "lbl_number"
+msgstr "number"
+
+#: sketchbook5/_list_normal.php:30 sketchbook5/_write_form_mobile.php:70
+#: sketchbook5/list.php:197
+msgid "lbl_category"
+msgstr "category"
+
+#: sketchbook5/_list_normal.php:32 sketchbook5/_write_form_mobile.php:81
+#: sketchbook5/_write_form_mobile.php:88
+msgid "lbl_title"
+msgstr "title"
+
+#: sketchbook5/_list_normal.php:32
+msgid "lbl_link_site"
+msgstr "linked site"
+
+#: sketchbook5/_list_normal.php:36
+msgid "lbl_date"
+msgstr "date"
+
+#: sketchbook5/_list_normal.php:38
+msgid "lbl_last_update"
+msgstr "lattest update"
+
+#: sketchbook5/_list_normal.php:41 sketchbook5/_read.php:63
+#: sketchbook5/_read.php:91
+msgid "lbl_readed_count"
+msgstr "view count"
+
+#: sketchbook5/_list_normal.php:43 sketchbook5/_read.php:66
+#: sketchbook5/_read.php:94
+msgid "lbl_voted_count"
+msgstr "recommend count"
+
+#: sketchbook5/_list_normal.php:70
+msgid "lbl_notice"
+msgstr "notice"
+
+#: sketchbook5/_list_normal.php:112 sketchbook5/_list_normal.php:208
+#: sketchbook5/_read.php:168 sketchbook5/_read.php:224
+msgid "lbl_score"
+msgstr "points"
+
+#: sketchbook5/_read.php:407 sketchbook5/_read.php:474
+#: sketchbook5/_read_nav.php:38 sketchbook5/list.php:306
+msgid "cmd_list"
+msgstr "list"
+
+#: sketchbook5/_read.php:475 sketchbook5/_read_nav.php:37
+msgid "cmd_move_up"
+msgstr "move up"
+
+#: sketchbook5/_read.php:479 sketchbook5/_read_nav.php:7
+#: sketchbook5/_read_nav.php:17
+msgid "cmd_prev"
+msgstr "prev"
+
+#: sketchbook5/_read.php:480 sketchbook5/_read_nav.php:8
+#: sketchbook5/_read_nav.php:18
+msgid "cmd_next"
+msgstr "next"
+
+#: sketchbook5/_read.php:483 sketchbook5/list.php:123 sketchbook5/list.php:336
+msgid "cmd_write"
+msgstr "write"
+
+#: sketchbook5/_read_nav.php:16
+msgid "lbl_shortcut"
+msgstr "hotkey"
+
+#: sketchbook5/_read_nav.php:17 sketchbook5/_read_nav.php:18
+msgid "lbl_post"
+msgstr "post"
+
+#: sketchbook5/_read_nav.php:29
+msgid "cmd_select_font"
+msgstr "select font"
+
+#: sketchbook5/_read_nav.php:31
+msgid "lbl_larger"
+msgstr "get larger"
+
+#: sketchbook5/_read_nav.php:32
+msgid "lbl_smaller"
+msgstr "get smaller"
+
+#: sketchbook5/_read_nav.php:34 sketchbook5/list.php:57
+#: sketchbook5/list.php:106 sketchbook5/list.php:114
+msgid "cmd_with_viewer"
+msgstr "load with viewer"
+
+#: sketchbook5/_read_nav.php:38
+msgid "cmd_move_down"
+msgstr "move down"
+
+#: sketchbook5/_read_nav.php:39
+msgid "cmd_go_cmt"
+msgstr "go to comment"
+
+#: sketchbook5/_read_nav.php:41
+msgid "cmd_print"
+msgstr "print"
+
+#: sketchbook5/_read_nav.php:47
+msgid "cmd_post_do"
+msgstr "let the post"
+
+#: sketchbook5/_search.php:25 sketchbook5/list.php:120 sketchbook5/list.php:315
+msgid "cmd_search"
+msgstr "search"
+
+#: sketchbook5/_search.php:27 sketchbook5/list.php:326
+msgid "cmd_search_next"
+msgstr "continue to search"
+
+#: sketchbook5/_write_form_mobile.php:40 sketchbook5/delete_form.php:16
+msgid "cmd_confirm_delete"
+msgstr "are you sure to delete"
+
+#: sketchbook5/_write_form_mobile.php:46 sketchbook5/comment_form.php:25
+msgid "about_m_editor_notice"
+msgstr "editing posts written in HTML on mobile devices is not recommended"
+
+#: sketchbook5/_write_form_mobile.php:96
+msgid "lbl_required"
+msgstr "required"
+
+#: sketchbook5/comment_form.php:119 sketchbook5/write_form.php:194
+#: sketchbook5/write_form.php:205
+msgid "cmd_back"
+msgstr "go back"
+
+#: sketchbook5/delete_form.php:19
+msgid "cmd_cancel"
+msgstr "cancel"
+
+#: sketchbook5/input_password_form.php:8
+msgid "msg_input_password"
+msgstr "please enter password"
+
+#: sketchbook5/list.php:87 sketchbook5/list.php:95
+msgid "lbl_window_font"
+msgstr "clear gothic"
+
+#: sketchbook5/list.php:88 sketchbook5/list.php:96
+msgid "lbl_tahoma"
+msgstr "tahoma"
+
+#: sketchbook5/list.php:89 sketchbook5/list.php:93
+msgid "lbl_best_font"
+msgstr "default font"
+
+#: sketchbook5/list.php:93
+msgid "about_best_font_dsc"
+msgstr "maintain site default font"
+
+#: sketchbook5/list.php:110 sketchbook5/list.php:114
+msgid "about_with_viewer_info"
+msgstr ""
+"if you activate this button, when you click on the post link in the list, it "
+"will be viewed as 'View with a viewer'"
+
+#: sketchbook5/list.php:110
+msgid "cmd_link_site_viewer"
+msgstr "view with a viewer"
+
+#: sketchbook5/list.php:120
+msgid "about_search_info"
+msgstr "open and close the search bar"
+
+#: sketchbook5/list.php:126
+msgid "lbl_font"
+msgstr "font"
+
+#: sketchbook5/list.php:129 sketchbook5/list.php:339
+msgid "cmd_setup"
+msgstr "setup"
+
+#: sketchbook5/list.php:130 sketchbook5/list.php:340
+msgid "cmd_manage_post"
+msgstr "manage post"
+
+#: sketchbook5/list.php:194 sketchbook5/list.php:200 sketchbook5/list.php:204
+#: sketchbook5/list.php:215 sketchbook5/list.php:233
+msgid "lbl_post_count"
+msgstr "post count"
+
+#: sketchbook5/list.php:197
+msgid "lbl_more"
+msgstr "view more"
+
+#: sketchbook5/list.php:215 sketchbook5/list.php:233
+msgid "lbl_total"
+msgstr "total posts"
+
+#: sketchbook5/list.php:333
+msgid "lbl_tag"
+msgstr "tag"
+
+#: sketchbook5/list.php:373 sketchbook5/list.php:391
+msgid "cmd_go_page"
+msgstr "go to the page"
+
+#: sketchbook5/list.php:422
+#, fuzzy
+#| msgid "Tree Category"
+msgid "Move Category to"
+msgstr "계층형 카테고리"
+
+#: sketchbook5/list.php:424
+msgid "lbl_select_category"
+msgstr "select category"
+
+#: sketchbook5/skin_vars.php:8
+msgid "skin_desc_sketchbook5_setup_header"
+msgstr "general configuration"
+
+#: sketchbook5/skin_vars.php:14
+msgid "skin_name_wizard"
+msgstr "activate wizard"
+
+#: sketchbook5/skin_vars.php:15
+msgid "skin_desc_wizard"
+msgstr ""
+"navigation for skin settings is displayed on the left side of the board"
+
+#: sketchbook5/skin_vars.php:19 sketchbook5/skin_vars.php:179
+#: sketchbook5/skin_vars.php:305 sketchbook5/skin_vars.php:1010
+msgid "skin_opt_admin_only"
+msgstr "admin only"
+
+#: sketchbook5/skin_vars.php:19 sketchbook5/skin_vars.php:55
+#: sketchbook5/skin_vars.php:67 sketchbook5/skin_vars.php:108
+#: sketchbook5/skin_vars.php:119 sketchbook5/skin_vars.php:166
+#: sketchbook5/skin_vars.php:178 sketchbook5/skin_vars.php:189
+#: sketchbook5/skin_vars.php:200 sketchbook5/skin_vars.php:219
+#: sketchbook5/skin_vars.php:234 sketchbook5/skin_vars.php:257
+#: sketchbook5/skin_vars.php:283 sketchbook5/skin_vars.php:293
+#: sketchbook5/skin_vars.php:304 sketchbook5/skin_vars.php:331
+#: sketchbook5/skin_vars.php:392 sketchbook5/skin_vars.php:404
+#: sketchbook5/skin_vars.php:415 sketchbook5/skin_vars.php:433
+#: sketchbook5/skin_vars.php:468 sketchbook5/skin_vars.php:479
+#: sketchbook5/skin_vars.php:496 sketchbook5/skin_vars.php:527
+#: sketchbook5/skin_vars.php:551 sketchbook5/skin_vars.php:623
+#: sketchbook5/skin_vars.php:674 sketchbook5/skin_vars.php:684
+#: sketchbook5/skin_vars.php:695 sketchbook5/skin_vars.php:732
+#: sketchbook5/skin_vars.php:1010 sketchbook5/skin_vars.php:1040
+#: sketchbook5/skin_vars.php:1052 sketchbook5/skin_vars.php:1082
+#: sketchbook5/skin_vars.php:1094 sketchbook5/skin_vars.php:1104
+#: sketchbook5/skin_vars.php:1115 sketchbook5/skin_vars.php:1126
+#: sketchbook5/skin_vars.php:1137 sketchbook5/skin_vars.php:1165
+#: sketchbook5/skin_vars.php:1186 sketchbook5/skin_vars.php:1239
+#: sketchbook5/skin_vars.php:1250 sketchbook5/skin_vars.php:1262
+#: sketchbook5/skin_vars.php:1272 sketchbook5/skin_vars.php:1283
+#: sketchbook5/skin_vars.php:1294 sketchbook5/skin_vars.php:1319
+#: sketchbook5/skin_vars.php:1330 sketchbook5/skin_vars.php:1339
+#: sketchbook5/skin_vars.php:1350 sketchbook5/skin_vars.php:1360
+#: sketchbook5/skin_vars.php:1374 sketchbook5/skin_vars.php:1417
+#: sketchbook5/skin_vars.php:1428 sketchbook5/skin_vars.php:1449
+#: sketchbook5/skin_vars.php:1459 sketchbook5/skin_vars.php:1470
+#: sketchbook5/skin_vars.php:1480 sketchbook5/skin_vars.php:1491
+#: sketchbook5/skin_vars.php:1508 sketchbook5/skin_vars.php:1526
+#: sketchbook5/skin_vars.php:1550 sketchbook5/skin_vars.php:1560
+#: sketchbook5/skin_vars.php:1572 sketchbook5/skin_vars.php:1584
+#: sketchbook5/skin_vars.php:1596 sketchbook5/skin_vars.php:1606
+#: sketchbook5/skin_vars.php:1616 sketchbook5/skin_vars.php:1626
+#: sketchbook5/skin_vars.php:1638 sketchbook5/skin_vars.php:1648
+#: sketchbook5/skin_vars.php:1670 sketchbook5/skin_vars.php:1683
+#: sketchbook5/skin_vars.php:1695 sketchbook5/skin_vars.php:1706
+#: sketchbook5/skin_vars.php:1718 sketchbook5/skin_vars.php:1741
+#: sketchbook5/skin_vars.php:1752 sketchbook5/skin_vars.php:1764
+#: sketchbook5/skin_vars.php:1775 sketchbook5/skin_vars.php:1796
+#: sketchbook5/skin_vars.php:1813 sketchbook5/skin_vars.php:1825
+#: sketchbook5/skin_vars.php:1837 sketchbook5/skin_vars.php:1893
+#: sketchbook5/skin_vars.php:1903
+msgid "lbl_default"
+msgstr "(default)"
+
+#: sketchbook5/skin_vars.php:20 sketchbook5/skin_vars.php:55
+#: sketchbook5/skin_vars.php:109 sketchbook5/skin_vars.php:257
+#: sketchbook5/skin_vars.php:405 sketchbook5/skin_vars.php:498
+#: sketchbook5/skin_vars.php:614 sketchbook5/skin_vars.php:1094
+#: sketchbook5/skin_vars.php:1165 sketchbook5/skin_vars.php:1273
+#: sketchbook5/skin_vars.php:1284 sketchbook5/skin_vars.php:1296
+#: sketchbook5/skin_vars.php:1685 sketchbook5/skin_vars.php:1797
+#: sketchbook5/skin_vars.php:1827 sketchbook5/skin_vars.php:1837
+#: sketchbook5/skin_vars.php:1893
+msgid "skin_opt_use_no"
+msgstr "deactivate"
+
+#: sketchbook5/skin_vars.php:25
+msgid "skin_name_colorset"
+msgstr "colorset"
+
+#: sketchbook5/skin_vars.php:29
+msgid "skin_opt_color_white"
+msgstr "white"
+
+#: sketchbook5/skin_vars.php:30 sketchbook5/skin_vars.php:67
+msgid "skin_opt_color_black"
+msgstr "black"
+
+#: sketchbook5/skin_vars.php:35
+msgid "skin_name_default_style"
+msgstr "list type"
+
+#: sketchbook5/skin_vars.php:39
+msgid "skin_opt_type_list"
+msgstr "list type"
+
+#: sketchbook5/skin_vars.php:45
+msgid "skin_opt_type_faq"
+msgstr "faq type"
+
+#: sketchbook5/skin_vars.php:50
+msgid "skin_name_link_board"
+msgstr "use as a link board"
+
+#: sketchbook5/skin_vars.php:51
+msgid "skin_desc_link_board"
+msgstr ""
+"when you click the link in the board list, it moves to the external site. "
+"Please use it after registering the 'link_url' item in the extended "
+"variable. 'Use prettyphoto add-on' requires installing and activating the "
+"prettyphoto add-on. For detailed instructions, please refer to the manual or "
+"the manufacturer's website"
+
+#: sketchbook5/skin_vars.php:56 sketchbook5/skin_vars.php:256
+#: sketchbook5/skin_vars.php:404 sketchbook5/skin_vars.php:613
+#: sketchbook5/skin_vars.php:1093 sketchbook5/skin_vars.php:1272
+#: sketchbook5/skin_vars.php:1283 sketchbook5/skin_vars.php:1796
+#: sketchbook5/skin_vars.php:1838 sketchbook5/skin_vars.php:1892
+msgid "skin_opt_use_yes"
+msgstr "activate"
+
+#: sketchbook5/skin_vars.php:57
+msgid "skin_opt_pretty_photo"
+msgstr "activate prettyPhoto addon"
+
+#: sketchbook5/skin_vars.php:62
+msgid "skin_name_color"
+msgstr "board color"
+
+#: sketchbook5/skin_vars.php:63
+msgid "skin_desc_color"
+msgstr ""
+"apart from the color set, this is the part that determines the overall "
+"‘color’ atmosphere of the board. determine the color of the title, "
+"decorations, borders, etc"
+
+#: sketchbook5/skin_vars.php:68
+msgid "skin_opt_color_light_sky_blue"
+msgstr "light sky blue"
+
+#: sketchbook5/skin_vars.php:69
+msgid "skin_opt_color_cone_flower_blue"
+msgstr "cone flower blue"
+
+#: sketchbook5/skin_vars.php:70
+msgid "skin_opt_color_royal_blue"
+msgstr "royal blue"
+
+#: sketchbook5/skin_vars.php:71
+msgid "skin_opt_color_steel_blue"
+msgstr "steel blue"
+
+#: sketchbook5/skin_vars.php:72
+msgid "skin_opt_color_green_yellow"
+msgstr "green yellow"
+
+#: sketchbook5/skin_vars.php:73
+msgid "skin_opt_color_green"
+msgstr "green"
+
+#: sketchbook5/skin_vars.php:74
+msgid "skin_opt_color_light_pink"
+msgstr "light pink"
+
+#: sketchbook5/skin_vars.php:75
+msgid "skin_opt_color_hot_pink"
+msgstr "hot pink"
+
+#: sketchbook5/skin_vars.php:76
+msgid "skin_opt_color_deep_pink"
+msgstr "deep pink"
+
+#: sketchbook5/skin_vars.php:77
+msgid "skin_opt_color_gold"
+msgstr "gold"
+
+#: sketchbook5/skin_vars.php:78
+msgid "skin_opt_color_orange"
+msgstr "orange"
+
+#: sketchbook5/skin_vars.php:79
+msgid "skin_opt_color_coral"
+msgstr "coral"
+
+#: sketchbook5/skin_vars.php:80
+msgid "skin_opt_color_tomato"
+msgstr "tomato"
+
+#: sketchbook5/skin_vars.php:81
+msgid "skin_opt_color_rose_brown"
+msgstr "rose brown"
+
+#: sketchbook5/skin_vars.php:82
+msgid "skin_opt_color_violet"
+msgstr "violet"
+
+#: sketchbook5/skin_vars.php:83
+msgid "skin_opt_color_violet_red"
+msgstr "violet red"
+
+#: sketchbook5/skin_vars.php:84
+msgid "skin_opt_color_medium_violet_red"
+msgstr "medium violet red"
+
+#: sketchbook5/skin_vars.php:89
+msgid "skin_name_custom_color"
+msgstr "custom color"
+
+#: sketchbook5/skin_vars.php:90
+msgid "skin_desc_custom_color"
+msgstr ""
+"in addition to the colors above, you can enter your own color. Please enter "
+"only the 'FFFFFF' part of the color tag (e.g. #FFFFFF) excluding '#'. You "
+"must(!) also enter the ‘shadow’ color below"
+
+#: sketchbook5/skin_vars.php:96
+msgid "skin_name_custom_shadow"
+msgstr "enter shadow color"
+
+#: sketchbook5/skin_vars.php:97
+msgid "skin_desc_custom_shadow"
+msgstr ""
+"to input, please enter the color tag (e.g. #FFFFFF) up to the '#FFFFFF' part "
+"including '#' (!). We recommend entering a slightly darker color than the "
+"‘Color’ above"
+
+#: sketchbook5/skin_vars.php:103
+msgid "skin_name_hover"
+msgstr "effect when hovering over icon"
+
+#: sketchbook5/skin_vars.php:104
+msgid "skin_desc_hover"
+msgstr ""
+"set the effect when hovering over the icon. Doesn't work on mobile. *Only "
+"works in browsers that support css3 animation"
+
+#: sketchbook5/skin_vars.php:108
+msgid "skin_opt_spin_effect"
+msgstr "rotation effect"
+
+#: sketchbook5/skin_vars.php:114
+msgid "skin_name_font"
+msgstr "set default font"
+
+#: sketchbook5/skin_vars.php:115
+msgid "skin_desc_font"
+msgstr ""
+"set the default font for the board. However, when displaying the 'Font "
+"Selection Button' below, the font selected by the user takes precedence"
+
+#: sketchbook5/skin_vars.php:119
+msgid "skin_opt_depend_on_layout"
+msgstr "depend on layout"
+
+#: sketchbook5/skin_vars.php:120
+msgid "skin_opt_font_nanum_gothic"
+msgstr "nanum gothic"
+
+#: sketchbook5/skin_vars.php:121
+msgid "skin_opt_font_clear_gothic"
+msgstr "clear gothic"
+
+#: sketchbook5/skin_vars.php:122
+msgid "skin_opt_font_tahoma"
+msgstr "tahoma"
+
+#: sketchbook5/skin_vars.php:127
+msgid "skin_name_title"
+msgstr "board title"
+
+#: sketchbook5/skin_vars.php:133
+msgid "skin_name_sub_title"
+msgstr "board sub-title"
+
+#: sketchbook5/skin_vars.php:139
+msgid "skin_name_title_img"
+msgstr "use image in board title"
+
+#: sketchbook5/skin_vars.php:140
+msgid "skin_desc_title_img"
+msgstr "use the board title as the image registered for this item"
+
+#: sketchbook5/skin_vars.php:146
+msgid "skin_desc_sketchbook5_setup_header1"
+msgstr "board header settings"
+
+#: sketchbook5/skin_vars.php:162
+msgid "skin_name_srch_window"
+msgstr "header search box"
+
+#: sketchbook5/skin_vars.php:166
+msgid "skin_opt_btn_click_search"
+msgstr "show button + search box when clicked"
+
+#: sketchbook5/skin_vars.php:167
+msgid "skin_opt_always_search"
+msgstr "always show search bar"
+
+#: sketchbook5/skin_vars.php:168
+msgid "skin_opt_block_search"
+msgstr "block-type large search box (for FAQ)"
+
+#: sketchbook5/skin_vars.php:169 sketchbook5/skin_vars.php:180
+#: sketchbook5/skin_vars.php:191 sketchbook5/skin_vars.php:201
+#: sketchbook5/skin_vars.php:223 sketchbook5/skin_vars.php:234
+#: sketchbook5/skin_vars.php:284 sketchbook5/skin_vars.php:295
+#: sketchbook5/skin_vars.php:306 sketchbook5/skin_vars.php:332
+#: sketchbook5/skin_vars.php:394 sketchbook5/skin_vars.php:434
+#: sketchbook5/skin_vars.php:479 sketchbook5/skin_vars.php:674
+#: sketchbook5/skin_vars.php:695 sketchbook5/skin_vars.php:1054
+#: sketchbook5/skin_vars.php:1083 sketchbook5/skin_vars.php:1105
+#: sketchbook5/skin_vars.php:1116 sketchbook5/skin_vars.php:1127
+#: sketchbook5/skin_vars.php:1138 sketchbook5/skin_vars.php:1241
+#: sketchbook5/skin_vars.php:1330 sketchbook5/skin_vars.php:1341
+#: sketchbook5/skin_vars.php:1350 sketchbook5/skin_vars.php:1364
+#: sketchbook5/skin_vars.php:1375 sketchbook5/skin_vars.php:1429
+#: sketchbook5/skin_vars.php:1482 sketchbook5/skin_vars.php:1492
+#: sketchbook5/skin_vars.php:1563 sketchbook5/skin_vars.php:1575
+#: sketchbook5/skin_vars.php:1587 sketchbook5/skin_vars.php:1607
+#: sketchbook5/skin_vars.php:1617 sketchbook5/skin_vars.php:1627
+#: sketchbook5/skin_vars.php:1638 sketchbook5/skin_vars.php:1648
+#: sketchbook5/skin_vars.php:1697 sketchbook5/skin_vars.php:1754
+#: sketchbook5/skin_vars.php:1765 sketchbook5/skin_vars.php:1776
+#: sketchbook5/skin_vars.php:1815
+msgid "skin_opt_display_no"
+msgstr "do not show"
+
+#: sketchbook5/skin_vars.php:174
+msgid "skin_name_write_btn"
+msgstr "write button"
+
+#: sketchbook5/skin_vars.php:178 sketchbook5/skin_vars.php:200
+#: sketchbook5/skin_vars.php:233 sketchbook5/skin_vars.php:283
+#: sketchbook5/skin_vars.php:304 sketchbook5/skin_vars.php:331
+#: sketchbook5/skin_vars.php:433 sketchbook5/skin_vars.php:480
+#: sketchbook5/skin_vars.php:673 sketchbook5/skin_vars.php:1104
+#: sketchbook5/skin_vars.php:1115 sketchbook5/skin_vars.php:1126
+#: sketchbook5/skin_vars.php:1137 sketchbook5/skin_vars.php:1329
+#: sketchbook5/skin_vars.php:1339 sketchbook5/skin_vars.php:1351
+#: sketchbook5/skin_vars.php:1374 sketchbook5/skin_vars.php:1428
+#: sketchbook5/skin_vars.php:1470 sketchbook5/skin_vars.php:1491
+#: sketchbook5/skin_vars.php:1606 sketchbook5/skin_vars.php:1616
+#: sketchbook5/skin_vars.php:1626 sketchbook5/skin_vars.php:1647
+#: sketchbook5/skin_vars.php:1813
+msgid "skin_opt_display_yes"
+msgstr "show"
+
+#: sketchbook5/skin_vars.php:185
+msgid "skin_name_font_btn"
+msgstr "font selection button"
+
+#: sketchbook5/skin_vars.php:189
+msgid "skin_opt_font_select"
+msgstr "button to display selected font"
+
+#: sketchbook5/skin_vars.php:190
+msgid "skin_opt_simple_btn"
+msgstr "simple button"
+
+#: sketchbook5/skin_vars.php:196
+msgid "skin_name_select_lst"
+msgstr "list type button"
+
+#: sketchbook5/skin_vars.php:206
+msgid "skin_name_select_lst_more"
+msgstr "add list type button"
+
+#: sketchbook5/skin_vars.php:209
+msgid "skin_opt_type_cloud"
+msgstr "cloud type"
+
+#: sketchbook5/skin_vars.php:214
+msgid "skin_name_cnb"
+msgstr "category menu style"
+
+#: sketchbook5/skin_vars.php:215
+msgid "skin_desc_cnb"
+msgstr ""
+"'Do not show' Does not display regardless of the 'Use category' item in the "
+"'board setup' menu of the board settings. 'Box Style' does not support "
+"secondary categories"
+
+#: sketchbook5/skin_vars.php:219
+msgid "skin_opt_style_gradation"
+msgstr "gradient style"
+
+#: sketchbook5/skin_vars.php:220
+msgid "skin_opt_style_tab"
+msgstr "tab style"
+
+#: sketchbook5/skin_vars.php:221
+msgid "skin_opt_style_box"
+msgstr "box style"
+
+#: sketchbook5/skin_vars.php:222
+msgid "skin_opt_style_box_border"
+msgstr "box+border style"
+
+#: sketchbook5/skin_vars.php:228
+msgid "skin_name_cnb_count"
+msgstr "show number of category posts"
+
+#: sketchbook5/skin_vars.php:229
+msgid "skin_desc_cnb_count"
+msgstr "displays the number of posts next to each category name"
+
+#: sketchbook5/skin_vars.php:239
+msgid "skin_name_cnb_open"
+msgstr "expand category initially"
+
+#: sketchbook5/skin_vars.php:240
+msgid "skin_desc_cnb_open"
+msgstr "'Gradient+Border' style makes the list spread out initially"
+
+#: sketchbook5/skin_vars.php:251
+msgid "skin_name_cnb3_color"
+msgstr "category box style color"
+
+#: sketchbook5/skin_vars.php:252
+msgid "skin_desc_cnb3_color"
+msgstr ""
+"the color of the selected menu is used as the color selected in ‘Board "
+"Color’. The default color is gray"
+
+#: sketchbook5/skin_vars.php:273
+msgid "skin_desc_sketchbook5_setup_header2"
+msgstr "board bottom menu settings"
+
+#: sketchbook5/skin_vars.php:279
+msgid "skin_name_display_setup_button"
+msgstr "visibility"
+
+#: sketchbook5/skin_vars.php:289
+msgid "skin_name_srch_btm"
+msgstr "bottom search box"
+
+#: sketchbook5/skin_vars.php:293
+msgid "skin_opt_display_click"
+msgstr "show on click"
+
+#: sketchbook5/skin_vars.php:294
+msgid "skin_opt_display_init"
+msgstr "show from beginning"
+
+#: sketchbook5/skin_vars.php:300
+msgid "skin_name_write_btm_btn"
+msgstr "write button"
+
+#: sketchbook5/skin_vars.php:311
+msgid "skin_name_btm_mn"
+msgstr "add a button"
+
+#: sketchbook5/skin_vars.php:314 sketchbook5/skin_vars.php:1402
+msgid "skin_opt_display_list_btn"
+msgstr "show list button"
+
+#: sketchbook5/skin_vars.php:315
+msgid "skin_opt_display_tag_btn"
+msgstr "show tag button"
+
+#: sketchbook5/skin_vars.php:320
+msgid "skin_desc_sketchbook5_setup_header3"
+msgstr "list common settings"
+
+#: sketchbook5/skin_vars.php:326
+msgid "skin_name_rd_lst"
+msgstr "show list on the body"
+
+#: sketchbook5/skin_vars.php:327
+msgid "skin_desc_rd_lst"
+msgstr ""
+"determines whether to display the list at the bottom of the text when "
+"viewing the text"
+
+#: sketchbook5/skin_vars.php:348
+msgid "skin_name_subject_cut_size"
+msgstr "title character count"
+
+#: sketchbook5/skin_vars.php:349
+msgid "skin_desc_subject_cut_size"
+msgstr "no truncation If blank, *Gallery type has separate setting item"
+
+#: sketchbook5/skin_vars.php:355
+msgid "skin_name_content_cut_size"
+msgstr "content character count"
+
+#: sketchbook5/skin_vars.php:356
+msgid "skin_desc_content_cut_size"
+msgstr "240 if blank"
+
+#: sketchbook5/skin_vars.php:362
+msgid "skin_name_duration_new"
+msgstr "new expiraton hrs on the post title"
+
+#: sketchbook5/skin_vars.php:363
+msgid "skin_desc_duration_new"
+msgstr "24 hrs if blank"
+
+#: sketchbook5/skin_vars.php:369
+msgid "skin_name_display_ip_address"
+msgstr "display IP address"
+
+#: sketchbook5/skin_vars.php:380
+msgid "skin_name_no_img"
+msgstr "alternative image"
+
+#: sketchbook5/skin_vars.php:381
+msgid "skin_desc_no_img"
+msgstr ""
+"if there is no thumbnail or profile image in the list and body, '?' "
+"Alternatively, you can use an image registered by the user instead of "
+"displaying 'No Image'. It will be activated when you register an image here"
+
+#: sketchbook5/skin_vars.php:387
+msgid "skin_name_hd_tx"
+msgstr "header of the post displaying style"
+
+#: sketchbook5/skin_vars.php:388
+msgid "skin_desc_hd_tx"
+msgstr ""
+"set the text displaying style for the 'header of the post' of the 'board "
+"information' item in the board settings, which is used for board titles, "
+"notices, etc"
+
+#: sketchbook5/skin_vars.php:392 sketchbook5/skin_vars.php:1481
+msgid "skin_opt_display_always"
+msgstr "always show"
+
+#: sketchbook5/skin_vars.php:393
+msgid "skin_opt_display_body"
+msgstr "show on the body only"
+
+#: sketchbook5/skin_vars.php:399
+msgid "skin_name_bubble"
+msgstr "speech bubble function"
+
+#: sketchbook5/skin_vars.php:400
+msgid "skin_desc_bubble"
+msgstr ""
+"increase visibility by creating a speech bubble (tooltip) with the ‘title’ "
+"of the element"
+
+#: sketchbook5/skin_vars.php:410
+msgid "skin_name_fdb_count"
+msgstr "comment count style"
+
+#: sketchbook5/skin_vars.php:411
+msgid "skin_desc_fdb_count"
+msgstr ""
+"decide on the design of the number of comments in ‘List Type’ and ‘Gallery "
+"Type’. Box type (emphasis type) is useful for emphasizing the number of "
+"comments"
+
+#: sketchbook5/skin_vars.php:415
+msgid "skin_opt_type_text"
+msgstr "text type"
+
+#: sketchbook5/skin_vars.php:416
+msgid "skin_opt_type_box_left_align"
+msgstr "box type (emphasized) - left aligned"
+
+#: sketchbook5/skin_vars.php:417
+msgid "skin_opt_type_box_right_align"
+msgstr "box type (emphasized) - right aligned"
+
+#: sketchbook5/skin_vars.php:422
+msgid "skin_desc_sketchbook5_setup_header4"
+msgstr "list type configuration"
+
+#: sketchbook5/skin_vars.php:428
+msgid "skin_name_show_cate"
+msgstr "show category"
+
+#: sketchbook5/skin_vars.php:429
+msgid "skin_desc_show_cate"
+msgstr "show category before titles in lists"
+
+#: sketchbook5/skin_vars.php:439
+msgid "skin_name_normal_lst_tdW"
+msgstr "category and nickname area size restriction"
+
+#: sketchbook5/skin_vars.php:440
+msgid "skin_desc_normal_lst_tdW"
+msgstr ""
+"when the category and nickname areas become long, the maximum width is "
+"limited to prevent the title area from becoming too narrow. If not entered, "
+"it is '90' (px)"
+
+#: sketchbook5/skin_vars.php:446
+msgid "skin_name_preview"
+msgstr "summary (content), thumbnail preview"
+
+#: sketchbook5/skin_vars.php:447
+msgid "skin_desc_preview"
+msgstr ""
+"*the size of the image in the preview depends on the ‘Gallery type’ "
+"thumbnail setting"
+
+#: sketchbook5/skin_vars.php:450
+msgid "skin_opt_summary"
+msgstr "summary"
+
+#: sketchbook5/skin_vars.php:451
+msgid "skin_opt_thumbnail"
+msgstr "thumbnail"
+
+#: sketchbook5/skin_vars.php:456
+msgid "skin_name_preview_tx"
+msgstr "summary character count"
+
+#: sketchbook5/skin_vars.php:457
+msgid "skin_desc_preview_tx"
+msgstr "150 if blank"
+
+#: sketchbook5/skin_vars.php:463
+msgid "skin_name_list_m"
+msgstr "*mobile type settings"
+
+#: sketchbook5/skin_vars.php:464
+msgid "skin_desc_list_m"
+msgstr ""
+"decide whether you want to use a web-ready table list on mobile or a mobile-"
+"optimized list"
+
+#: sketchbook5/skin_vars.php:468
+msgid "skin_opt_type_mobile"
+msgstr "activate mobile type"
+
+#: sketchbook5/skin_vars.php:469
+msgid "skin_opt_type_table"
+msgstr "activate table type"
+
+#: sketchbook5/skin_vars.php:474
+msgid "skin_name_list_m_tmb"
+msgstr "*mobile type thumbnail"
+
+#: sketchbook5/skin_vars.php:475
+msgid "skin_desc_list_m_tmb"
+msgstr ""
+"determines whether to display thumbnails on mobile. The thumbnail size uses "
+"the webzine settings"
+
+#: sketchbook5/skin_vars.php:485
+msgid "skin_desc_sketchbook5_setup_header5"
+msgstr "common settings for webzine type, gallery type, and mobile (list) type"
+
+#: sketchbook5/skin_vars.php:491
+msgid "skin_name_tmb_effect"
+msgstr "thumbnail intro effect"
+
+#: sketchbook5/skin_vars.php:492
+msgid "skin_desc_tmb_effect"
+msgstr ""
+"set the thumbnail effect when loading the page. (It is not just a design "
+"element, but also prevents elements surrounding the image area from being "
+"disturbed before the image is loaded.)"
+
+#: sketchbook5/skin_vars.php:496 sketchbook5/skin_vars.php:1683
+msgid "skin_opt_fade_in"
+msgstr "fade-In"
+
+#: sketchbook5/skin_vars.php:497
+msgid "skin_opt_loading_icon_fade_in"
+msgstr "'loading' icon + Fade-In"
+
+#: sketchbook5/skin_vars.php:503
+msgid "skin_name_ext_img"
+msgstr "show icons such as new post"
+
+#: sketchbook5/skin_vars.php:508 sketchbook5/skin_vars.php:518
+msgid "skin_opt_type_mobile_list"
+msgstr "mobile (list) type"
+
+#: sketchbook5/skin_vars.php:513
+msgid "skin_name_cmt_count"
+msgstr "show number of comments"
+
+#: sketchbook5/skin_vars.php:523
+msgid "skin_name_ribbon_style"
+msgstr "ribbon style"
+
+#: sketchbook5/skin_vars.php:527
+msgid "skin_opt_triangle_ribbon"
+msgstr "triangle ribbon"
+
+#: sketchbook5/skin_vars.php:528
+msgid "skin_opt_square_tile_ribbon"
+msgstr "tile(squre) ribbon"
+
+#: sketchbook5/skin_vars.php:533
+msgid "skin_name_ribbon_img"
+msgstr "ribbon image"
+
+#: sketchbook5/skin_vars.php:534
+msgid "skin_desc_ribbon_img"
+msgstr ""
+"if you select 'Triangle Ribbon' in the 'Ribbon Style' item above, you can "
+"register and use a ribbon image (*excluding notices, new posts, and "
+"updates). the default size is 60 if blank, If registering directly, please "
+"enter the size of the registering image (width and height should be same)"
+
+#: sketchbook5/skin_vars.php:540
+msgid "skin_name_ribbon_size"
+msgstr "ribbon image size"
+
+#: sketchbook5/skin_vars.php:541
+msgid "skin_desc_ribbon_size"
+msgstr "please enter numbers only in px units"
+
+#: sketchbook5/skin_vars.php:547
+msgid "skin_name_ribbon_align"
+msgstr "tiled ribbon alignment"
+
+#: sketchbook5/skin_vars.php:551 sketchbook5/skin_vars.php:1572
+#: sketchbook5/skin_vars.php:1585
+msgid "skin_opt_upper_right"
+msgstr "upper right"
+
+#: sketchbook5/skin_vars.php:552 sketchbook5/skin_vars.php:1560
+msgid "skin_opt_upper_left"
+msgstr "upper left"
+
+#: sketchbook5/skin_vars.php:557
+msgid "skin_name_ribbon_color"
+msgstr "tiled ribbon color"
+
+#: sketchbook5/skin_vars.php:558
+msgid "skin_desc_ribbon_color"
+msgstr ""
+"if you choose the tiled ribbon, you can specify the color (*except for "
+"notices, new posts, and updates). you should enter the full color code. for "
+"example) #FF0, rgb(0,25,55), rgba(55,15,5,1), etc"
+
+#: sketchbook5/skin_vars.php:564
+msgid "skin_name_extra_num"
+msgstr "number of user defined field for a ribbon"
+
+#: sketchbook5/skin_vars.php:565
+msgid "skin_desc_extra_num"
+msgstr ""
+"set the meta key of the user defined field to select when using the user "
+"defined field in the 'top left ribbon'. number 1 is specified if blank"
+
+#: sketchbook5/skin_vars.php:571
+msgid "skin_desc_sketchbook5_setup_header6"
+msgstr ""
+"webzine style settings (*marked: common setting item with mobile (list) type)"
+
+#: sketchbook5/skin_vars.php:601
+msgid "skin_name_zine_margin"
+msgstr "card style margins"
+
+#: sketchbook5/skin_vars.php:602
+msgid "skin_desc_zine_margin"
+msgstr "set the outer margin in ‘Card Style’. setting is '10' if blank"
+
+#: sketchbook5/skin_vars.php:608
+msgid "skin_name_zine_hover"
+msgstr "mouseover transition effect"
+
+#: sketchbook5/skin_vars.php:609
+msgid "skin_desc_zine_hover"
+msgstr ""
+"thumbnails do not tilt or enlarge when hovering over the mouse. *Does not "
+"affect border effects"
+
+#: sketchbook5/skin_vars.php:619
+msgid "skin_name_zine_thumb_type"
+msgstr "thumbnail ratio(*)"
+
+#: sketchbook5/skin_vars.php:623 sketchbook5/skin_vars.php:732
+msgid "skin_opt_crop"
+msgstr "crop"
+
+#: sketchbook5/skin_vars.php:624 sketchbook5/skin_vars.php:733
+msgid "skin_opt_ratio"
+msgstr "ratio"
+
+#: sketchbook5/skin_vars.php:629
+msgid "skin_name_zine_thumb_width"
+msgstr "thumbnail width"
+
+#: sketchbook5/skin_vars.php:630
+msgid "skin_desc_zine_thumb_width"
+msgstr ""
+"the width of the card block in 'Card Style' is determined by the thumbnail "
+"width.setting is '90' if blank"
+
+#: sketchbook5/skin_vars.php:636
+msgid "skin_name_zine_thumb_height"
+msgstr "thumbnail height"
+
+#: sketchbook5/skin_vars.php:637
+msgid "skin_desc_zine_thumb_height"
+msgstr "setting is '90' if blank"
+
+#: sketchbook5/skin_vars.php:668
+msgid "skin_name_zine_extra"
+msgstr "show user defined field(*)"
+
+#: sketchbook5/skin_vars.php:669
+msgid "skin_desc_zine_extra"
+msgstr ""
+"user defined field list is displayed in the meta information area at the "
+"bottom. *Shares settings with mobile type"
+
+#: sketchbook5/skin_vars.php:679
+msgid "skin_name_zine_tx_color"
+msgstr "meta information color(*)"
+
+#: sketchbook5/skin_vars.php:680
+msgid "skin_desc_zine_tx_color"
+msgstr ""
+"set the font color of meta information such as author and number of views at "
+"the bottom. *Shares settings with mobile type"
+
+#: sketchbook5/skin_vars.php:684
+msgid "skin_opt_depend_on_board_color"
+msgstr "depend on board color"
+
+#: sketchbook5/skin_vars.php:685
+msgid "skin_opt_bw_tone"
+msgstr "black & white tone"
+
+#: sketchbook5/skin_vars.php:690
+msgid "skin_name_zine_info_icon"
+msgstr "meta information icon(*)"
+
+#: sketchbook5/skin_vars.php:691
+msgid "skin_desc_zine_info_icon"
+msgstr "use icons for meta information. *Shares settings with mobile type"
+
+#: sketchbook5/skin_vars.php:696
+msgid "skin_opt_display_icon_only"
+msgstr "show icons only"
+
+#: sketchbook5/skin_vars.php:697
+msgid "skin_opt_display_icon_text"
+msgstr "show icon+text"
+
+#: sketchbook5/skin_vars.php:702
+msgid "skin_desc_sketchbook5_setup_header7"
+msgstr "gallery type (*marked: common setting item with ‘Cloud Gallery’)"
+
+#: sketchbook5/skin_vars.php:728
+msgid "skin_name_thumbnail_type"
+msgstr "thumbnail ratio(*)"
+
+#: sketchbook5/skin_vars.php:738
+msgid "skin_name_thumbnail_width"
+msgstr "thumbnail width(*)"
+
+#: sketchbook5/skin_vars.php:739
+msgid "skin_desc_thumbnail_width"
+msgstr ""
+"applies to ‘Gallery Type’ and ‘Cloud Gallery Type’ thumbnails. setting is "
+"'90' if blank"
+
+#: sketchbook5/skin_vars.php:745
+msgid "skin_name_thumbnail_height"
+msgstr "thumbnail height(*)"
+
+#: sketchbook5/skin_vars.php:746
+msgid "skin_desc_thumbnail_height"
+msgstr ""
+"applies to ‘Gallery Type’ and ‘Cloud Gallery Type’ thumbnails. setting is "
+"'90' if blank"
+
+#: sketchbook5/skin_vars.php:870
+msgid "skin_name_extra_num2"
+msgstr "user defined field meta key for transparent window"
+
+#: sketchbook5/skin_vars.php:871
+msgid "skin_desc_extra_num2"
+msgstr ""
+"'우측 하단 투명창'에서 확장변수 사용 시 선택할 확장변수의 번호를 설정합니다. "
+"설정이 없으면 1번이 지정됩니다\n"
+"set the meta key of the user defined field, if you are using user defined "
+"field In the 'transparent window at the bottom right', meta key is 1if blank"
+
+#: sketchbook5/skin_vars.php:889
+msgid "skin_name_deco_img"
+msgstr "decoration image"
+
+#: sketchbook5/skin_vars.php:890
+msgid "skin_desc_deco_img"
+msgstr ""
+"in addition to the default decoration images, users can register their own "
+"images. It will be located in the top center"
+
+#: sketchbook5/skin_vars.php:1000
+msgid "skin_desc_sketchbook5_setup_header11"
+msgstr "writing posts and comments settings"
+
+#: sketchbook5/skin_vars.php:1006
+msgid "skin_name_tl_color"
+msgstr "show ‘color’ and ‘thickness’ of the title"
+
+#: sketchbook5/skin_vars.php:1011
+msgid "skin_opt_allow_all"
+msgstr "all users"
+
+#: sketchbook5/skin_vars.php:1035
+msgid "skin_name_cmt_wrt"
+msgstr "comment editor settings"
+
+#: sketchbook5/skin_vars.php:1036
+msgid "skin_desc_cmt_wrt"
+msgstr ""
+"(1) Textarea: You can write without loading the editor. (2) Editor: you can "
+"use an editor"
+
+#: sketchbook5/skin_vars.php:1040 sketchbook5/skin_vars.php:1052
+#: sketchbook5/skin_vars.php:1904
+msgid "skin_opt_editor_textarea"
+msgstr "textarea box"
+
+#: sketchbook5/skin_vars.php:1041
+msgid "skin_opt_editor_editor"
+msgstr "wysiwyg editor"
+
+#: sketchbook5/skin_vars.php:1047
+msgid "skin_name_select_editor"
+msgstr "show editor selection button"
+
+#: sketchbook5/skin_vars.php:1048
+msgid "skin_desc_select_editor"
+msgstr ""
+"display an editor selection button in the comment area of ​​the body of the "
+"post"
+
+#: sketchbook5/skin_vars.php:1070
+msgid "skin_desc_sketchbook5_setup_header12"
+msgstr "appending file"
+
+#: sketchbook5/skin_vars.php:1076
+msgid "skin_name_show_files"
+msgstr "display attached files"
+
+#: sketchbook5/skin_vars.php:1080
+msgid "skin_opt_hide_disply_btn"
+msgstr "hide files and show button"
+
+#: sketchbook5/skin_vars.php:1081
+msgid "skin_opt_display_on_bottom"
+msgstr "show on the bottom"
+
+#: sketchbook5/skin_vars.php:1082 sketchbook5/skin_vars.php:1239
+msgid "skin_opt_display_below_subject"
+msgstr "display at top (just below title)"
+
+#: sketchbook5/skin_vars.php:1088
+msgid "skin_name_files_type"
+msgstr "filter by file extension"
+
+#: sketchbook5/skin_vars.php:1089
+msgid "skin_desc_files_type"
+msgstr ""
+"activate to exclude images, videos, and music files from attachments. Select "
+"the file type to output from the options below"
+
+#: sketchbook5/skin_vars.php:1099
+msgid "skin_name_files_img"
+msgstr "image file"
+
+#: sketchbook5/skin_vars.php:1100
+msgid "skin_desc_files_img"
+msgstr ""
+"select whether to show image files (jpg, jpeg, gif, png) in attached files"
+
+#: sketchbook5/skin_vars.php:1110
+msgid "skin_name_files_video"
+msgstr "video file"
+
+#: sketchbook5/skin_vars.php:1111
+msgid "skin_desc_files_video"
+msgstr ""
+"select whether to show video files (mpg, mpeg, avi, wmv, mp4, mov, mkv, swf, "
+"flv, ogv, webm) from attached files"
+
+#: sketchbook5/skin_vars.php:1121
+msgid "skin_name_files_audio"
+msgstr "audio file"
+
+#: sketchbook5/skin_vars.php:1122
+msgid "skin_desc_files_audio"
+msgstr ""
+"select whether to show music files (mp3, ogg, wma, wav, ape, flac, mid) from "
+"attached files"
+
+#: sketchbook5/skin_vars.php:1132
+msgid "skin_name_files_etc"
+msgstr "other file"
+
+#: sketchbook5/skin_vars.php:1133
+msgid "skin_desc_files_etc"
+msgstr ""
+"select whether to show files other than the three file types above (image, "
+"video, audio)"
+
+#: sketchbook5/skin_vars.php:1143
+msgid "skin_desc_sketchbook5_setup_header13"
+msgstr "images on the body of the psot settings"
+
+#: sketchbook5/skin_vars.php:1149
+msgid "skin_name_img_opt"
+msgstr "image add-on"
+
+#: sketchbook5/skin_vars.php:1150
+msgid "skin_desc_img_opt"
+msgstr "1. Image drag: You can drag the image with the mouse"
+
+#: sketchbook5/skin_vars.php:1153
+msgid "skin_opt_image_drag"
+msgstr "image drag"
+
+#: sketchbook5/skin_vars.php:1158
+msgid "skin_name_img_insert"
+msgstr "automatic image display"
+
+#: sketchbook5/skin_vars.php:1159
+msgid "skin_desc_img_insert"
+msgstr ""
+"function automatically displays attached images in the text. *Caution: this "
+"is a method simply shows the attached image file. Please note that if you "
+"use or migrate a different bulletin board skin in the future, the image will "
+"not be displayed in the text"
+
+#: sketchbook5/skin_vars.php:1163
+msgid "skin_opt_upper_body"
+msgstr "top of body"
+
+#: sketchbook5/skin_vars.php:1164
+msgid "skin_opt_bottom_body"
+msgstr "bottom of body"
+
+#: sketchbook5/skin_vars.php:1181
+msgid "skin_name_img_insert_align"
+msgstr "automatically align images"
+
+#: sketchbook5/skin_vars.php:1182
+msgid "skin_desc_img_insert_align"
+msgstr "align images that are automatically displayed"
+
+#: sketchbook5/skin_vars.php:1186
+msgid "skin_opt_middle"
+msgstr "middle"
+
+#: sketchbook5/skin_vars.php:1187
+msgid "skin_opt_side_left"
+msgstr "left"
+
+#: sketchbook5/skin_vars.php:1188
+msgid "skin_opt_side_right"
+msgstr "right"
+
+#: sketchbook5/skin_vars.php:1193
+msgid "skin_name_img_insert_width"
+msgstr "automatically displayed image width"
+
+#: sketchbook5/skin_vars.php:1194
+msgid "skin_desc_img_insert_width"
+msgstr ""
+"set the width of the automatically displaying image. please enter the 'unit "
+"(px or %)' exactly. no restriction if blank"
+
+#: sketchbook5/skin_vars.php:1200
+msgid "skin_name_img_insert_height"
+msgstr "automatically displayed image height"
+
+#: sketchbook5/skin_vars.php:1201
+msgid "skin_desc_img_insert_height"
+msgstr ""
+"set the height of the automatically displaying image. Please enter the 'unit "
+"(px or %)' exactly. no restriction if blank"
+
+#: sketchbook5/skin_vars.php:1207
+msgid "skin_name_img_insert_css"
+msgstr "automatically displayed gallery area CSS"
+
+#: sketchbook5/skin_vars.php:1208
+msgid "skin_desc_img_insert_css"
+msgstr ""
+"enter the CSS of the gallery area surrounding the automatically displaying "
+"image"
+
+#: sketchbook5/skin_vars.php:1214
+msgid "skin_name_img_insert_img_css"
+msgstr "automatically displaying image CSS"
+
+#: sketchbook5/skin_vars.php:1215
+msgid "skin_desc_img_insert_img_css"
+msgstr "enter the sCSS of the automatically printing image"
+
+#: sketchbook5/skin_vars.php:1221
+msgid "skin_desc_sketchbook5_setup_header14"
+msgstr "body of the post general settings"
+
+#: sketchbook5/skin_vars.php:1227
+msgid "skin_name_rd_padding"
+msgstr "set margin for entire body"
+
+#: sketchbook5/skin_vars.php:1228
+msgid "skin_desc_rd_padding"
+msgstr ""
+"set the padding of the body. An option is provided in cases where the "
+"required area cannot be secured due to the width of the text depending on "
+"the user's layout. Since it is the same as regular CSS input, you must(!) "
+"enter the 'unit' such as 'px', 'em', '%', etc. (※ When using '0', '0' is not "
+"saved, so enter '0px' ). If not entered, the default setting is '0 15px'. "
+"Example) '0px', '10px', '10px 20px 30px 10px', '3% 0', etc"
+
+#: sketchbook5/skin_vars.php:1234
+msgid "skin_name_rd_nav"
+msgstr "navigation at the top of the body of the post"
+
+#: sketchbook5/skin_vars.php:1235
+msgid "skin_desc_rd_nav"
+msgstr ""
+"navigation that helps to read the text ('Zoom in/out of text', 'Go to top-"
+"comment-list', 'Print', 'Attachment', 'This post', 'Edit', 'Delete', etc.)"
+
+#: sketchbook5/skin_vars.php:1240
+msgid "skin_opt_display_above_subject"
+msgstr "below the title area"
+
+#: sketchbook5/skin_vars.php:1246
+msgid "skin_name_rd_nav_style"
+msgstr "body of the post navigation style"
+
+#: sketchbook5/skin_vars.php:1250
+msgid "skin_opt_border_box"
+msgstr "border+box"
+
+#: sketchbook5/skin_vars.php:1251
+msgid "skin_opt_border_no"
+msgstr "no border"
+
+#: sketchbook5/skin_vars.php:1256
+msgid "skin_name_rd_nav_tx"
+msgstr "display text on the body navigation"
+
+#: sketchbook5/skin_vars.php:1257
+msgid "skin_desc_rd_nav_tx"
+msgstr "display text next to the icon"
+
+#: sketchbook5/skin_vars.php:1261
+msgid "skin_opt_display_text"
+msgstr "display text"
+
+#: sketchbook5/skin_vars.php:1262
+msgid "skin_opt_hide_text"
+msgstr "hide text"
+
+#: sketchbook5/skin_vars.php:1267
+msgid "skin_name_rd_nav_side"
+msgstr "side navigation on the body of the post"
+
+#: sketchbook5/skin_vars.php:1268
+msgid "skin_desc_rd_nav_side"
+msgstr ""
+"determines whether to use the navigation that is invisible at first, but "
+"gets visible at the bottom right when you scroll down. it that appears. the "
+"top navigation disappears from the window area at the same time"
+
+#: sketchbook5/skin_vars.php:1278
+msgid "skin_name_rd_nav_item"
+msgstr "print button on the post navigation"
+
+#: sketchbook5/skin_vars.php:1279
+msgid "skin_desc_rd_nav_item"
+msgstr ""
+"set whether to display the print button in the body of the post navigation"
+
+#: sketchbook5/skin_vars.php:1289
+msgid "skin_name_prev_next"
+msgstr "previous post-next post"
+
+#: sketchbook5/skin_vars.php:1290
+msgid "skin_desc_prev_next"
+msgstr ""
+"you can move to the previous or next post by the arrow keys '←' and '→' on "
+"your keyboard"
+
+#: sketchbook5/skin_vars.php:1294
+msgid "skin_opt_below_body_text_link_hotkey"
+msgstr "use text link + shortcut key at the bottom of the post"
+
+#: sketchbook5/skin_vars.php:1295
+msgid "skin_opt_body_navi_icon_btn_hotkey"
+msgstr "use post navigation icon button + shortcut key"
+
+#: sketchbook5/skin_vars.php:1301
+msgid "skin_name_prev_next_cut_size"
+msgstr "limit title lengh of the previous post-next post"
+
+#: sketchbook5/skin_vars.php:1302
+msgid "skin_desc_prev_next_cut_size"
+msgstr ""
+"limit the number of characters in the previous post and next post. The "
+"default is '60'"
+
+#: sketchbook5/skin_vars.php:1308
+msgid "skin_name_no_attached_img"
+msgstr "if there are no images in the body"
+
+#: sketchbook5/skin_vars.php:1309
+msgid "skin_desc_no_attached_img"
+msgstr ""
+"if there is no image in the text, a pre-registered image is displayed at the "
+"top of the body. It will be activated if you register an image in this item"
+
+#: sketchbook5/skin_vars.php:1315
+msgid "skin_name_et_var"
+msgstr "location of user defined field list area"
+
+#: sketchbook5/skin_vars.php:1319
+msgid "skin_opt_in_the_body"
+msgstr "in the body of the post"
+
+#: sketchbook5/skin_vars.php:1320
+msgid "skin_opt_below_subject"
+msgstr "under the title"
+
+#: sketchbook5/skin_vars.php:1325
+msgid "skin_name_display_sign"
+msgstr "show author signature"
+
+#: sketchbook5/skin_vars.php:1335
+msgid "skin_name_votes"
+msgstr "show like / dislike"
+
+#: sketchbook5/skin_vars.php:1340
+msgid "skin_opt_display_recommend_only"
+msgstr "show like only"
+
+#: sketchbook5/skin_vars.php:1346
+msgid "skin_name_declare"
+msgstr "show declaration only"
+
+#: sketchbook5/skin_vars.php:1356
+msgid "skin_name_to_sns"
+msgstr "button to export to sns"
+
+#: sketchbook5/skin_vars.php:1360
+msgid "skin_opt_small_icon_bottom_editor"
+msgstr "small icon + bottom editing area"
+
+#: sketchbook5/skin_vars.php:1361
+msgid "skin_opt_small_icon_upper"
+msgstr "small icon + top"
+
+#: sketchbook5/skin_vars.php:1362
+msgid "skin_opt_big_icon_below_body"
+msgstr "large icon (bottom of text)"
+
+#: sketchbook5/skin_vars.php:1363
+msgid "skin_opt_custom_input_below_body"
+msgstr "custom input (bottom of post)"
+
+#: sketchbook5/skin_vars.php:1369
+msgid "skin_name_to_sns_small"
+msgstr "display sns small button text"
+
+#: sketchbook5/skin_vars.php:1370
+msgid "skin_desc_to_sns_small"
+msgstr ""
+"when using 'small icon' in the above item, set whether to use text next to "
+"the icon"
+
+#: sketchbook5/skin_vars.php:1392
+msgid "skin_name_to_sns_content"
+msgstr "sns custom button"
+
+#: sketchbook5/skin_vars.php:1393
+msgid "skin_desc_to_sns_content"
+msgstr ""
+"when using 'custom input' in the above item, you can enter the code. please "
+"refer to the manual or feedback site"
+
+#: sketchbook5/skin_vars.php:1399
+msgid "skin_name_rd_ft_nav"
+msgstr "menu area at the bottom of the text"
+
+#: sketchbook5/skin_vars.php:1407
+msgid "skin_desc_sketchbook5_setup_header15"
+msgstr "feedback (trackback, comment) list settings"
+
+#: sketchbook5/skin_vars.php:1413
+msgid "skin_name_fdb_style"
+msgstr "comment style"
+
+#: sketchbook5/skin_vars.php:1417
+msgid "skin_opt_borderless"
+msgstr "borderless"
+
+#: sketchbook5/skin_vars.php:1418
+msgid "skin_opt_border_nametag"
+msgstr "border + name tag"
+
+#: sketchbook5/skin_vars.php:1423
+msgid "skin_name_profile_img"
+msgstr "display profile image"
+
+#: sketchbook5/skin_vars.php:1424
+msgid "skin_desc_profile_img"
+msgstr ""
+"decide whether to display the profile image on the left side of comments and "
+"in the guestbook"
+
+#: sketchbook5/skin_vars.php:1445
+msgid "skin_name_cmt_wrt_position"
+msgstr "location of comment editor"
+
+#: sketchbook5/skin_vars.php:1449
+msgid "skin_opt_above_comment_list"
+msgstr "above the comment list"
+
+#: sketchbook5/skin_vars.php:1450
+msgid "skin_opt_below_comment_list"
+msgstr "below the comments list"
+
+#: sketchbook5/skin_vars.php:1455
+msgid "skin_name_fdb_nav"
+msgstr "comment editor location"
+
+#: sketchbook5/skin_vars.php:1459
+msgid "skin_opt_above_list_display_mouse_over"
+msgstr "on the top of the comment, hide initally and show on mouse hover"
+
+#: sketchbook5/skin_vars.php:1460
+msgid "skin_opt_below_comment_display_reply_reply"
+msgstr "bottom of the commt + show reply button"
+
+#: sketchbook5/skin_vars.php:1465
+msgid "skin_name_cmt_this_btn"
+msgstr "show 'do with the comment' button"
+
+#: sketchbook5/skin_vars.php:1466
+msgid "skin_desc_cmt_this_btn"
+msgstr ""
+"decide whether to display 'do with the comment', or whether to display "
+"externally the 'like, dislike, and declaration' included in the list which "
+"is displayed by default. administrators will always see the ‘Reply this "
+"comment’ button"
+
+#: sketchbook5/skin_vars.php:1471
+msgid "skin_opt_display_no_display_like_dislike_declare"
+msgstr "hide + display ‘like, dislike, declration’"
+
+#: sketchbook5/skin_vars.php:1476
+msgid "skin_name_cmt_vote"
+msgstr "show comment like-dislike"
+
+#: sketchbook5/skin_vars.php:1480
+msgid "skin_opt_display_if_like_dislike"
+msgstr "display only if like or dislike registered"
+
+#: sketchbook5/skin_vars.php:1487
+msgid "skin_name_cmt_vote_down"
+msgstr "display comment dislike"
+
+#: sketchbook5/skin_vars.php:1497
+msgid "skin_desc_sketchbook5_setup_header16"
+msgstr "title and body of the post common settings"
+
+#: sketchbook5/skin_vars.php:1503
+msgid "skin_name_rd_style"
+msgstr "preset"
+
+#: sketchbook5/skin_vars.php:1504
+msgid "skin_desc_rd_style"
+msgstr "when 'Viewing with Viewer', it is displayed as 'Blog Style'"
+
+#: sketchbook5/skin_vars.php:1508
+msgid "skin_opt_style_board"
+msgstr "board style"
+
+#: sketchbook5/skin_vars.php:1509
+msgid "skin_opt_style_blog"
+msgstr "blog style"
+
+#: sketchbook5/skin_vars.php:1514
+msgid "skin_name_rd_css"
+msgstr "css for entire title area"
+
+#: sketchbook5/skin_vars.php:1515
+msgid "skin_desc_rd_css"
+msgstr "enter the CSS for the surrounding area of the title"
+
+#: sketchbook5/skin_vars.php:1521
+msgid "skin_name_rd_tl_font"
+msgstr "title font"
+
+#: sketchbook5/skin_vars.php:1522
+msgid "skin_desc_rd_tl_font"
+msgstr ""
+"in the case of ‘board style’, it is applied to the entire ‘top area’. *It "
+"looks most beautiful when using the ‘Nanum font’"
+
+#: sketchbook5/skin_vars.php:1526 sketchbook5/skin_vars.php:1718
+#: sketchbook5/skin_vars.php:1741
+msgid "skin_opt_font_gothic"
+msgstr "gothic"
+
+#: sketchbook5/skin_vars.php:1527 sketchbook5/skin_vars.php:1719
+#: sketchbook5/skin_vars.php:1742
+msgid "skin_opt_font_nmeb"
+msgstr "myeongjo font"
+
+#: sketchbook5/skin_vars.php:1528 sketchbook5/skin_vars.php:1720
+#: sketchbook5/skin_vars.php:1743
+msgid "skin_opt_font_np"
+msgstr "script font"
+
+#: sketchbook5/skin_vars.php:1533
+msgid "skin_name_rd_tl_css"
+msgstr "enter title css"
+
+#: sketchbook5/skin_vars.php:1534
+msgid "skin_desc_rd_tl_css"
+msgstr "enter the title CSS"
+
+#: sketchbook5/skin_vars.php:1540
+msgid "skin_desc_sketchbook5_setup_header17"
+msgstr "set title style for ‘board style’"
+
+#: sketchbook5/skin_vars.php:1546
+msgid "skin_name_rd_board_style"
+msgstr "board style preset"
+
+#: sketchbook5/skin_vars.php:1550
+msgid "skin_opt_basic_board"
+msgstr "basic board"
+
+#: sketchbook5/skin_vars.php:1551
+msgid "skin_opt_style_xe_v3"
+msgstr "xe v3 style"
+
+#: sketchbook5/skin_vars.php:1556
+msgid "skin_name_rd_cate"
+msgstr "category"
+
+#: sketchbook5/skin_vars.php:1561 sketchbook5/skin_vars.php:1573
+#: sketchbook5/skin_vars.php:1584 sketchbook5/skin_vars.php:1597
+#: sketchbook5/skin_vars.php:1636
+msgid "skin_opt_bottom_left"
+msgstr "bottom left"
+
+#: sketchbook5/skin_vars.php:1562 sketchbook5/skin_vars.php:1574
+#: sketchbook5/skin_vars.php:1586 sketchbook5/skin_vars.php:1596
+#: sketchbook5/skin_vars.php:1637
+msgid "skin_opt_bottom_right"
+msgstr "bottom right"
+
+#: sketchbook5/skin_vars.php:1568
+msgid "skin_name_rd_date"
+msgstr "date"
+
+#: sketchbook5/skin_vars.php:1580
+msgid "skin_name_rd_nick"
+msgstr "writer"
+
+#: sketchbook5/skin_vars.php:1592
+msgid "skin_name_rd_info"
+msgstr "view count/like/comment location"
+
+#: sketchbook5/skin_vars.php:1602
+msgid "skin_name_rd_view"
+msgstr "view count"
+
+#: sketchbook5/skin_vars.php:1612
+msgid "skin_name_rd_vote"
+msgstr "like count"
+
+#: sketchbook5/skin_vars.php:1622
+msgid "skin_name_rd_cmt"
+msgstr "comment count"
+
+#: sketchbook5/skin_vars.php:1632
+msgid "skin_name_rd_link"
+msgstr "post URL"
+
+#: sketchbook5/skin_vars.php:1643
+msgid "skin_name_rd_profile"
+msgstr "show profile image"
+
+#: sketchbook5/skin_vars.php:1660
+msgid "skin_desc_sketchbook5_setup_header18"
+msgstr "set ‘Blog Style’ and ‘View as Viewer’ title"
+
+#: sketchbook5/skin_vars.php:1666
+msgid "skin_name_rd_blog_style"
+msgstr "blog style preset"
+
+#: sketchbook5/skin_vars.php:1670
+msgid "skin_opt_style_thick_list"
+msgstr "bold line style"
+
+#: sketchbook5/skin_vars.php:1671
+msgid "skin_opt_style_simple_line"
+msgstr "simple line style"
+
+#: sketchbook5/skin_vars.php:1672
+msgid "skin_opt_style_gray_line"
+msgstr "entire gray border style"
+
+#: sketchbook5/skin_vars.php:1673
+msgid "skin_opt_style_borderless"
+msgstr "borderless style"
+
+#: sketchbook5/skin_vars.php:1678
+msgid "skin_name_rd_h1_ani"
+msgstr "title animation"
+
+#: sketchbook5/skin_vars.php:1679
+msgid "skin_desc_rd_h1_ani"
+msgstr "*only works in browsers that support css3 animation"
+
+#: sketchbook5/skin_vars.php:1684
+msgid "skin_opt_vertical_turn_around"
+msgstr "single vertical turn"
+
+#: sketchbook5/skin_vars.php:1690
+msgid "skin_name_rd_tl"
+msgstr "display and alignment of the title"
+
+#: sketchbook5/skin_vars.php:1691
+msgid "skin_desc_rd_tl"
+msgstr "*only works in browsers that support css3 animation"
+
+#: sketchbook5/skin_vars.php:1695 sketchbook5/skin_vars.php:1707
+msgid "skin_opt_align_left"
+msgstr "left align"
+
+#: sketchbook5/skin_vars.php:1696 sketchbook5/skin_vars.php:1708
+msgid "skin_opt_align_middle"
+msgstr "middle align"
+
+#: sketchbook5/skin_vars.php:1702
+msgid "skin_name_rd_top"
+msgstr "align top area"
+
+#: sketchbook5/skin_vars.php:1706
+msgid "skin_opt_depend_on_subject_area"
+msgstr "depend on the title area"
+
+#: sketchbook5/skin_vars.php:1709
+msgid "skin_opt_align_right"
+msgstr "right align"
+
+#: sketchbook5/skin_vars.php:1714
+msgid "skin_name_rd_top_font"
+msgstr "top area font"
+
+#: sketchbook5/skin_vars.php:1737
+msgid "skin_name_rd_btm_font"
+msgstr "bottom area font"
+
+#: sketchbook5/skin_vars.php:1748
+msgid "skin_name_rd_blog_cate"
+msgstr "category"
+
+#: sketchbook5/skin_vars.php:1752 sketchbook5/skin_vars.php:1763
+#: sketchbook5/skin_vars.php:1774
+msgid "skin_opt_upper"
+msgstr "top"
+
+#: sketchbook5/skin_vars.php:1753 sketchbook5/skin_vars.php:1764
+#: sketchbook5/skin_vars.php:1775
+msgid "skin_opt_bottom"
+msgstr "bottom"
+
+#: sketchbook5/skin_vars.php:1759
+msgid "skin_name_rd_blog_nick"
+msgstr "writer"
+
+#: sketchbook5/skin_vars.php:1770
+msgid "skin_name_rd_blog_date"
+msgstr "date"
+
+#: sketchbook5/skin_vars.php:1781
+msgid "skin_name_rd_blog_itm"
+msgstr "display view count/like/comment"
+
+#: sketchbook5/skin_vars.php:1784
+msgid "skin_opt_view_count"
+msgstr "view count"
+
+#: sketchbook5/skin_vars.php:1785
+msgid "skin_opt_like_count"
+msgstr "like"
+
+#: sketchbook5/skin_vars.php:1786
+msgid "skin_opt_comment_count"
+msgstr "comment"
+
+#: sketchbook5/skin_vars.php:1791
+msgid "skin_name_rd_preview"
+msgstr "body of the post preview"
+
+#: sketchbook5/skin_vars.php:1792
+msgid "skin_desc_rd_preview"
+msgstr ""
+"show a preview of the post under the title In ‘Blog Style’. You can use it "
+"by specifying \"user defined field name: 'rd_preview'. required format: "
+"'multi-line input field (textarea)'\". For detailed explanations, please "
+"refer to the XE data room or the manufacturer's website"
+
+#: sketchbook5/skin_vars.php:1802
+msgid "skin_desc_sketchbook5_setup_header19"
+msgstr "‘View with viewer’ settings"
+
+#: sketchbook5/skin_vars.php:1808
+msgid "skin_name_viewer_with"
+msgstr "top button of a board"
+
+#: sketchbook5/skin_vars.php:1809
+msgid "skin_desc_viewer_with"
+msgstr ""
+"determines whether to display the 'View Post as Viewer' button at the top of "
+"the board, which allows you to view the post as a viewer by just clicking"
+
+#: sketchbook5/skin_vars.php:1814
+msgid "skin_opt_activate_on_init"
+msgstr "activate initially"
+
+#: sketchbook5/skin_vars.php:1820
+msgid "skin_name_viewer"
+msgstr "‘View with Viewer’ button"
+
+#: sketchbook5/skin_vars.php:1821
+msgid "skin_desc_viewer"
+msgstr "set the ‘View with Viewer’ button in the body of the post"
+
+#: sketchbook5/skin_vars.php:1825
+msgid "skin_opt_body_upper_right"
+msgstr "top right of body of the post"
+
+#: sketchbook5/skin_vars.php:1826
+msgid "skin_opt_body_icon"
+msgstr "icon button in body navigation area"
+
+#: sketchbook5/skin_vars.php:1832
+msgid "skin_name_lst_viewer"
+msgstr "'viewer' button on post list"
+
+#: sketchbook5/skin_vars.php:1833
+msgid "skin_desc_lst_viewer"
+msgstr ""
+"determines whether the 'viewer' button will appear when hovering over a post "
+"link in the list"
+
+#: sketchbook5/skin_vars.php:1870
+msgid "skin_name_viewer_itm"
+msgstr "display settings for each part"
+
+#: sketchbook5/skin_vars.php:1873
+msgid "skin_opt_recommendation"
+msgstr "like"
+
+#: sketchbook5/skin_vars.php:1874
+msgid "skin_opt_sns"
+msgstr "sns"
+
+#: sketchbook5/skin_vars.php:1875
+msgid "skin_opt_file_trackback"
+msgstr "file, trackback"
+
+#: sketchbook5/skin_vars.php:1876
+msgid "skin_opt_comment"
+msgstr "comment"
+
+#: sketchbook5/skin_vars.php:1881
+msgid "skin_desc_sketchbook5_setup_header20"
+msgstr "*mobile settings"
+
+#: sketchbook5/skin_vars.php:1887
+msgid "skin_name_img_link"
+msgstr "link to the original image"
+
+#: sketchbook5/skin_vars.php:1888
+msgid "skin_desc_img_link"
+msgstr ""
+"clicking on the image on mobile will take you to the original link. *This "
+"may conflict with other resize add-ons, so please check your mobile settings "
+"in the add-on settings"
+
+#: sketchbook5/skin_vars.php:1898
+msgid "skin_name_m_editor"
+msgstr "mobile editor"
+
+#: sketchbook5/skin_vars.php:1899
+msgid "skin_desc_m_editor"
+msgstr "select mobile editor"
+
+#: sketchbook5/skin_vars.php:1903
+msgid "skin_opt_editor_html5_wysiwyg"
+msgstr "html5 wysiwyg"
+
+#: sketchbook5/skin_vars.php:1905
+msgid "skin_opt_editor_web_editor"
+msgstr "web editor"
+
+#~ msgid "cmd_viewer"
+#~ msgstr "load via viewer"
+
+#~ msgid "cmd_input"
+#~ msgstr "submit"
+
+#, fuzzy
+#~| msgid "opt_display"
+#~ msgid "skin_opt_display_yse"
+#~ msgstr "표시"
+
+#~ msgid "skin_desc_sketchbook5_setup_header9"
+#~ msgstr "FAQ 게시판 형"
+
+#, fuzzy
+#~| msgid "skin_desc_sketchbook5_setup_header"
+#~ msgid "skin_desc_sketchbook5_setup_header10"
+#~ msgstr "전체 설정"
+
+#~ msgid "skin_desc_sketchbook5_setup_header8"
+#~ msgstr "클라우드 갤러리"
+
+#, fuzzy
+#~| msgid "opt_display"
+#~ msgid "skin_opt_dispaly_no"
+#~ msgstr "표시"
+
+#, fuzzy
+#~| msgid "opt_display"
+#~ msgid "skin_opt_dislay_no"
+#~ msgstr "표시"
+
+#, fuzzy
+#~| msgid "opt_default"
+#~ msgid "default"
+#~ msgstr "기본선택"
+
+#, fuzzy
+#~| msgid "검색"
+#~ msgid "검은색"
+#~ msgstr "검색"
+
+#, fuzzy
+#~| msgid "게시판 생성"
+#~ msgid "게시판 색상"
+#~ msgstr "게시판 생성"
+
+#, fuzzy
+#~| msgid "게시판 생성"
+#~ msgid "게시판 색상 입력"
+#~ msgstr "게시판 생성"
+
+#, fuzzy
+#~| msgid "게시판 생성"
+#~ msgid "그림자 색상 입력"
+#~ msgstr "게시판 생성"
+
+#, fuzzy
+#~| msgid "게시판 생성"
+#~ msgid "게시판 제목"
+#~ msgstr "게시판 생성"
+
+#, fuzzy
+#~| msgid "게시판 생성"
+#~ msgid "게시판 부제목"
+#~ msgstr "게시판 생성"
+
+#, fuzzy
+#~| msgid "게시판 생성"
+#~ msgid "게시판 제목에 이미지 사용"
+#~ msgstr "게시판 생성"
+
+#, fuzzy
+#~| msgid "게시판 생성"
+#~ msgid "게시판 상단 설정"
+#~ msgstr "게시판 생성"
+
+#, fuzzy
+#~| msgid "게시판 생성"
+#~ msgid "그라데이션 스타일(기본)"
+#~ msgstr "게시판 생성"
+
+#, fuzzy
+#~| msgid "게시물 표시"
+#~ msgid "카테고리 게시물 수 표시"
+#~ msgstr "게시물 표시"
+
+#, fuzzy
+#~| msgid "게시물 표시"
+#~ msgid "카테고리의 각 메뉴 이름 옆에 게시물 수를 표시합니다."
+#~ msgstr "게시물 표시"
+
+#, fuzzy
+#~| msgid "게시판 생성"
+#~ msgid "게시판 하단 메뉴 설정"
+#~ msgstr "게시판 생성"
+
+#, fuzzy
+#~| msgid "게시글 표시 수"
+#~ msgid "새 글 표시 시간"
+#~ msgstr "게시글 표시 수"
+
+#, fuzzy
+#~| msgid "계층형 카테고리"
+#~ msgid "카테고리 표시"
+#~ msgstr "계층형 카테고리"
+
+#, fuzzy
+#~| msgid "썸네일"
+#~ msgid "섬네일"
+#~ msgstr "썸네일"
+
+#, fuzzy
+#~| msgid "Textarea"
+#~ msgid "Fade-In(기본)"
+#~ msgstr "텍스트 에어리어"
+
+#, fuzzy
+#~| msgid "제한없음"
+#~ msgid "없음"
+#~ msgstr "제한없음"
+
+#, fuzzy
+#~| msgid "이미지 선택하기"
+#~ msgid "리본 이미지"
+#~ msgstr "이미지 선택하기"
+
+#, fuzzy
+#~| msgid "이미지 선택하기"
+#~ msgid "리본 이미지 사이즈"
+#~ msgstr "이미지 선택하기"
+
+#, fuzzy
+#~| msgid "게시판 생성"
+#~ msgid "게시판 색상에 따라(기본)"
+#~ msgstr "게시판 생성"
+
+#, fuzzy
+#~| msgid "게시판 생성"
+#~ msgid "FAQ 게시판 형"
+#~ msgstr "게시판 생성"
+
+#, fuzzy
+#~| msgid "로그인 사용자"
+#~ msgid "모든 사용자"
+#~ msgstr "로그인 사용자"
+
+#, fuzzy
+#~| msgid "Textarea"
+#~ msgid "Textarea(기본)"
+#~ msgstr "텍스트 에어리어"
+
+#, fuzzy
+#~| msgid "Textarea"
+#~ msgid "Textarea, 에디터(기본)"
+#~ msgstr "텍스트 에어리어"
+
+#, fuzzy
+#~| msgid "이미지 선택하기"
+#~ msgid "이미지 파일"
+#~ msgstr "이미지 선택하기"
+
+#, fuzzy
+#~| msgid "이미지 선택하기"
+#~ msgid "본문 이미지 설정"
+#~ msgstr "이미지 선택하기"
+
+#, fuzzy
+#~| msgid "이미지 선택하기"
+#~ msgid "이미지 부가 기능"
+#~ msgstr "이미지 선택하기"
+
+#, fuzzy
+#~| msgid "이미지 선택하기"
+#~ msgid "이미지 드래그"
+#~ msgstr "이미지 선택하기"
+
+#, fuzzy
+#~| msgid "이미지 선택하기"
+#~ msgid "이미지 자동 출력"
+#~ msgstr "이미지 선택하기"
+
+#, fuzzy
+#~| msgid "이미지 선택하기"
+#~ msgid "본문에 이미지가 없는 경우"
+#~ msgstr "이미지 선택하기"
+
+#, fuzzy
+#~| msgid "게시판 생성"
+#~ msgid "게시판 스타일(기본)"
+#~ msgstr "게시판 생성"
+
+#, fuzzy
+#~| msgid "게시판 생성"
+#~ msgid "본문 '게시판 스타일' 제목 설정"
+#~ msgstr "게시판 생성"
+
+#, fuzzy
+#~| msgid "게시판 생성"
+#~ msgid "게시판 스타일 프리셋"
+#~ msgstr "게시판 생성"
+
+#, fuzzy
+#~| msgid "게시판 생성"
+#~ msgid "기본 게시판(기본)"
+#~ msgstr "게시판 생성"
+
+#, fuzzy
+#~| msgid "계층형 카테고리"
+#~ msgid "카테고리"
+#~ msgstr "계층형 카테고리"
+
+#~ msgid "조회수"
+#~ msgstr "조회수"
+
+#, fuzzy
+#~| msgid "소셜댓글"
+#~ msgid "댓글수"
+#~ msgstr "소셜댓글"
+
+#, fuzzy
+#~| msgid "게시물 표시"
+#~ msgid "게시물 주소"
+#~ msgstr "게시물 표시"
+
+#, fuzzy
+#~| msgid "게시판 생성"
+#~ msgid "블로그 스타일 프리셋"
+#~ msgstr "게시판 생성"
+
+#, fuzzy
+#~| msgid "게시판 생성"
+#~ msgid "굵은 라인 스타일(기본)"
+#~ msgstr "게시판 생성"
+
+#, fuzzy
+#~| msgid "조회수"
+#~ msgid "조회"
+#~ msgstr "조회수"
+
+#, fuzzy
+#~| msgid "소셜댓글"
+#~ msgid "댓글"
+#~ msgstr "소셜댓글"
+
+#, fuzzy
+#~| msgid "게시판 생성"
+#~ msgid "게시판 상단 버튼"
+#~ msgstr "게시판 생성"
+
+#~ msgid "Textarea"
+#~ msgstr "텍스트 에어리어"
+
+#, fuzzy
+#~| msgid "Total"
+#~ msgid "total"
+#~ msgstr "전체"
+
+#, fuzzy
+#~| msgid "Viewed"
+#~ msgid "viewer"
+#~ msgstr "조회순"
+
+#, fuzzy
+#~| msgid "Textarea"
+#~ msgid "textarea"
+#~ msgstr "텍스트 에어리어"
+
+#, fuzzy
+#~| msgid "cmd_use_wysiwyg"
+#~ msgid "wysiwyg"
+#~ msgstr "에디터 사용하기"
+
+#, fuzzy
+#~| msgid "lbl_wysiwyg_editor_mode"
+#~ msgid "sxc_editor"
+#~ msgstr "에디터 모드"
+
+#~ msgid "lbl_dashboard"
+#~ msgstr "제어판"
+
+#~ msgid "cmd_create_board"
+#~ msgstr "게시판 생성"
+
+#~ msgid "cmd_board_list"
+#~ msgstr "게시판 목록"
+
+#~ msgid "cmd_import_board"
+#~ msgstr "외부 게시판 가져오기"
+
+#~ msgid "msg_call_invalid_module"
+#~ msgstr "요청 모듈에 %1$s() 함수가 없습니다"
+
+#~ msgid "msg_thank_you_using_x2board"
+#~ msgstr "x2board를 사용해 주셔서 감사합니다"
+
+#~ msgid "lbl_max_seq_id"
+#~ msgstr "현재 최대 sequence id"
+
+#~ msgid "name_req_seq_id"
+#~ msgstr "변경할 최대 sequence id"
+
+#~ msgid "desc_req_seq_id"
+#~ msgstr "xe2 게시판을 임포트한 후, 최대 sequence id를 적절하게 설정합니다"
+
+#~ msgid "cmd_update"
+#~ msgstr "업데이트"
+
+#~ msgid "name_select_xe2_backup_file"
+#~ msgstr "xe2 백업 파일 선택"
+
+#~ msgid "desc_select_xe2_backup_file"
+#~ msgstr ""
+#~ "xe2에서 추출한 xml 파일을 선택하세요. 여러 파일은 zip으로 압축하세요"
+
+#~ msgid "cmd_import"
+#~ msgstr "가져오기"
+
+#~ msgid "desc_select_target_board"
+#~ msgstr ""
+#~ "버튼을 누르면 선택 게시판을 초기화하고 XE2에서 추출한 XML 데이터를 입력합"
+#~ "니다"
+
+#~ msgid "Search"
+#~ msgstr "검색"
+
+#~ msgid "desc_wp_page_title"
+#~ msgstr "워드프레스 페이지 제목을 입력하세요"
+
+#~ msgid "name_board_search_list_count"
+#~ msgstr "검색 목록 수"
+
+#~ msgid "desc_board_search_list_count"
+#~ msgstr ""
+#~ "검색, 카테고리 선택 등을 할 경우 표시될 글 수를 지정할 수 있습니다. (기본 "
+#~ "20개)"
+
+#~ msgid "name_board_page_count"
+#~ msgstr "페이지 수"
+
+#~ msgid "desc_board_page_count"
+#~ msgstr ""
+#~ "목록 하단, 페이지를 이동하는 링크 수를 지정할 수 있습니다. (기본 10개)"
+
+#~ msgid "name_board_excerpted_title_length"
+#~ msgstr "자동 제목 문자수"
+
+#~ msgid "desc_board_excerpted_title_length"
+#~ msgstr ""
+#~ "빈 제목 입력되면 본문 첫줄에서 추출하는 문자열 수를 지정합니다. (기본 20"
+#~ "자)"
+
+#~ msgid "desc_board_header_text"
+#~ msgstr "콘텐츠 상단에 표시되는 내용입니다. (HTML 태그 사용 가능)"
+
+#~ msgid "name_board_footer_text"
+#~ msgstr "하단 내용"
+
+#~ msgid "desc_board_footer_text"
+#~ msgstr "콘텐츠 하단에 표시되는 내용입니다. (HTML 태그 사용 가능)"
+
+#~ msgid "desc_mobile_setup_header"
+#~ msgstr "모바일 설정"
+
+#~ msgid "name_board_mobile_use_editor"
+#~ msgstr "모바일 에디터"
+
+#~ msgid "desc_board_mobile_use_editor"
+#~ msgstr "위지윅 에디터 사용"
+
+#~ msgid "desc_advanced_setup_header"
+#~ msgstr "고급"
+
+#~ msgid "name_board_use_rewrite"
+#~ msgstr "짧은 게시글 주소"
+
+#~ msgid "desc_board_use_rewrite"
+#~ msgstr "짧은 게시글 주소 활성화"
+
+#~ msgid "name_board_order_target"
+#~ msgstr "문서 정렬 필드"
+
+#~ msgid "desc_board_order_target"
+#~ msgstr "게시글 정렬 방법을 선택하세요"
+
+#~ msgid "opt_update_order"
+#~ msgstr "최근 수정일"
+
+#~ msgid "opt_regdate_dt"
+#~ msgstr "문서 등록일"
+
+#~ msgid "opt_readed_count"
+#~ msgstr "조회 수"
+
+#~ msgid "opt_title"
+#~ msgstr "제목"
+
+#~ msgid "opt_nick_name"
+#~ msgstr "닉네임"
+
+#~ msgid "desc_board_order_type"
+#~ msgstr "문서 정렬 방식"
+
+#~ msgid "opt_asc"
+#~ msgstr "오름차순 정렬"
+
+#~ msgid "opt_desc"
+#~ msgstr "내림차순 정렬"
+
+#~ msgid "name_board_except_notice"
+#~ msgstr "공지사항 제외"
+
+#~ msgid "desc_board_except_notice"
+#~ msgstr ""
+#~ "목록 상단에 늘 나타나는 공지사항을 일반 목록에서 공지사항을 출력하지 않도"
+#~ "록 합니다"
+
+#~ msgid "name_board_use_anonymous"
+#~ msgstr "익명 사용"
+
+#~ msgid "desc_board_use_anonymous"
+#~ msgstr ""
+#~ "글쓴이의 정보를 없애고 익명으로 게시판 사용을 할 수 있게 합니다. 스킨설정"
+#~ "에서 글쓴이 정보등을 보이지 않도록 하시면 더욱 유용합니다. 추가설정의 문"
+#~ "서 히스토리 사용이 꺼져있지 않으면 문서 수정시 작성자가 표시될 수 있습니다"
+
+#~ msgid "name_board_consultation"
+#~ msgstr "상담 기능"
+
+#~ msgid "desc_board_consultation"
+#~ msgstr ""
+#~ "상담 기능은 관리권한이 없는 회원은 자신이 쓴 글만 보이도록 하는 기능입니"
+#~ "다. 단 상담기능 사용시 비회원 글쓰기는 자동으로 금지됩니다"
+
+#~ msgid "name_board_protect_content"
+#~ msgstr "글 보호 기능"
+
+#~ msgid "desc_board_protect_content"
+#~ msgstr ""
+#~ "작성된 글에 댓글이 작성된 경우 글 작성자는 해당 글을 수정하거나 삭제 할 "
+#~ "수 없습니다"
+
+#~ msgid "name_board_use_status"
+#~ msgstr "게시글 상태"
+
+#~ msgid "desc_board_use_status"
+#~ msgstr "글 작성 시 선택할 수 있는 상태를 지정해주세요"
+
+#~ msgid "opt_public"
+#~ msgstr "공개 글"
+
+#~ msgid "opt_secret"
+#~ msgstr "비밀글"
+
+#~ msgid "name_board_admin_mail"
+#~ msgstr "관리자 메일"
+
+#~ msgid "desc_board_admin_mail"
+#~ msgstr ""
+#~ "글이나 댓글이 등록될때 등록된 메일주소로 메일이 발송됩니다. 콤마(,)로 연결"
+#~ "시 다수의 메일주소로 발송할 수 있습니다"
+
+#~ msgid "name_board_category_info"
+#~ msgstr "분류 정보"
+
+#~ msgid "name_board_user_define_field"
+#~ msgstr "사용자 정의 입력 필드"
+
+#~ msgid "name_board_list_fields"
+#~ msgstr "게시글 목록 표시 필드"
+
+#~ msgid "name_board_grant_list"
+#~ msgstr "목록 접근 권한"
+
+#~ msgid "name_board_grant_write_post"
+#~ msgstr "글 쓰기 권한"
+
+#~ msgid "name_board_grant_write_comment"
+#~ msgstr "댓글 쓰기 권한"
+
+#~ msgid "name_board_grant_consultation_read"
+#~ msgstr "상담글 조회 권한"
+
+#~ msgid "name_board_grant_manager"
+#~ msgstr "관리 권한"
+
+#~ msgid "desc_comment_setup_header"
+#~ msgstr "댓글 설정"
+
+#~ msgid "desc_comment_use_vote_up"
+#~ msgstr "댓글 추천 사용"
+
+#~ msgid "opt_deactivate"
+#~ msgstr "미사용"
+
+#~ msgid "desc_comment_use_vote_down"
+#~ msgstr "댓글 비추천 사용"
+
+#~ msgid "name_comment_use_validation"
+#~ msgstr "승인 후 공개"
+
+#~ msgid "desc_comment_use_validation"
+#~ msgstr "관리자 승인 후 댓글을 공개합니다"
+
+#~ msgid "name_comment_forbid_to_leave_comment_old_post_days"
+#~ msgstr "오래된 글에 댓글 금지"
+
+#~ msgid "desc_comment_forbid_to_leave_comment_old_post_days"
+#~ msgstr ""
+#~ "x일이 경과한 글에는 댓글 작성할 수 없습니다. 공란이면 이 기능은 작동하지 "
+#~ "않습니다"
+
+#~ msgid "name_allow_comment_for_admin_for_old_post"
+#~ msgstr "관리자는 항상 댓글 허용"
+
+#~ msgid "desc_allow_comment_for_admin_for_old_post"
+#~ msgstr "오래된 글에 댓글 금지 기능이 작동할 때 관리자에게는 항상 허용합니다"
+
+#~ msgid "name_post_editor_skin"
+#~ msgstr "문서 에디터 스킨"
+
+#~ msgid "name_enable_html_grant"
+#~ msgstr "문서의 html 편집 권한"
+
+#~ msgid "desc_comment_editor_setup_header"
+#~ msgstr "댓글 에디터 설정"
+
+#~ msgid "name_enable_comment_html_grant"
+#~ msgstr "댓글의 html 편집 권한"
+
+#~ msgid "name_comment_upload_file_grant"
+#~ msgstr "댓글 파일 첨부 권한"
+
+#~ msgid "desc_common_editor_setup_header"
+#~ msgstr "에디터 공통 설정"
+
+#~ msgid "name_content_font"
+#~ msgstr "문서 & 댓글 폰트"
+
+#~ msgid "name_enable_autosave"
+#~ msgstr "자동저장 사용"
+
+#~ msgid "name_enable_default_component_grant"
+#~ msgstr "기본 컴포넌트 사용 권한"
+
+#~ msgid "name_enable_component_grant"
+#~ msgstr "확장 컴포넌트 사용 권한"
+
+#~ msgid "desc_file_attachment_setup_header"
+#~ msgstr "파일 설정"
+
+#~ msgid "name_file_allowed_filesize_mb"
+#~ msgstr "개별 파일 크기 제한(Mb)"
+
+#~ msgid "desc_file_allowed_filesize_mb"
+#~ msgstr "개별 파일의 최고 용량을 지정합니다.(관리자는 무제한)"
+
+#~ msgid "name_file_allowed_attach_size_mb"
+#~ msgstr "문서 당 파일 크기 제한(Mb)"
+
+#~ msgid "desc_file_allowed_attach_size_mb"
+#~ msgstr "개별 문서 당 파일의 최고 용량을 지정합니다.(관리자는 무제한)"
+
+#~ msgid "name_file_max_attached_count"
+#~ msgstr "문서 당 파일 갯수 제한"
+
+#~ msgid "desc_file_max_attached_count"
+#~ msgstr "개별 문서 당 파일의 최대 갯수를 지정합니다.(관리자는 무제한)"
+
+#~ msgid "name_file_allowed_filetypes"
+#~ msgstr "허용 확장자"
+
+#~ msgid "desc_file_allowed_filetypes"
+#~ msgstr ""
+#~ "\"*.확장자\"로 지정할 수 있고 \";\" 으로 여러 개 지정이 가능합니다. 예) *."
+#~ "* or *.jpg;*.gif"
+
+#~ msgid "name_file_allow_outlink"
+#~ msgstr "파일 외부 링크 허용"
+
+#~ msgid "desc_file_allow_outlink"
+#~ msgstr ""
+#~ "레퍼러에 따라 파일 외부 링크를 차단할 수 있습니다.(*.wmv, *.mp3등 미디어 "
+#~ "파일 제외)"
+
+#~ msgid "opt_disallow"
+#~ msgstr "금지"
+
+#~ msgid "name_file_allow_outlink_format"
+#~ msgstr "파일 외부 링크 허용 확장"
+
+#~ msgid "desc_file_allow_outlink_format"
+#~ msgstr ""
+#~ "파일 외부 링크 설정에 상관없이 허용하는 파일 확장자입니다. 여러 개 입력 시"
+#~ "에 쉼표(,)을 이용해서 구분해주세요. 예)hwp,doc,zip,pdf"
+
+#~ msgid "name_file_allow_outlink_site"
+#~ msgstr "파일 외부 링크 허용 사이트"
+
+#~ msgid "desc_file_allow_outlink_site"
+#~ msgstr ""
+#~ "파일 외부 링크 설정에 상관없이 허용하는 사이트 주소입니다. 여러 개 입력 시"
+#~ "에 줄을 바꿔서 구분해주세요. 예)http://www.xpressengine.com]"
+
+#~ msgid "name_file_download_grant"
+#~ msgstr "다운로드 가능 그룹"
+
+#~ msgid "desc_file_download_grant"
+#~ msgstr ""
+#~ "선택한 그룹만 첨부 파일을 다운로드할 수 있습니다. 공란이면 모두 허용"
+
+#~ msgid "desc_skin_vars_setup_header_no_file"
+#~ msgstr "skin_vars.php 파일이 없습니다"
+
+#~ msgid "desc_skin_vars_setup_header_file_registered"
+#~ msgstr "$skin_vars->var_id 형식으로 스킨 변수값을 호출할 수 있습니다"
+
+#~ msgid "opt_role_all_users"
+#~ msgstr "모든 사용자"
+
+#~ msgid "opt_role_loggedin_users"
+#~ msgstr "로그인 사용자"
+
+#~ msgid "opt_role_administrator"
+#~ msgstr "관리자만"
+
+#~ msgid "opt_role_customize"
+#~ msgstr "선택 그룹 사용자"
+
+#~ msgid "cmd_goto_support"
+#~ msgstr "제품 지원 바로가기"
+
+#~ msgid "cmd_setup_plugin"
+#~ msgstr "플러그인 설정"
+
+#~ msgid "msg_not_available"
+#~ msgstr "사용할 수 없습니다"
+
+#~ msgid "cmd_save_change"
+#~ msgstr "변경 저장"
+
+#~ msgid "cmd_delete_board"
+#~ msgstr "게시판 삭제"
+
+#~ msgid "lbl_board_info"
+#~ msgstr "게시판 정보"
+
+#~ msgid "lbl_category_info"
+#~ msgstr "분류 관리"
+
+#~ msgid "lbl_user_define_field"
+#~ msgstr "사용자 정의 입력 필드"
+
+#~ msgid "lbl_permission_info"
+#~ msgstr "권한 관리"
+
+#~ msgid "lbl_extra_info"
+#~ msgstr "추가 설정"
+
+#~ msgid "msg_modified_from_default_setting"
+#~ msgstr "기본 설정을 변경했습니다"
+
+#~ msgid "cmd_delete_file"
+#~ msgstr "파일삭제"
+
+#~ msgid "lbl_update_category"
+#~ msgstr "수정 카테고리"
+
+#~ msgid "lbl_default_category"
+#~ msgstr "기본 선택 카테고리"
+
+#~ msgid "cmd_remove"
+#~ msgstr "삭제"
+
+#~ msgid "cmd_add_new_category"
+#~ msgstr "새 카테고리 추가"
+
+#~ msgid "lbl_new_category_name"
+#~ msgstr "새 카테고리 이름"
+
+#~ msgid "lbl_category_status"
+#~ msgstr "카테고리 상태"
+
+#~ msgid "msg_undefined_locale"
+#~ msgstr "정의되지 않은 로케일입니다"
+
+#~ msgid "msg_invalid_configuration"
+#~ msgstr "게시판 설정에 문제가 있습니다"
+
+#~ msgid "msg_invalid_grant_code"
+#~ msgstr "등록되지 않은 권한 코드입니다"
+
+#~ msgid "msg_file_not_exists"
+#~ msgstr "%s 파일이 없습니다"
+
+#~ msgid "lbl_field_label"
+#~ msgstr "필드 표시 명칭"
+
+#~ msgid "lbl_meta_key"
+#~ msgstr "고유 식별값"
+
+#~ msgid "cmd_reset"
+#~ msgstr "초기화"
+
+#~ msgid "msg_whom_to_show"
+#~ msgstr "표시할 대상"
+
+#~ msgid "lbl_description"
+#~ msgstr "설명"
+
+#~ msgid "lbl_css_class"
+#~ msgstr "css 클래스"
+
+#~ msgid "lbl_hiding"
+#~ msgstr "숨김"
+
+#~ msgid "msg_title_is_mandatory"
+#~ msgstr "제목은 필수 항목입니다"
+
+#~ msgid "about_user_defined_file_appending_field"
+#~ msgstr "[추가설정] 탭에서 첨부 파일 규칙을 설정합니다"
+
+#~ msgid "about_user_defined_address_field"
+#~ msgstr ""
+#~ "개인 정보는 관리자에게 항상 표시되고 게스트 본인에게는 일정 시간만 표시됩"
+#~ "니다"
+
+#~ msgid "msg_allow_email_input_for_guest"
+#~ msgstr "게스트 방문자에게 이메일 입력 허용"
+
+#~ msgid "lbl_allow_notice"
+#~ msgstr "공지사항 허용"
+
+#~ msgid "lbl_allow_comment"
+#~ msgstr "댓글 허용"
+
+#~ msgid "lbl_placeholder"
+#~ msgstr "플레이스홀더"
+
+#~ msgid "lbl_search"
+#~ msgstr "검색"
+
+#~ msgid "lbl_title_bold"
+#~ msgstr "제목 굵게"
+
+#~ msgid "lbl_disallow_commentt"
+#~ msgstr "댓글 금지"
+
+#~ msgid "about_tag"
+#~ msgstr "태그 : 쉼표(,)를 이용하여 복수 등록"
+
+#~ msgid "cmd_select"
+#~ msgstr "선택하세요"
+
+#~ msgid "desc_user_define_field_title"
+#~ msgstr "게시글의 제목입니다"
+
+#~ msgid "lbl_option"
+#~ msgstr "게시글 옵션"
+
+#~ msgid "desc_user_define_field_option"
+#~ msgstr "게시글의 옵션 설정 박스입니다"
+
+#~ msgid "desc_user_define_field_category"
+#~ msgstr "게시글의 분류입니다"
+
+#~ msgid "desc_user_define_field_content"
+#~ msgstr "게시글의 본문입니다"
+
+#~ msgid "lbl_attachment"
+#~ msgstr "첨부 파일"
+
+#~ msgid "desc_user_define_field_attach"
+#~ msgstr "게시글의 첨부 파일 박스입니다"
+
+#~ msgid "desc_user_define_field_tag"
+#~ msgstr "태그"
+
+#~ msgid "lbl_text_hidden"
+#~ msgstr "텍스트/숨김 필드"
+
+#~ msgid "desc_user_define_field_text_hidden"
+#~ msgstr "사용자 정의 텍스트/숨김 필드입니다"
+
+#~ msgid "lbl_selectbox"
+#~ msgstr "셀렉트박스"
+
+#~ msgid "desc_user_define_field_selectbox"
+#~ msgstr "사용자 정의 셀렉트박스 필드입니다"
+
+#~ msgid "lbl_radio_button"
+#~ msgstr "라디오 버튼"
+
+#~ msgid "desc_user_define_field_radio_button"
+#~ msgstr "사용자 정의 라디오 버튼 필드입니다"
+
+#~ msgid "lbl_checkbox"
+#~ msgstr "체크박스"
+
+#~ msgid "desc_user_define_field_checkbox"
+#~ msgstr "사용자 정의 체크박스 필드입니다"
+
+#~ msgid "lbl_textarea"
+#~ msgstr "텍스트 입력 박스"
+
+#~ msgid "desc_user_define_field_textarea"
+#~ msgstr "사용자 정의 텍스트 입력 박스 필드입니다"
+
+#~ msgid "lbl_wp_editor"
+#~ msgstr "워드프레스 편집기"
+
+#~ msgid "desc_user_define_field_wp_editor"
+#~ msgstr "사용자 정의 워드프레스 편집기 필드입니다"
+
+#~ msgid "lbl_html"
+#~ msgstr "html"
+
+#~ msgid "desc_user_define_field_html"
+#~ msgstr "사용자 정의 HTML 필드입니다"
+
+#~ msgid "desc_user_define_field_shortcode"
+#~ msgstr "사용자 정의 워드프레스 숏코드 필드입니다"
+
+#~ msgid "lbl_date_select"
+#~ msgstr "날짜 선택"
+
+#~ msgid "desc_user_define_field_date_select"
+#~ msgstr "사용자 정의 날짜 선택 필드입니다"
+
+#~ msgid "lbl_time_select"
+#~ msgstr "시간 선택"
+
+#~ msgid "desc_user_define_field_time_select"
+#~ msgstr "사용자 정의 시간 선택 필드입니다"
+
+#~ msgid "desc_user_define_field_email_address"
+#~ msgstr "사용자 정의 이메일 주소 필드입니다"
+
+#~ msgid "lbl_zip_address"
+#~ msgstr "사용자 정의 우편 주소"
+
+#~ msgid "desc_user_define_field_zip_address"
+#~ msgstr "사용자 정의 우편 주소 필드입니다"
+
+#~ msgid "desc_user_define_field_no"
+#~ msgstr "게시글의 목록 번호"
+
+#~ msgid "desc_user_define_field_regdate_dt"
+#~ msgstr "게시글 등록일시"
+
+#~ msgid "desc_user_define_field_last_update_dt"
+#~ msgstr "게시글 수정일시"
+
+#~ msgid "desc_user_define_field_nick_name"
+#~ msgstr "게시글 작성자의 필명"
+
+#~ msgid "desc_user_define_field_last_updater"
+#~ msgstr "게시글의 최종 수정자 필명"
+
+#~ msgid "desc_user_define_field_readed_count"
+#~ msgstr "게시글의 조회수"
+
+#~ msgid "desc_user_define_field_voted_count"
+#~ msgstr "게시글의 추천수"
+
+#~ msgid "desc_user_define_field_blamed_count"
+#~ msgstr "게시글의 비추천수"
+
+#~ msgid "desc_user_define_field_thumbnail"
+#~ msgstr "게시글의 대표 썸네일"
+
+#~ msgid "desc_user_define_field_summary"
+#~ msgstr "게시글 요약"
+
+#~ msgid "desc_user_define_field_comment_status"
+#~ msgstr "댓글 가능 여부"
+
+#~ msgid "msg_security_warning_embed"
+#~ msgstr ""
+#~ "보안 문제로 관리자 아이디로는 embed를 볼 수 없습니다. 확인하려면 다른 아이"
+#~ "디로 접속하세요"
+
+#~ msgid "lbl_mins_ago"
+#~ msgstr "%d분 전"
+
+#~ msgid "lbl_hrs_ago"
+#~ msgstr "%d시간 전"
+
+#~ msgid "msg_no_permission"
+#~ msgstr "권한이 없습니다"
+
+#~ msgid "msg_invalid_request"
+#~ msgstr "잘못된 접근입니다"
+
+#~ msgid "msg_invalid_post"
+#~ msgstr "잘못된 게시글입니다"
+
+#~ msgid "fail_to_delete_children_comment"
+#~ msgstr "대댓글을 삭제하지 못했습니다"
+
+#~ msgid "lbl_no_name"
+#~ msgstr "익명"
+
+#~ msgid "msg_type_what_you_think"
+#~ msgstr "생각을 자유롭게 표현하세요"
+
+#~ msgid "msg_exceeds_limit_size"
+#~ msgstr "첨부 파일 용량 한도를 초과했습니다"
+
+#~ msgid "msg_upload_file_failed"
+#~ msgstr "파일 업로드에 실패했습니다"
+
+#~ msgid "msg_file_not_found"
+#~ msgstr "파일을 찾을 수 없습니다"
+
+#~ msgid "msg_not_permitted_download"
+#~ msgstr "다운로드 권한이 없습니다"
+
+#~ msgid "msg_not_allowed_outlink"
+#~ msgstr "외부링크에서 다운로드할 수 없습니다"
+
+#~ msgid "lbl_allowed_attach_size"
+#~ msgstr "문서 첨부 제한"
+
+#~ msgid "lbl_allowed_filesize"
+#~ msgstr "파일 크기 제한"
+
+#~ msgid "lbl_allowed_filetypes"
+#~ msgstr "허용 확장자"
+
+#~ msgid "lbl_available_user_define_fields"
+#~ msgstr "선택할 수 있는 사용자 정의 입력 필드"
+
+#~ msgid "lbl_basic_user_define_field"
+#~ msgstr "기본 사용자 정의 입력 필드"
+
+#~ msgid "lbl_extended_user_define_field"
+#~ msgstr "확장 사용자 정의 입력 필드"
+
+#~ msgid "lbl_activated_input_fields"
+#~ msgstr "글 작성 화면에 표시되는 필드"
+
+#~ msgid "lbl_drag_from_left"
+#~ msgstr "좌측 패널에서 드래그&드롭 하세요"
+
+#~ msgid "cmd_reset_configuration"
+#~ msgstr "설정 초기화"
+
+#~ msgid "lbl_untitled"
+#~ msgstr "제목 없음"
+
+#~ msgid "msg_wp_post_registration_failed"
+#~ msgstr "워드프레스 포스트 등록 실패했습니다"
+
+#~ msgid "msg_wp_post_update_failed"
+#~ msgstr "워드프레스 포스트 수정 실패했습니다"
+
+#, fuzzy
+#~| msgid "%s file does not exist."
+#~ msgid "post is not exists"
+#~ msgstr "%s 파일이 없습니다."
+
+#, fuzzy
+#~| msgid "Title"
+#~ msgid "Untitled"
+#~ msgstr "제목"
+
+#, fuzzy
+#~| msgid "Company name"
+#~ msgid "No name"
+#~ msgstr "회사명"
+
+#~ msgid "msg_invalid_target_board"
+#~ msgstr "임포트 대상 게시판을 지정하세요"
+
+#~ msgid "msg_import_succeeded"
+#~ msgstr "임포트 성공했습니다"
+
+#~ msgid "msg_invalid_xml_file"
+#~ msgstr "유효하지 않은 XML 파일입니다"
+
+#~ msgid "about_list_field_configuration"
+#~ msgstr "일부 스킨에서는 리스트 필드 설정이 작동하지 않습니다"
+
+#~ msgid "lbl_unlisted_field"
+#~ msgstr "리스트에서 숨기는 필드"
+
+#~ msgid "lbl_field_introduction"
+#~ msgstr "필드 소개"
+
+#~ msgid "lbl_installed_wp_page"
+#~ msgstr "게시판 설치된 WP 페이지"
+
+#~ msgid "lbl_create_date"
+#~ msgstr "생성일"
+
+#~ msgid "lbl_configure_board"
+#~ msgstr "게시판 설정하기"
+
+#~ msgid "msg_error_board_controller_init"
+#~ msgstr "boardController::init()에서 알 수 없는 오류가 발생했습니다"
+
+#~ msgid "lbl_anonymous"
+#~ msgstr "익명"
+
+#~ msgid "msg_not_founded"
+#~ msgstr "찾을 수 없습니다"
+
+#~ msgid "msg_protect_content"
+#~ msgstr "댓글이 작성된 게시글을 수정 / 삭제 할 수 없습니다"
+
+#, fuzzy
+#~| msgid "Tag"
+#~ msgid "tag"
+#~ msgstr "태그"
+
+#, fuzzy
+#~| msgid "Are you sure you want to delete?"
+#~ msgid "Do you want to delete?"
+#~ msgstr "삭제 하시겠습니까?"
+
+#~ msgid "Delete"
+#~ msgstr "글삭제"
+
+#, fuzzy
+#~ msgid "Cancel"
+#~ msgstr "취소"
+
+#~ msgid "cmd_select_all"
+#~ msgstr "모두 선택"
+
+#, fuzzy
+#~| msgid "Comment"
+#~ msgid "allow_comment"
+#~ msgstr "댓글"
+
+#~ msgid "is_required"
+#~ msgstr "필수"
+
+#, fuzzy
+#~| msgid "Select Box"
+#~ msgid "select font"
+#~ msgstr "셀렉트 박스"
+
+#, fuzzy
+#~| msgid "Last updated"
+#~ msgid "last_update"
+#~ msgstr "업데이트 날짜"
+
+#, fuzzy
+#~| msgid "Update"
+#~ msgid "date"
+#~ msgstr "업데이트"
+
+#, fuzzy
+#~| msgid "lbl_title"
+#~ msgid "lbl_titletitle"
+#~ msgstr "제목"
+
+#, fuzzy
+#~| msgid "Title"
+#~ msgid "title"
+#~ msgstr "제목"
+
+#~ msgid "Category"
+#~ msgstr "카테고리"
+
+#, fuzzy
+#~| msgid "Category"
+#~ msgid "category"
+#~ msgstr "카테고리"
+
+#, fuzzy
+#~| msgid "Secret"
+#~ msgid "secret"
+#~ msgstr "비밀글"
+
+#, fuzzy
+#~| msgid "Comment"
+#~ msgid "comment"
+#~ msgstr "댓글"
+
+#~ msgid "msg_invalid_request."
+#~ msgstr "잘못된 접근입니다"
+
+#, fuzzy
+#~| msgid "Company name"
+#~ msgid "Board name"
+#~ msgstr "회사명"
+
+#~ msgid "lbl_presented_field"
+#~ msgstr "리스트에 표시하는 필드"
+
+#, fuzzy
+#~| msgid "Available points"
+#~ msgid "Available field"
+#~ msgstr "사용 가능 포인트"
+
+#, fuzzy
+#~| msgid "Please enter the author."
+#~ msgid "Please designate the target board"
+#~ msgstr "작성자를 입력해주세요."
+
+#~ msgid "You do not have permission."
+#~ msgstr "권한이 없습니다."
+
+#~ msgid "Options"
+#~ msgstr "옵션"
+
+#, fuzzy
+#~| msgid "Integration feed"
+#~ msgid "Intro option field"
+#~ msgstr "통합 피드"
+
+#~ msgid "Content"
+#~ msgstr "내용"
+
+#~ msgid "Tag"
+#~ msgstr "태그"
+
+#~ msgid "Text/Hidden"
+#~ msgstr "텍스트/숨김"
+
+#~ msgid "Select Box"
+#~ msgstr "셀렉트 박스"
+
+#~ msgid "WP Editor"
+#~ msgstr "워드프레스 내장 에디터"
+
+#~ msgid "HTML"
+#~ msgstr "HTML"
+
+#~ msgid "Date Select"
+#~ msgstr "날짜 선택"
+
+#~ msgid "Time Select"
+#~ msgstr "시간 선택"
+
+#~ msgid "Email"
+#~ msgstr "이메일"
+
+#~ msgid "Address"
+#~ msgstr "주소"
+
+#~ msgid "Title"
+#~ msgstr "제목"
+
+#~ msgid "Select"
+#~ msgstr "선택"
+
+#, fuzzy
+#~| msgid "Address"
+#~ msgid "email_address"
+#~ msgstr "주소"
+
+#, fuzzy
+#~| msgid "Comment"
+#~ msgid "Allow comment"
+#~ msgstr "댓글"
+
+#, fuzzy
+#~| msgid "Document"
+#~ msgid "Disllow comment"
+#~ msgstr "본문보기"
+
+#~ msgid "Notice"
+#~ msgstr "공지사항"
+
+#, fuzzy
+#~| msgid "Notice"
+#~ msgid "notice"
+#~ msgstr "공지사항"
+
+#~ msgid "Password"
+#~ msgstr "비밀번호"
+
+#, fuzzy
+#~| msgid "Password"
+#~ msgid "password"
+#~ msgstr "비밀번호"
+
+#~ msgid "Category select"
+#~ msgstr "카테고리 선택"
+
+#, fuzzy
+#~| msgid "※ Your password is incorrect."
+#~ msgid "Password is mandatory for a guest"
+#~ msgstr "※ 비밀번호가 올바르지 않습니다."
+
+#~ msgid "All"
+#~ msgstr "전체"
+
+#~ msgid "Reset"
+#~ msgstr "초기화"
+
+#, fuzzy
+#~| msgid "%s is required."
+#~ msgid "Required"
+#~ msgstr "%s은(는) 필수입니다."
+
+#~ msgid "백업파일 다운로드"
+#~ msgstr "백업파일 다운로드"
+
+#~ msgid ""
+#~ "백업파일을 다운로드 받습니다. 파일은 xml 파일이며 복구하기를 통해 백업된 "
+#~ "상태로 되돌릴 수 있습니다."
+#~ msgstr ""
+#~ "백업파일을 다운로드 받습니다. 파일은 xml 파일이며 복구하기를 통해 백업된 "
+#~ "상태로 되돌릴 수 있습니다."
+
+#~ msgid "백업파일 선택"
+#~ msgstr "백업파일 선택"
+
+#~ msgid "복구하기"
+#~ msgstr "복구하기"
+
+#~ msgid ""
+#~ "xml 파일을 선택하고 복구하기 버튼을 누르세요. 지금까지의 데이터는 삭제되"
+#~ "고 복원파일 데이터를 입력합니다."
+#~ msgstr ""
+#~ "xml 파일을 선택하고 복구하기 버튼을 누르세요. 지금까지의 데이터는 삭제되"
+#~ "고 복원파일 데이터를 입력합니다."
+
+#~ msgid "Attachments"
+#~ msgstr "첨부 파일"
+
+#~ msgid ""
+#~ "<code>/wp-content/uploads/kboard_attached</code> 이 경로의 모든 파일을 FTP"
+#~ "를 사용해서 다운로드받아 옮겨주세요."
+#~ msgstr ""
+#~ "<code>/wp-content/uploads/kboard_attached</code> 이 경로의 모든 파일을 FTP"
+#~ "를 사용해서 다운로드받아 옮겨주세요."
+
+#, fuzzy
+#~| msgid "Support"
+#~ msgid "Import"
+#~ msgstr "고객지원"
+
+#, fuzzy
+#~| msgid "백업파일 선택"
+#~ msgid "XE 백업 파일 선택"
+#~ msgstr "백업파일 선택"
+
+#, fuzzy
+#~| msgid "게시판 생성"
+#~ msgid "게시판 선택"
+#~ msgstr "게시판 생성"
+
+#, fuzzy
+#~| msgid "Update"
+#~ msgid "update"
+#~ msgstr "업데이트"
+
+#~ msgid "Remove"
+#~ msgstr "삭제"
+
+#, fuzzy
+#~| msgid "Category"
+#~ msgid "New category name"
+#~ msgstr "카테고리"
+
+#~ msgid "lbl_updating_category"
+#~ msgstr "변경할 카테고리"
+
+#, fuzzy
+#~| msgid "Last updated"
+#~ msgid "Category to update"
+#~ msgstr "업데이트 날짜"
+
+#, fuzzy
+#~| msgid "Updated"
+#~ msgid "Update"
+#~ msgstr "업데이트순"
+
+#~ msgid "Delete file"
+#~ msgstr "파일 삭제"
+
+#, fuzzy
+#~| msgid "Are you sure you want to delete?"
+#~ msgid "Do you really want to delete this board?"
+#~ msgstr "삭제 하시겠습니까?"
+
+#, fuzzy
+#~| msgid "Delete Product"
+#~ msgid "Delete Board"
+#~ msgstr "상품삭제"
+
+#~ msgid "Home"
+#~ msgstr "홈페이지"
+
+#~ msgid "Blog"
+#~ msgstr "블로그"
+
+#~ msgid "Community"
+#~ msgstr "커뮤니티"
+
+#~ msgid "Support"
+#~ msgstr "고객지원"
+
+#~ msgid "desc_enable_autosave"
+#~ msgstr "글 작성 시 자동 저장 기능을 활성화 시킬 수 있습니다"
+
+#~ msgid "desc_post_editor_skin"
+#~ msgstr "문서 에디터의 스킨을 선택합니다"
+
+#~ msgid "desc_post_editor_height"
+#~ msgstr "문서 에디터의 높이를 설정합니다"
+
+#~ msgid "desc_enable_html_grant"
+#~ msgstr "문서의 html 편집 권한을 선택합니다"
+
+#~ msgid "desc_comment_editor_skin"
+#~ msgstr "댓글 에디터의 스킨을 선택합니다"
+
+#~ msgid "desc_enable_comment_html_grant"
+#~ msgstr "댓글의 html 편집 권한을 선택합니다"
+
+#~ msgid "desc_comment_upload_file_grant"
+#~ msgstr "댓글의 파일 첨부 권한을 선택합니다"
+
+#, fuzzy
+#~| msgid "Company name"
+#~ msgid "name_board_admin_emails"
+#~ msgstr "회사명"
+
+#, fuzzy
+#~| msgid "Company name"
+#~ msgid "desc_board_admin_emails"
+#~ msgstr "회사명"
+
+#~ msgid "desc_board_list_fields"
+#~ msgstr ""
+#~ "스킨에서 지원하는 경우, 목록 화면의 표시 항목과 순서를 선택를 할 수 있습니"
+#~ "다"
+
+#~ msgid "desc_board_category_info"
+#~ msgstr "게시글의 분류 정보를 관리하세요"
+
+#, fuzzy
+#~| msgid "name_x2board_title"
+#~ msgid "name_board_hide_category"
+#~ msgstr "게시판 제목"
+
+#, fuzzy
+#~| msgid "name_x2board_title"
+#~ msgid "desc_board_hide_category"
+#~ msgstr "게시판 제목"
+
+#, fuzzy
+#~| msgid "Company name"
+#~ msgid "Board admin email"
+#~ msgstr "회사명"
+
+#, fuzzy
+#~| msgid "You do not have permission."
+#~ msgid "view permission"
+#~ msgstr "권한이 없습니다."
+
+#, fuzzy
+#~| msgid "Comment"
+#~ msgid "write comment permission"
+#~ msgstr "댓글"
+
+#, fuzzy
+#~| msgid "You do not have permission."
+#~ msgid "Consultation read permission"
+#~ msgstr "권한이 없습니다."
+
+#, fuzzy
+#~| msgid "You do not have permission."
+#~ msgid "Manager permission"
+#~ msgstr "권한이 없습니다."
+
+#, fuzzy
+#~| msgid "Comment"
+#~ msgid "Configure comment"
+#~ msgstr "댓글"
+
+#, fuzzy
+#~ msgid "Number of comments"
+#~ msgstr "글이 없습니다."
+
+#, fuzzy
+#~| msgid "Pending approval"
+#~ msgid "Use comment approval"
+#~ msgstr "승인 대기중"
+
+#, fuzzy
+#~| msgid "WP Editor"
+#~ msgid "Editor skin"
+#~ msgstr "워드프레스 내장 에디터"
+
+#, fuzzy
+#~| msgid "Comment"
+#~ msgid "Allow comment HTML edit"
+#~ msgstr "댓글"
+
+#, fuzzy
+#~| msgid "Please enter the content."
+#~ msgid "Select the content style"
+#~ msgstr "내용을 입력해주세요."
+
+#, fuzzy
+#~| msgid "Comment"
+#~ msgid "Allow default components"
+#~ msgstr "댓글"
+
+#, fuzzy
+#~| msgid "Comment"
+#~ msgid "Allow components"
+#~ msgstr "댓글"
+
+#, fuzzy
+#~| msgid "Ratings"
+#~ msgid "Ratio"
+#~ msgstr "등급"
+
+#, fuzzy
+#~ msgid "Category configuration"
+#~ msgstr "비밀번호 확인"
+
+#, fuzzy
+#~| msgid "List price"
+#~ msgid "List fields"
+#~ msgstr "정상가격"
+
+#, fuzzy
+#~| msgid "Address"
+#~ msgid "Admin mail address"
+#~ msgstr "주소"
+
+#, fuzzy
+#~| msgid "Notify me of new comments via email"
+#~ msgid "Notify new post and comment via comma separted list "
+#~ msgstr "이메일로 새로운 댓글 알림 받기"
+
+#, fuzzy
+#~| msgid "Category"
+#~ msgid "Hide category"
+#~ msgstr "카테고리"
+
+#, fuzzy
+#~| msgid "Delete Product"
+#~ msgid "Select the board skin"
+#~ msgstr "상품삭제"
+
+#, fuzzy
+#~| msgid "List price"
+#~ msgid "List per page"
+#~ msgstr "정상가격"
+
+#, fuzzy
+#~| msgid "Mobile phone"
+#~ msgid "Mobile editor"
+#~ msgstr "휴대폰번호"
+
+#, fuzzy
+#~| msgid "Last updated"
+#~ msgid "Latest updated"
+#~ msgstr "업데이트 날짜"
+
+#, fuzzy
+#~| msgid "Postcode"
+#~ msgid "Post date"
+#~ msgstr "우편번호"
+
+#, fuzzy
+#~| msgid "Comment"
+#~ msgid "Recommended"
+#~ msgstr "댓글"
+
+#, fuzzy
+#~| msgid "Comments"
+#~ msgid "Comment"
+#~ msgstr "댓글"
+
+#, fuzzy
+#~| msgid "Company name"
+#~ msgid "User name"
+#~ msgstr "회사명"
+
+#, fuzzy
+#~| msgid "Anonymous"
+#~ msgid "Use Anonymous"
+#~ msgstr "익명"
+
+#~ msgid "It is an invalid access."
+#~ msgstr "잘못된 접근입니다."
+
+#, fuzzy
+#~| msgid "KBoard 버전"
+#~ msgid "KBoard"
+#~ msgstr "KBoard 버전"
+
+#~ msgid "KBoard 게시판 포인트"
+#~ msgstr "KBoard 게시판 포인트"
+
+#~ msgid "KBoard 게시판의 활동 포인트를 관리합니다."
+#~ msgstr "KBoard 게시판의 활동 포인트를 관리합니다."
+
+#~ msgid "KBoard 댓글 포인트"
+#~ msgstr "KBoard 댓글 포인트"
+
+#~ msgid "KBoard 댓글 포인트를 관리합니다."
+#~ msgstr "KBoard 댓글 포인트를 관리합니다."
+
+#~ msgid "복원파일의 데이터로 복구 되었습니다."
+#~ msgstr "복원파일의 데이터로 복구 되었습니다."
+
+#~ msgid "올바른 복원파일이 아닙니다."
+#~ msgstr "올바른 복원파일이 아닙니다."
+
+#~ msgid "파일 업로드에 실패 했습니다."
+#~ msgstr "파일 업로드에 실패 했습니다."
+
+#, php-format
+#~ msgid "&#91;Pending&#93; %s"
+#~ msgstr "&#91;승인대기&#93; %s"
+
+#, php-format
+#~ msgid "<p>&#91;Waiting for administrator Approval.&#93;</p>%s"
+#~ msgstr "<p>&#91;관리자의 승인을 기다리고 있습니다.&#93;</p>%s"
+
+#~ msgid "&#91;Pending&#93; Waiting for administrator Approval."
+#~ msgstr "&#91;승인대기&#93; 관리자의 승인을 기다리고 있습니다."
+
+#~ msgid "&#91;Waiting for administrator Approval.&#93;"
+#~ msgstr "&#91;관리자의 승인을 기다리고 있습니다.&#93;"
+
+#~ msgid "CAPTCHA is invalid."
+#~ msgstr "CAPTCHA가 올바르지 않습니다."
+
+#~ msgid "KBoard new document"
+#~ msgstr "KBoard 신규등록"
+
+#~ msgid "Go to Homepage"
+#~ msgstr "홈페이지로 이동"
+
+#~ msgid "No upload path. Please enter board ID and initialize."
+#~ msgstr "업로드 경로가 없습니다. 게시판 ID를 입력하고 초기화 해주세요."
+
+#~ msgid "Deleted increment points"
+#~ msgstr "글삭제 증가 포인트"
+
+#~ msgid "Deleted decrease points"
+#~ msgstr "글삭제 감소 포인트"
+
+#~ msgid "No documents found."
+#~ msgstr "게시글이 없습니다."
+
+#~ msgid "Forum"
+#~ msgstr "게시판"
+
+#~ msgid "Author"
+#~ msgstr "작성자"
+
+#~ msgid "Views"
+#~ msgstr "조회"
+
+#~ msgid "Date"
+#~ msgstr "작성일"
+
+#~ msgid "Status"
+#~ msgstr "상태"
+
+#~ msgid "Restore"
+#~ msgstr "복구"
+
+#~ msgid "Delete Permanently"
+#~ msgstr "영구적으로 삭제하기"
+
+#~ msgid "Move to Trash"
+#~ msgstr "휴지통으로 이동"
+
+#~ msgid "Filter"
+#~ msgstr "필터"
+
+#~ msgid "The reply."
+#~ msgstr "댓글입니다."
+
+#~ msgid "Yes"
+#~ msgstr "예"
+
+#~ msgid "No"
+#~ msgstr "아니요"
+
+#~ msgid "Please enter the title."
+#~ msgstr "제목을 입력해주세요."
+
+#~ msgid "Please enter the password."
+#~ msgstr "비밀번호를 입력해주세요."
+
+#~ msgid "You cannot create more than one post."
+#~ msgstr "1개 이상 게시글을 작성할 수 없습니다."
+
+#, php-format
+#~ msgid "You cannot create more than %d posts."
+#~ msgstr "%d개 이상 게시글을 작성할 수 없습니다."
+
+#, php-format
+#~ msgid "You can create a new post after %d minutes."
+#~ msgstr "%d분 후에 새 게시글을 작성할 수 있습니다."
+
+#, php-format
+#~ msgid "You can create a new post after %d seconds."
+#~ msgstr "%d초 후에 새 게시글을 작성할 수 있습니다."
+
+#~ msgid "You have not enough points."
+#~ msgstr "포인트가 부족합니다."
+
+#~ msgid "Writing decrease points"
+#~ msgstr "글쓰기 감소 포인트"
+
+#~ msgid "An unexpected problem has occurred."
+#~ msgstr "예상하지 못한 문제가 발생했습니다."
+
+#~ msgid "Writing increase points"
+#~ msgstr "글쓰기 증가 포인트"
+
+#~ msgid "This page is restricted from external access."
+#~ msgstr "이 페이지는 외부에서의 접근을 제한하고 있습니다."
+
+#~ msgid "File does not exist."
+#~ msgstr "파일이 없습니다."
+
+#~ msgid "Attachment download decrease points"
+#~ msgstr "첨부파일 다운로드 감소 포인트"
+
+#~ msgid "Payment has been cancelled."
+#~ msgstr "결제가 취소되었습니다."
+
+#~ msgid "Point payment"
+#~ msgstr "포인트 결제"
+
+#~ msgid "Your point is not enough."
+#~ msgstr "포인트가 부족합니다."
+
+#~ msgid "Not enough points."
+#~ msgstr "포인트가 부족합니다."
+
+#~ msgid "Order information has been changed."
+#~ msgstr "주문정보가 변경되었습니다."
+
+#~ msgid "Cancel point payment"
+#~ msgstr "포인트 결제 취소"
+
+#~ msgid "Your order has been cancelled."
+#~ msgstr "주문이 취소되었습니다."
+
+#~ msgid "You have already voted."
+#~ msgstr "이미 투표했습니다."
+
+#~ msgid "Please Log in to continue."
+#~ msgstr "로그인 하셔야 사용할 수 있습니다."
+
+#, php-format
+#~ msgid "%s 파일이 올바르게 업로드되지 않았습니다."
+#~ msgstr "%s 파일이 올바르게 업로드되지 않았습니다."
+
+#, php-format
+#~ msgid "%s 파일은 업로드 가능한 파일 형식이 아닙니다."
+#~ msgstr "%s 파일은 업로드 가능한 파일 형식이 아닙니다."
+
+#, php-format
+#~ msgid "%s 파일의 용량이 너무 큽니다."
+#~ msgstr "%s 파일의 용량이 너무 큽니다."
+
+#, php-format
+#~ msgid "%s 파일 업로드 중 오류가 발생했습니다."
+#~ msgstr "%s 파일 업로드 중 오류가 발생했습니다."
+
+#~ msgid "No latestview found."
+#~ msgstr "최신글 뷰가 없습니다."
+
+#~ msgid "이름"
+#~ msgstr "이름"
+
+#~ msgid "스킨"
+#~ msgstr "스킨"
+
+#~ msgid "정렬 순서"
+#~ msgstr "정렬 순서"
+
+#~ msgid "생성일"
+#~ msgstr "생성일"
+
+#~ msgid "Edit"
+#~ msgstr "글수정"
+
+#~ msgid "Add rewards points"
+#~ msgstr "구매 적립"
+
+#~ msgid "Cancel rewards points"
+#~ msgstr "구매 적립 취소"
+
+#~ msgid "Go home"
+#~ msgstr "홈으로"
+
+#~ msgid "Go back"
+#~ msgstr "뒤로가기"
+
+#~ msgid ""
+#~ "Unable to connect to the update server, Cosmosfarm account please connect "
+#~ "again."
+#~ msgstr ""
+#~ "업데이트 서버에 연결할 수 없습니다, 코스모스팜 계정에 다시 연결하세요."
+
+#~ msgid "No document."
+#~ msgstr "글이 없습니다."
+
+#~ msgid "Invalid URL address."
+#~ msgstr "잘못된 URL 주소입니다."
+
+#~ msgid "This post has been removed."
+#~ msgstr "이 게시글은 삭제되었습니다."
+
+#~ msgid "This post has been moved."
+#~ msgstr "이 게시글은 이동되었습니다."
+
+#~ msgid "This post can only be read by the owner."
+#~ msgstr "이 게시글은 본인만 읽을 수 있습니다."
+
+#~ msgid "Reading decrease points"
+#~ msgstr "글읽기 감소 포인트"
+
+#~ msgid "Please enter your password."
+#~ msgstr "비밀번호를 입력해주세요."
+
+#~ msgid "Captcha"
+#~ msgstr "캡차 (보안코드)"
+
+#~ msgid "Photos"
+#~ msgstr "사진"
+
+#~ msgid "WP Search"
+#~ msgstr "통합검색"
+
+#~ msgid "IP Address"
+#~ msgstr "IP 주소"
+
+#~ msgid "File"
+#~ msgstr "파일"
+
+#~ msgid "No forum found."
+#~ msgstr "게시판이 없습니다."
+
+#~ msgid "게시판 이름"
+#~ msgstr "게시판 이름"
+
+#~ msgid "설치된 페이지"
+#~ msgstr "설치된 페이지"
+
+#~ msgid "읽기권한"
+#~ msgstr "읽기권한"
+
+#~ msgid "쓰기권한"
+#~ msgstr "쓰기권한"
+
+#~ msgid "댓글쓰기권한"
+#~ msgstr "댓글쓰기권한"
+
+#~ msgid "편집"
+#~ msgstr "편집"
+
+#~ msgid "페이지 보기"
+#~ msgstr "페이지 보기"
+
+#~ msgid "페이지 연결 없음"
+#~ msgstr "페이지 연결 없음"
+
+#~ msgid "선택된 관리자"
+#~ msgstr "선택된 관리자"
+
+#~ msgid "최고관리자"
+#~ msgstr "최고관리자"
+
+#~ msgid "본인의 댓글만 보기"
+#~ msgstr "본인의 댓글만 보기"
+
+#~ msgid "직접선택"
+#~ msgstr "직접선택"
+
+#~ msgid "Published"
+#~ msgstr "발행됨"
+
+#~ msgid "Trash"
+#~ msgstr "휴지통"
+
+#~ msgid "First"
+#~ msgstr "처음"
+
+#~ msgid "Last"
+#~ msgstr "마지막"
+
+#~ msgid "KBoard : 게시판"
+#~ msgstr "KBoard : 게시판"
+
+#~ msgid "Find theme"
+#~ msgstr "테마 찾기"
+
+#~ msgid "Find plugin"
+#~ msgstr "플러그인 찾기"
+
+#~ msgid "KBoard Add Media"
+#~ msgstr "KBoard 미디어 추가"
+
+#~ msgid "New Forum"
+#~ msgstr "게시판 생성"
+
+#~ msgid "대시보드"
+#~ msgstr "대시보드"
+
+#~ msgid "게시판 목록 및 관리"
+#~ msgstr "게시판 목록 및 관리"
+
+#~ msgid "최신글 모아보기"
+#~ msgstr "최신글 모아보기"
+
+#~ msgid "최신글 모아보기 생성"
+#~ msgstr "최신글 모아보기 생성"
+
+#~ msgid "백업 및 복구"
+#~ msgstr "백업 및 복구"
+
+#~ msgid "업데이트"
+#~ msgstr "업데이트"
+
+#~ msgid "스토어"
+#~ msgstr "스토어"
+
+#~ msgid "Partners"
+#~ msgstr "파트너"
+
+#~ msgid "전체 게시글"
+#~ msgstr "전체 게시글"
+
+#~ msgid "전체 댓글"
+#~ msgstr "전체 댓글"
+
+#~ msgid "Next"
+#~ msgstr "다음"
+
+#~ msgid "Prev"
+#~ msgstr "이전"
+
+#~ msgid "Please enter the CAPTCHA."
+#~ msgstr "옆에 보이는 보안코드를 입력해주세요."
+
+#~ msgid "Please enter the name."
+#~ msgstr "이름을 입력해주세요."
+
+#~ msgid "Please enter the email."
+#~ msgstr "이메일을 입력해주세요."
+
+#~ msgid "Please wait."
+#~ msgstr "기다려주세요."
+
+#~ msgid "Newest"
+#~ msgstr "최신순"
+
+#~ msgid "Best"
+#~ msgstr "추천순"
+
+#~ msgid "Did it help?"
+#~ msgstr "도움이 되었나요?"
+
+#~ msgid "Hashtag"
+#~ msgstr "해시태그"
+
+#~ msgid "Add a Tag"
+#~ msgstr "태그 추가"
+
+#~ msgid "Removing tag"
+#~ msgstr "태그 삭제"
+
+#~ msgid "Changes you made may not be saved."
+#~ msgstr "변경사항이 저장되지 않을 수 있습니다."
+
+#~ msgid "Name"
+#~ msgstr "이름"
+
+#~ msgid "Address 2"
+#~ msgstr "주소 2"
+
+#~ msgid "Phone number"
+#~ msgstr "휴대폰번호"
+
+#~ msgid "Phone"
+#~ msgstr "휴대폰번호"
+
+#~ msgid "VAT number"
+#~ msgstr "사업자등록번호"
+
+#~ msgid "Bank account"
+#~ msgstr "은행계좌"
+
+#~ msgid "Name of deposit"
+#~ msgstr "입금자명"
+
+#~ msgid "Find"
+#~ msgstr "찾기"
+
+#~ msgid "Rate"
+#~ msgstr "등급"
+
+#~ msgid "Waiting"
+#~ msgstr "대기"
+
+#~ msgid "Complete"
+#~ msgstr "완료"
+
+#~ msgid "Answer"
+#~ msgstr "답변"
+
+#~ msgid "Ask Question"
+#~ msgstr "질문하기"
+
+#~ msgid "Categories"
+#~ msgstr "카테고리"
+
+#~ msgid "Pages"
+#~ msgstr "페이지"
+
+#~ msgid "All Products"
+#~ msgstr "전체상품"
+
+#~ msgid "Your Sales"
+#~ msgstr "판매조회"
+
+#~ msgid "My Orders"
+#~ msgstr "주문조회"
+
+#~ msgid "My Sales"
+#~ msgstr "판매조회"
+
+#~ msgid "New Product"
+#~ msgstr "상품등록"
+
+#~ msgid "Period"
+#~ msgstr "기간"
+
+#~ msgid "Period of use"
+#~ msgstr "사용기간"
+
+#~ msgid "Price"
+#~ msgstr "판매가격"
+
+#~ msgid "Total price"
+#~ msgstr "총 가격"
+
+#~ msgid "Amount"
+#~ msgstr "결제금액"
+
+#~ msgid "Quantity"
+#~ msgstr "수량"
+
+#~ msgid "Use points"
+#~ msgstr "포인트 사용"
+
+#~ msgid "My points"
+#~ msgstr "내 포인트"
+
+#~ msgid "Apply points"
+#~ msgstr "포인트 사용"
+
+#~ msgid "Buy It Now"
+#~ msgstr "구매하기"
+
+#~ msgid "Sold Out"
+#~ msgstr "품절"
+
+#~ msgid "For free"
+#~ msgstr "무료"
+
+#, php-format
+#~ msgid "Pay %s"
+#~ msgstr "%s 결제"
+
+#~ msgid "Payment method"
+#~ msgstr "결제수단"
+
+#~ msgid "Credit card"
+#~ msgstr "신용카드"
+
+#~ msgid "Make a deposit"
+#~ msgstr "무통장입금"
+
+#~ msgid "Reward point"
+#~ msgstr "적립 포인트"
+
+#~ msgid "Download expiry"
+#~ msgstr "다운로드 기간"
+
+#~ msgid "Checkout"
+#~ msgstr "주문정보확인"
+
+#~ msgid "Buyer information"
+#~ msgstr "주문자"
+
+#~ msgid "Applying cash receipts"
+#~ msgstr "현금영수증 신청"
+
+#~ msgid "Applying cash receipt"
+#~ msgstr "현금영수증 신청"
+
+#~ msgid "Cash receipt"
+#~ msgstr "현금영수증"
+
+#~ msgid "Privacy policy"
+#~ msgstr "개인 정보 정책"
+
+#~ msgid "I agree to the privacy policy."
+#~ msgstr "개인 정보 정책에 동의합니다."
+
+#~ msgid ""
+#~ "I confirm the terms of the transaction and agree to the payment process."
+#~ msgstr "거래조건을 확인했으며 결제진행에 동의합니다."
+
+#~ msgid "Today"
+#~ msgstr "오늘"
+
+#~ msgid "Yesterday"
+#~ msgstr "어제"
+
+#~ msgid "This month"
+#~ msgstr "이번달"
+
+#~ msgid "Last month"
+#~ msgstr "지난달"
+
+#~ msgid "Last 30 days"
+#~ msgstr "최근30일"
+
+#~ msgid "Agree"
+#~ msgstr "찬성"
+
+#~ msgid "Disagree"
+#~ msgstr "반대"
+
+#~ msgid "Opinion"
+#~ msgstr "의견"
+
+#~ msgid "PayPal"
+#~ msgstr "페이팔"
+
+#~ msgid "Point"
+#~ msgstr "포인트"
+
+#~ msgid "Zip Code"
+#~ msgstr "우편번호"
+
+#~ msgid "This year"
+#~ msgstr "올해"
+
+#~ msgid "Last year"
+#~ msgstr "작년"
+
+#~ msgid "Period total"
+#~ msgstr "기간 합계"
+
+#~ msgid "Total revenue"
+#~ msgstr "전체 수익"
+
+#~ msgid "Terms of service"
+#~ msgstr "이용약관"
+
+#~ msgid "I agree to the terms of service."
+#~ msgstr "이용약관에 동의합니다."
+
+#~ msgid "Your Shopping Cart Is Empty!"
+#~ msgstr "장바구니가 비어 있습니다!"
+
+#~ msgid "Information"
+#~ msgstr "정보"
+
+#~ msgid "Telephone"
+#~ msgstr "전화번호"
+
+#~ msgid "Items"
+#~ msgstr "품목"
+
+#~ msgid "Total quantity"
+#~ msgstr "총수량"
+
+#~ msgid "Make Payment"
+#~ msgstr "결제하기"
+
+#~ msgid "Add"
+#~ msgstr "추가"
+
+#~ msgid "Close"
+#~ msgstr "닫기"
+
+#~ msgid "KBoard Forum Settings"
+#~ msgstr "KBoard 게시판 관리"
+
+#~ msgid "KBoard : 백업 및 복구"
+#~ msgstr "KBoard : 백업 및 복구"
+
+#~ msgid "KBoard : 전체 게시글"
+#~ msgstr "KBoard : 전체 게시글"
+
+#~ msgid "KBoard : 대시보드"
+#~ msgstr "KBoard : 대시보드"
+
+#~ msgid "시스템 설정"
+#~ msgstr "시스템 설정"
+
+#~ msgid "커뮤니티로 이동"
+#~ msgstr "커뮤니티로 이동"
+
+#~ msgid "KBoard : 최신글 뷰"
+#~ msgstr "KBoard : 최신글 뷰"
+
+#~ msgid "KBoard : 최신글 뷰 관리"
+#~ msgstr "KBoard : 최신글 뷰 관리"
+
+#~ msgid "변경 사항 저장"
+#~ msgstr "변경 사항 저장"
+
+#~ msgid "KBoard : 게시판 목록"
+#~ msgstr "KBoard : 게시판 목록"
+
+#~ msgid "KBoard : 게시판 관리"
+#~ msgstr "KBoard : 게시판 관리"
+
+#~ msgid "기본설정"
+#~ msgstr "기본설정"
+
+#~ msgid "권한설정"
+#~ msgstr "권한설정"
+
+#~ msgid "입력필드 설정"
+#~ msgstr "입력필드 설정"
+
+#~ msgid "고급설정"
+#~ msgstr "고급설정"
+
+#~ msgid "포인트설정"
+#~ msgstr "포인트설정"
+
+#~ msgid "대량관리"
+#~ msgstr "대량관리"
+
+#~ msgid "확장설정"
+#~ msgstr "확장설정"
+
+#~ msgid "Please enter only numbers"
+#~ msgstr "숫자만 입력해주세요"
+
+#~ msgid "Writing comment increase points"
+#~ msgstr "댓글쓰기 증가 포인트"
+
+#~ msgid "Writing comment decrease points"
+#~ msgstr "댓글쓰기 감소 포인트"
+
+#~ msgid "Deleted comment increment points"
+#~ msgstr "댓글삭제 증가 포인트"
+
+#~ msgid "Deleted comment decrease points"
+#~ msgstr "댓글삭제 감소 포인트"
+
+#~ msgid "Download"
+#~ msgstr "다운로드"
+
+#~ msgid "Upload"
+#~ msgstr "업로드"
+
+#~ msgid "KBoard : 스토어"
+#~ msgstr "KBoard : 스토어"
+
+#~ msgid "로그인"
+#~ msgstr "로그인"
+
+#~ msgid "KBoard : 업데이트"
+#~ msgstr "KBoard : 업데이트"
+
+#~ msgid "코스모스팜 대시보드 입니다."
+#~ msgstr "코스모스팜 대시보드 입니다."
+
+#~ msgid "최신버전 확인 및 운영관련 기능을 사용할 수 있습니다."
+#~ msgstr "최신버전 확인 및 운영관련 기능을 사용할 수 있습니다."
+
+#~ msgid "Events and News"
+#~ msgstr "이벤트 및 뉴스"
+
+#~ msgid "등록된 상품이 없습니다."
+#~ msgstr "등록된 상품이 없습니다."
+
+#~ msgid "List"
+#~ msgstr "목록보기"
+
+#~ msgid "Password confirm"
+#~ msgstr "비밀번호 확인"
+
+#~ msgid "Like"
+#~ msgstr "좋아요"
+
+#~ msgid "Unlike"
+#~ msgstr "싫어요"
+
+#~ msgid "Print"
+#~ msgstr "인쇄"
+
+#, php-format
+#~ msgid "Download %s"
+#~ msgstr "다운로드 %s"
+
+#~ msgid "Reply"
+#~ msgstr "답글쓰기"
+
+#~ msgid "KBoard is the best community software available for WordPress"
+#~ msgstr "의미있는 워드프레스 게시판"
+
+#~ msgid "CAPTCHA"
+#~ msgstr "CAPTCHA"
+
+#~ msgid "Only title (secret document)"
+#~ msgstr "제목만 검색허용 (비밀글)"
+
+#~ msgid "Exclusion"
+#~ msgstr "통합검색 제외"
+
+#~ msgid "Back"
+#~ msgstr "돌아가기"
+
+#~ msgid "Save"
+#~ msgstr "저장하기"
+
+#~ msgid "Votes"
+#~ msgstr "추천"
+
+#~ msgid "New"
+#~ msgstr "글쓰기"
+
+#~ msgid "Send"
+#~ msgstr "보내기"
+
+#~ msgid "Your message was sent successfully. Thanks."
+#~ msgstr "메시지가 성공적으로 전송되었습니다. 감사합니다."
+
+#~ msgid "업로드"
+#~ msgstr "업로드"
+
+#~ msgid "선택된 이미지 삽입하기"
+#~ msgstr "선택된 이미지 삽입하기"
+
+#~ msgid "선택 삽입"
+#~ msgstr "선택 삽입"
+
+#~ msgid "전체선택"
+#~ msgstr "전체선택"
+
+#~ msgid "창닫기"
+#~ msgstr "창닫기"
+
+#~ msgid "선택됨"
+#~ msgstr "선택됨"
+
+#~ msgid "삽입"
+#~ msgstr "삽입"
+
+#~ msgid "삭제"
+#~ msgstr "삭제"
+
+#~ msgid "업로드된 이미지가 없습니다."
+#~ msgstr "업로드된 이미지가 없습니다."
+
+#~ msgid "업로드 버튼을 눌러 이미지 파일을 선택하면 이곳에 표시됩니다 :D"
+#~ msgstr "업로드 버튼을 눌러 이미지 파일을 선택하면 이곳에 표시됩니다 :D"
+
+#~ msgid "로딩중"
+#~ msgstr "로딩중"
+
+#~ msgid "선택한 이미지가 없습니다."
+#~ msgstr "선택한 이미지가 없습니다."
+
+#~ msgid "선택한 이미지를 본문에 삽입했습니다. 창을 닫을까요?"
+#~ msgstr "선택한 이미지를 본문에 삽입했습니다. 창을 닫을까요?"
+
+#~ msgid ""
+#~ "Network connection with the server is unstable. Please proceed to upload "
+#~ "again."
+#~ msgstr "서버와 네트워크 연결 불안정합니다. 다시 업로드를 시도해주세요."
+
+#~ msgid "이미지 파일만 업로드 가능합니다."
+#~ msgstr "이미지 파일만 업로드 가능합니다."
+
+#~ msgid "Color Select"
+#~ msgstr "색상 선택"
+
+#~ msgid "Temporary save"
+#~ msgstr "임시저장"
+
+#~ msgid "KBoard 미디어 추가"
+#~ msgstr "KBoard 미디어 추가"
+
+#~ msgid "Success!"
+#~ msgstr "성공!"
+
+#~ msgid "There was an error unzipping the file."
+#~ msgstr "파일을 압축 해제하는 중 오류가 발생했습니다."
+
+#~ msgid "설치된 게시판 플러그인 버전"
+#~ msgstr "설치된 게시판 플러그인 버전"
+
+#~ msgid "최신"
+#~ msgstr "최신"
+
+#~ msgid "변경사항"
+#~ msgstr "변경사항"
+
+#~ msgid "설치된 댓글 플러그인 버전"
+#~ msgstr "설치된 댓글 플러그인 버전"
+
+#~ msgid "Your Message"
+#~ msgstr "메시지"
+
+#~ msgid ""
+#~ "Download file is decompression failed, please check directory and file "
+#~ "permissions."
+#~ msgstr "다운로드 파일 압축 해제 실패, 디렉토리 및 파일 권한을 확인하십시오."
+
+#~ msgid "File copy failed, directory requires write permission."
+#~ msgstr "파일 복사 실패, 디렉토리에 쓰기 권한이 필요합니다."
+
+#~ msgid "Free item"
+#~ msgstr "무료"
+
+#~ msgid "Ask a question"
+#~ msgstr "질문하기"
+
+#~ msgid "Your changes could not be saved."
+#~ msgstr "변경사항이 저장되지 않을 수 있습니다."
+
+#~ msgid "WordPress KBoard feed"
+#~ msgstr "워드프레스 KBoard 피드"
+
+#~ msgid "Unable to connect to Cosmosfarm server."
+#~ msgstr "코스모스팜 서버에 접속할 수 없습니다."
+
+#~ msgid "The CAPTCHA code is not valid. Please enter the CAPTCHA code."
+#~ msgstr "보안코드가 올바르지 않습니다. 보안 코드를 입력해주세요."
+
+#~ msgid "관리 권한이 없습니다."
+#~ msgstr "관리 권한이 없습니다."
+
+#~ msgid "생성일자"
+#~ msgstr "생성일자"
+
+#~ msgid "답글입니다."
+#~ msgstr "답글입니다."
+
+#~ msgid "게시판"
+#~ msgstr "게시판"
+
+#~ msgid "제목/내용"
+#~ msgstr "제목/내용"
+
+#~ msgid "작성자"
+#~ msgstr "작성자"
+
+#~ msgid "비밀글"
+#~ msgstr "비밀글"
+
+#~ msgid "공지사항"
+#~ msgstr "공지사항"
+
+#~ msgid "작성일"
+#~ msgstr "작성일"
+
+#~ msgid "게시판 변경"
+#~ msgstr "게시판 변경"
+
+#~ msgid "Open"
+#~ msgstr "페이지 열기"
+
+#~ msgid "예"
+#~ msgstr "예"
+
+#~ msgid "아니오"
+#~ msgstr "아니오"
+
+#~ msgid "다음 페이지에서 게시판과 댓글 플러그인 모두를 업데이트해주세요."
+#~ msgstr "다음 페이지에서 게시판과 댓글 플러그인 모두를 업데이트해주세요."
+
+#~ msgid "KBoard 게시판 설치도구 플러그인을 먼저 설치해주세요."
+#~ msgstr "KBoard 게시판 설치도구 플러그인을 먼저 설치해주세요."
+
+#~ msgid "새창열기"
+#~ msgstr "새창열기"
+
+#~ msgid ""
+#~ "<code>/wp-content/uploads/kboard_attached</code> 경로의 모든 파일을 FTP를 "
+#~ "사용해서 다운로드받아 옮겨주세요."
+#~ msgstr ""
+#~ "<code>/wp-content/uploads/kboard_attached</code> 경로의 모든 파일을 FTP를 "
+#~ "사용해서 다운로드받아 옮겨주세요."
+
+#~ msgid ""
+#~ "/wp-content/uploads/kboard_attached 경로의 모든 파일을 FTP로 다운로드받아 "
+#~ "옮겨주세요."
+#~ msgstr ""
+#~ "/wp-content/uploads/kboard_attached 경로의 모든 파일을 FTP로 다운로드받아 "
+#~ "옮겨주세요."
+
+#~ msgid "게시글이 없습니다."
+#~ msgstr "게시글이 없습니다."
+
+#~ msgid "최신글 뷰가 없습니다."
+#~ msgstr "최신글 뷰가 없습니다."
+
+#~ msgid "게시판이 없습니다."
+#~ msgstr "게시판이 없습니다."
+
+#~ msgid "Vote"
+#~ msgstr "추천"
+
+#~ msgid "홈페이지"
+#~ msgstr "홈페이지"
+
+#~ msgid "커뮤니티"
+#~ msgstr "커뮤니티"
+
+#~ msgid "고객지원"
+#~ msgstr "고객지원"
+
+#~ msgid "블로그"
+#~ msgstr "블로그"
+
+#~ msgid "다음"
+#~ msgstr "다음"
+
+#~ msgid "이전"
+#~ msgstr "이전"
+
+#~ msgid "WordPress"
+#~ msgstr "워드프레스"
+
+#~ msgid "No backup privilege."
+#~ msgstr "백업 권한이 없습니다."
+
+#, fuzzy
+#~ msgid "No document UID."
+#~ msgstr "글이 없습니다."
+
+#, fuzzy
+#~ msgid "Total Reply"
+#~ msgstr "답글쓰기"
+
+#, fuzzy
+#~ msgid "It is a comment does not exist."
+#~ msgstr "게시판 아이디가 없습니다."
+
+#~ msgid "Language"
+#~ msgstr "언어"
+
+#~ msgid "The Best of WordPress Board"
+#~ msgstr "의미있는 워드프레스 게시판"
+
+#~ msgid "Title and content searchable"
+#~ msgstr "제목과 내용 검색허용"
+
+#~ msgid "Back to top"
+#~ msgstr "뒤로가기"
+
+#~ msgid "It is the wrong approach."
+#~ msgstr "잘못된 접근입니다."
+
+#~ msgid "You will need to login."
+#~ msgstr "로그인 하셔야 사용할 수 있습니다."
+
+#~ msgid "Update the server connection fails, please reconnect the Cosmosfarm."
+#~ msgstr "업데이트 서버 연결 실패, 코스모스팜 계정을 다시 연결해 주세요."
+
+#~ msgid ""
+#~ "Failure to decompress the file, check the permissions of directories and "
+#~ "files."
+#~ msgstr "파일 압축 해제 실패, 디렉토리 및 파일의 권한을 확인하세요."
+
+#~ msgid "File copy failed"
+#~ msgstr "파일 복사 실패"
+
+#~ msgid "Must have write permissions in the directory."
+#~ msgstr "디렉토리에 쓰기 권한이 있어야 합니다."

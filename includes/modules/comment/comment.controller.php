@@ -37,10 +37,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 			if(!$manual_inserted) {  // check WP nonce if a guest inserts a new post
 				$wp_verify_nonce = \X2board\Includes\Classes\Context::get('x2b_'.X2B_CMD_PROC_WRITE_COMMENT.'_nonce');
 				if( is_null( $wp_verify_nonce ) ){
-					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request1', 'x2board') );
+					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', X2B_DOMAIN).'1' );
 				}
 				if( !wp_verify_nonce($wp_verify_nonce, 'x2b_'.X2B_CMD_PROC_WRITE_COMMENT) ){
-					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request2', 'x2board') );
+					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', X2B_DOMAIN).'2' );
 				}
 			}
 
@@ -90,7 +90,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 			// check if a posting of the corresponding post_id exists
 			$parent_post_id = $obj->parent_post_id;
 			if(!$parent_post_id) {
-				return new \X2board\Includes\Classes\BaseObject( -1, __('msg_invalid_request', 'x2board') );
+				return new \X2board\Includes\Classes\BaseObject( -1, __('msg_invalid_request', X2B_DOMAIN) );
 			}
 
 			// get a object of post model
@@ -109,10 +109,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 				unset($o_post_model);
 
 				if($parent_post_id != $o_post->post_id) {
-					return new \X2board\Includes\Classes\BaseObject( -1, __('msg_invalid_post', 'x2board') );
+					return new \X2board\Includes\Classes\BaseObject( -1, __('msg_invalid_post', X2B_DOMAIN) );
 				}
 				if(!$o_post->allow_comment()) {
-					return new \X2board\Includes\Classes\BaseObject( -1, __('msg_invalid_request', 'x2board') );
+					return new \X2board\Includes\Classes\BaseObject( -1, __('msg_invalid_request', X2B_DOMAIN) );
 				}
 				unset($o_post);
 
@@ -139,14 +139,14 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 
 			// error display if neither of log-in info and user name exist.
 			if(!$o_logged_info->ID && !$obj->nick_name) {
-				return new \X2board\Includes\Classes\BaseObject( -1, __('msg_invalid_request', 'x2board') );
+				return new \X2board\Includes\Classes\BaseObject( -1, __('msg_invalid_request', X2B_DOMAIN) );
 			}
 
 			if(!$obj->comment_id) {
 				$obj->comment_id = \X2board\Includes\getNextSequence();
 			}
 			elseif(!$is_admin && !$manual_inserted && !\X2board\Includes\checkUserSequence($obj->comment_id)) {
-				return new \X2board\Includes\Classes\BaseObject( -1, __('msg_not_permitted', 'x2board') );
+				return new \X2board\Includes\Classes\BaseObject( -1, __('msg_not_permitted', X2B_DOMAIN) );
 			}
 
 			// determine the order
@@ -454,10 +454,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 			if(!$manual_updated) {  // check WP nonce if a guest inserts a new post
 				$wp_verify_nonce = \X2board\Includes\Classes\Context::get('x2b_'.X2B_CMD_PROC_WRITE_COMMENT.'_nonce');
 				if( is_null( $wp_verify_nonce ) ){
-					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request1', 'x2board') );
+					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', X2B_DOMAIN).'1' );
 				}
 				if( !wp_verify_nonce($wp_verify_nonce, 'x2b_'.X2B_CMD_PROC_WRITE_COMMENT) ){
-					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request2', 'x2board') );
+					return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', X2B_DOMAIN).'2' );
 				}
 			}
 
@@ -487,7 +487,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 
 			// check if permission is granted
 			if(!$is_admin && !$o_source_comment->is_granted()) {
-				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', 'x2board') );
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', X2B_DOMAIN) );
 			}
 
 			if($obj->password) {
@@ -686,7 +686,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 			}
 						
 			if(!$o_post->is_exists() || !$o_post->is_granted()) {
-				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', 'x2board') );
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', X2B_DOMAIN) );
 			}
 
 			// get a list of comments and then execute a trigger(way to reduce the processing cost for delete all)
@@ -784,7 +784,7 @@ var_dump($wpdb->last_error);
 // var_dump($o_comment);
 // exit;
 			if($o_comment->comment_id != $n_comment_id) {
-				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', 'x2board') );
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', X2B_DOMAIN) );
 			}
 
 			$n_parent_post_id = $o_comment->parent_post_id;
@@ -798,7 +798,7 @@ var_dump($wpdb->last_error);
 
 			// check if permission is granted
 			if(!$is_admin && !$o_comment->is_granted()) {
-				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', 'x2board') );
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_not_permitted', X2B_DOMAIN) );
 			}
 
 			// check if child comment exists on the comment
@@ -819,7 +819,7 @@ var_dump($wpdb->last_error);
 				}
 
 				if(!$deleteAllComment) {
-					return new \X2board\Includes\Classes\BaseObject(-1, __('fail_to_delete_have_children', 'x2board') );
+					return new \X2board\Includes\Classes\BaseObject(-1, __('fail_to_delete_children_comment', X2B_DOMAIN) );
 				}
 				else {
 					foreach($childs as $val) {

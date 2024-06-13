@@ -1106,7 +1106,7 @@ var_dump('detected view cmd:'. $s_cmd);
 		public static function getLangType() {
 			$a_locale = array('ko_KR' => 'ko', 'en_GB'=>'en');
 			if( !isset($a_locale[get_locale()]) ) {
-				wp_die(__('undefined locale', 'x2board'));
+				wp_die(__('msg_undefined_locale', X2B_DOMAIN));
 			}
 			return $a_locale[get_locale()];
 			// $self = self::getInstance();

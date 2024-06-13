@@ -29,7 +29,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminModel')) {
 			$o_current_user = wp_get_current_user();
 			if( !user_can( $o_current_user, 'administrator' ) || !current_user_can('manage_x2board') ) {
 				unset($o_current_user);
-				wp_die(__('You do not have permission.', 'x2board'));
+				wp_die(__('msg_no_permission', X2B_DOMAIN));
 			}
 			unset($o_current_user);
 			$this->_build_user_define_list_fields();
@@ -106,13 +106,13 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminModel')) {
 		 */
 		public function render_user_field_ui() {
 			$s_html = '<div class="x2board-fields-wrap">
-						<div class="x2board-fields-message">일부 스킨에서는 리스트 필드 설정이 작동하지 않습니다.</div>
+						<div class="x2board-fields-message">'.__('about_list_field_configuration', X2B_DOMAIN).'</div>
 						<div class="x2board-fields-left">
-							<h3 class="x2board-fields-h3">'.__('Available field', 'x2board').'</h3>
+							<h3 class="x2board-fields-h3">'.__('lbl_available_user_define_fields', X2B_DOMAIN).'</h3>
 							<ul class="x2board-fields">
 								<li class="x2board-list-config-fields-default left">
 									<button type="button" class="x2board-fields-header">'.
-										__('Unchosen field', 'x2board').
+										__('lbl_unlisted_field', X2B_DOMAIN).
 										'<span class="fields-up">▲</span>
 										<span class="fields-down">▼</span>
 									</button>
@@ -124,12 +124,12 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminModel')) {
 						</div>
 						<div class="x2board-fields-right">
 							<div class="x2board-fields x2board-sortable-fields">
-								<h3 class="x2board-fields-h3">'.__('List fields presentation', 'x2board').'</h3>
-								<div class="description">'.__('Drag from the left section to display on the list', 'x2board').'</div>
+								<h3 class="x2board-fields-h3">'.__('lbl_listed_fields', X2B_DOMAIN).'</h3>
+								<div class="description">'.__('lbl_drag_from_left', X2B_DOMAIN).'</div>
 								<ul class="x2board-skin-fields x2board-list-config-fields-sortable connected-list-config-sortable">';
 					$s_html .= $this->_render_on_list_fields();
 					$s_html .= 	'</ul>
-								<div class="description"><button type="button" class="button button-small" onclick="x2board_skin_fields_reset()">'.__('Reset configuration', 'x2board').'</button></div>
+								<div class="description"><button type="button" class="button button-small" onclick="x2board_skin_fields_reset()">'.__('cmd_reset_configuration', X2B_DOMAIN).'</button></div>
 							</div>
 						</div>
 					</div>';
@@ -159,7 +159,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminModel')) {
 				$s_html .=			'<input type="hidden" class="field_data var_type" value="'.esc_attr($o_field_info->var_type).'">';
 				$s_html .=			'<input type="hidden" class="field_data var_name" value="'.esc_attr($o_field_info->var_name).'">';
 				$s_html .=			'<div class="attr-row">
-										<label class="attr-name" for="'.$s_eid.'_field_label">'.__('Field introduction', 'x2board').'</label>
+										<label class="attr-name" for="'.$s_eid.'_field_label">'.__('lbl_field_introduction', X2B_DOMAIN).'</label>
 										<div class="attr-value">'.$this->_a_field_introduction[$o_field_info->var_type].'</div>
 									</div>
 								</div>
@@ -189,7 +189,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminModel')) {
 										</button>
 									</div>
 									<div class="x2board-fields-toggle">
-										<button type="button" class="fields-list-config-remove" title="'.__('Remove', 'x2board').'">X</button>
+										<button type="button" class="fields-list-config-remove" title="'.__('cmd_remove', X2B_DOMAIN).'">X</button>
 									</div>
 								</div>
 								<div class="x2board-fields-content">';
@@ -197,7 +197,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminModel')) {
 				$s_html .= 			'<input type="hidden" id="'.$o_list_field->var_type.'_var_type" name="board_list_fields['.$o_list_field->eid.'][var_type]" class="field_data var_type" value="'.$o_list_field->var_type.'">';
 				$s_html .= 			'<input type="hidden" id="'.$o_list_field->var_type.'_var_name" name="board_list_fields['.$o_list_field->eid.'][var_name]" class="field_data var_name" value="'.$o_list_field->var_name.'">';
 				$s_html .=			'<div class="attr-row">
-										<label class="attr-name" for="'.$o_list_field->var_type.'_field_label">'.__('Field introduction', 'x2board').'</label>
+										<label class="attr-name" for="'.$o_list_field->var_type.'_field_label">'.__('lbl_field_introduction', X2B_DOMAIN).'</label>
 										<div class="attr-value">'.$this->_a_field_introduction[$o_list_field->var_type].'</div>
 									</div>
 								</div>

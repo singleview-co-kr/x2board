@@ -60,13 +60,13 @@ if(isset($category_list[$post->get('category_id')])) {
 					<?php endif ?>
 					<?php if($mi->rd_info=='2'): ?><!-- <block cond="$mi->rd_info=='2'"> -->
 						<?php if($mi->rd_view==' '): ?><!-- cond="!$mi->rd_view" -->
-							<span><?php echo __('readed_count', 'x2board')?> <b><?php echo $post->get('readed_count')?></b></span>
+							<span><?php echo __('lbl_readed_count', X2B_DOMAIN)?> <b><?php echo $post->get('readed_count')?></b></span>
 						<?php endif ?>
 						<?php if($mi->rd_vote==' '): ?>  <!-- cond="!$mi->rd_vote" -->
-							<span><?php echo __('voted_count', 'x2board')?> <b><?php echo $post->get('voted_count')?></b></span>
+							<span><?php echo __('lbl_voted_count', X2B_DOMAIN)?> <b><?php echo $post->get('voted_count')?></b></span>
 						<?php endif ?>
 						<?php if($mi->rd_cmt==' '): ?>	<!-- cond="!$mi->rd_cmt" -->
-							<span><?php echo __('comment', 'x2board')?> <b><?php echo $post->get_comment_count()?></b></span>
+							<span><?php echo __('lbl_comment', X2B_DOMAIN)?> <b><?php echo $post->get_comment_count()?></b></span>
 						<?php endif ?>
 					<?php endif ?><!-- </block> -->
 				</div>
@@ -88,13 +88,13 @@ if(isset($category_list[$post->get('category_id')])) {
 					<?php endif ?>
 					<?php if($mi->rd_info==' '): ?><!-- <block cond="!$mi->rd_info"> -->
 						<?php if($mi->rd_view==' '): ?><!-- cond="!$mi->rd_view" -->
-							<span><?php echo __('readed_count', 'x2board')?> <b><?php echo $post->get('readed_count')?></b></span>
+							<span><?php echo __('lbl_readed_count', X2B_DOMAIN)?> <b><?php echo $post->get('readed_count')?></b></span>
 						<?php endif ?>
 						<?php if($mi->rd_vote==' '): ?>  <!-- cond="!$mi->rd_vote" -->
-							<span><?php echo __('voted_count', 'x2board')?> <b><?php echo $post->get('voted_count')?></b></span>
+							<span><?php echo __('lbl_voted_count', X2B_DOMAIN)?> <b><?php echo $post->get('voted_count')?></b></span>
 						<?php endif ?>
 						<?php if($mi->rd_cmt==' '): ?>	<!-- cond="!$mi->rd_cmt" -->
-							<span><?php echo __('comment', 'x2board')?> <b><?php echo $post->get_comment_count()?></b></span>
+							<span><?php echo __('lbl_comment', X2B_DOMAIN)?> <b><?php echo $post->get_comment_count()?></b></span>
 						<?php endif ?>
 					<?php endif ?><!-- </block> -->
 				</div>
@@ -165,7 +165,7 @@ if(isset($category_list[$post->get('category_id')])) {
 									<td><?php echo esc_html($val->getValueHTML())?></td>
 								<?php endif ?>
 								<?php if($val->eid=='rating'): ?><!-- cond="$val->eid=='rating'"  -->
-									<td class="rating"><span class="starRating" title="<?php echo esc_html($val->getValueHTML())?><?php echo $lang->score?>"><span style="width:<?php echo esc_html($val->getValueHTML())*10?>%"><?php echo esc_html($val->getValueHTML())?></span></span></td>
+									<td class="rating"><span class="starRating" title="<?php echo esc_html($val->getValueHTML())?><?php echo __('lbl_score', X2B_DOMAIN) ?>"><span style="width:<?php echo esc_html($val->getValueHTML())*10?>%"><?php echo esc_html($val->getValueHTML())?></span></span></td>
 								<?php endif ?>
 							</tr>
 						<?php endif ?>
@@ -197,11 +197,11 @@ if(isset($category_list[$post->get('category_id')])) {
 			<input type="hidden" name="board_id" value="<?php echo $board_id?>" />
 			<input type="hidden" name="page" value="<?php echo $page?>" />
 			<input type="hidden" name="post_id" value="<?php echo $post->post_id?>" />
-			<h3>&quot;<?php echo __('msg_is_secret', 'x2board')?>&quot;</h3>
+			<h3>&quot;<?php echo __('msg_secret_post', X2B_DOMAIN)?>&quot;</h3>
 			<span class="itx_wrp">
-				<label for="cpw_<?php echo $post->post_id?>"><?php echo __('password', 'x2board')?></label>
+				<label for="cpw_<?php echo $post->post_id?>"><?php echo __('lbl_password', X2B_DOMAIN)?></label>
 				<input type="password" name="password" id="cpw_<?php echo $post->post_id?>" class="itx" />
-				<input class="bd_btn" type="submit" value="<?php echo __('cmd_input', 'x2board')?>" />
+				<input class="bd_btn" type="submit" value="<?php echo __('cmd_submit', X2B_DOMAIN)?>" />
 			</span>
 		</form>
 	</div>
@@ -221,7 +221,7 @@ if(isset($category_list[$post->get('category_id')])) {
 										<td><?php echo esc_html($val->getValueHTML()) ?></td>
 									<?php endif ?>
 									<?php if($val->eid=='rating'): ?><!-- cond="$val->eid=='rating'"  -->
-										<td class="rating"><span class="starRating" title="<?php echo esc_html($val->getValueHTML()) ?><?php echo $lang->score ?>"><span style="width:<?php echo esc_html($val->getValueHTML())*10 ?>%"><?php echo esc_html($val->getValueHTML()) ?></span></span></td>
+										<td class="rating"><span class="starRating" title="<?php echo esc_html($val->getValueHTML()) ?><?php echo __('lbl_score', X2B_DOMAIN) ?>"><span style="width:<?php echo esc_html($val->getValueHTML())*10 ?>%"><?php echo esc_html($val->getValueHTML()) ?></span></span></td>
 									<?php endif ?>
 								</tr>
 							<?php endif;
@@ -365,18 +365,18 @@ foreach( $post_list as $no => $o_post ) {
 			<div class="rd_vote">
 				<a class="bd_login" href="#" onclick="doCallModuleAction('post','procDocumentVoteUp','{$post->post_id}');return false;"|cond="$is_logged" style="border:2px solid #<?php echo $mi->color ?>;color:#<?php echo $mi->color?>;">
 					<b><i class="fa fa-heart"></i> <?php echo $post->get('voted_count')?></b>
-					<p><?php echo __('cmd_vote', 'x2board')?></p>
+					<p><?php echo __('cmd_vote', X2B_DOMAIN)?></p>
 				</a>
 				<?php if( $mi->votes == ' '): ?><!-- cond="!$mi->votes"  -->
 					<a class="blamed bd_login" href="#" onclick="doCallModuleAction('post','procDocumentVoteDown','{$post->post_id}');return false;"|cond="$is_logged">
 						<b><i class="fa fa-heart"></i> <?php echo $post->get('blamed_count')?></b>
-						<p><?php echo __('cmd_vote_down', 'x2board')?></p>
+						<p><?php echo __('cmd_vote_down', X2B_DOMAIN)?></p>
 					</a>
 				<?php endif ?>
 				<?php if( $mi->declare == 'Y'): ?><!-- cond="$mi->declare"  -->
 					<a class="blamed declare bd_login" href="#" onclick="doCallModuleAction('document','procDocumentDeclare','{$post->post_id}');return false;"|cond="$is_logged">
 						<b><i class="fa fa-phone"></i></b>
-						<p><?php echo __('cmd_declare', 'x2board')?></p>
+						<p><?php echo __('cmd_declare', X2B_DOMAIN)?></p>
 					</a>
 				<?php endif ?>
 			</div>
@@ -395,7 +395,7 @@ foreach( $post_list as $no => $o_post ) {
 			</div>
 		<?php endif ?>
 		<?php if($mi->to_sns=='4' && $mi->to_sns_content) :?><!-- cond="$mi->to_sns=='4' && $mi->to_sns_content"  -->
-			<div class="to_sns small clear"><?php echo __('to_sns_content', 'x2board')?></div>
+			<div class="to_sns small clear"><?php echo $mi->to_sns_content ?></div>
 		<?php endif ?>
 		<!--// Files -->
 		<?php if($post->has_uploaded_files() && ( $mi->show_files == ' ' || $mi->show_files==2)) {	// cond="$post->hasUploadedFiles() && (!$mi->show_files || $mi->show_files==2)" 
@@ -404,7 +404,7 @@ foreach( $post_list as $no => $o_post ) {
 		<!--// Read Footer Navi -->
 		<div class="rd_ft_nav clear">
 			<?php if($mi->default_style!='viewer' && $mi->rd_ft_nav) :?><!-- cond="$mi->default_style!='viewer' && $mi->rd_ft_nav"  -->
-				<a class="btn_img fl" href="{getUrl('post_id','')}"><i class="fa fa-bars"></i> <?php echo __('cmd_list', 'x2board')?></a>
+				<a class="btn_img fl" href="{getUrl('post_id','')}"><i class="fa fa-bars"></i> <?php echo __('cmd_list', X2B_DOMAIN)?></a>
 			<?php endif ?>
 			<!--// SNS small -->
 			<?php if($mi->to_sns == ' ') {	//  cond="!$mi->to_sns" 
@@ -427,19 +427,19 @@ foreach( $post_list as $no => $o_post ) {
 		<div class="fdb_lst_wrp <?php echo $mi->fdb_style?> <?php echo $mi->profile_img?>">
 			<div id="<?php echo $post->post_id?>_comment" class="fdb_lst clear <?php echo $mi->fdb_nav?> <?php echo $mi->cmt_wrt_position?>">
 				<!--// Editor -->
-				<?php if($mi->cmt_wrt=='sns'):?> <!--@if($mi->cmt_wrt=='sns')-->
+				<?php if(false): //$mi->cmt_wrt=='sns'):?> <!--@if($mi->cmt_wrt=='sns')-->
 					<!--// SocialXE -->
 					<?php if($post->allow_comment() && $mi->select_editor!='N'):?> <!-- cond="$post->allowComment() && $mi->select_editor!='N'"  -->
-						<div class="editor_select bubble fr m_no" title="<?php echo $lang->noti_rfsh?>">
-							<a class="tg_btn2" href="#" data-href="#editor_select"><em class="fa fa-info-circle bd_info_icon"></em> <?php echo $lang->select_editor?></a>
+						<div class="editor_select bubble fr m_no" title="<?php echo __('desc_noti_rfsh', X2B_DOMAIN) ?>">
+							<a class="tg_btn2" href="#" data-href="#editor_select"><em class="fa fa-info-circle bd_info_icon"></em> <?php echo __('cmd_select_editor', X2B_DOMAIN) ?></a>
 							<?php if($rd_idx == 0):?> <!-- cond="$rd_idx==0"  -->
 								<div id="editor_select" class="editor_select_cnt tg_cnt2 wrp"><button type="button" class="tg_blur2"></button>
 									<!-- |cond="$mi->cmt_wrt=='simple'" -->
-									<a <?php if($mi->cmt_wrt=='simple'):?> class="on" <?php endif?> href="#" onclick="jQuery.cookie('bd_editor','simple');location.reload();return false"><em>✔ </em><?php echo $lang->textarea?></a>
+									<a <?php if($mi->cmt_wrt=='simple'):?> class="on" <?php endif?> href="#" onclick="jQuery.cookie('bd_editor','simple');location.reload();return false"><em>✔ </em><?php echo __('lbl_textarea_editor_mode', X2B_DOMAIN) ?></a>
 									<!-- |cond="$mi->cmt_wrt=='editor'"  -->
-									<a <?php if($mi->cmt_wrt=='editor'):?> class="on" <?php endif?> href="#" onclick="jQuery.cookie('bd_editor','editor');location.reload();return false"><em>✔ </em><?php echo $lang->wysiwyg?></a>
+									<a <?php if($mi->cmt_wrt=='editor'):?> class="on" <?php endif?> href="#" onclick="jQuery.cookie('bd_editor','editor');location.reload();return false"><em>✔ </em><?php echo __('lbl_wysiwyg_editor_mode', X2B_DOMAIN) ?></a>
 									<!-- |cond="$mi->cmt_wrt=='sns'" -->
-									<a <?php if($mi->cmt_wrt=='sns'):?> class="on" <?php endif?> href="#" onclick="jQuery.cookie('bd_editor','sns');location.reload();return false"><em>✔ </em><?php echo $lang->sxc_editor?></a>
+									<a <?php if($mi->cmt_wrt=='sns'):?> class="on" <?php endif?> href="#" onclick="jQuery.cookie('bd_editor','sns');location.reload();return false"><em>✔ </em><?php echo __('lbl_sxc_editor_mode', X2B_DOMAIN) ?></a>
 									<i class="edge"></i><button type="button" class="tg_blur2"></button>
 									<!--// ie8; --><i class="ie8_only bl"></i><i class="ie8_only br"></i>
 								</div>
@@ -471,16 +471,16 @@ foreach( $post_list as $no => $o_post ) {
 <?php if($mi->rd_lst == 'N' && $mi->default_style!='blog'):?> <!-- cond="$mi->rd_lst && $mi->default_style!='blog'"  -->
 	<div class="btm_mn clear" style="border-top:1px solid #CCC">
 		<div class="fl">
-			<a class="btn_img" href="<?php echo x2b_get_url('post_id','')?>"><i class="fa fa-bars"></i> <?php echo __('cmd_list', 'x2board')?></a>
-			<a class="btn_img back_to" href="#bd_<?php echo $board_id?>"><i class="fa fa-arrow-up"></i> <?php echo __('cmd_move_up', 'x2board')?></a>
+			<a class="btn_img" href="<?php echo x2b_get_url('post_id','')?>"><i class="fa fa-bars"></i> <?php echo __('cmd_list', X2B_DOMAIN)?></a>
+			<a class="btn_img back_to" href="#bd_<?php echo $board_id?>"><i class="fa fa-arrow-up"></i> <?php echo __('cmd_move_up', X2B_DOMAIN)?></a>
 		</div>
 		<div class="fr">
 			<?php if($mi->prev_next=='2' && !$post->is_notice()):?> <!-- <block cond="$mi->prev_next=='2' && !$post->isNotice()"> -->
-				<a class="btn_img no rd_prev bubble no_bubble" href="#"><?php echo __('cmd_prev', 'x2board')?></a>
-				<a class="btn_img no rd_next bubble no_bubble" href="#"><?php echo __('cmd_next', 'x2board')?></a>
+				<a class="btn_img no rd_prev bubble no_bubble" href="#"><?php echo __('cmd_prev', X2B_DOMAIN)?></a>
+				<a class="btn_img no rd_next bubble no_bubble" href="#"><?php echo __('cmd_next', X2B_DOMAIN)?></a>
 			<?php endif ?> <!-- </block> -->
 			<?php if($mi->prev_next=='2' && !$post->is_notice()):?> <!-- cond="!$mi->write_btm_btn || ($mi->write_btm_btn!='N' && $grant->write_document)" -->
-				<a class="btn_img" href="<?php echo x2b_get_url('act','dispBoardWrite','post_id','')?>"><b class="ico_16px write"></b> <?php echo __('cmd_write', 'x2board')?></a>
+				<a class="btn_img" href="<?php echo x2b_get_url('act','dispBoardWrite','post_id','')?>"><b class="ico_16px write"></b> <?php echo __('cmd_write', X2B_DOMAIN)?></a>
 			<?php endif ?>
 		</div>
 	</div>

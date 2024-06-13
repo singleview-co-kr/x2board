@@ -26,7 +26,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 			$o_current_user = wp_get_current_user();
 			if( !user_can( $o_current_user, 'administrator' ) || !current_user_can('manage_'.X2B_DOMAIN) ) {
 				unset($o_current_user);
-				wp_die(__('You do not have permission.', 'x2board'));
+				wp_die(__('msg_no_permission', X2B_DOMAIN));
 			}
 			unset($o_current_user);
 		}
@@ -58,7 +58,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 				header('Content-Type: text/html; charset=UTF-8');
 	
 				if(intval($_POST['board_id']) === 0 ) {
-					echo '<script>alert("'.__('Please designate the target board', 'x2board').'");</script>';
+					echo '<script>alert("'.__('msg_invalid_target_board', X2B_DOMAIN).'");</script>';
 				}
 				else {
 					$uploaded_file = $_FILES['xe_export_xml_file']['tmp_name'];
@@ -71,10 +71,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 							$o_import_admin->set_board_id($_POST['board_id']);
 							$o_import_admin->import_xe_xml($uploaded_file, $file_extension[0]);
 							unset($o_import_admin);
-							echo '<script>alert("'.__('Succeed importing', 'x2board').'");</script>';
+							echo '<script>alert("'.__('msg_import_succeeded', X2B_DOMAIN).'");</script>';
 						}
 						else{
-							echo '<script>alert("'.__('invalid xml file', 'x2board').'");</script>';
+							echo '<script>alert("'.__('msg_invalid_xml_file', X2B_DOMAIN).'");</script>';
 						}
 						
 						// if($xmlfile) {
@@ -82,7 +82,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 						// }
 					}
 					else{
-						echo '<script>alert("'.__('Failed uploading a file', 'x2board').'");</script>';
+						echo '<script>alert("'.__('msg_upload_file_failed', X2B_DOMAIN).'");</script>';
 					}
 				}
 			}		
@@ -302,7 +302,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 					
 					if( !file_exists( $s_path ) ) {
 						if(!wp_mkdir_p( $s_path ) ){
-							wp_die(__('msg_not_permitted_create', 'x2board') );
+							wp_die(__('msg_no_permission', X2B_DOMAIN) );
 						}
 					}
 					
@@ -311,7 +311,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 						$_filename = $o_random->create_secure_salt(12, 'hex').'.'.$ext;
 						$filename  = $s_path.DIRECTORY_SEPARATOR.$_filename;
 						if(!@move_uploaded_file($a_file_info['tmp_name'], $filename)) {
-							wp_die(__('msg_file_upload_error', 'x2board') );
+							wp_die(__('msg_upload_file_failed', X2B_DOMAIN) );
 						}
 					}
 

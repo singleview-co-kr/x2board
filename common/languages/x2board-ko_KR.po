@@ -1,0 +1,3098 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: x2board\n"
+"POT-Creation-Date: 2024-06-14 16:28+0900\n"
+"PO-Revision-Date: 2024-06-16 08:21+0900\n"
+"Last-Translator: singleviewcokr <singleviewcokr@gmail.com>\n"
+"Language-Team: \n"
+"Language: ko_KR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 3.4.4\n"
+"X-Poedit-KeywordsList: _;__;gettext;gettext_noop\n"
+"X-Poedit-Basepath: ../..\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: common\n"
+"X-Poedit-SearchPathExcluded-1: includes/modules/board\n"
+
+#: includes/admin/admin.php:76 includes/admin/tpl/header.php:3
+msgid "lbl_dashboard"
+msgstr "제어판"
+
+#: includes/admin/admin.php:77 includes/admin/tpl/board_list.php:7
+msgid "cmd_create_board"
+msgstr "게시판 생성"
+
+#: includes/admin/admin.php:78 includes/admin/tpl/board_list.php:4
+msgid "cmd_board_list"
+msgstr "게시판 목록"
+
+#: includes/admin/admin.php:79
+msgid "cmd_import_board"
+msgstr "외부 게시판 가져오기"
+
+#: includes/admin/admin.php:156 includes/admin/admin.php:175
+msgid "msg_call_invalid_module"
+msgstr "요청 모듈에 %1$s() 함수가 없습니다"
+
+#: includes/admin/admin.php:199
+msgid "msg_thank_you_using_x2board"
+msgstr ""
+"<a href=\"%1$s\" target=\"_blank\">x2Board</a>를 선택해서 감사드려요! <a "
+"href=\"%2$s\" target=\"_blank\">WordPress.org</a>에서 <a href=\"%2$s\" "
+"target=\"_blank\">평가해 주세요.</a>"
+
+#: includes/admin/tpl/board_import.php:17
+msgid "lbl_max_seq_id"
+msgstr "현재 최대 sequence id"
+
+#: includes/admin/tpl/board_import.php:21
+msgid "name_req_seq_id"
+msgstr "변경할 최대 sequence id"
+
+#: includes/admin/tpl/board_import.php:24
+msgid "desc_req_seq_id"
+msgstr "xe2 게시판을 임포트한 후, 최대 sequence id를 적절하게 설정합니다"
+
+#: includes/admin/tpl/board_import.php:26
+#: includes/admin/tpl/settings-page.php:574
+msgid "cmd_update"
+msgstr "업데이트"
+
+#: includes/admin/tpl/board_import.php:38
+msgid "name_select_xe2_backup_file"
+msgstr "xe2 백업 파일 선택"
+
+#: includes/admin/tpl/board_import.php:41
+msgid "desc_select_xe2_backup_file"
+msgstr "xe2에서 추출한 xml 파일을 선택하세요. 여러 파일은 zip으로 압축하세요"
+
+#: includes/admin/tpl/board_import.php:45
+#: includes/admin/tpl/board_import.php:48
+msgid "name_select_target_board"
+msgstr "게시판 선택"
+
+#: includes/admin/tpl/board_import.php:54
+msgid "cmd_import"
+msgstr "가져오기"
+
+#: includes/admin/tpl/board_import.php:55
+msgid "desc_select_target_board"
+msgstr ""
+"버튼을 누르면 선택 게시판을 초기화하고 XE2에서 추출한 XML 데이터를 입력합니다"
+
+#: includes/admin/tpl/board_list.php:16
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:494
+msgid "lbl_search"
+msgstr "검색"
+
+#: includes/admin/tpl/default-settings.php:63
+msgid "name_x2board_title"
+msgstr "게시판 제목"
+
+#: includes/admin/tpl/default-settings.php:64
+msgid "desc_x2board_title"
+msgstr ""
+"관리자만 확인할 수 있는 게시판 제목을 입력하세요. 일반 방문자에게는 은폐됩니"
+"다"
+
+#: includes/admin/tpl/default-settings.php:70
+msgid "name_wp_page_title"
+msgstr "워드프레스 페이지 제목"
+
+#: includes/admin/tpl/default-settings.php:71
+msgid "desc_wp_page_title"
+msgstr "워드프레스 페이지 제목을 입력하세요"
+
+#: includes/admin/tpl/default-settings.php:77
+msgid "name_board_skin"
+msgstr "게시판 스킨"
+
+#: includes/admin/tpl/default-settings.php:78
+msgid "desc_board_skin"
+msgstr "게시판 스킨을 선택하세요"
+
+#: includes/admin/tpl/default-settings.php:84
+msgid "name_board_list_count"
+msgstr "목록 수"
+
+#: includes/admin/tpl/default-settings.php:85
+msgid "desc_board_list_count"
+msgstr "한 페이지에 표시될 글 수를 지정할 수 있습니다. (기본 20개)"
+
+#: includes/admin/tpl/default-settings.php:91
+msgid "name_board_search_list_count"
+msgstr "검색 목록 수"
+
+#: includes/admin/tpl/default-settings.php:92
+msgid "desc_board_search_list_count"
+msgstr ""
+"검색, 카테고리 선택 등을 할 경우 표시될 글 수를 지정할 수 있습니다. (기본 20"
+"개)"
+
+#: includes/admin/tpl/default-settings.php:98
+msgid "name_board_page_count"
+msgstr "페이지 수"
+
+#: includes/admin/tpl/default-settings.php:99
+msgid "desc_board_page_count"
+msgstr "목록 하단, 페이지를 이동하는 링크 수를 지정할 수 있습니다. (기본 10개)"
+
+#: includes/admin/tpl/default-settings.php:105
+msgid "name_board_excerpted_title_length"
+msgstr "자동 제목 문자수"
+
+#: includes/admin/tpl/default-settings.php:106
+msgid "desc_board_excerpted_title_length"
+msgstr ""
+"빈 제목 입력되면 본문 첫줄에서 추출하는 문자열 수를 지정합니다. (기본 20자)"
+
+#: includes/admin/tpl/default-settings.php:112
+msgid "name_board_header_text"
+msgstr "상단 내용"
+
+#: includes/admin/tpl/default-settings.php:113
+msgid "desc_board_header_text"
+msgstr "콘텐츠 상단에 표시되는 내용입니다. (HTML 태그 사용 가능)"
+
+#: includes/admin/tpl/default-settings.php:119
+msgid "name_board_footer_text"
+msgstr "하단 내용"
+
+#: includes/admin/tpl/default-settings.php:120
+msgid "desc_board_footer_text"
+msgstr "콘텐츠 하단에 표시되는 내용입니다. (HTML 태그 사용 가능)"
+
+#: includes/admin/tpl/default-settings.php:127
+msgid "desc_mobile_setup_header"
+msgstr "모바일 설정"
+
+#: includes/admin/tpl/default-settings.php:133
+msgid "name_board_mobile_use_editor"
+msgstr "모바일 에디터"
+
+#: includes/admin/tpl/default-settings.php:134
+msgid "desc_board_mobile_use_editor"
+msgstr "위지윅 에디터 사용"
+
+#: includes/admin/tpl/default-settings.php:146
+msgid "desc_advanced_setup_header"
+msgstr "고급"
+
+#: includes/admin/tpl/default-settings.php:152
+msgid "name_board_use_rewrite"
+msgstr "짧은 게시글 주소"
+
+#: includes/admin/tpl/default-settings.php:153
+msgid "desc_board_use_rewrite"
+msgstr ""
+"짧은 게시글 주소 활성화합니다. 반드시 설정 변경 후 관리자 > 설정 > 고유주소 "
+"메뉴에서 저장을 실행하세요."
+
+#: includes/admin/tpl/default-settings.php:163
+msgid "name_board_order_target"
+msgstr "문서 정렬 필드"
+
+#: includes/admin/tpl/default-settings.php:164
+msgid "desc_board_order_target"
+msgstr "게시글 정렬 방법을 선택하세요"
+
+#: includes/admin/tpl/default-settings.php:168
+msgid "opt_list_order"
+msgstr "문서 번호"
+
+#: includes/admin/tpl/default-settings.php:169
+msgid "opt_update_order"
+msgstr "최근 수정일"
+
+#: includes/admin/tpl/default-settings.php:170
+msgid "opt_regdate_dt"
+msgstr "문서 등록일"
+
+#: includes/admin/tpl/default-settings.php:171
+msgid "opt_voted_count"
+msgstr "추천 수"
+
+#: includes/admin/tpl/default-settings.php:172
+msgid "opt_blamed_count"
+msgstr "비추천 수"
+
+#: includes/admin/tpl/default-settings.php:173
+msgid "opt_readed_count"
+msgstr "조회 수"
+
+#: includes/admin/tpl/default-settings.php:174
+msgid "opt_comment_count"
+msgstr "댓글 수"
+
+#: includes/admin/tpl/default-settings.php:175
+msgid "opt_title"
+msgstr "제목"
+
+#: includes/admin/tpl/default-settings.php:176
+msgid "opt_nick_name"
+msgstr "닉네임"
+
+#: includes/admin/tpl/default-settings.php:178
+msgid "opt_user_id"
+msgstr "아이디"
+
+#: includes/admin/tpl/default-settings.php:183
+msgid "name_board_order_type"
+msgstr "문서 정렬 방법"
+
+#: includes/admin/tpl/default-settings.php:184
+msgid "desc_board_order_type"
+msgstr "문서 정렬 방식"
+
+#: includes/admin/tpl/default-settings.php:188
+msgid "opt_asc"
+msgstr "오름차순 정렬"
+
+#: includes/admin/tpl/default-settings.php:189
+msgid "opt_desc"
+msgstr "내림차순 정렬"
+
+#: includes/admin/tpl/default-settings.php:194
+msgid "name_board_except_notice"
+msgstr "공지사항 제외"
+
+#: includes/admin/tpl/default-settings.php:195
+msgid "desc_board_except_notice"
+msgstr ""
+"목록 상단에 늘 나타나는 공지사항을 일반 목록에서 공지사항을 출력하지 않도록 "
+"합니다"
+
+#: includes/admin/tpl/default-settings.php:205
+msgid "name_board_use_anonymous"
+msgstr "익명 사용"
+
+#: includes/admin/tpl/default-settings.php:206
+msgid "desc_board_use_anonymous"
+msgstr ""
+"글쓴이의 정보를 없애고 익명으로 게시판 사용을 할 수 있게 합니다. 스킨설정에"
+"서 글쓴이 정보등을 보이지 않도록 하시면 더욱 유용합니다. 추가설정의 문서 히스"
+"토리 사용이 꺼져있지 않으면 문서 수정시 작성자가 표시될 수 있습니다"
+
+#: includes/admin/tpl/default-settings.php:216
+msgid "name_board_consultation"
+msgstr "상담 기능"
+
+#: includes/admin/tpl/default-settings.php:217
+msgid "desc_board_consultation"
+msgstr ""
+"상담 기능은 관리권한이 없는 회원은 자신이 쓴 글만 보이도록 하는 기능입니다. "
+"단 상담기능 사용시 비회원 글쓰기는 자동으로 금지됩니다"
+
+#: includes/admin/tpl/default-settings.php:227
+msgid "name_board_protect_content"
+msgstr "글 보호 기능"
+
+#: includes/admin/tpl/default-settings.php:228
+msgid "desc_board_protect_content"
+msgstr ""
+"작성된 글에 댓글이 작성된 경우 글 작성자는 해당 글을 수정하거나 삭제 할 수 없"
+"습니다"
+
+#: includes/admin/tpl/default-settings.php:238
+msgid "name_board_use_status"
+msgstr "게시글 상태"
+
+#: includes/admin/tpl/default-settings.php:239
+msgid "desc_board_use_status"
+msgstr "글 작성 시 선택할 수 있는 상태를 지정해주세요"
+
+#: includes/admin/tpl/default-settings.php:242
+msgid "opt_public"
+msgstr "공개글"
+
+#: includes/admin/tpl/default-settings.php:243
+msgid "opt_secret"
+msgstr "비밀글"
+
+#: includes/admin/tpl/default-settings.php:251
+msgid "name_board_admin_mail"
+msgstr "관리자 메일"
+
+#: includes/admin/tpl/default-settings.php:252
+msgid "desc_board_admin_mail"
+msgstr ""
+"글이나 댓글이 등록될때 등록된 메일주소로 메일이 발송됩니다. 콤마(,)로 연결시 "
+"다수의 메일주소로 발송할 수 있습니다"
+
+#: includes/admin/tpl/default-settings.php:303
+msgid "name_board_category_info"
+msgstr "분류 정보"
+
+#: includes/admin/tpl/default-settings.php:336
+msgid "name_board_user_define_field"
+msgstr "사용자 정의 입력 필드"
+
+#: includes/admin/tpl/default-settings.php:346
+msgid "name_board_list_fields"
+msgstr "게시글 목록 표시 필드"
+
+#: includes/admin/tpl/default-settings.php:379
+msgid "name_board_grant_access"
+msgstr "게시판 접근 권한"
+
+#: includes/admin/tpl/default-settings.php:386
+msgid "name_board_grant_list"
+msgstr "목록 접근 권한"
+
+#: includes/admin/tpl/default-settings.php:393
+msgid "name_board_grant_view"
+msgstr "본문 보기 권한"
+
+#: includes/admin/tpl/default-settings.php:400
+msgid "name_board_grant_write_post"
+msgstr "글 쓰기 권한"
+
+#: includes/admin/tpl/default-settings.php:407
+msgid "name_board_grant_write_comment"
+msgstr "댓글 쓰기 권한"
+
+#: includes/admin/tpl/default-settings.php:414
+msgid "name_board_grant_consultation_read"
+msgstr "상담글 조회 권한"
+
+#: includes/admin/tpl/default-settings.php:421
+msgid "name_board_grant_manager"
+msgstr "관리 권한"
+
+#: includes/admin/tpl/default-settings.php:451
+msgid "desc_comment_setup_header"
+msgstr "댓글 설정"
+
+#: includes/admin/tpl/default-settings.php:457
+msgid "name_comment_count"
+msgstr "댓글 수"
+
+#: includes/admin/tpl/default-settings.php:458
+msgid "desc_comment_count"
+msgstr ""
+"댓글을 정해진 수 만큼만 표시하고, 그 이상일 경우 페이지 번호를 표시해서 이동"
+"할 수 있게 합니다"
+
+#: includes/admin/tpl/default-settings.php:465
+msgid "name_comment_use_vote_up"
+msgstr "댓글 추천"
+
+#: includes/admin/tpl/default-settings.php:466
+msgid "desc_comment_use_vote_up"
+msgstr "댓글 추천 사용"
+
+#: includes/admin/tpl/default-settings.php:470
+#: includes/admin/tpl/default-settings.php:471
+#: includes/admin/tpl/default-settings.php:482
+#: includes/admin/tpl/default-settings.php:483
+#: includes/admin/tpl/default-settings.php:494
+#: includes/admin/tpl/default-settings.php:512
+msgid "opt_activate"
+msgstr "사용"
+
+#: includes/admin/tpl/default-settings.php:471
+#: includes/admin/tpl/default-settings.php:483
+msgid "opt_display"
+msgstr "표시"
+
+#: includes/admin/tpl/default-settings.php:472
+#: includes/admin/tpl/default-settings.php:484
+#: includes/admin/tpl/default-settings.php:495
+#: includes/admin/tpl/default-settings.php:513
+msgid "opt_deactivate"
+msgstr "미사용"
+
+#: includes/admin/tpl/default-settings.php:477
+msgid "name_comment_use_vote_down"
+msgstr "댓글 비추천"
+
+#: includes/admin/tpl/default-settings.php:478
+msgid "desc_comment_use_vote_down"
+msgstr "댓글 비추천 사용"
+
+#: includes/admin/tpl/default-settings.php:489
+msgid "name_comment_use_validation"
+msgstr "승인 후 공개"
+
+#: includes/admin/tpl/default-settings.php:490
+msgid "desc_comment_use_validation"
+msgstr "관리자 승인 후 댓글을 공개합니다"
+
+#: includes/admin/tpl/default-settings.php:500
+msgid "name_comment_forbid_to_leave_comment_old_post_days"
+msgstr "오래된 글에 댓글 금지"
+
+#: includes/admin/tpl/default-settings.php:501
+msgid "desc_comment_forbid_to_leave_comment_old_post_days"
+msgstr ""
+"x일이 경과한 글에는 댓글 작성할 수 없습니다. 공란이면 이 기능은 작동하지 않습"
+"니다"
+
+#: includes/admin/tpl/default-settings.php:507
+msgid "name_allow_comment_for_admin_for_old_post"
+msgstr "관리자는 항상 댓글 허용"
+
+#: includes/admin/tpl/default-settings.php:508
+msgid "desc_allow_comment_for_admin_for_old_post"
+msgstr "오래된 글에 댓글 금지 기능이 작동할 때 관리자에게는 항상 허용합니다"
+
+#: includes/admin/tpl/default-settings.php:518
+msgid "desc_post_editor_setup_header"
+msgstr "문서 에디터 설정"
+
+#: includes/admin/tpl/default-settings.php:524
+msgid "name_post_editor_skin"
+msgstr "문서 에디터 스킨"
+
+#: includes/admin/tpl/default-settings.php:531
+msgid "name_post_editor_height"
+msgstr "문서 에디터 높이"
+
+#: includes/admin/tpl/default-settings.php:538
+msgid "name_enable_html_grant"
+msgstr "문서의 html 편집 권한"
+
+#: includes/admin/tpl/default-settings.php:549
+msgid "name_upload_file_grant"
+msgstr "문서의 파일 첨부 권한"
+
+#: includes/admin/tpl/default-settings.php:560
+msgid "desc_comment_editor_setup_header"
+msgstr "댓글 에디터 설정"
+
+#: includes/admin/tpl/default-settings.php:566
+msgid "name_comment_editor_skin"
+msgstr "댓글 에디터 스킨"
+
+#: includes/admin/tpl/default-settings.php:573
+msgid "name_comment_editor_height"
+msgstr "댓글 에디터 높이"
+
+#: includes/admin/tpl/default-settings.php:580
+msgid "name_enable_comment_html_grant"
+msgstr "댓글의 html 편집 권한"
+
+#: includes/admin/tpl/default-settings.php:591
+msgid "name_comment_upload_file_grant"
+msgstr "댓글 파일 첨부 권한"
+
+#: includes/admin/tpl/default-settings.php:602
+msgid "desc_common_editor_setup_header"
+msgstr "에디터 공통 설정"
+
+#: includes/admin/tpl/default-settings.php:608
+msgid "name_content_style"
+msgstr "문서 & 댓글 서식"
+
+#: includes/admin/tpl/default-settings.php:615
+msgid "name_content_font"
+msgstr "문서 & 댓글 폰트"
+
+#: includes/admin/tpl/default-settings.php:622
+msgid "name_content_font_size"
+msgstr "문서 & 댓글 폰크 크기"
+
+#: includes/admin/tpl/default-settings.php:629
+msgid "name_enable_autosave"
+msgstr "자동저장 사용"
+
+#: includes/admin/tpl/default-settings.php:641
+msgid "name_enable_default_component_grant"
+msgstr "기본 컴포넌트 사용 권한"
+
+#: includes/admin/tpl/default-settings.php:649
+msgid "name_enable_component_grant"
+msgstr "확장 컴포넌트 사용 권한"
+
+#: includes/admin/tpl/default-settings.php:657
+msgid "desc_file_attachment_setup_header"
+msgstr "파일 설정"
+
+#: includes/admin/tpl/default-settings.php:663
+msgid "name_file_allowed_filesize_mb"
+msgstr "개별 파일 크기 제한(Mb)"
+
+#: includes/admin/tpl/default-settings.php:664
+msgid "desc_file_allowed_filesize_mb"
+msgstr "개별 파일의 최고 용량을 지정합니다.(관리자는 무제한)"
+
+#: includes/admin/tpl/default-settings.php:670
+msgid "name_file_allowed_attach_size_mb"
+msgstr "문서 당 파일 크기 제한(Mb)"
+
+#: includes/admin/tpl/default-settings.php:671
+msgid "desc_file_allowed_attach_size_mb"
+msgstr "개별 문서 당 파일의 최고 용량을 지정합니다.(관리자는 무제한)"
+
+#: includes/admin/tpl/default-settings.php:677
+msgid "name_file_max_attached_count"
+msgstr "문서 당 파일 갯수 제한"
+
+#: includes/admin/tpl/default-settings.php:678
+msgid "desc_file_max_attached_count"
+msgstr "개별 문서 당 파일의 최대 갯수를 지정합니다.(관리자는 무제한)"
+
+#: includes/admin/tpl/default-settings.php:684
+msgid "name_file_allowed_filetypes"
+msgstr "허용 확장자"
+
+#: includes/admin/tpl/default-settings.php:685
+msgid "desc_file_allowed_filetypes"
+msgstr ""
+"\"*.확장자\"로 지정할 수 있고 \";\" 으로 여러 개 지정이 가능합니다. 예) *.* "
+"or *.jpg;*.gif"
+
+#: includes/admin/tpl/default-settings.php:691
+msgid "name_thumbnail_type"
+msgstr "썸네일 유형"
+
+#: includes/admin/tpl/default-settings.php:696
+msgid "opt_crop"
+msgstr "크롭 자르기"
+
+#: includes/admin/tpl/default-settings.php:696
+msgid "opt_default"
+msgstr "기본선택"
+
+#: includes/admin/tpl/default-settings.php:697
+msgid "opt_ratio"
+msgstr "비율 자르기"
+
+#: includes/admin/tpl/default-settings.php:702
+msgid "name_file_allow_outlink"
+msgstr "파일 외부 링크 허용"
+
+#: includes/admin/tpl/default-settings.php:703
+msgid "desc_file_allow_outlink"
+msgstr ""
+"레퍼러에 따라 파일 외부 링크를 차단할 수 있습니다.(*.wmv, *.mp3등 미디어 파"
+"일 제외)"
+
+#: includes/admin/tpl/default-settings.php:707
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:333
+msgid "opt_allow"
+msgstr "허용"
+
+#: includes/admin/tpl/default-settings.php:708
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:335
+msgid "opt_disallow"
+msgstr "금지"
+
+#: includes/admin/tpl/default-settings.php:713
+msgid "name_file_allow_outlink_format"
+msgstr "파일 외부 링크 허용 확장"
+
+#: includes/admin/tpl/default-settings.php:714
+msgid "desc_file_allow_outlink_format"
+msgstr ""
+"파일 외부 링크 설정에 상관없이 허용하는 파일 확장자입니다. 여러 개 입력 시에 "
+"쉼표(,)을 이용해서 구분해주세요. 예)hwp,doc,zip,pdf"
+
+#: includes/admin/tpl/default-settings.php:720
+msgid "name_file_allow_outlink_site"
+msgstr "파일 외부 링크 허용 사이트"
+
+#: includes/admin/tpl/default-settings.php:721
+msgid "desc_file_allow_outlink_site"
+msgstr ""
+"파일 외부 링크 설정에 상관없이 허용하는 사이트 주소입니다. 여러 개 입력 시에 "
+"줄을 바꿔서 구분해주세요. 예)http://www.xpressengine.com]"
+
+#: includes/admin/tpl/default-settings.php:727
+msgid "name_file_download_grant"
+msgstr "다운로드 가능 그룹"
+
+#: includes/admin/tpl/default-settings.php:728
+msgid "desc_file_download_grant"
+msgstr "선택한 그룹만 첨부 파일을 다운로드할 수 있습니다. 공란이면 모두 허용"
+
+#: includes/admin/tpl/default-settings.php:760
+msgid "desc_skin_vars_setup_header_no_file"
+msgstr "skin_vars.php 파일이 없습니다"
+
+#: includes/admin/tpl/default-settings.php:771
+msgid "desc_skin_vars_setup_header_file_registered"
+msgstr "$skin_vars->var_id 형식으로 스킨 변수값을 호출할 수 있습니다"
+
+#: includes/admin/tpl/default-settings.php:899
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:175
+#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:127
+#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:167
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:304
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:370
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:393
+msgid "opt_role_all_users"
+msgstr "모든 사용자"
+
+#: includes/admin/tpl/default-settings.php:900
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:176
+#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:128
+#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:169
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:306
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:372
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:395
+msgid "opt_role_loggedin_users"
+msgstr "로그인 사용자"
+
+#: includes/admin/tpl/default-settings.php:902
+msgid "opt_role_administrator"
+msgstr "관리자만"
+
+#: includes/admin/tpl/default-settings.php:903
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:177
+#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:129
+#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:171
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:308
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:374
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:397
+msgid "opt_role_customize"
+msgstr "선택 그룹 사용자"
+
+#: includes/admin/tpl/header.php:5 includes/admin/tpl/index.php:140
+msgid "cmd_goto_community"
+msgstr "커뮤니티 바로가기"
+
+#: includes/admin/tpl/header.php:6
+msgid "cmd_goto_support"
+msgstr "제품 지원 바로가기"
+
+#: includes/admin/tpl/index.php:9
+msgid "cmd_setup_plugin"
+msgstr "플러그인 설정"
+
+#: includes/admin/tpl/index.php:178 includes/admin/tpl/index.php:198
+msgid "msg_not_available"
+msgstr "사용할 수 없습니다"
+
+#: includes/admin/tpl/settings-page.php:87
+msgid "cmd_save_change"
+msgstr "변경 저장"
+
+#: includes/admin/tpl/settings-page.php:95
+msgid "msg_delete_board"
+msgstr "게시판을 정말로 삭제할까요? 복구할 수 없습니다"
+
+#: includes/admin/tpl/settings-page.php:97
+msgid "cmd_delete_board"
+msgstr "게시판 삭제"
+
+#: includes/admin/tpl/settings-page.php:141
+msgid "lbl_board_info"
+msgstr "게시판 정보"
+
+#: includes/admin/tpl/settings-page.php:142
+msgid "lbl_category_info"
+msgstr "분류 관리"
+
+#: includes/admin/tpl/settings-page.php:143
+msgid "lbl_user_define_field"
+msgstr "사용자 정의 입력 필드"
+
+#: includes/admin/tpl/settings-page.php:144
+msgid "lbl_permission_info"
+msgstr "권한 관리"
+
+#: includes/admin/tpl/settings-page.php:145
+msgid "lbl_extra_info"
+msgstr "추가 설정"
+
+#: includes/admin/tpl/settings-page.php:146
+msgid "lbl_skin_info"
+msgstr "스킨 관리"
+
+#: includes/admin/tpl/settings-page.php:304
+msgid "msg_modified_from_default_setting"
+msgstr "기본 설정을 변경했습니다"
+
+#: includes/admin/tpl/settings-page.php:537
+msgid "cmd_delete_file"
+msgstr "파일삭제"
+
+#: includes/admin/tpl/settings-page.php:562
+#: includes/admin/tpl/settings-page.php:564
+msgid "lbl_update_category"
+msgstr "수정 카테고리"
+
+#: includes/admin/tpl/settings-page.php:573
+msgid "lbl_default_category"
+msgstr "기본 선택 카테고리"
+
+#: includes/admin/tpl/settings-page.php:575
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:97
+#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:107
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:158
+msgid "cmd_remove"
+msgstr "삭제"
+
+#: includes/admin/tpl/settings-page.php:579
+#: includes/admin/tpl/settings-page.php:588
+msgid "cmd_add_new_category"
+msgstr "새 카테고리 추가"
+
+#: includes/admin/tpl/settings-page.php:581
+msgid "lbl_new_category_name"
+msgstr "새 카테고리 이름"
+
+#: includes/admin/tpl/settings-page.php:595
+msgid "lbl_category_status"
+msgstr "카테고리 상태"
+
+#: includes/classes/Context.class.php:1109
+msgid "msg_undefined_locale"
+msgstr "정의되지 않은 로케일입니다"
+
+#: includes/classes/ModuleObject.class.php:73
+msgid "msg_invalid_configuration"
+msgstr "게시판 설정에 문제가 있습니다"
+
+#: includes/classes/ModuleObject.class.php:130
+#: includes/modules/comment/comment.controller.php:149
+#: includes/modules/comment/comment.controller.php:490
+#: includes/modules/comment/comment.controller.php:689
+#: includes/modules/comment/comment.controller.php:801
+#: includes/modules/file/file.controller.php:638
+#: includes/modules/post/post.controller.php:132
+#: includes/modules/post/post.controller.php:142
+#: includes/modules/post/post.controller.php:899
+msgid "msg_not_permitted"
+msgstr "권한이 없습니다"
+
+#: includes/classes/ModuleObject.class.php:288
+msgid "msg_invalid_grant_code"
+msgstr "등록되지 않은 권한 코드입니다"
+
+#: includes/classes/ModuleObject.class.php:454
+msgid "msg_file_not_exists"
+msgstr "%s 파일이 없습니다"
+
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:105
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:133
+#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:117
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:212
+msgid "lbl_field_label"
+msgstr "필드 표시 명칭"
+
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:110
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:138
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:220
+msgid "lbl_meta_key"
+msgstr "고유 식별값"
+
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:112
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:140
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:224
+msgid "about_meta_key"
+msgstr "공란이면 자동 지정됩니다. 저장 후에는 변경할 수 없습니다"
+
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:128
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:221
+#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:230
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:508
+msgid "lbl_display_on_content"
+msgstr "본문에 표시"
+
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:148
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:235
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:269
+msgid "lbl_label"
+msgstr "필드 표시 명칭"
+
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:161
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:190
+#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:186
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:251
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:282
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:412
+msgid "lbl_default_value"
+msgstr "기본값"
+
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:164
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:255
+msgid "cmd_reset"
+msgstr "초기화"
+
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:172
+#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:124
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:290
+msgid "msg_whom_to_show"
+msgstr "표시할 대상"
+
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:202
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:454
+msgid "lbl_description"
+msgstr "설명"
+
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:210
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:462
+msgid "lbl_css_class"
+msgstr "css 클래스"
+
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:217
+#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:223
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:501
+msgid "lbl_required"
+msgstr "필수"
+
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:226
+#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:237
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:516
+msgid "lbl_hiding"
+msgstr "숨김"
+
+#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:164
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:684
+msgid "lbl_notice"
+msgstr "공지사항"
+
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:174
+msgid "msg_title_is_mandatory"
+msgstr "제목은 필수 항목입니다"
+
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:185
+msgid "about_user_defined_file_appending_field"
+msgstr "[추가설정] 탭에서 첨부 파일 규칙을 설정합니다"
+
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:206
+msgid "about_user_defined_address_field"
+msgstr ""
+"개인 정보는 관리자에게 항상 표시되고 게스트 본인에게는 일정 시간만 표시됩니다"
+
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:329
+msgid "msg_allow_email_input_for_guest"
+msgstr "게스트 방문자에게 이메일 입력 허용"
+
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:366
+msgid "lbl_allow_notice"
+msgstr "공지사항 허용"
+
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:389
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:702
+msgid "lbl_allow_comment"
+msgstr "댓글 허용"
+
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:448
+msgid "lbl_placeholder"
+msgstr "플레이스홀더"
+
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:468
+msgid "lbl_printing_code"
+msgstr ""
+
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:606
+msgid "lbl_select_category"
+msgstr "카테고리 선택"
+
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:643
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:645
+msgid "lbl_writer"
+msgstr "글쓴이"
+
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:649
+msgid "lbl_password"
+msgstr "비밀번호"
+
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:680
+msgid "lbl_title_bold"
+msgstr "제목 굵게"
+
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:703
+msgid "lbl_disallow_commentt"
+msgstr "댓글 금지"
+
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:731
+#: includes/classes/user_define_fields/UserDefineFields.class.php:355
+msgid "lbl_email_address"
+msgstr "이메일 주소"
+
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:809
+#: includes/classes/user_define_fields/UserDefineFields.class.php:134
+msgid "lbl_tag"
+msgstr "태그"
+
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:812
+msgid "about_tag"
+msgstr "태그 : 쉼표(,)를 이용하여 복수 등록"
+
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:898
+msgid "cmd_select"
+msgstr "선택하세요"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:32
+msgid "lbl_title"
+msgstr "제목"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:42
+#: includes/classes/user_define_fields/UserDefineListFields.class.php:39
+msgid "desc_user_define_field_title"
+msgstr "게시글의 제목입니다"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:48
+msgid "lbl_option"
+msgstr "게시글 옵션"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:60
+msgid "desc_user_define_field_option"
+msgstr "게시글의 옵션 설정 박스입니다"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:81
+msgid "lbl_category"
+msgstr "카테고리"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:90
+msgid "desc_user_define_field_category"
+msgstr "게시글의 분류입니다"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:104
+msgid "lbl_content"
+msgstr "본문"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:113
+msgid "desc_user_define_field_content"
+msgstr "게시글의 본문입니다"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:120
+msgid "lbl_attachment"
+msgstr "첨부 파일"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:128
+msgid "desc_user_define_field_attach"
+msgstr "게시글의 첨부 파일 박스입니다"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:141
+msgid "desc_user_define_field_tag"
+msgstr "태그"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:167
+msgid "lbl_text_hidden"
+msgstr "텍스트/숨김 필드"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:178
+msgid "desc_user_define_field_text_hidden"
+msgstr "사용자 정의 텍스트/숨김 필드입니다"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:187
+msgid "lbl_selectbox"
+msgstr "셀렉트박스"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:198
+msgid "desc_user_define_field_selectbox"
+msgstr "사용자 정의 셀렉트박스 필드입니다"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:206
+msgid "lbl_radio_button"
+msgstr "라디오 버튼"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:217
+msgid "desc_user_define_field_radio_button"
+msgstr "사용자 정의 라디오 버튼 필드입니다"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:225
+msgid "lbl_checkbox"
+msgstr "체크박스"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:235
+msgid "desc_user_define_field_checkbox"
+msgstr "사용자 정의 체크박스 필드입니다"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:243
+msgid "lbl_textarea"
+msgstr "텍스트 입력 박스"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:256
+msgid "desc_user_define_field_textarea"
+msgstr "사용자 정의 텍스트 입력 박스 필드입니다"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:262
+msgid "lbl_wp_editor"
+msgstr "워드프레스 편집기"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:275
+msgid "desc_user_define_field_wp_editor"
+msgstr "사용자 정의 워드프레스 편집기 필드입니다"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:281
+msgid "lbl_html"
+msgstr "html"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:292
+msgid "desc_user_define_field_html"
+msgstr "사용자 정의 HTML 필드입니다"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:299
+msgid "lbl_shortcode"
+msgstr "워드프레스 숏코드"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:310
+msgid "desc_user_define_field_shortcode"
+msgstr "사용자 정의 워드프레스 숏코드 필드입니다"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:317
+msgid "lbl_date_select"
+msgstr "날짜 선택"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:330
+msgid "desc_user_define_field_date_select"
+msgstr "사용자 정의 날짜 선택 필드입니다"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:336
+msgid "lbl_time_select"
+msgstr "시간 선택"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:349
+msgid "desc_user_define_field_time_select"
+msgstr "사용자 정의 시간 선택 필드입니다"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:368
+msgid "desc_user_define_field_email_address"
+msgstr "사용자 정의 이메일 주소 필드입니다"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:375
+msgid "lbl_zip_address"
+msgstr "사용자 정의 우편 주소"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:388
+msgid "desc_user_define_field_zip_address"
+msgstr "사용자 정의 우편 주소 필드입니다"
+
+#: includes/classes/user_define_fields/UserDefineListFields.class.php:38
+msgid "desc_user_define_field_no"
+msgstr "게시글의 목록 번호"
+
+#: includes/classes/user_define_fields/UserDefineListFields.class.php:40
+msgid "desc_user_define_field_regdate_dt"
+msgstr "게시글 등록일시"
+
+#: includes/classes/user_define_fields/UserDefineListFields.class.php:41
+msgid "desc_user_define_field_last_update_dt"
+msgstr "게시글 수정일시"
+
+#: includes/classes/user_define_fields/UserDefineListFields.class.php:42
+msgid "desc_user_define_field_nick_name"
+msgstr "게시글 작성자의 필명"
+
+#: includes/classes/user_define_fields/UserDefineListFields.class.php:43
+msgid "desc_user_define_field_last_updater"
+msgstr "게시글의 최종 수정자 필명"
+
+#: includes/classes/user_define_fields/UserDefineListFields.class.php:44
+msgid "desc_user_define_field_readed_count"
+msgstr "게시글의 조회수"
+
+#: includes/classes/user_define_fields/UserDefineListFields.class.php:45
+msgid "desc_user_define_field_voted_count"
+msgstr "게시글의 추천수"
+
+#: includes/classes/user_define_fields/UserDefineListFields.class.php:46
+msgid "desc_user_define_field_blamed_count"
+msgstr "게시글의 비추천수"
+
+#: includes/classes/user_define_fields/UserDefineListFields.class.php:47
+msgid "desc_user_define_field_thumbnail"
+msgstr "게시글의 대표 썸네일"
+
+#: includes/classes/user_define_fields/UserDefineListFields.class.php:48
+msgid "desc_user_define_field_summary"
+msgstr "게시글 요약"
+
+#: includes/classes/user_define_fields/UserDefineListFields.class.php:49
+msgid "desc_user_define_field_comment_status"
+msgstr "댓글 가능 여부"
+
+#: includes/func.inc.php:877
+msgid "msg_security_warning_embed"
+msgstr ""
+"보안 문제로 관리자 아이디로는 embed를 볼 수 없습니다. 확인하려면 다른 아이디"
+"로 접속하세요"
+
+#: includes/func.inc.php:994
+msgid "lbl_mins_ago"
+msgstr "%d분 전"
+
+#: includes/func.inc.php:995
+msgid "lbl_hrs_ago"
+msgstr "%d시간 전"
+
+#: includes/modules/category/category.admin.controller.php:32
+#: includes/modules/category/category.admin.model.php:27
+#: includes/modules/file/file.controller.php:314
+#: includes/modules/post/post.admin.model.php:35
+msgid "msg_no_permission"
+msgstr "권한이 없습니다"
+
+#: includes/modules/comment/comment.controller.php:40
+#: includes/modules/comment/comment.controller.php:43
+#: includes/modules/comment/comment.controller.php:93
+#: includes/modules/comment/comment.controller.php:115
+#: includes/modules/comment/comment.controller.php:142
+#: includes/modules/comment/comment.controller.php:457
+#: includes/modules/comment/comment.controller.php:460
+#: includes/modules/comment/comment.controller.php:787
+#: includes/modules/file/file.controller.php:822
+#: includes/modules/post/post.controller.php:63
+#: includes/modules/post/post.controller.php:66
+#: includes/modules/post/post.controller.php:204
+#: includes/modules/post/post.controller.php:419
+#: includes/modules/post/post.controller.php:516
+#: includes/modules/post/post.controller.php:519
+#: includes/modules/post/post.controller.php:524
+#: includes/modules/post/post.controller.php:1283
+#: includes/modules/post/post.model.php:548
+msgid "msg_invalid_request"
+msgstr "잘못된 접근입니다"
+
+#: includes/modules/comment/comment.controller.php:112
+#: includes/modules/post/post.controller.php:891
+#: includes/modules/post/post.controller.php:895
+msgid "msg_invalid_post"
+msgstr "잘못된 게시글입니다"
+
+#: includes/modules/comment/comment.controller.php:822
+msgid "fail_to_delete_children_comment"
+msgstr "대댓글을 삭제하지 못했습니다"
+
+#: includes/modules/comment/comment.item.php:126
+msgid "lbl_no_name"
+msgstr "익명"
+
+#: includes/modules/comment/comment.item.php:193
+#: includes/modules/post/post.item.php:426
+msgid "msg_secret_post"
+msgstr "비밀글입니다"
+
+#: includes/modules/editor/editor.view.php:62
+#: includes/modules/editor/editor.view.php:131
+msgid "msg_type_what_you_think"
+msgstr "생각을 자유롭게 표현하세요"
+
+#: includes/modules/file/file.controller.php:247
+msgid "msg_not_allowed_filetype"
+msgstr "금지된 첨부 파일 유형입니다"
+
+#: includes/modules/file/file.controller.php:255
+#: includes/modules/file/file.controller.php:263
+msgid "msg_exceeds_limit_size"
+msgstr "첨부 파일 용량 한도를 초과했습니다"
+
+#: includes/modules/file/file.controller.php:320
+#: includes/modules/file/file.controller.php:335
+msgid "msg_upload_file_failed"
+msgstr "파일 업로드에 실패했습니다"
+
+#: includes/modules/file/file.controller.php:654
+#: includes/modules/file/file.controller.php:816
+#: includes/modules/file/file.controller.php:860
+msgid "msg_file_not_found"
+msgstr "파일을 찾을 수 없습니다"
+
+#: includes/modules/file/file.controller.php:660
+#: includes/modules/file/file.controller.php:732
+msgid "msg_not_permitted_download"
+msgstr "다운로드 권한이 없습니다"
+
+#: includes/modules/file/file.controller.php:714
+msgid "msg_not_allowed_outlink"
+msgstr "외부링크에서 다운로드할 수 없습니다"
+
+#: includes/modules/file/file.model.php:36
+msgid "lbl_allowed_attach_size"
+msgstr "문서 당 첨부 파일 용량 제한"
+
+#: includes/modules/file/file.model.php:39
+msgid "lbl_allowed_filesize"
+msgstr "파일 당 크기 제한"
+
+#: includes/modules/file/file.model.php:41
+msgid "lbl_allowed_filetypes"
+msgstr "허용 확장자"
+
+#: includes/modules/post/post.admin.model.php:94
+msgid "lbl_available_user_define_fields"
+msgstr "선택할 수 있는 사용자 정의 입력 필드"
+
+#: includes/modules/post/post.admin.model.php:98
+msgid "lbl_basic_user_define_field"
+msgstr "기본 사용자 정의 입력 필드"
+
+#: includes/modules/post/post.admin.model.php:108
+msgid "lbl_extended_user_define_field"
+msgstr "확장 사용자 정의 입력 필드"
+
+#: includes/modules/post/post.admin.model.php:124
+msgid "lbl_activated_input_fields"
+msgstr "글 작성 화면에 표시되는 필드"
+
+#: includes/modules/post/post.admin.model.php:125
+msgid "lbl_drag_from_left"
+msgstr "좌측 패널에서 드래그&드롭 하세요"
+
+#: includes/modules/post/post.admin.model.php:129
+msgid "cmd_reset_configuration"
+msgstr "설정 초기화"
+
+#: includes/modules/post/post.controller.php:187
+#: includes/modules/post/post.controller.php:658
+msgid "lbl_untitled"
+msgstr "제목 없음"
+
+#: includes/modules/post/post.controller.php:389
+msgid "msg_wp_post_registration_failed"
+msgstr "워드프레스 포스트 등록 실패했습니다"
+
+#: includes/modules/post/post.controller.php:733
+msgid "msg_wp_post_update_failed"
+msgstr "워드프레스 포스트 수정 실패했습니다"
+
+#~ msgid "Search"
+#~ msgstr "검색"
+
+#, fuzzy
+#~| msgid "%s file does not exist."
+#~ msgid "post is not exists"
+#~ msgstr "%s 파일이 없습니다."
+
+#, fuzzy
+#~| msgid "Title"
+#~ msgid "Untitled"
+#~ msgstr "제목"
+
+#, fuzzy
+#~| msgid "Company name"
+#~ msgid "No name"
+#~ msgstr "회사명"
+
+#~ msgid "msg_invalid_target_board"
+#~ msgstr "임포트 대상 게시판을 지정하세요"
+
+#~ msgid "msg_import_succeeded"
+#~ msgstr "임포트 성공했습니다"
+
+#~ msgid "msg_invalid_xml_file"
+#~ msgstr "유효하지 않은 XML 파일입니다"
+
+#~ msgid "about_list_field_configuration"
+#~ msgstr "일부 스킨에서는 리스트 필드 설정이 작동하지 않습니다"
+
+#~ msgid "lbl_unlisted_field"
+#~ msgstr "리스트에서 숨기는 필드"
+
+#~ msgid "lbl_listed_fields"
+#~ msgstr "리스트에 표시하는 필드"
+
+#~ msgid "lbl_field_introduction"
+#~ msgstr "필드 소개"
+
+#~ msgid "lbl_installed_wp_page"
+#~ msgstr "게시판 설치된 WP 페이지"
+
+#~ msgid "lbl_create_date"
+#~ msgstr "생성일"
+
+#~ msgid "lbl_visit_page"
+#~ msgstr "게시판 방문하기"
+
+#~ msgid "lbl_configure_board"
+#~ msgstr "게시판 설정하기"
+
+#~ msgid "msg_error_board_controller_init"
+#~ msgstr "boardController::init()에서 알 수 없는 오류가 발생했습니다"
+
+#~ msgid "lbl_anonymous"
+#~ msgstr "익명"
+
+#~ msgid "msg_not_founded"
+#~ msgstr "찾을 수 없습니다"
+
+#~ msgid "msg_protect_content"
+#~ msgstr "댓글이 작성된 게시글을 수정 / 삭제 할 수 없습니다"
+
+#~ msgid "msg_not_allow_comment"
+#~ msgstr "댓글 쓰기 금지된 게시글입니다"
+
+#~ msgid "lbl_comment"
+#~ msgstr "댓글"
+
+#~ msgid "cmd_view"
+#~ msgstr "본문 보기"
+
+#~ msgid "lbl_uploaded_file"
+#~ msgstr "첨부 파일"
+
+#~ msgid "cmd_close"
+#~ msgstr "닫기"
+
+#~ msgid "cmd_input"
+#~ msgstr "입력하기"
+
+#~ msgid "cmd_declare"
+#~ msgstr "신고하기"
+
+#~ msgid "cmd_vote"
+#~ msgstr "추천하기"
+
+#~ msgid "cmd_vote_down"
+#~ msgstr "비추천하기"
+
+#~ msgid "cmd_comment_do"
+#~ msgstr "이 댓글을"
+
+#~ msgid "cmd_modify"
+#~ msgstr "수정"
+
+#~ msgid "cmd_delete"
+#~ msgstr "삭제"
+
+#~ msgid "cmd_reply"
+#~ msgstr "댓글"
+
+#~ msgid "lbl_first_page"
+#~ msgstr "첫 페이지"
+
+#~ msgid "lbl_last_page"
+#~ msgstr "끝 페이지"
+
+#~ msgid "cmd_write_comment"
+#~ msgstr "댓글 쓰기"
+
+#~ msgid "cmd_select_editor"
+#~ msgstr "에디터 선택하기"
+
+#~ msgid "lbl_textarea_editor_mode"
+#~ msgstr "텍스트 모드"
+
+#~ msgid "lbl_wysiwyg_editor_mode"
+#~ msgstr "에디터 모드"
+
+#~ msgid "cmd_submit"
+#~ msgstr "등록하기"
+
+#~ msgid "lbl_secret"
+#~ msgstr "비밀글 기능"
+
+#~ msgid "cmd_use_wysiwyg"
+#~ msgstr "에디터 사용하기"
+
+#~ msgid "msg_no_posts"
+#~ msgstr "글이 없습니다"
+
+#~ msgid "lbl_order_desc"
+#~ msgstr "내림차순"
+
+#~ msgid "lbl_order_asc"
+#~ msgstr "오름차순"
+
+#~ msgid "lbl_number"
+#~ msgstr "번호"
+
+#~ msgid "lbl_date"
+#~ msgstr "날짜"
+
+#~ msgid "lbl_last_update"
+#~ msgstr "최종 수정일"
+
+#~ msgid "lbl_readed_count"
+#~ msgstr "조회 수"
+
+#~ msgid "lbl_voted_count"
+#~ msgstr "추천 수"
+
+#~ msgid "cmd_list"
+#~ msgstr "목록"
+
+#~ msgid "cmd_move_up"
+#~ msgstr "위로"
+
+#~ msgid "cmd_prev"
+#~ msgstr "이전"
+
+#~ msgid "cmd_next"
+#~ msgstr "다음"
+
+#~ msgid "cmd_write"
+#~ msgstr "쓰기"
+
+#~ msgid "lbl_post"
+#~ msgstr "게시글"
+
+#~ msgid "cmd_select_font"
+#~ msgstr "글꼴 선택"
+
+#~ msgid "cmd_move_down"
+#~ msgstr "아래로"
+
+#~ msgid "cmd_print"
+#~ msgstr "인쇄"
+
+#~ msgid "cmd_post_do"
+#~ msgstr "이 게시물을"
+
+#~ msgid "cmd_search"
+#~ msgstr "검색"
+
+#~ msgid "cmd_search_next"
+#~ msgstr "계속 검색"
+
+#~ msgid "cmd_confirm_delete"
+#~ msgstr "삭제하시겠습니까"
+
+#~ msgid "cmd_back"
+#~ msgstr "뒤로가기"
+
+#~ msgid "cmd_cancel"
+#~ msgstr "취소하기"
+
+#~ msgid "msg_input_password"
+#~ msgstr "암호를 입력하세요"
+
+#~ msgid "cmd_setup"
+#~ msgstr "설정"
+
+#~ msgid "cmd_manage_post"
+#~ msgstr "게시글 관리"
+
+#~ msgid "lbl_post_count"
+#~ msgstr "게시글 수"
+
+#~ msgid "cmd_go_page"
+#~ msgstr "페이지 직접 이동"
+
+#, fuzzy
+#~| msgid "Tree Category"
+#~ msgid "Move Category to"
+#~ msgstr "계층형 카테고리"
+
+#, fuzzy
+#~| msgid "검색"
+#~ msgid "검은색"
+#~ msgstr "검색"
+
+#, fuzzy
+#~| msgid "게시판 생성"
+#~ msgid "게시판 색상"
+#~ msgstr "게시판 생성"
+
+#, fuzzy
+#~| msgid "게시판 생성"
+#~ msgid "게시판 색상 입력"
+#~ msgstr "게시판 생성"
+
+#, fuzzy
+#~| msgid "게시판 생성"
+#~ msgid "게시판 제목"
+#~ msgstr "게시판 생성"
+
+#, fuzzy
+#~| msgid "게시판 생성"
+#~ msgid "게시판 부제목"
+#~ msgstr "게시판 생성"
+
+#, fuzzy
+#~| msgid "게시판 생성"
+#~ msgid "게시판 상단 설정"
+#~ msgstr "게시판 생성"
+
+#, fuzzy
+#~| msgid "게시물 표시"
+#~ msgid "카테고리 게시물 수 표시"
+#~ msgstr "게시물 표시"
+
+#, fuzzy
+#~| msgid "게시글 표시 수"
+#~ msgid "새 글 표시 시간"
+#~ msgstr "게시글 표시 수"
+
+#, fuzzy
+#~| msgid "썸네일"
+#~ msgid "섬네일"
+#~ msgstr "썸네일"
+
+#, fuzzy
+#~| msgid "제한없음"
+#~ msgid "없음"
+#~ msgstr "제한없음"
+
+#, fuzzy
+#~| msgid "게시판 생성"
+#~ msgid "FAQ 게시판 형"
+#~ msgstr "게시판 생성"
+
+#, fuzzy
+#~| msgid "로그인 사용자"
+#~ msgid "모든 사용자"
+#~ msgstr "로그인 사용자"
+
+#, fuzzy
+#~| msgid "Textarea"
+#~ msgid "Textarea(기본)"
+#~ msgstr "텍스트 에어리어"
+
+#, fuzzy
+#~| msgid "이미지 선택하기"
+#~ msgid "이미지 파일"
+#~ msgstr "이미지 선택하기"
+
+#, fuzzy
+#~| msgid "이미지 선택하기"
+#~ msgid "본문 이미지 설정"
+#~ msgstr "이미지 선택하기"
+
+#, fuzzy
+#~| msgid "이미지 선택하기"
+#~ msgid "이미지 드래그"
+#~ msgstr "이미지 선택하기"
+
+#, fuzzy
+#~| msgid "게시판 생성"
+#~ msgid "게시판 스타일(기본)"
+#~ msgstr "게시판 생성"
+
+#, fuzzy
+#~| msgid "게시판 생성"
+#~ msgid "게시판 스타일 프리셋"
+#~ msgstr "게시판 생성"
+
+#, fuzzy
+#~| msgid "계층형 카테고리"
+#~ msgid "카테고리"
+#~ msgstr "계층형 카테고리"
+
+#~ msgid "조회수"
+#~ msgstr "조회수"
+
+#, fuzzy
+#~| msgid "게시물 표시"
+#~ msgid "게시물 주소"
+#~ msgstr "게시물 표시"
+
+#, fuzzy
+#~| msgid "조회수"
+#~ msgid "조회"
+#~ msgstr "조회수"
+
+#, fuzzy
+#~| msgid "소셜댓글"
+#~ msgid "댓글"
+#~ msgstr "소셜댓글"
+
+#, fuzzy
+#~| msgid "게시판 생성"
+#~ msgid "게시판 상단 버튼"
+#~ msgstr "게시판 생성"
+
+#~ msgid "Textarea"
+#~ msgstr "텍스트 에어리어"
+
+#, fuzzy
+#~| msgid "Tag"
+#~ msgid "tag"
+#~ msgstr "태그"
+
+#, fuzzy
+#~| msgid "Are you sure you want to delete?"
+#~ msgid "Do you want to delete?"
+#~ msgstr "삭제 하시겠습니까?"
+
+#~ msgid "Delete"
+#~ msgstr "글삭제"
+
+#, fuzzy
+#~ msgid "Cancel"
+#~ msgstr "취소"
+
+#~ msgid "cmd_select_all"
+#~ msgstr "모두 선택"
+
+#, fuzzy
+#~| msgid "Comment"
+#~ msgid "allow_comment"
+#~ msgstr "댓글"
+
+#~ msgid "is_required"
+#~ msgstr "필수"
+
+#, fuzzy
+#~| msgid "Select Box"
+#~ msgid "select font"
+#~ msgstr "셀렉트 박스"
+
+#, fuzzy
+#~| msgid "Last updated"
+#~ msgid "last_update"
+#~ msgstr "업데이트 날짜"
+
+#, fuzzy
+#~| msgid "Update"
+#~ msgid "date"
+#~ msgstr "업데이트"
+
+#, fuzzy
+#~| msgid "lbl_title"
+#~ msgid "lbl_titletitle"
+#~ msgstr "제목"
+
+#, fuzzy
+#~| msgid "Title"
+#~ msgid "title"
+#~ msgstr "제목"
+
+#~ msgid "Category"
+#~ msgstr "카테고리"
+
+#, fuzzy
+#~| msgid "Category"
+#~ msgid "category"
+#~ msgstr "카테고리"
+
+#, fuzzy
+#~| msgid "Secret"
+#~ msgid "secret"
+#~ msgstr "비밀글"
+
+#, fuzzy
+#~| msgid "Textarea"
+#~ msgid "textarea"
+#~ msgstr "텍스트 에어리어"
+
+#, fuzzy
+#~| msgid "Comment"
+#~ msgid "comment"
+#~ msgstr "댓글"
+
+#~ msgid "msg_invalid_request."
+#~ msgstr "잘못된 접근입니다"
+
+#, fuzzy
+#~| msgid "Company name"
+#~ msgid "Board name"
+#~ msgstr "회사명"
+
+#~ msgid "lbl_presented_field"
+#~ msgstr "리스트에 표시하는 필드"
+
+#, fuzzy
+#~| msgid "Available points"
+#~ msgid "Available field"
+#~ msgstr "사용 가능 포인트"
+
+#, fuzzy
+#~| msgid "Please enter the author."
+#~ msgid "Please designate the target board"
+#~ msgstr "작성자를 입력해주세요."
+
+#~ msgid "You do not have permission."
+#~ msgstr "권한이 없습니다."
+
+#~ msgid "Options"
+#~ msgstr "옵션"
+
+#, fuzzy
+#~| msgid "Integration feed"
+#~ msgid "Intro option field"
+#~ msgstr "통합 피드"
+
+#~ msgid "Content"
+#~ msgstr "내용"
+
+#~ msgid "Tag"
+#~ msgstr "태그"
+
+#~ msgid "Text/Hidden"
+#~ msgstr "텍스트/숨김"
+
+#~ msgid "Select Box"
+#~ msgstr "셀렉트 박스"
+
+#~ msgid "WP Editor"
+#~ msgstr "워드프레스 내장 에디터"
+
+#~ msgid "HTML"
+#~ msgstr "HTML"
+
+#~ msgid "Date Select"
+#~ msgstr "날짜 선택"
+
+#~ msgid "Time Select"
+#~ msgstr "시간 선택"
+
+#~ msgid "Email"
+#~ msgstr "이메일"
+
+#~ msgid "Address"
+#~ msgstr "주소"
+
+#~ msgid "Title"
+#~ msgstr "제목"
+
+#~ msgid "Select"
+#~ msgstr "선택"
+
+#, fuzzy
+#~| msgid "Address"
+#~ msgid "email_address"
+#~ msgstr "주소"
+
+#, fuzzy
+#~| msgid "Comment"
+#~ msgid "Allow comment"
+#~ msgstr "댓글"
+
+#, fuzzy
+#~| msgid "Document"
+#~ msgid "Disllow comment"
+#~ msgstr "본문보기"
+
+#~ msgid "Notice"
+#~ msgstr "공지사항"
+
+#, fuzzy
+#~| msgid "Notice"
+#~ msgid "notice"
+#~ msgstr "공지사항"
+
+#~ msgid "Password"
+#~ msgstr "비밀번호"
+
+#, fuzzy
+#~| msgid "Password"
+#~ msgid "password"
+#~ msgstr "비밀번호"
+
+#~ msgid "Category select"
+#~ msgstr "카테고리 선택"
+
+#, fuzzy
+#~| msgid "※ Your password is incorrect."
+#~ msgid "Password is mandatory for a guest"
+#~ msgstr "※ 비밀번호가 올바르지 않습니다."
+
+#~ msgid "All"
+#~ msgstr "전체"
+
+#~ msgid "Reset"
+#~ msgstr "초기화"
+
+#, fuzzy
+#~| msgid "%s is required."
+#~ msgid "Required"
+#~ msgstr "%s은(는) 필수입니다."
+
+#~ msgid "백업파일 다운로드"
+#~ msgstr "백업파일 다운로드"
+
+#~ msgid ""
+#~ "백업파일을 다운로드 받습니다. 파일은 xml 파일이며 복구하기를 통해 백업된 "
+#~ "상태로 되돌릴 수 있습니다."
+#~ msgstr ""
+#~ "백업파일을 다운로드 받습니다. 파일은 xml 파일이며 복구하기를 통해 백업된 "
+#~ "상태로 되돌릴 수 있습니다."
+
+#~ msgid "백업파일 선택"
+#~ msgstr "백업파일 선택"
+
+#~ msgid "복구하기"
+#~ msgstr "복구하기"
+
+#~ msgid ""
+#~ "xml 파일을 선택하고 복구하기 버튼을 누르세요. 지금까지의 데이터는 삭제되"
+#~ "고 복원파일 데이터를 입력합니다."
+#~ msgstr ""
+#~ "xml 파일을 선택하고 복구하기 버튼을 누르세요. 지금까지의 데이터는 삭제되"
+#~ "고 복원파일 데이터를 입력합니다."
+
+#~ msgid "Attachments"
+#~ msgstr "첨부 파일"
+
+#~ msgid ""
+#~ "<code>/wp-content/uploads/kboard_attached</code> 이 경로의 모든 파일을 FTP"
+#~ "를 사용해서 다운로드받아 옮겨주세요."
+#~ msgstr ""
+#~ "<code>/wp-content/uploads/kboard_attached</code> 이 경로의 모든 파일을 FTP"
+#~ "를 사용해서 다운로드받아 옮겨주세요."
+
+#, fuzzy
+#~| msgid "Support"
+#~ msgid "Import"
+#~ msgstr "고객지원"
+
+#, fuzzy
+#~| msgid "백업파일 선택"
+#~ msgid "XE 백업 파일 선택"
+#~ msgstr "백업파일 선택"
+
+#, fuzzy
+#~| msgid "게시판 생성"
+#~ msgid "게시판 선택"
+#~ msgstr "게시판 생성"
+
+#, fuzzy
+#~| msgid "Update"
+#~ msgid "update"
+#~ msgstr "업데이트"
+
+#~ msgid "Remove"
+#~ msgstr "삭제"
+
+#, fuzzy
+#~| msgid "Category"
+#~ msgid "New category name"
+#~ msgstr "카테고리"
+
+#~ msgid "lbl_updating_category"
+#~ msgstr "변경할 카테고리"
+
+#, fuzzy
+#~| msgid "Last updated"
+#~ msgid "Category to update"
+#~ msgstr "업데이트 날짜"
+
+#, fuzzy
+#~| msgid "Updated"
+#~ msgid "Update"
+#~ msgstr "업데이트순"
+
+#, fuzzy
+#~| msgid "Thumbnail"
+#~ msgid "thumbnail"
+#~ msgstr "썸네일"
+
+#~ msgid "Delete file"
+#~ msgstr "파일 삭제"
+
+#, fuzzy
+#~| msgid "Are you sure you want to delete?"
+#~ msgid "Do you really want to delete this board?"
+#~ msgstr "삭제 하시겠습니까?"
+
+#, fuzzy
+#~| msgid "Delete Product"
+#~ msgid "Delete Board"
+#~ msgstr "상품삭제"
+
+#~ msgid "Home"
+#~ msgstr "홈페이지"
+
+#~ msgid "Blog"
+#~ msgstr "블로그"
+
+#~ msgid "desc_thumbnail_type"
+#~ msgstr "썸네일을 축소하는 방법을 선택합니다"
+
+#~ msgid "Community"
+#~ msgstr "커뮤니티"
+
+#~ msgid "Support"
+#~ msgstr "고객지원"
+
+#~ msgid "desc_content_style"
+#~ msgstr "문서 & 댓글의 서식을 선택합니다"
+
+#~ msgid "desc_content_font"
+#~ msgstr "문서 & 댓글의 폰트를 선택합니다"
+
+#~ msgid "desc_content_font_size"
+#~ msgstr "문서 & 댓글의 폰크 크기를 선택합니다"
+
+#~ msgid "desc_enable_autosave"
+#~ msgstr "글 작성 시 자동 저장 기능을 활성화 시킬 수 있습니다"
+
+#~ msgid "desc_post_editor_skin"
+#~ msgstr "문서 에디터의 스킨을 선택합니다"
+
+#~ msgid "desc_post_editor_height"
+#~ msgstr "문서 에디터의 높이를 설정합니다"
+
+#~ msgid "desc_enable_html_grant"
+#~ msgstr "문서의 html 편집 권한을 선택합니다"
+
+#~ msgid "desc_upload_file_grant"
+#~ msgstr "문서의 파일 첨부 권한을 선택합니다"
+
+#~ msgid "desc_comment_editor_skin"
+#~ msgstr "댓글 에디터의 스킨을 선택합니다"
+
+#~ msgid "desc_comment_editor_height"
+#~ msgstr "댓글 에디터의 높이를 설정합니다"
+
+#~ msgid "desc_enable_comment_html_grant"
+#~ msgstr "댓글의 html 편집 권한을 선택합니다"
+
+#~ msgid "desc_comment_upload_file_grant"
+#~ msgstr "댓글의 파일 첨부 권한을 선택합니다"
+
+#, fuzzy
+#~| msgid "Company name"
+#~ msgid "name_board_admin_emails"
+#~ msgstr "회사명"
+
+#, fuzzy
+#~| msgid "Company name"
+#~ msgid "desc_board_admin_emails"
+#~ msgstr "회사명"
+
+#~ msgid "desc_board_list_fields"
+#~ msgstr ""
+#~ "스킨에서 지원하는 경우, 목록 화면의 표시 항목과 순서를 선택를 할 수 있습니"
+#~ "다"
+
+#~ msgid "desc_board_category_info"
+#~ msgstr "게시글의 분류 정보를 관리하세요"
+
+#, fuzzy
+#~| msgid "name_x2board_title"
+#~ msgid "name_board_hide_category"
+#~ msgstr "게시판 제목"
+
+#, fuzzy
+#~| msgid "name_x2board_title"
+#~ msgid "desc_board_hide_category"
+#~ msgstr "게시판 제목"
+
+#, fuzzy
+#~| msgid "Company name"
+#~ msgid "Board admin email"
+#~ msgstr "회사명"
+
+#, fuzzy
+#~| msgid "You do not have permission."
+#~ msgid "view permission"
+#~ msgstr "권한이 없습니다."
+
+#, fuzzy
+#~| msgid "Comment"
+#~ msgid "write comment permission"
+#~ msgstr "댓글"
+
+#, fuzzy
+#~| msgid "You do not have permission."
+#~ msgid "Consultation read permission"
+#~ msgstr "권한이 없습니다."
+
+#, fuzzy
+#~| msgid "You do not have permission."
+#~ msgid "Manager permission"
+#~ msgstr "권한이 없습니다."
+
+#, fuzzy
+#~| msgid "Comment"
+#~ msgid "Configure comment"
+#~ msgstr "댓글"
+
+#, fuzzy
+#~ msgid "Number of comments"
+#~ msgstr "글이 없습니다."
+
+#, fuzzy
+#~| msgid "Pending approval"
+#~ msgid "Use comment approval"
+#~ msgstr "승인 대기중"
+
+#, fuzzy
+#~| msgid "WP Editor"
+#~ msgid "Editor skin"
+#~ msgstr "워드프레스 내장 에디터"
+
+#, fuzzy
+#~| msgid "Comment"
+#~ msgid "Allow comment HTML edit"
+#~ msgstr "댓글"
+
+#, fuzzy
+#~| msgid "Please enter the content."
+#~ msgid "Select the content style"
+#~ msgstr "내용을 입력해주세요."
+
+#, fuzzy
+#~| msgid "Comment"
+#~ msgid "Allow default components"
+#~ msgstr "댓글"
+
+#, fuzzy
+#~| msgid "Comment"
+#~ msgid "Allow components"
+#~ msgstr "댓글"
+
+#, fuzzy
+#~| msgid "Ratings"
+#~ msgid "Ratio"
+#~ msgstr "등급"
+
+#, fuzzy
+#~ msgid "Category configuration"
+#~ msgstr "비밀번호 확인"
+
+#, fuzzy
+#~| msgid "List price"
+#~ msgid "List fields"
+#~ msgstr "정상가격"
+
+#, fuzzy
+#~| msgid "Address"
+#~ msgid "Admin mail address"
+#~ msgstr "주소"
+
+#, fuzzy
+#~| msgid "Notify me of new comments via email"
+#~ msgid "Notify new post and comment via comma separted list "
+#~ msgstr "이메일로 새로운 댓글 알림 받기"
+
+#, fuzzy
+#~| msgid "Category"
+#~ msgid "Hide category"
+#~ msgstr "카테고리"
+
+#, fuzzy
+#~| msgid "Delete Product"
+#~ msgid "Select the board skin"
+#~ msgstr "상품삭제"
+
+#, fuzzy
+#~| msgid "List price"
+#~ msgid "List per page"
+#~ msgstr "정상가격"
+
+#, fuzzy
+#~| msgid "Mobile phone"
+#~ msgid "Mobile editor"
+#~ msgstr "휴대폰번호"
+
+#, fuzzy
+#~| msgid "Last updated"
+#~ msgid "Latest updated"
+#~ msgstr "업데이트 날짜"
+
+#, fuzzy
+#~| msgid "Postcode"
+#~ msgid "Post date"
+#~ msgstr "우편번호"
+
+#, fuzzy
+#~| msgid "Comment"
+#~ msgid "Recommended"
+#~ msgstr "댓글"
+
+#, fuzzy
+#~| msgid "Comments"
+#~ msgid "Comment"
+#~ msgstr "댓글"
+
+#, fuzzy
+#~| msgid "Company name"
+#~ msgid "User name"
+#~ msgstr "회사명"
+
+#, fuzzy
+#~| msgid "Anonymous"
+#~ msgid "Use Anonymous"
+#~ msgstr "익명"
+
+#~ msgid "It is an invalid access."
+#~ msgstr "잘못된 접근입니다."
+
+#, fuzzy
+#~| msgid "KBoard 버전"
+#~ msgid "KBoard"
+#~ msgstr "KBoard 버전"
+
+#~ msgid "KBoard 게시판 포인트"
+#~ msgstr "KBoard 게시판 포인트"
+
+#~ msgid "KBoard 게시판의 활동 포인트를 관리합니다."
+#~ msgstr "KBoard 게시판의 활동 포인트를 관리합니다."
+
+#~ msgid "KBoard 댓글 포인트"
+#~ msgstr "KBoard 댓글 포인트"
+
+#~ msgid "KBoard 댓글 포인트를 관리합니다."
+#~ msgstr "KBoard 댓글 포인트를 관리합니다."
+
+#~ msgid "복원파일의 데이터로 복구 되었습니다."
+#~ msgstr "복원파일의 데이터로 복구 되었습니다."
+
+#~ msgid "올바른 복원파일이 아닙니다."
+#~ msgstr "올바른 복원파일이 아닙니다."
+
+#~ msgid "파일 업로드에 실패 했습니다."
+#~ msgstr "파일 업로드에 실패 했습니다."
+
+#, php-format
+#~ msgid "&#91;Pending&#93; %s"
+#~ msgstr "&#91;승인대기&#93; %s"
+
+#, php-format
+#~ msgid "<p>&#91;Waiting for administrator Approval.&#93;</p>%s"
+#~ msgstr "<p>&#91;관리자의 승인을 기다리고 있습니다.&#93;</p>%s"
+
+#~ msgid "&#91;Pending&#93; Waiting for administrator Approval."
+#~ msgstr "&#91;승인대기&#93; 관리자의 승인을 기다리고 있습니다."
+
+#~ msgid "&#91;Waiting for administrator Approval.&#93;"
+#~ msgstr "&#91;관리자의 승인을 기다리고 있습니다.&#93;"
+
+#~ msgid "CAPTCHA is invalid."
+#~ msgstr "CAPTCHA가 올바르지 않습니다."
+
+#~ msgid "KBoard new document"
+#~ msgstr "KBoard 신규등록"
+
+#~ msgid "Go to Homepage"
+#~ msgstr "홈페이지로 이동"
+
+#~ msgid "No upload path. Please enter board ID and initialize."
+#~ msgstr "업로드 경로가 없습니다. 게시판 ID를 입력하고 초기화 해주세요."
+
+#~ msgid "Deleted increment points"
+#~ msgstr "글삭제 증가 포인트"
+
+#~ msgid "Deleted decrease points"
+#~ msgstr "글삭제 감소 포인트"
+
+#~ msgid "No documents found."
+#~ msgstr "게시글이 없습니다."
+
+#~ msgid "Forum"
+#~ msgstr "게시판"
+
+#~ msgid "Author"
+#~ msgstr "작성자"
+
+#~ msgid "Views"
+#~ msgstr "조회"
+
+#~ msgid "Date"
+#~ msgstr "작성일"
+
+#~ msgid "Status"
+#~ msgstr "상태"
+
+#~ msgid "Restore"
+#~ msgstr "복구"
+
+#~ msgid "Delete Permanently"
+#~ msgstr "영구적으로 삭제하기"
+
+#~ msgid "Move to Trash"
+#~ msgstr "휴지통으로 이동"
+
+#~ msgid "Filter"
+#~ msgstr "필터"
+
+#~ msgid "The reply."
+#~ msgstr "댓글입니다."
+
+#~ msgid "Yes"
+#~ msgstr "예"
+
+#~ msgid "No"
+#~ msgstr "아니요"
+
+#~ msgid "Please enter the title."
+#~ msgstr "제목을 입력해주세요."
+
+#~ msgid "Please enter the password."
+#~ msgstr "비밀번호를 입력해주세요."
+
+#~ msgid "You cannot create more than one post."
+#~ msgstr "1개 이상 게시글을 작성할 수 없습니다."
+
+#, php-format
+#~ msgid "You cannot create more than %d posts."
+#~ msgstr "%d개 이상 게시글을 작성할 수 없습니다."
+
+#, php-format
+#~ msgid "You can create a new post after %d minutes."
+#~ msgstr "%d분 후에 새 게시글을 작성할 수 있습니다."
+
+#, php-format
+#~ msgid "You can create a new post after %d seconds."
+#~ msgstr "%d초 후에 새 게시글을 작성할 수 있습니다."
+
+#~ msgid "You have not enough points."
+#~ msgstr "포인트가 부족합니다."
+
+#~ msgid "Writing decrease points"
+#~ msgstr "글쓰기 감소 포인트"
+
+#~ msgid "An unexpected problem has occurred."
+#~ msgstr "예상하지 못한 문제가 발생했습니다."
+
+#~ msgid "Writing increase points"
+#~ msgstr "글쓰기 증가 포인트"
+
+#~ msgid "This page is restricted from external access."
+#~ msgstr "이 페이지는 외부에서의 접근을 제한하고 있습니다."
+
+#~ msgid "File does not exist."
+#~ msgstr "파일이 없습니다."
+
+#~ msgid "Attachment download decrease points"
+#~ msgstr "첨부파일 다운로드 감소 포인트"
+
+#~ msgid "Payment has been cancelled."
+#~ msgstr "결제가 취소되었습니다."
+
+#~ msgid "Point payment"
+#~ msgstr "포인트 결제"
+
+#~ msgid "Your point is not enough."
+#~ msgstr "포인트가 부족합니다."
+
+#~ msgid "Not enough points."
+#~ msgstr "포인트가 부족합니다."
+
+#~ msgid "Order information has been changed."
+#~ msgstr "주문정보가 변경되었습니다."
+
+#~ msgid "Cancel point payment"
+#~ msgstr "포인트 결제 취소"
+
+#~ msgid "Your order has been cancelled."
+#~ msgstr "주문이 취소되었습니다."
+
+#~ msgid "You have already voted."
+#~ msgstr "이미 투표했습니다."
+
+#~ msgid "Please Log in to continue."
+#~ msgstr "로그인 하셔야 사용할 수 있습니다."
+
+#, php-format
+#~ msgid "%s 파일이 올바르게 업로드되지 않았습니다."
+#~ msgstr "%s 파일이 올바르게 업로드되지 않았습니다."
+
+#, php-format
+#~ msgid "%s 파일은 업로드 가능한 파일 형식이 아닙니다."
+#~ msgstr "%s 파일은 업로드 가능한 파일 형식이 아닙니다."
+
+#, php-format
+#~ msgid "%s 파일의 용량이 너무 큽니다."
+#~ msgstr "%s 파일의 용량이 너무 큽니다."
+
+#, php-format
+#~ msgid "%s 파일 업로드 중 오류가 발생했습니다."
+#~ msgstr "%s 파일 업로드 중 오류가 발생했습니다."
+
+#~ msgid "No latestview found."
+#~ msgstr "최신글 뷰가 없습니다."
+
+#~ msgid "이름"
+#~ msgstr "이름"
+
+#~ msgid "스킨"
+#~ msgstr "스킨"
+
+#~ msgid "정렬 순서"
+#~ msgstr "정렬 순서"
+
+#~ msgid "생성일"
+#~ msgstr "생성일"
+
+#~ msgid "Edit"
+#~ msgstr "글수정"
+
+#~ msgid "Add rewards points"
+#~ msgstr "구매 적립"
+
+#~ msgid "Cancel rewards points"
+#~ msgstr "구매 적립 취소"
+
+#~ msgid "Go home"
+#~ msgstr "홈으로"
+
+#~ msgid "Go back"
+#~ msgstr "뒤로가기"
+
+#~ msgid ""
+#~ "Unable to connect to the update server, Cosmosfarm account please connect "
+#~ "again."
+#~ msgstr ""
+#~ "업데이트 서버에 연결할 수 없습니다, 코스모스팜 계정에 다시 연결하세요."
+
+#~ msgid "No document."
+#~ msgstr "글이 없습니다."
+
+#~ msgid "Invalid URL address."
+#~ msgstr "잘못된 URL 주소입니다."
+
+#~ msgid "This post has been removed."
+#~ msgstr "이 게시글은 삭제되었습니다."
+
+#~ msgid "This post has been moved."
+#~ msgstr "이 게시글은 이동되었습니다."
+
+#~ msgid "This post can only be read by the owner."
+#~ msgstr "이 게시글은 본인만 읽을 수 있습니다."
+
+#~ msgid "Reading decrease points"
+#~ msgstr "글읽기 감소 포인트"
+
+#~ msgid "Please enter your password."
+#~ msgstr "비밀번호를 입력해주세요."
+
+#~ msgid "Captcha"
+#~ msgstr "캡차 (보안코드)"
+
+#~ msgid "Photos"
+#~ msgstr "사진"
+
+#~ msgid "WP Search"
+#~ msgstr "통합검색"
+
+#~ msgid "IP Address"
+#~ msgstr "IP 주소"
+
+#~ msgid "File"
+#~ msgstr "파일"
+
+#~ msgid "No forum found."
+#~ msgstr "게시판이 없습니다."
+
+#~ msgid "게시판 이름"
+#~ msgstr "게시판 이름"
+
+#~ msgid "설치된 페이지"
+#~ msgstr "설치된 페이지"
+
+#~ msgid "읽기권한"
+#~ msgstr "읽기권한"
+
+#~ msgid "쓰기권한"
+#~ msgstr "쓰기권한"
+
+#~ msgid "댓글쓰기권한"
+#~ msgstr "댓글쓰기권한"
+
+#~ msgid "편집"
+#~ msgstr "편집"
+
+#~ msgid "페이지 보기"
+#~ msgstr "페이지 보기"
+
+#~ msgid "페이지 연결 없음"
+#~ msgstr "페이지 연결 없음"
+
+#~ msgid "선택된 관리자"
+#~ msgstr "선택된 관리자"
+
+#~ msgid "최고관리자"
+#~ msgstr "최고관리자"
+
+#~ msgid "본인의 댓글만 보기"
+#~ msgstr "본인의 댓글만 보기"
+
+#~ msgid "직접선택"
+#~ msgstr "직접선택"
+
+#~ msgid "Published"
+#~ msgstr "발행됨"
+
+#~ msgid "Trash"
+#~ msgstr "휴지통"
+
+#~ msgid "First"
+#~ msgstr "처음"
+
+#~ msgid "Last"
+#~ msgstr "마지막"
+
+#~ msgid "KBoard : 게시판"
+#~ msgstr "KBoard : 게시판"
+
+#~ msgid "Find theme"
+#~ msgstr "테마 찾기"
+
+#~ msgid "Find plugin"
+#~ msgstr "플러그인 찾기"
+
+#~ msgid "KBoard Add Media"
+#~ msgstr "KBoard 미디어 추가"
+
+#~ msgid "New Forum"
+#~ msgstr "게시판 생성"
+
+#~ msgid "대시보드"
+#~ msgstr "대시보드"
+
+#~ msgid "게시판 목록 및 관리"
+#~ msgstr "게시판 목록 및 관리"
+
+#~ msgid "최신글 모아보기"
+#~ msgstr "최신글 모아보기"
+
+#~ msgid "최신글 모아보기 생성"
+#~ msgstr "최신글 모아보기 생성"
+
+#~ msgid "백업 및 복구"
+#~ msgstr "백업 및 복구"
+
+#~ msgid "업데이트"
+#~ msgstr "업데이트"
+
+#~ msgid "스토어"
+#~ msgstr "스토어"
+
+#~ msgid "Partners"
+#~ msgstr "파트너"
+
+#~ msgid "전체 게시글"
+#~ msgstr "전체 게시글"
+
+#~ msgid "전체 댓글"
+#~ msgstr "전체 댓글"
+
+#~ msgid "Next"
+#~ msgstr "다음"
+
+#~ msgid "Prev"
+#~ msgstr "이전"
+
+#~ msgid "Please enter the CAPTCHA."
+#~ msgstr "옆에 보이는 보안코드를 입력해주세요."
+
+#~ msgid "Please enter the name."
+#~ msgstr "이름을 입력해주세요."
+
+#~ msgid "Please enter the email."
+#~ msgstr "이메일을 입력해주세요."
+
+#~ msgid "Please wait."
+#~ msgstr "기다려주세요."
+
+#~ msgid "Newest"
+#~ msgstr "최신순"
+
+#~ msgid "Best"
+#~ msgstr "추천순"
+
+#~ msgid "Viewed"
+#~ msgstr "조회순"
+
+#~ msgid "Did it help?"
+#~ msgstr "도움이 되었나요?"
+
+#~ msgid "Hashtag"
+#~ msgstr "해시태그"
+
+#~ msgid "Add a Tag"
+#~ msgstr "태그 추가"
+
+#~ msgid "Removing tag"
+#~ msgstr "태그 삭제"
+
+#~ msgid "Changes you made may not be saved."
+#~ msgstr "변경사항이 저장되지 않을 수 있습니다."
+
+#~ msgid "Name"
+#~ msgstr "이름"
+
+#~ msgid "Address 2"
+#~ msgstr "주소 2"
+
+#~ msgid "Phone number"
+#~ msgstr "휴대폰번호"
+
+#~ msgid "Phone"
+#~ msgstr "휴대폰번호"
+
+#~ msgid "VAT number"
+#~ msgstr "사업자등록번호"
+
+#~ msgid "Bank account"
+#~ msgstr "은행계좌"
+
+#~ msgid "Name of deposit"
+#~ msgstr "입금자명"
+
+#~ msgid "Find"
+#~ msgstr "찾기"
+
+#~ msgid "Rate"
+#~ msgstr "등급"
+
+#~ msgid "Waiting"
+#~ msgstr "대기"
+
+#~ msgid "Complete"
+#~ msgstr "완료"
+
+#~ msgid "Answer"
+#~ msgstr "답변"
+
+#~ msgid "Ask Question"
+#~ msgstr "질문하기"
+
+#~ msgid "Categories"
+#~ msgstr "카테고리"
+
+#~ msgid "Pages"
+#~ msgstr "페이지"
+
+#~ msgid "All Products"
+#~ msgstr "전체상품"
+
+#~ msgid "Your Sales"
+#~ msgstr "판매조회"
+
+#~ msgid "My Orders"
+#~ msgstr "주문조회"
+
+#~ msgid "My Sales"
+#~ msgstr "판매조회"
+
+#~ msgid "New Product"
+#~ msgstr "상품등록"
+
+#~ msgid "Seller"
+#~ msgstr "판매자"
+
+#~ msgid "Period"
+#~ msgstr "기간"
+
+#~ msgid "Period of use"
+#~ msgstr "사용기간"
+
+#~ msgid "Price"
+#~ msgstr "판매가격"
+
+#~ msgid "Total price"
+#~ msgstr "총 가격"
+
+#~ msgid "Amount"
+#~ msgstr "결제금액"
+
+#~ msgid "Quantity"
+#~ msgstr "수량"
+
+#~ msgid "Use points"
+#~ msgstr "포인트 사용"
+
+#~ msgid "My points"
+#~ msgstr "내 포인트"
+
+#~ msgid "Apply points"
+#~ msgstr "포인트 사용"
+
+#~ msgid "Buy It Now"
+#~ msgstr "구매하기"
+
+#~ msgid "Sold Out"
+#~ msgstr "품절"
+
+#~ msgid "For free"
+#~ msgstr "무료"
+
+#, php-format
+#~ msgid "Pay %s"
+#~ msgstr "%s 결제"
+
+#~ msgid "Payment method"
+#~ msgstr "결제수단"
+
+#~ msgid "Credit card"
+#~ msgstr "신용카드"
+
+#~ msgid "Make a deposit"
+#~ msgstr "무통장입금"
+
+#~ msgid "Reward point"
+#~ msgstr "적립 포인트"
+
+#~ msgid "Download expiry"
+#~ msgstr "다운로드 기간"
+
+#~ msgid "Checkout"
+#~ msgstr "주문정보확인"
+
+#~ msgid "Buyer information"
+#~ msgstr "주문자"
+
+#~ msgid "Applying cash receipts"
+#~ msgstr "현금영수증 신청"
+
+#~ msgid "Applying cash receipt"
+#~ msgstr "현금영수증 신청"
+
+#~ msgid "Cash receipt"
+#~ msgstr "현금영수증"
+
+#~ msgid "Privacy policy"
+#~ msgstr "개인 정보 정책"
+
+#~ msgid "I agree to the privacy policy."
+#~ msgstr "개인 정보 정책에 동의합니다."
+
+#~ msgid ""
+#~ "I confirm the terms of the transaction and agree to the payment process."
+#~ msgstr "거래조건을 확인했으며 결제진행에 동의합니다."
+
+#~ msgid "Today"
+#~ msgstr "오늘"
+
+#~ msgid "Yesterday"
+#~ msgstr "어제"
+
+#~ msgid "This month"
+#~ msgstr "이번달"
+
+#~ msgid "Last month"
+#~ msgstr "지난달"
+
+#~ msgid "Last 30 days"
+#~ msgstr "최근30일"
+
+#~ msgid "Agree"
+#~ msgstr "찬성"
+
+#~ msgid "Disagree"
+#~ msgstr "반대"
+
+#~ msgid "Opinion"
+#~ msgstr "의견"
+
+#~ msgid "PayPal"
+#~ msgstr "페이팔"
+
+#~ msgid "Point"
+#~ msgstr "포인트"
+
+#~ msgid "Zip Code"
+#~ msgstr "우편번호"
+
+#~ msgid "This year"
+#~ msgstr "올해"
+
+#~ msgid "Last year"
+#~ msgstr "작년"
+
+#~ msgid "Period total"
+#~ msgstr "기간 합계"
+
+#~ msgid "Total revenue"
+#~ msgstr "전체 수익"
+
+#~ msgid "Terms of service"
+#~ msgstr "이용약관"
+
+#~ msgid "I agree to the terms of service."
+#~ msgstr "이용약관에 동의합니다."
+
+#~ msgid "Your Shopping Cart Is Empty!"
+#~ msgstr "장바구니가 비어 있습니다!"
+
+#~ msgid "Information"
+#~ msgstr "정보"
+
+#~ msgid "Telephone"
+#~ msgstr "전화번호"
+
+#~ msgid "Items"
+#~ msgstr "품목"
+
+#~ msgid "Total quantity"
+#~ msgstr "총수량"
+
+#~ msgid "Make Payment"
+#~ msgstr "결제하기"
+
+#~ msgid "Add"
+#~ msgstr "추가"
+
+#~ msgid "Close"
+#~ msgstr "닫기"
+
+#~ msgid "KBoard Forum Settings"
+#~ msgstr "KBoard 게시판 관리"
+
+#~ msgid "KBoard : 백업 및 복구"
+#~ msgstr "KBoard : 백업 및 복구"
+
+#~ msgid "KBoard : 전체 게시글"
+#~ msgstr "KBoard : 전체 게시글"
+
+#~ msgid "KBoard : 대시보드"
+#~ msgstr "KBoard : 대시보드"
+
+#~ msgid "시스템 설정"
+#~ msgstr "시스템 설정"
+
+#~ msgid "커뮤니티로 이동"
+#~ msgstr "커뮤니티로 이동"
+
+#~ msgid "KBoard : 최신글 뷰"
+#~ msgstr "KBoard : 최신글 뷰"
+
+#~ msgid "KBoard : 최신글 뷰 관리"
+#~ msgstr "KBoard : 최신글 뷰 관리"
+
+#~ msgid "변경 사항 저장"
+#~ msgstr "변경 사항 저장"
+
+#~ msgid "KBoard : 게시판 목록"
+#~ msgstr "KBoard : 게시판 목록"
+
+#~ msgid "KBoard : 게시판 관리"
+#~ msgstr "KBoard : 게시판 관리"
+
+#~ msgid "기본설정"
+#~ msgstr "기본설정"
+
+#~ msgid "권한설정"
+#~ msgstr "권한설정"
+
+#~ msgid "입력필드 설정"
+#~ msgstr "입력필드 설정"
+
+#~ msgid "고급설정"
+#~ msgstr "고급설정"
+
+#~ msgid "포인트설정"
+#~ msgstr "포인트설정"
+
+#~ msgid "대량관리"
+#~ msgstr "대량관리"
+
+#~ msgid "확장설정"
+#~ msgstr "확장설정"
+
+#~ msgid "Please enter only numbers"
+#~ msgstr "숫자만 입력해주세요"
+
+#~ msgid "Writing comment increase points"
+#~ msgstr "댓글쓰기 증가 포인트"
+
+#~ msgid "Writing comment decrease points"
+#~ msgstr "댓글쓰기 감소 포인트"
+
+#~ msgid "Deleted comment increment points"
+#~ msgstr "댓글삭제 증가 포인트"
+
+#~ msgid "Deleted comment decrease points"
+#~ msgstr "댓글삭제 감소 포인트"
+
+#~ msgid "Download"
+#~ msgstr "다운로드"
+
+#~ msgid "Upload"
+#~ msgstr "업로드"
+
+#~ msgid "KBoard : 스토어"
+#~ msgstr "KBoard : 스토어"
+
+#~ msgid "로그인"
+#~ msgstr "로그인"
+
+#~ msgid "KBoard : 업데이트"
+#~ msgstr "KBoard : 업데이트"
+
+#~ msgid "코스모스팜 대시보드 입니다."
+#~ msgstr "코스모스팜 대시보드 입니다."
+
+#~ msgid "최신버전 확인 및 운영관련 기능을 사용할 수 있습니다."
+#~ msgstr "최신버전 확인 및 운영관련 기능을 사용할 수 있습니다."
+
+#~ msgid "Events and News"
+#~ msgstr "이벤트 및 뉴스"
+
+#~ msgid "등록된 상품이 없습니다."
+#~ msgstr "등록된 상품이 없습니다."
+
+#~ msgid "List"
+#~ msgstr "목록보기"
+
+#~ msgid "Password confirm"
+#~ msgstr "비밀번호 확인"
+
+#~ msgid "Like"
+#~ msgstr "좋아요"
+
+#~ msgid "Unlike"
+#~ msgstr "싫어요"
+
+#~ msgid "Print"
+#~ msgstr "인쇄"
+
+#, php-format
+#~ msgid "Download %s"
+#~ msgstr "다운로드 %s"
+
+#~ msgid "Reply"
+#~ msgstr "답글쓰기"
+
+#~ msgid "KBoard is the best community software available for WordPress"
+#~ msgstr "의미있는 워드프레스 게시판"
+
+#~ msgid "CAPTCHA"
+#~ msgstr "CAPTCHA"
+
+#~ msgid "Only title (secret document)"
+#~ msgstr "제목만 검색허용 (비밀글)"
+
+#~ msgid "Exclusion"
+#~ msgstr "통합검색 제외"
+
+#~ msgid "Back"
+#~ msgstr "돌아가기"
+
+#~ msgid "Save"
+#~ msgstr "저장하기"
+
+#~ msgid "Total"
+#~ msgstr "전체"
+
+#~ msgid "Votes"
+#~ msgstr "추천"
+
+#~ msgid "New"
+#~ msgstr "글쓰기"
+
+#~ msgid "Send"
+#~ msgstr "보내기"
+
+#~ msgid "Your message was sent successfully. Thanks."
+#~ msgstr "메시지가 성공적으로 전송되었습니다. 감사합니다."
+
+#~ msgid "업로드"
+#~ msgstr "업로드"
+
+#~ msgid "선택된 이미지 삽입하기"
+#~ msgstr "선택된 이미지 삽입하기"
+
+#~ msgid "선택 삽입"
+#~ msgstr "선택 삽입"
+
+#~ msgid "전체선택"
+#~ msgstr "전체선택"
+
+#~ msgid "창닫기"
+#~ msgstr "창닫기"
+
+#~ msgid "선택됨"
+#~ msgstr "선택됨"
+
+#~ msgid "삽입"
+#~ msgstr "삽입"
+
+#~ msgid "삭제"
+#~ msgstr "삭제"
+
+#~ msgid "업로드된 이미지가 없습니다."
+#~ msgstr "업로드된 이미지가 없습니다."
+
+#~ msgid "업로드 버튼을 눌러 이미지 파일을 선택하면 이곳에 표시됩니다 :D"
+#~ msgstr "업로드 버튼을 눌러 이미지 파일을 선택하면 이곳에 표시됩니다 :D"
+
+#~ msgid "로딩중"
+#~ msgstr "로딩중"
+
+#~ msgid "선택한 이미지가 없습니다."
+#~ msgstr "선택한 이미지가 없습니다."
+
+#~ msgid "선택한 이미지를 본문에 삽입했습니다. 창을 닫을까요?"
+#~ msgstr "선택한 이미지를 본문에 삽입했습니다. 창을 닫을까요?"
+
+#~ msgid ""
+#~ "Network connection with the server is unstable. Please proceed to upload "
+#~ "again."
+#~ msgstr "서버와 네트워크 연결 불안정합니다. 다시 업로드를 시도해주세요."
+
+#~ msgid "이미지 파일만 업로드 가능합니다."
+#~ msgstr "이미지 파일만 업로드 가능합니다."
+
+#~ msgid "Color Select"
+#~ msgstr "색상 선택"
+
+#~ msgid "Temporary save"
+#~ msgstr "임시저장"
+
+#~ msgid "KBoard 미디어 추가"
+#~ msgstr "KBoard 미디어 추가"
+
+#~ msgid "Success!"
+#~ msgstr "성공!"
+
+#~ msgid "There was an error unzipping the file."
+#~ msgstr "파일을 압축 해제하는 중 오류가 발생했습니다."
+
+#~ msgid "설치된 게시판 플러그인 버전"
+#~ msgstr "설치된 게시판 플러그인 버전"
+
+#~ msgid "최신"
+#~ msgstr "최신"
+
+#~ msgid "변경사항"
+#~ msgstr "변경사항"
+
+#~ msgid "설치된 댓글 플러그인 버전"
+#~ msgstr "설치된 댓글 플러그인 버전"
+
+#~ msgid "Your Message"
+#~ msgstr "메시지"
+
+#~ msgid ""
+#~ "Download file is decompression failed, please check directory and file "
+#~ "permissions."
+#~ msgstr "다운로드 파일 압축 해제 실패, 디렉토리 및 파일 권한을 확인하십시오."
+
+#~ msgid "File copy failed, directory requires write permission."
+#~ msgstr "파일 복사 실패, 디렉토리에 쓰기 권한이 필요합니다."
+
+#~ msgid "Free item"
+#~ msgstr "무료"
+
+#~ msgid "Ask a question"
+#~ msgstr "질문하기"
+
+#~ msgid "Your changes could not be saved."
+#~ msgstr "변경사항이 저장되지 않을 수 있습니다."
+
+#~ msgid "WordPress KBoard feed"
+#~ msgstr "워드프레스 KBoard 피드"
+
+#~ msgid "Unable to connect to Cosmosfarm server."
+#~ msgstr "코스모스팜 서버에 접속할 수 없습니다."
+
+#~ msgid "The CAPTCHA code is not valid. Please enter the CAPTCHA code."
+#~ msgstr "보안코드가 올바르지 않습니다. 보안 코드를 입력해주세요."
+
+#~ msgid "관리 권한이 없습니다."
+#~ msgstr "관리 권한이 없습니다."
+
+#~ msgid "생성일자"
+#~ msgstr "생성일자"
+
+#~ msgid "답글입니다."
+#~ msgstr "답글입니다."
+
+#~ msgid "게시판"
+#~ msgstr "게시판"
+
+#~ msgid "제목/내용"
+#~ msgstr "제목/내용"
+
+#~ msgid "작성자"
+#~ msgstr "작성자"
+
+#~ msgid "비밀글"
+#~ msgstr "비밀글"
+
+#~ msgid "공지사항"
+#~ msgstr "공지사항"
+
+#~ msgid "작성일"
+#~ msgstr "작성일"
+
+#~ msgid "게시판 변경"
+#~ msgstr "게시판 변경"
+
+#~ msgid "Open"
+#~ msgstr "페이지 열기"
+
+#~ msgid "예"
+#~ msgstr "예"
+
+#~ msgid "아니오"
+#~ msgstr "아니오"
+
+#~ msgid "다음 페이지에서 게시판과 댓글 플러그인 모두를 업데이트해주세요."
+#~ msgstr "다음 페이지에서 게시판과 댓글 플러그인 모두를 업데이트해주세요."
+
+#~ msgid "KBoard 게시판 설치도구 플러그인을 먼저 설치해주세요."
+#~ msgstr "KBoard 게시판 설치도구 플러그인을 먼저 설치해주세요."
+
+#~ msgid "새창열기"
+#~ msgstr "새창열기"
+
+#~ msgid ""
+#~ "<code>/wp-content/uploads/kboard_attached</code> 경로의 모든 파일을 FTP를 "
+#~ "사용해서 다운로드받아 옮겨주세요."
+#~ msgstr ""
+#~ "<code>/wp-content/uploads/kboard_attached</code> 경로의 모든 파일을 FTP를 "
+#~ "사용해서 다운로드받아 옮겨주세요."
+
+#~ msgid ""
+#~ "/wp-content/uploads/kboard_attached 경로의 모든 파일을 FTP로 다운로드받아 "
+#~ "옮겨주세요."
+#~ msgstr ""
+#~ "/wp-content/uploads/kboard_attached 경로의 모든 파일을 FTP로 다운로드받아 "
+#~ "옮겨주세요."
+
+#~ msgid "게시글이 없습니다."
+#~ msgstr "게시글이 없습니다."
+
+#~ msgid "최신글 뷰가 없습니다."
+#~ msgstr "최신글 뷰가 없습니다."
+
+#~ msgid "게시판이 없습니다."
+#~ msgstr "게시판이 없습니다."
+
+#~ msgid "Vote"
+#~ msgstr "추천"
+
+#~ msgid "홈페이지"
+#~ msgstr "홈페이지"
+
+#~ msgid "커뮤니티"
+#~ msgstr "커뮤니티"
+
+#~ msgid "고객지원"
+#~ msgstr "고객지원"
+
+#~ msgid "블로그"
+#~ msgstr "블로그"
+
+#~ msgid "다음"
+#~ msgstr "다음"
+
+#~ msgid "이전"
+#~ msgstr "이전"
+
+#~ msgid "WordPress"
+#~ msgstr "워드프레스"
+
+#~ msgid "No backup privilege."
+#~ msgstr "백업 권한이 없습니다."
+
+#, fuzzy
+#~ msgid "No document UID."
+#~ msgstr "글이 없습니다."
+
+#, fuzzy
+#~ msgid "Total Reply"
+#~ msgstr "답글쓰기"
+
+#, fuzzy
+#~ msgid "It is a comment does not exist."
+#~ msgstr "게시판 아이디가 없습니다."
+
+#~ msgid "Language"
+#~ msgstr "언어"
+
+#~ msgid "The Best of WordPress Board"
+#~ msgstr "의미있는 워드프레스 게시판"
+
+#~ msgid "Title and content searchable"
+#~ msgstr "제목과 내용 검색허용"
+
+#~ msgid "Back to top"
+#~ msgstr "뒤로가기"
+
+#~ msgid "It is the wrong approach."
+#~ msgstr "잘못된 접근입니다."
+
+#~ msgid "You will need to login."
+#~ msgstr "로그인 하셔야 사용할 수 있습니다."
+
+#~ msgid "Update the server connection fails, please reconnect the Cosmosfarm."
+#~ msgstr "업데이트 서버 연결 실패, 코스모스팜 계정을 다시 연결해 주세요."
+
+#~ msgid ""
+#~ "Failure to decompress the file, check the permissions of directories and "
+#~ "files."
+#~ msgstr "파일 압축 해제 실패, 디렉토리 및 파일의 권한을 확인하세요."
+
+#~ msgid "File copy failed"
+#~ msgstr "파일 복사 실패"
+
+#~ msgid "Must have write permissions in the directory."
+#~ msgstr "디렉토리에 쓰기 권한이 있어야 합니다."

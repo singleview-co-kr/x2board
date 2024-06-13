@@ -545,7 +545,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 		// function getDocumentExtraVarsFromDB($documentSrls)
 		public function get_post_user_define_vars_from_DB($a_post_id) {
 			if(!is_array($a_post_id) || count($a_post_id) == 0) {
-				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', 'x2board') );
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', X2B_DOMAIN) );
 			}
 			// $args = new stdClass();
 			// $args->document_srl = $documentSrls;
@@ -1093,11 +1093,15 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 		 */
 		// function getStatusNameList()
 		public function get_status_name_list() {
-			global $lang;
-			if(!isset($lang->status_name_list)) {
-				return array_flip($this->get_status_list());
+			global $a_translated_status_name;
+			if(!isset($a_translated_status_name)) {
+				$a_translated_status_name = array();
+				foreach($this->get_status_list() as $s_key => $s_val) {
+					$a_translated_status_name[$s_val] = __( 'opt_'.$s_key, X2B_DOMAIN);
+				}
+				return $a_translated_status_name;
 			}
-			return $lang->status_name_list;
+			return $a_translated_status_name;
 		}
 
 		/**

@@ -72,16 +72,16 @@ function add_admin_pages_links() {
 	global $_wp_last_object_menu;
 	$_wp_last_object_menu++;
 	// visible admin page
-	add_menu_page(X2B_ADMIN_PAGE_TITLE, 'X2Board', 'manage_x2board', X2B_CMD_ADMIN_VIEW_IDX, 'X2board\Includes\Admin\disp_admin_board', 'dashicons-admin-post', $_wp_last_object_menu);
-	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(X2B_CMD_ADMIN_VIEW_IDX, X2B_ADMIN_PAGE_TITLE, __('Dashboard', 'x2board'), 'manage_x2board', X2B_CMD_ADMIN_VIEW_IDX, 'X2board\Includes\Admin\disp_admin_board' );
-	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(X2B_CMD_ADMIN_VIEW_IDX, X2B_ADMIN_PAGE_TITLE, __('Create board', 'x2board'), 'manage_x2board', X2B_CMD_ADMIN_VIEW_BOARD_INSERT, 'X2board\Includes\Admin\disp_admin_board' );
-	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(X2B_CMD_ADMIN_VIEW_IDX, X2B_ADMIN_PAGE_TITLE, __('Board list', 'x2board'), 'manage_x2board', X2B_CMD_ADMIN_VIEW_BOARD_LIST, 'X2board\Includes\Admin\disp_admin_board' );
-	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(X2B_CMD_ADMIN_VIEW_IDX, X2B_ADMIN_PAGE_TITLE, __('Import board', 'x2board'), 'manage_x2board', X2B_CMD_ADMIN_VIEW_BOARD_IMPORT, 'X2board\Includes\Admin\disp_admin_board' );
+	add_menu_page(X2B_ADMIN_PAGE_TITLE, X2B_DOMAIN, 'manage_x2board', X2B_CMD_ADMIN_VIEW_IDX, 'X2board\Includes\Admin\disp_admin_board', 'dashicons-admin-post', $_wp_last_object_menu);
+	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(X2B_CMD_ADMIN_VIEW_IDX, X2B_ADMIN_PAGE_TITLE, __('lbl_dashboard', X2B_DOMAIN), 'manage_x2board', X2B_CMD_ADMIN_VIEW_IDX, 'X2board\Includes\Admin\disp_admin_board' );
+	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(X2B_CMD_ADMIN_VIEW_IDX, X2B_ADMIN_PAGE_TITLE, __('cmd_create_board', X2B_DOMAIN), 'manage_x2board', X2B_CMD_ADMIN_VIEW_BOARD_INSERT, 'X2board\Includes\Admin\disp_admin_board' );
+	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(X2B_CMD_ADMIN_VIEW_IDX, X2B_ADMIN_PAGE_TITLE, __('cmd_board_list', X2B_DOMAIN), 'manage_x2board', X2B_CMD_ADMIN_VIEW_BOARD_LIST, 'X2board\Includes\Admin\disp_admin_board' );
+	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(X2B_CMD_ADMIN_VIEW_IDX, X2B_ADMIN_PAGE_TITLE, __('cmd_import_board', X2B_DOMAIN), 'manage_x2board', X2B_CMD_ADMIN_VIEW_BOARD_IMPORT, 'X2board\Includes\Admin\disp_admin_board' );
 	// hidden admin page
-	// $A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(null, X2B_ADMIN_PAGE_TITLE, __('Configure the board', 'x2board'), 'manage_x2board', X2B_CMD_ADMIN_VIEW_BOARD_UPDATE, 'X2board\Includes\Admin\disp_admin_board' );
+	// $A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(null, X2B_ADMIN_PAGE_TITLE, __('Configure the board', X2B_DOMAIN), 'manage_x2board', X2B_CMD_ADMIN_VIEW_BOARD_UPDATE, 'X2board\Includes\Admin\disp_admin_board' );
 	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_options_page(
-		esc_html__( 'X2Board', 'x2board' ),
-		esc_html__( 'quick board', 'x2board' ),
+		X2B_DOMAIN,
+		'quick board',
 		'manage_x2board',
 		X2B_CMD_ADMIN_VIEW_BOARD_UPDATE,
 		'X2board\Includes\Admin\disp_admin_board'
@@ -153,7 +153,7 @@ function disp_admin_board() {
 	$o_module = new \X2board\Includes\Modules\Board\boardAdminView();
 	$calling_method = isset($_REQUEST['page']) ? str_replace( 'x2b_', '', sanitize_text_field($_REQUEST['page']) ) : '';
 	if(!method_exists( $o_module, $calling_method )) {
-		wp_die(__('requested view does not have '.$calling_method.'()', 'x2board'));
+		wp_die( sprintf( __( 'msg_call_invalid_module', X2B_DOMAIN ), $calling_method ) );
 	}
 	$o_module->$calling_method();
 	unset($o_module);
@@ -172,7 +172,7 @@ function proc_admin_board(){
 	}
 
 	if(!method_exists( $o_module, $calling_method )) {
-		wp_die(__('requested controller does not have '.$calling_method.'()', 'x2board'));
+		wp_die( sprintf( __( 'msg_call_invalid_module', X2B_DOMAIN ), $calling_method ) );
 	}
 	$o_module->$calling_method();
 	unset($o_module);
@@ -196,7 +196,7 @@ function footer( $footer_text ) {
 	if ( in_array( $current_screen->id, $A_X2B_ADMIN_SETTINGS_PAGE, true ) ) {
 
 		$text = sprintf(
-			__( 'Thank you for using <a href="%1$s" target="_blank">X2 Board</a>! Please <a href="%2$s" target="_blank">rate us</a> on <a href="%2$s" target="_blank">WordPress.org</a>', 'x2board' ),
+			__( 'msg_thank_you_using_x2board', X2B_DOMAIN ),
 			'https://singleview.co.kr/x2board',
 			'https://wordpress.org/support/plugin/x2board/reviews/#new-post'
 		);

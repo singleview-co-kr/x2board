@@ -137,6 +137,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			\X2board\Includes\Classes\Context::set('skin_path_abs', $this->skin_path);
 			\X2board\Includes\Classes\Context::set('skin_url', X2B_URL.'includes/modules/board/skins/'.$this->module_info->skin);
 
+			// load textdomain for skin_vars
+			// third parameter should be relative path to WP_PLUGIN_DIR
+			load_plugin_textdomain(X2B_DOMAIN, false, X2B_DOMAIN.DIRECTORY_SEPARATOR.'includes'.DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.'board'.DIRECTORY_SEPARATOR.'skins'.DIRECTORY_SEPARATOR.$this->module_info->skin.DIRECTORY_SEPARATOR.'lang');
+
 			// Avoid warning - Undefined variable: sort_index
 			if(!\X2board\Includes\Classes\Context::get('sort_index')) {
 				\X2board\Includes\Classes\Context::set('sort_index', null);
@@ -308,7 +312,7 @@ var_dump(X2B_CMD_VIEW_LIST);
 			 **/
 			// use search options on the template (the search options key has been declared, based on the language selected)
 			foreach($this->a_search_option as $opt) {
-				$a_search_option[$opt] = __($opt, 'x2board'); //Context::getLang($opt);
+				$a_search_option[$opt] = __($opt, X2B_DOMAIN); //Context::getLang($opt);
 			}
 
 			$a_extra_keys = \X2board\Includes\Classes\Context::get('extra_keys');
@@ -388,7 +392,7 @@ var_dump(X2B_CMD_VIEW_POST);
 // var_dump(get_the_ID());			
 					// if the board is not consistent with wp page ID
 					if(intval($o_post->get('board_id')) !== get_the_ID() )	{  // board_id is WP page ID
-						return $this->_disp_message( __('msg_invalid_request', 'x2board') ); // return $this->stop('msg_invalid_request');
+						return $this->_disp_message( __('msg_invalid_request', X2B_DOMAIN) ); // return $this->stop('msg_invalid_request');
 					}
 
 					// check the manage grant
@@ -419,7 +423,7 @@ var_dump(X2B_CMD_VIEW_POST);
 				}
 				else { // if the post is not existed, then alert a warning message					
 					\X2board\Includes\Classes\Context::set( 'post_id', '', true );
-					$this->_alert_message( __('msg_not_founded', 'x2board') );
+					$this->_alert_message( __('msg_not_founded', X2B_DOMAIN) );
 				}
 			}
 			else {  // if the post is not existed, get an empty post
@@ -430,7 +434,7 @@ var_dump(X2B_CMD_VIEW_POST);
 				if(!$this->grant->view && !$o_post->is_granted()) {
 					$o_post = $o_post_model->get_post(0);
 					\X2board\Includes\Classes\Context::set('post_id','',true);
-					$this->_alert_message( __('msg_not_permitted', 'x2board') );
+					$this->_alert_message( __('msg_not_permitted', X2B_DOMAIN) );
 				}
 				else {
 					// add the document title to the browser
@@ -453,7 +457,7 @@ var_dump(X2B_CMD_VIEW_POST);
 
 					// disappear the post if it is secret
 					if($o_post->is_secret() && !$o_post->is_granted()) {
-						$o_post->add( 'content', __('this_is_secret', 'x2board') );
+						$o_post->add( 'content', __('msg_secret_post', X2B_DOMAIN) );
 					}
 				}
 			}
@@ -688,7 +692,7 @@ var_dump(X2B_CMD_VIEW_POST);
 var_dump(X2B_CMD_VIEW_WRITE_POST);
 			// check grant
 			if(!$this->grant->write_post) {
-				return $this->_disp_message( __('msg_not_permitted', 'x2board') );
+				return $this->_disp_message( __('msg_not_permitted', X2B_DOMAIN) );
 			}
 
 			/**
@@ -724,7 +728,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 
 			if($o_post->is_exists() && $this->module_info->protect_content=="Y" && 
 				$o_post->get('comment_count')>0 && $this->grant->manager==false) {
-				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_protect_content', 'x2board') );
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_protect_content', X2B_DOMAIN) );
 			}
 
 			// if the post is not granted, then back to the password input form
@@ -757,10 +761,11 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 				$o_post->add('status', $o_post_model->get_default_status());
 			}
 
-			$statusList = $this->_get_status_name_list();
-			if(count($statusList) > 0) {
-				\X2board\Includes\Classes\Context::set('status_list', $statusList);
+			$a_status_list = $this->_get_status_name_list();
+			if(count($a_status_list) > 0) {
+				\X2board\Includes\Classes\Context::set('status_list', $a_status_list);
 			}
+			unset($a_status_list);
 
 			// get Document status config value
 			// \X2board\Includes\Classes\Context::set('document_srl',$document_srl);
@@ -800,7 +805,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 
 			// check grant
 			if(!$this->grant->write_comment) {
-				return $this->_disp_message(__('msg_not_permitted', 'x2board'));
+				return $this->_disp_message(__('msg_not_permitted', X2B_DOMAIN));
 			}
 
 			// get the post information
@@ -809,12 +814,12 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			$o_post = $o_post_model->get_post($n_post_id);
 			unset($o_post_model);
 			if(!$o_post->is_exists()) {
-				return $this->_disp_message(__('msg_invalid_request', 'x2board'));
+				return $this->_disp_message(__('msg_invalid_request', X2B_DOMAIN));
 			}
 
 			// Check allow comment
 			if(!$o_post->allow_comment()) {
-				return $this->_disp_message(__('msg_not_allow_comment', 'x2board'));
+				return $this->_disp_message(__('msg_not_allow_comment', X2B_DOMAIN));
 			}
 
 			// obtain the comment (create an empty comment post for comment_form usage)
@@ -845,7 +850,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 		private function _view_modify_comment() {
 			// check grant
 			if(!$this->grant->write_comment) {
-				return $this->_disp_message(__('msg_not_permitted', 'x2board'));
+				return $this->_disp_message(__('msg_not_permitted', X2B_DOMAIN));
 			}
 
 			// get the post_id and comment_id
@@ -854,7 +859,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 
 			// if the comment is not existed
 			if(!$n_comment_id) {
-				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', 'x2board'));
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', X2B_DOMAIN));
 			}
 
 			// get comment information
@@ -867,7 +872,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			unset($o_comment_model);
 			// if the comment is not exited, alert an error message
 			if(!$o_comment->is_exists()) {
-				return $this->_disp_message(__('msg_invalid_request', 'x2board'));
+				return $this->_disp_message(__('msg_invalid_request', X2B_DOMAIN));
 			}
 
 			// if the comment is not granted, then back to the password input form
@@ -894,19 +899,19 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 
 		// function _getStatusNameList(&$oDocumentModel)
 		private function _get_status_name_list() {
-			$resultList = array();
+			$a_result_list = array();
 			if(!empty($this->module_info->use_status)) {
 				$o_post_model = \X2board\Includes\getModel('post');
-				$statusNameList = $o_post_model->get_status_name_list();
+				$a_status_name_list = $o_post_model->get_status_name_list();
 				unset($o_post_model);
-				$statusList = $this->module_info->use_status;
 				if(is_array($this->module_info->use_status)) {
 					foreach($this->module_info->use_status as $key => $value) {
-						$resultList[$value] = $statusNameList[$value];
+						$a_result_list[$value] = $a_status_name_list[$value];
 					}
 				}
+				unset($a_status_name_list);
 			}
-			return $resultList;
+			return $a_result_list;
 		}
 
 		/**
@@ -969,7 +974,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			$parent_comment_id = \X2board\Includes\Classes\Context::get('comment_id');
 			// if the parent comment is not existed
 			if(!$parent_comment_id) {
-				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', 'x2board') );
+				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', X2B_DOMAIN) );
 			}
 
 			// get the comment
@@ -1405,13 +1410,13 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 			// 	include $current_file_path;
 			// }
 			// else{
-			// 	echo sprintf(__('%s file does not exist.', 'x2board'), $file);
+			// 	echo sprintf(__('%s file does not exist.', X2B_DOMAIN), $file);
 			// }
 
 			$s_skin_path = \X2board\Includes\Classes\Context::get('skin_path_abs'); // this sets on board.view.php::init()
 			$s_skin_file_abs_path = $s_skin_path . '/editor-fields.php';
 			if( !file_exists( $s_skin_file_abs_path ) ) {
-				echo sprintf(__('%s file does not exist.', 'x2board'), $s_skin_file_abs_path);
+				echo sprintf(__('%s file does not exist.', X2B_DOMAIN), $s_skin_file_abs_path);
 			}
 			include $s_skin_file_abs_path;
 		}*/
