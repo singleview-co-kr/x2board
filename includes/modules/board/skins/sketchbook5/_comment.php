@@ -64,7 +64,8 @@
 					</div>
 					<!--// 댓글 본문 -->
 					<?php if(!$comment->is_accessible()): ?>
-						<form action="./" method="get" onsubmit="return procFilter(this, input_password)">
+						<!-- onsubmit="return procFilter(this, input_password)" -->
+						<form action="./" method="get" id="x2board-comment-form">
 							<input type="hidden" name="board_id" value="<?php echo $board_id?>" />
 							<input type="hidden" name="page" value="<?php echo $page?>" />
 							<input type="hidden" name="parent_post_id" value="<?php echo $comment->get('parent_post_id')?>" />

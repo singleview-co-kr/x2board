@@ -30,7 +30,7 @@ wp_enqueue_script('x2board-sketchbook5-editor', $skin_url . '/js/editor.js', [],
 
 <!--// 댓글 수정화면 -->
 <!-- onsubmit="<?php if(wp_is_mobile() && $mi->m_editor == ' '): ?>jQuery(this).find('input[name=content]').val(jQuery('#editor').html());<?php endif ?>return procFilter(this, insert_comment)"  -->
-<form action="<?php echo esc_url(x2b_get_url('cmd', '', 'post_id', '')) ?>" method="post"  class="bd_wrt bd_wrt_main clear">
+<form action="<?php echo esc_url(x2b_get_url('cmd', '', 'post_id', '')) ?>" method="post"  class="bd_wrt bd_wrt_main clear" id="x2board-comment-form" >
 	<!-- <input type="hidden" name="mid" value="{$mid}" />
 	<input type="hidden" name="document_srl" value="{$oComment->get('document_srl')}" />
 	<input type="hidden" name="comment_srl" value="{$oComment->get('comment_srl')}" />

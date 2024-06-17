@@ -87,8 +87,9 @@ function init_custom_route() {
  */
 function enqueue_user_scripts(){
 	wp_enqueue_script('jquery');
-	wp_enqueue_script(X2B_JS_HANDLER_USER, X2B_URL . '/common/js/guest_script.js', array(), X2B_VERSION, true);
-// error_log(print_r(X2B_URL, true));
+	wp_enqueue_script(X2B_JQUERY_VALIDATION, X2B_URL . 'common/js/jquery.validate.min.js', ['jquery'], '1.19.5', true);
+	wp_enqueue_script(X2B_JS_HANDLER_USER, X2B_URL . 'common/js/guest_script.js', ['jquery'], X2B_VERSION, true);
+
 	// Tags Input 등록
 	// wp_register_style('tagsinput', KBOARD_URL_PATH . '/assets/tagsinput/jquery.tagsinput.css', array(), '1.3.3');
 	// wp_register_script('tagsinput', KBOARD_URL_PATH . '/assets/tagsinput/jquery.tagsinput.js', array('jquery'), '1.3.3');
@@ -121,104 +122,22 @@ function enqueue_user_scripts(){
 	// wp_register_script('kboard-field-date', KBOARD_URL_PATH . '/template/js/field-date.js', array('jquery'), X2B_VERSION, true);
 	// wp_register_script('kboard-field-time', KBOARD_URL_PATH . '/template/js/field-time.js', array('jquery'), X2B_VERSION, true);
 	// wp_register_script('kboard-field-address', KBOARD_URL_PATH . '/template/js/field-address.js', array('jquery', 'daum-postcode'), X2B_VERSION, true);
-	
-	// 설정 등록
+
 	$a_ajax_info= array(
 		// 'version' => X2B_VERSION,
-		// 'home_url' => home_url('/', 'relative'),
-		// 'site_url' => site_url('/', 'relative'),
-		// 'post_url' => admin_url('admin-post.php'),
 		'url' => admin_url('admin-ajax.php'),
-		// 'plugin_url' => KBOARD_URL_PATH,
-		// 'view_iframe' => kboard_view_iframe(),
-		// 'locale' => get_locale(),
 		'cmd_file_upload' => X2B_CMD_PROC_AJAX_FILE_UPLOAD,
 		'cmd_file_delete' => X2B_CMD_PROC_AJAX_FILE_DELETE,
 		'nonce' => wp_create_nonce(X2B_AJAX_SECURITY),
 	);
-	wp_localize_script(X2B_JS_HANDLER_USER, 'x2board_ajax_info', $a_ajax_info);
+	wp_localize_script(X2B_JS_HANDLER_USER, X2B_DOMAIN.'_ajax_info', $a_ajax_info);
 	
 	// 번역 등록
-	// $localize = array(
-	// 	// 'kboard_add_media' => __('KBoard Add Media', 'kboard'),
-	// 	'next' => __('Next', 'kboard'),
-	// 	'prev' => __('Prev', 'kboard'),
-	// 	'required' => __('%s is required.', 'kboard'),
-	// 	'please_enter_the_title' => __('Please enter the title.', 'kboard'),
-	// 	'please_enter_the_author' => __('Please enter the author.', 'kboard'),
-	// 	'please_enter_the_password' => __('Please enter the password.', 'kboard'),
-	// 	'please_enter_the_CAPTCHA' => __('Please enter the CAPTCHA.', 'kboard'),
-	// 	'please_enter_the_name' => __('Please enter the name.', 'kboard'),
-	// 	'please_enter_the_email' => __('Please enter the email.', 'kboard'),
-	// 	'you_have_already_voted' => __('You have already voted.', 'kboard'),
-	// 	'please_wait' => __('Please wait.', 'kboard'),
-	// 	'newest' => __('Newest', 'kboard'),
-	// 	'best' => __('Best', 'kboard'),
-	// 	'updated' => __('Updated', 'kboard'),
-	// 	'viewed' => __('Viewed', 'kboard'),
-	// 	'yes' => __('Yes', 'kboard'),
-	// 	'no' => __('No', 'kboard'),
-	// 	'did_it_help' => __('Did it help?', 'kboard'),
-	// 	'hashtag' => __('Hashtag', 'kboard'),
-	// 	'tag' => __('Tag', 'kboard'),
-	// 	'add_a_tag' => __('Add a Tag', 'kboard'),
-	// 	'removing_tag' => __('Removing tag', 'kboard'),
-	// 	'changes_you_made_may_not_be_saved' => __('Changes you made may not be saved.', 'kboard'),
-	// 	'name' => __('Name', 'kboard'),
-	// 	'email' => __('Email', 'kboard'),
-	// 	'address' => __('Address', 'kboard'),
-	// 	'address_2' => __('Address 2', 'kboard'),
-	// 	'postcode' => __('Postcode', 'kboard'),
-	// 	'phone_number' => __('Phone number', 'kboard'),
-	// 	'mobile_phone' => __('Mobile phone', 'kboard'),
-	// 	'phone' => __('Phone', 'kboard'),
-	// 	'company_name' => __('Company name', 'kboard'),
-	// 	'vat_number' => __('VAT number', 'kboard'),
-	// 	'bank_account' => __('Bank account', 'kboard'),
-	// 	'name_of_deposit' => __('Name of deposit', 'kboard'),
-	// 	'find' => __('Find', 'kboard'),
-	// 	'rate' => __('Rate', 'kboard'),
-	// 	'ratings' => __('Ratings', 'kboard'),
-	// 	'waiting' => __('Waiting', 'kboard'),
-	// 	'complete' => __('Complete', 'kboard'),
-	// 	'question' => __('Question', 'kboard'),
-	// 	'answer' => __('Answer', 'kboard'),
-	// 	'notify_me_of_new_comments_via_email' => __('Notify me of new comments via email', 'kboard'),
-	// 	'ask_question' => __('Ask Question', 'kboard'),
-	// 	'categories' => __('Categories', 'kboard'),
-	// 	'pages' => __('Pages', 'kboard'),
-	// 	'use_points' => __('Use points', 'kboard'),
-	// 	'my_points' => __('My points', 'kboard'),
-	// 	'available_points' => __('Available points', 'kboard'),
-	// 	'apply_points' => __('Apply points', 'kboard'),
-	// 	'privacy_policy' => __('Privacy policy', 'kboard'),
-	// 	'i_agree_to_the_privacy_policy' => __('I agree to the privacy policy.', 'kboard'),
-	// 	'i_confirm_the_terms_of_the_transaction_and_agree_to_the_payment_process' => __('I confirm the terms of the transaction and agree to the payment process.', 'kboard'),
-	// 	'today' => __('Today', 'kboard'),
-	// 	'yesterday' => __('Yesterday', 'kboard'),
-	// 	'this_month' => __('This month', 'kboard'),
-	// 	'last_month' => __('Last month', 'kboard'),
-	// 	'last_30_days' => __('Last 30 days', 'kboard'),
-	// 	'agree' => __('Agree', 'kboard'),
-	// 	'disagree' => __('Disagree', 'kboard'),
-	// 	'opinion' => __('Opinion', 'kboard'),
-	// 	'comment' => __('Comment', 'kboard'),
-	// 	'comments' => __('Comments', 'kboard'),
-	// 	'point' => __('Point', 'kboard'),
-	// 	'zipcode' => __('Zip Code', 'kboard'),
-	// 	'this_year' => __('This year', 'kboard'),
-	// 	'last_year' => __('Last year', 'kboard'),
-	// 	'terms_of_service' => __('Terms of service', 'kboard'),
-	// 	'i_agree_to_the_terms_of_service' => __('I agree to the terms of service.', 'kboard'),
-	// 	'category' => __('Category', 'kboard'),
-	// 	'select' => __('Select', 'kboard'),
-	// 	'category_select' => __('Category select', 'kboard'),
-	// 	'information' => __('Information', 'kboard'),
-	// 	'telephone' => __('Telephone', 'kboard'),
-	// 	'add' => __('Add', 'kboard'),
-	// 	'close' => __('Close', 'kboard'),
-	// );
-	// wp_localize_script('kboard-script', 'kboard_localize_strings', apply_filters('kboard_localize_strings', $localize));
+	$a_localize = array(
+		'lbl_required' => __('lbl_required', X2B_DOMAIN),
+		'lbl_content' => __('lbl_content', X2B_DOMAIN),
+	);
+	wp_localize_script(X2B_JS_HANDLER_USER, X2B_DOMAIN.'_locale', $a_localize);
 }
 
 /**

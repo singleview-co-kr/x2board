@@ -139,7 +139,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 
 			// setup variables
 			$obj = \X2board\Includes\Classes\Context::gets('board_id', 'post_id', 'title', ' title_bold', 'is_notice',
-															'content', 'nick_name', 'category_id', 'password', 
+															'content', 'nick_name', 'category_id', 'password',
+															'use_editor',
 															// 'is_secret', 
 															'allow_comment',
 															'status',  // for XE board skin compatible

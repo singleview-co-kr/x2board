@@ -46,11 +46,15 @@ if ( !defined( 'X2B_CMD_VIEW_LIST' ) ) {
 }
 
 if ( !defined( 'X2B_AJAX_SECURITY' ) ) {
-    define('X2B_AJAX_SECURITY', 'x2board_ajax_security');
+    define('X2B_AJAX_SECURITY', X2B_DOMAIN.'_ajax_security');
 }
 
 if ( !defined( 'X2B_JS_HANDLER_USER' ) ) {
-    define('X2B_JS_HANDLER_USER', 'x2board-script-user');
+    define('X2B_JS_HANDLER_USER', X2B_DOMAIN.'-script-user');
+}
+
+if ( !defined( 'X2B_JQUERY_VALIDATION' ) ) {
+    define('X2B_JQUERY_VALIDATION', X2B_DOMAIN.'-jquery-validate-min');
 }
 
 if ( !defined( 'X2B_CACHE_PATH' ) ) {

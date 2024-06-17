@@ -189,7 +189,7 @@ var_dump('post controller init()');
 // Remove XE's own tags from the contents.
 // $obj->content = preg_replace('!<\!--(Before|After)(Document|Comment)\(([0-9]+),([0-9]+)\)-->!is', '', $obj->content);
 			// if(Mobile::isFromMobilePhone() && $obj->use_editor != 'Y') {
-			if(wp_is_mobile() && $obj->use_editor != 'Y') {
+			if($obj->use_editor != 'Y') {  // if(wp_is_mobile() && $obj->use_editor != 'Y') {
 				if($obj->use_html != 'Y') {
 					$obj->content = htmlspecialchars($obj->content, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
 				}
@@ -663,7 +663,7 @@ var_dump('post controller init()');
 				$o_new_obj->use_editor = 'N';
 				$o_new_obj->use_html = 'N';
 			}
-			if(wp_is_mobile() && $o_new_obj->use_editor != 'Y') {
+			if($o_new_obj->use_editor != 'Y') {  // if(wp_is_mobile() && $o_new_obj->use_editor != 'Y') {
 				if($o_new_obj->use_html != 'Y') {
 					$o_new_obj->content = htmlspecialchars($o_new_obj->content, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
 				}

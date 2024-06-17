@@ -531,7 +531,7 @@ function x2b_settings_extra() {
 			'name'    => __( 'name_post_editor_height', X2B_DOMAIN ),
 			// 'desc'    => __( 'desc_post_editor_height', X2B_DOMAIN ),
 			'type'    => 'number',
-			'options' => '500',
+			'options' => '100',
 		),
 		'enable_html_grant'               => array(
 			'id'      => 'enable_html_grant',
@@ -573,7 +573,7 @@ function x2b_settings_extra() {
 			'name'    => __( 'name_comment_editor_height', X2B_DOMAIN ),
 			// 'desc'    => __( 'desc_comment_editor_height', X2B_DOMAIN ),
 			'type'    => 'number',
-			'options' => '500',
+			'options' => '100',
 		),
 		'enable_comment_html_grant'               => array(
 			'id'      => 'enable_comment_html_grant',

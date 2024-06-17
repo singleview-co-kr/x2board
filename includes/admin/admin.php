@@ -47,8 +47,10 @@ register_activation_hook( X2B__FILE__, 'X2board\Includes\Admin\activate' );
 
 /* Plugins Loaded Hook */
 function plugin_loaded() {
-// error_log(print_r('x2b_plugin_loaded', true));
-	// add_option('x2board_version', X2B_VERSION, null, 'no');
+	// this block is to POedit recognize virtual locale elements
+	__('lbl_title_content', X2B_DOMAIN);
+	__('lbl_nick_name', X2B_DOMAIN);
+	__('lbl_user_id', X2B_DOMAIN);
 }
 
 add_action( 'plugins_loaded', 'X2board\Includes\Admin\plugin_loaded' );

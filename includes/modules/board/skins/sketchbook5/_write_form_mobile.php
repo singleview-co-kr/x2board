@@ -50,7 +50,8 @@ var allowedFileTypes = '<?php if($grant->manager): ?>*.*<?php else: ?><?php echo
 
 <div class="bd_wrt bd_wrt_main clear">
 
-<form action="<?php echo esc_url(x2b_get_url('cmd', '', 'post_id', ''))?>" method="post" id="ff" class="m_editor_v<?php echo $mi->m_editor ?>">
+<!-- id="ff" -->
+<form action="<?php echo esc_url(x2b_get_url('cmd', '', 'post_id', ''))?>" method="post" id="x2board-post-form" class="m_editor_v<?php echo $mi->m_editor ?>">
 	<!-- <input type="hidden" name="mid" value="{$mid}" />
 	<input type="hidden" name="document_srl" value="{$document_srl}" /> 
 	<input type="hidden" name="content" value="" /> -->

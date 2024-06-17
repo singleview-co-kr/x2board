@@ -24,12 +24,15 @@
 <?php endif ?>
 
 <?php if($grant->write_comment && $post->is_enable_comment()):?><!--@if($grant->write_comment && $oDocument->isEnableComment())-->
-	<form action="<?php echo esc_url(x2b_get_url('cmd', '', 'post_id', ''))?>" method="post" onsubmit="return procFilter(this, insert_comment)" class="bd_wrt cmt_wrt clear">
+	<!-- onsubmit="return procFilter(this, insert_comment)"  -->
+	<form action="<?php echo esc_url(x2b_get_url('cmd', '', 'post_id', ''))?>" method="post" id="x2board-comment-form" class="bd_wrt cmt_wrt clear">
 		<?php x2b_write_comment_hidden_fields(); ?>
 		<?php if($mi->cmt_wrt=='editor'):?><!-- cond="$mi->cmt_wrt=='editor'"  -->
 			<div class="wysiwyg"><?php x2b_write_comment_editor(); ?></div>
 		<?php endif ?>
-		<?php if($mi->cmt_wrt=='simple'):?><!-- cond="$mi->cmt_wrt=='simple'" -->
+		<?php if($mi->cmt_wrt=='simple'):
+			wp_enqueue_script(X2B_DOMAIN.'-comment-validation', X2B_URL . 'includes/modules/editor/js/comment_validation.js', [X2B_JQUERY_VALIDATION], X2B_VERSION, true);	
+		?><!-- cond="$mi->cmt_wrt=='simple'" -->
 			<div class="simple_wrt">
 				<!-- <img cond="$logged_info->profile_image->src" class="profile img" src="{$logged_info->profile_image->src}" alt="profile" /> -->
 				<!-- cond="!$logged_info->profile_image->src"  -->
@@ -37,25 +40,32 @@
 				<div class="text">
 					<input type="hidden" name="use_html" value="Y" />
 					<!-- <input type="hidden" id="htm_<?php //echo $post->post_id?>" value="n" /> -->
-					<textarea name="content" id="editor_<?php echo $post->post_id?>" cols="50" rows="4"></textarea>
+					<textarea name="content" id="editor_<?php echo $post->post_id?>" cols="50" rows="4" required></textarea>
 				</div>
 				<input type="submit" value="<?php echo __('cmd_submit', X2B_DOMAIN)?>" class="bd_btn" />
 			</div>
 		<?php endif ?>			
 		<div class="edit_opt clear" <?php if($mi->cmt_wrt!='editor'):?> style="display:none" <?php endif ?> >	<!-- |cond="$mi->cmt_wrt!='editor'" -->
 			<?php if(!$is_logged):?><!-- <block cond="!$is_logged"> -->
+				<div class="edit_opt">
+					<div class="x2board-attr-row">
+						<label class="attr-name" for="nick_name"><span class="field-name"><?php echo __('lbl_writer', X2B_DOMAIN)?></span></label>
+						<div class="attr-value">
+							<input type="text" name="nick_name" id="nick_name" value="" placeholder="<?php echo __('lbl_writer', X2B_DOMAIN)?>" required="">
+						</div>
+					</div>
+					<div class="x2board-attr-row">
+						<label class="attr-name" for="password"><span class="field-name"><?php echo __('lbl_password', X2B_DOMAIN)?></span></label>
+						<div class="attr-value">
+							<input type="text" name="password" id="password" required="">
+						</div>
+					</div>
+				</div>
+				<!-- 
 				<span class="itx_wrp">
-					<label for="nick_name_<?php echo $post->post_id?>"><?php echo __('lbl_writer', X2B_DOMAIN)?></label>
-					<input type="text" name="nick_name" id="nick_name_<?php echo $post->post_id?>" class="itx n_p" />
-				</span>
-				<span class="itx_wrp">
-					<label for="password_<?php echo $post->post_id?>"><?php echo __('lbl_password', X2B_DOMAIN)?></label>
-					<input type="password" name="password" id="password_<?php echo $post->post_id?>" class="itx n_p" />
-				</span>
-				<span class="itx_wrp">
-					<label for="email_address_<?php echo $post->post_id?>"><?php echo __('lbl_email_address', X2B_DOMAIN)?></label>
-					<input type="text" name="email_address" id="email_address_<?php echo $post->post_id?>" class="itx m_h" />
-				</span>
+					<label for="email_address_<?php //echo $post->post_id?>"><?php //echo __('lbl_email_address', X2B_DOMAIN)?></label>
+					<input type="text" name="email_address" id="email_address_<?php //echo $post->post_id?>" class="itx m_h" />
+				</span> -->
 				<!-- <span class="itx_wrp">
 					<label for="homepage_{$oDocument->document_srl}">{$lang->homepage}</label>
 					<input type="text" name="homepage" id="homepage_{$oDocument->document_srl}" class="itx m_h" />
@@ -86,7 +96,8 @@
 				<a class="wysiwyg m_no" href="#"><em class="fa fa-info-circle bd_info_icon"></em> <?php echo __('cmd_use_wysiwyg', X2B_DOMAIN)?></a>
 				<a class="close" href="#" onclick="jQuery('#re_cmt').fadeOut().parent().find('.re_comment').focus();return false"><i class="fa fa-times"></i> <?php echo __('cmd_close', X2B_DOMAIN)?></a>
 			</div>
-			<form action="<?php echo esc_url(x2b_get_url('cmd', '', 'post_id', ''))?>" method="post" onsubmit="return procFilter(this,insert_comment)" class="bd_wrt clear">
+			<!-- onsubmit="return procFilter(this,insert_comment)" -->
+			<form action="<?php echo esc_url(x2b_get_url('cmd', '', 'post_id', ''))?>" method="post" class="bd_wrt clear" id="x2board-comment-form" >
 				<?php x2b_write_comment_hidden_fields_embeded_editor(); ?>
 				<input type="hidden" name="use_html" value="Y" /> 
 
@@ -98,11 +109,11 @@
 					<?php if(!$is_logged):?><!-- <block cond="!$is_logged"> -->
 						<span class="itx_wrp">
 							<label for="nick_name"><?php echo __('lbl_writer', X2B_DOMAIN)?></label>
-							<input type="text" name="nick_name" id="nick_name" class="itx n_p" />
+							<input type="text" name="nick_name" id="nick_name" class="itx n_p" required/>
 						</span>
 						<span class="itx_wrp">
 							<label for="password"><?php echo __('lbl_password', X2B_DOMAIN)?></label>
-							<input type="password" name="password" id="password" class="itx n_p" />
+							<input type="password" name="password" id="password" class="itx n_p" required/>
 						</span>	
 						<span class="itx_wrp">
 							<label for="email_address"><?php echo __('lbl_email_address', X2B_DOMAIN)?></label>

@@ -222,7 +222,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentItem')) {
 			// 		$content = sprintf('<div class="xe_content">%s</div>', $content);
 			// 	}
 			// }
-			return wpautop($s_content);
+			return $s_content;
 		}
 
 		// function hasUploadedFiles()

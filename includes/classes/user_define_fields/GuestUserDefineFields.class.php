@@ -569,7 +569,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 					else {
 						$s_placeholder = null;
 					}
-					$buff[] = 		'<input type="text" id="'.$s_meta_key.'" name="title" class="required" value="'.$s_value.'" '.$s_placeholder.'>';
+					$buff[] = 		'<input type="text" id="'.$s_meta_key.'" name="title" class="required" value="'.$s_value.'" '.$s_placeholder.' required>';
 							// if(isset($field['description']) && $field['description']){
 							// 	'<div class="description">'.esc_html($field['description']).'</div>';
 							// }
@@ -642,13 +642,13 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 						$buff[] = '<div class="x2board-attr-row">';
 						$buff[] = 	'<label class="attr-name" for="nick_name"><span class="field-name">'.__('lbl_writer', X2B_DOMAIN).'</span></label>';
 						$buff[] = 	'<div class="attr-value">';
-						$buff[] = 		'<input type="text" name="nick_name" id="nick_name" value="'.$o_post->get_nick_name().'" placeholder="'. __('lbl_writer', X2B_DOMAIN).'" />';
+						$buff[] = 		'<input type="text" name="nick_name" id="nick_name" value="'.$o_post->get_nick_name().'" placeholder="'. __('lbl_writer', X2B_DOMAIN).'" required/>';
 						$buff[] = 	'</div>';
 						$buff[] = '</div>';
 						$buff[] = '<div class="x2board-attr-row">';
 						$buff[] = 	'<label class="attr-name" for="password"><span class="field-name">'.__('lbl_password', X2B_DOMAIN).'</span></label>';
 						$buff[] = 	'<div class="attr-value">';
-						$buff[] = 		'<input type="text" name="password" id="password" />';
+						$buff[] = 		'<input type="text" name="password" id="password" required/>';
 						$buff[] = 	'</div>';
 						$buff[] = '</div>';
 					}
@@ -874,7 +874,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 						else {
 							$s_placeholder = null;
 						}
-						$buff[] = 		'<input type="text" id="'.$s_meta_key.'" class="'.$s_required.'" name="'.$s_meta_key.'" value="'.$s_value.'" '.$s_placeholder.'>';
+						$buff[] = 		'<input type="text" id="'.$s_meta_key.'" class="'.$s_required.'" name="'.$s_meta_key.'" value="'.$s_value.'" '.$s_placeholder.' '.$s_required.'>';
 							// if(isset($field['description']) && $field['description']){
 							// 	'<div class="description">'.esc_html($field['description']).'</div>';
 							// }
@@ -894,7 +894,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 						}
 						$buff[] = 	'<label class="attr-name" for="'.$s_meta_key.'"><span class="field-name">'.$s_name.'</span>'.$s_tmp_required.'</label>';
 						$buff[] = 	'<div class="attr-value">';
-						$buff[] = 		'<select id="'.$s_meta_key.'" name="'.$s_meta_key.'"class="'.$s_required.'">';
+						$buff[] = 		'<select id="'.$s_meta_key.'" name="'.$s_meta_key.'"class="'.$s_required.'" '.$s_required.'>';
 						$buff[] = 		'<option value="">'.__('cmd_select', X2B_DOMAIN).'</option>';
 						foreach($this->row as $option_key=>$option_value) {
 							if(isset($option_value['label']) && $option_value['label']) {

@@ -48,66 +48,55 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorView')) {
 		 * @param 
 		 */
 		public static function get_post_editor_html($n_current_post_id, $s_placeholder =null) {   // $s_content_type, $s_required =null, 
-			$o_editor_conf = new \stdClass();
-			// if( is_null( $n_current_post_id ) ) {
-			// 	wp_die( __('invalid current post id', X2B_DOMAIN) );
-			// }
-
+			// these are for all editors
+			$s_content_field_name = 'content';
 			$o_current_module_info = \X2board\Includes\Classes\Context::get('current_module_info');
-			
-			$o_editor_conf->s_content_field_name = 'content'; // $o_editor_conf_in_arg->s_content_field_name;
-			$o_editor_conf->s_editor_type = isset( $o_current_module_info->post_editor_skin ) ? $o_current_module_info->post_editor_skin : 'ckeditor';
-			$o_editor_conf->n_editor_height = isset( $o_current_module_info->post_editor_height ) ? $o_current_module_info->post_editor_height : 500;
+			$s_editor_type = isset( $o_current_module_info->post_editor_skin ) ? $o_current_module_info->post_editor_skin : 'ckeditor';
+			$n_editor_height = isset( $o_current_module_info->post_editor_height ) ? $o_current_module_info->post_editor_height : 50;
 			// $o_editor_conf->s_required = isset( $s_required ) ? $s_required : '';
-			$o_editor_conf->s_placeholder = isset( $s_placeholder ) ? $s_placeholder : __('msg_type_what_you_think', X2B_DOMAIN);
+			// $o_editor_conf->s_placeholder = isset( $s_placeholder ) ? $s_placeholder : __('msg_type_what_you_think', X2B_DOMAIN);
 			// $o_editor_conf->s_editor_uid = isset( $o_editor_conf_in_arg->s_editor_uid ) ? $o_editor_conf_in_arg->s_editor_uid : '';
-			$o_editor_conf->n_textarea_rows = isset( $o_current_module_info->textarea_rows ) ? $o_current_module_info->textarea_rows : 50;
-
+			unset($o_current_module_info);
+			
+			// these are for wordpress and textarea
 			$o_post = \X2board\Includes\Classes\Context::get('post');
-			$o_editor_conf->s_content = $o_post->content;
+			$s_content = $o_post->content; 
 			unset($o_post);
 
 			ob_start();
-			if($o_editor_conf->s_editor_type == 'ckeditor') {
-				$o_editor_conf->n_board_id = \X2board\Includes\Classes\Context::get('board_id');				
+			if($s_editor_type == 'ckeditor') {
+				$o_editor_conf = new \stdClass();
 				$o_editor_conf->module_type = 'post'; //$s_content_type;				
 				$o_editor_conf->upload_target_id = $n_current_post_id;
 				$o_editor_conf->primary_key_name = 'post_id';
-				$o_editor_conf->post_editor_skin = $o_editor_conf->s_editor_type;
-				$o_editor_conf->post_editor_height = $o_current_module_info->post_editor_height;
-				$o_editor_conf->upload_file_grant = $o_current_module_info->upload_file_grant;
-				$o_editor_conf->enable_html_grant = $o_current_module_info->enable_html_grant;
+				$o_editor_conf->s_content_field_name = $s_content_field_name;
 
-				$o_editor_conf->comment_editor_skin = $o_editor_conf->s_editor_type;
-				$o_editor_conf->comment_editor_height = $o_current_module_info->comment_editor_height;
-				$o_editor_conf->comment_upload_file_grant = $o_current_module_info->comment_upload_file_grant;
-				$o_editor_conf->enable_comment_html_grant = $o_current_module_info->enable_comment_html_grant;
-				
-				$o_editor_conf->enable_autosave = $o_current_module_info->enable_autosave;
-				$o_editor_conf->enable_default_component_grant = $o_current_module_info->enable_default_component_grant != -1 ? $o_current_module_info->enable_default_component_grant : null;
-				$o_editor_conf->enable_component_grant = $o_current_module_info->enable_component_grant != -1 ? $o_current_module_info->enable_component_grant : null;
-
+				echo '<input type="hidden" name="use_editor" value="Y">';
 				$o_editor_model = \X2board\Includes\getModel('editor');
 				echo $o_editor_model->get_board_editor($o_editor_conf); // $s_content_type, $n_current_post_id, 'comment_id', $o_editor_conf->s_content_field_name);
 				unset($o_editor_model);
 			}
-			elseif($o_editor_conf->s_editor_type == 'wordpress'){
+			elseif($s_editor_type == 'wordpress'){
 				$o_grant = \X2board\Includes\Classes\Context::get('grant');
-				wp_editor($o_editor_conf->s_content, $o_editor_conf->s_content_field_name, array('media_buttons'=>$o_grant->is_admin, 'editor_height'=>$o_editor_conf->n_editor_height));
+				echo '<input type="hidden" name="use_editor" value="Y">';
+				wp_editor($s_content, $s_content_field_name, array('media_buttons'=>$o_grant->is_admin, 'editor_height'=>$n_editor_height));
 				// wp_editor($content, $editor_uid, array('media_buttons'=>$o_grant->is_admin, 'textarea_name'=>$content_field_name, 'editor_height'=>$editor_height));  //  'editor_class'=>'comment-textarea'
 				unset($o_grant);
 			}
 			else{
-				echo sprintf('<textarea id="%s" class="editor-textarea required" name="%s" placeholder="%s">%s</textarea>', 
-							 esc_attr($o_editor_conf->s_content_field_name), 
+				echo '<input type="hidden" name="use_editor" value="N">';
+				echo sprintf('<textarea id="%s" class="editor-textarea required" name="%s" rows="%s" placeholder="%s">%s</textarea>', 
+							 esc_attr($s_content_field_name), 
 							//  esc_attr($o_editor_conf->s_required), 
-							 esc_attr($o_editor_conf->s_content_field_name), 
-							 esc_attr($o_editor_conf->s_placeholder), 
-							 esc_textarea($o_editor_conf->s_content));
-				// echo '<textarea class="comment-textarea" cols="50" rows="'.$textarea_rows.'" style="overflow: hidden; min-height: 4em; height: 46px; width: 100%;" name="'.$content_field_name.'" placeholder="'.__('Add a comment', X2B_DOMAIN).'..." required>'.esc_textarea($content).'</textarea>';
+							 esc_attr($s_content_field_name), 
+							 $n_editor_height,
+							 isset( $s_placeholder ) ? esc_attr($s_placeholder) : __('msg_type_what_you_think', X2B_DOMAIN),
+							 esc_textarea(strip_tags($s_content)));
+				// echo '<textarea class="comment-textarea" cols="50" rows="'.$n_textarea_rows.'" style="overflow: hidden; min-height: 4em; height: 46px; width: 100%;" name="'.$content_field_name.'" placeholder="'.__('Add a comment', X2B_DOMAIN).'..." required>'.esc_textarea($content).'</textarea>';
 			}
 			$s_editor_html = ob_get_clean();
 			unset($o_editor_conf);
+			wp_enqueue_script(X2B_DOMAIN.'-post-validation', X2B_URL . 'includes/modules/editor/js/post_validation.js', [X2B_JQUERY_VALIDATION], X2B_VERSION, true);
 			return $s_editor_html;
 		}
 
@@ -115,63 +104,46 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorView')) {
 		 * comment 에디터 HTML 출력
 		 */
 		public static function get_comment_editor_html() {
-			$o_editor_conf = new \stdClass();
-			// if( is_null( $n_current_post_id ) ) {
-			// 	wp_die( __('invalid current post id', X2B_DOMAIN) );
-			// }
-
+			$s_content_field_name = 'content'; // $o_editor_conf_in_arg->s_content_field_name;
 			$o_current_module_info = \X2board\Includes\Classes\Context::get('current_module_info');
-			
-			$o_editor_conf->s_content_field_name = 'content'; // $o_editor_conf_in_arg->s_content_field_name;
-			
-			$o_editor_conf->s_editor_type = isset( $o_current_module_info->comment_editor_skin ) ? $o_current_module_info->comment_editor_skin : 'ckeditor';
-			$o_editor_conf->n_editor_height = isset( $o_current_module_info->comment_editor_height ) ? $o_current_module_info->comment_editor_height : 300;
-		
-			$o_editor_conf->s_required = isset( $s_required ) ? $s_required : '';
-			$o_editor_conf->s_placeholder = isset( $s_placeholder ) ? $s_placeholder : __('msg_type_what_you_think', X2B_DOMAIN);
-			// $o_editor_conf->s_editor_uid = isset( $o_editor_conf_in_arg->s_editor_uid ) ? $o_editor_conf_in_arg->s_editor_uid : '';
-			$o_editor_conf->n_textarea_rows = isset( $o_current_module_info->textarea_rows ) ? $o_current_module_info->textarea_rows : 50;
+			$s_editor_type = isset( $o_current_module_info->comment_editor_skin ) ? $o_current_module_info->comment_editor_skin : 'ckeditor';
+			$n_editor_height = isset( $o_current_module_info->comment_editor_height ) ? $o_current_module_info->comment_editor_height : 15;
+			unset($o_current_module_info);
+			// $o_editor_conf->s_required = isset( $s_required ) ? $s_required : '';
+			// $o_editor_conf->s_placeholder = isset( $s_placeholder ) ? $s_placeholder : __('msg_type_what_you_think', X2B_DOMAIN);
 
 			$o_the_comment = \X2board\Includes\Classes\Context::get('o_the_comment');
 			if( $o_the_comment ){
-				$o_editor_conf->s_content = $o_the_comment->content;
+				$s_content = $o_the_comment->content;
 			}
 			unset($o_the_comment);
 
 			// ob_start();
-			if($o_editor_conf->s_editor_type == 'ckeditor') {
-				$o_editor_conf->n_board_id = \X2board\Includes\Classes\Context::get('board_id');				
+			if($s_editor_type == 'ckeditor') {
+				$o_editor_conf = new \stdClass();
 				$o_editor_conf->module_type = 'comment'; //$s_content_type;				
 				$o_editor_conf->upload_target_id = \X2board\Includes\Classes\Context::get('comment_id');  // this can't be fixed until upload file or write comment
 				$o_editor_conf->primary_key_name = 'comment_id';
-
-				$o_editor_conf->comment_editor_skin = $o_editor_conf->s_editor_type;
-				$o_editor_conf->comment_editor_height = $o_current_module_info->comment_editor_height;
-				$o_editor_conf->comment_upload_file_grant = $o_current_module_info->comment_upload_file_grant;
-				$o_editor_conf->enable_comment_html_grant = $o_current_module_info->enable_comment_html_grant;
-				
-				$o_editor_conf->enable_autosave = $o_current_module_info->enable_autosave;
-				$o_editor_conf->enable_html_grant = $o_current_module_info->enable_html_grant;
-				$o_editor_conf->upload_file_grant = $o_current_module_info->upload_file_grant;
-
-				$o_editor_conf->enable_default_component_grant = $o_current_module_info->enable_default_component_grant;
-				$o_editor_conf->enable_component_grant = $o_current_module_info->enable_component_grant;
+				$o_editor_conf->s_content_field_name = $s_content_field_name;
 
 				$o_editor_model = \X2board\Includes\getModel('editor');
 				echo $o_editor_model->get_board_editor($o_editor_conf);
 				unset($o_editor_model);
+				unset($o_editor_conf);
 			}
-			else{
-				echo sprintf('<textarea id="%s" class="editor-textarea %s" name="%s" placeholder="%s">%s</textarea>', 
-							 esc_attr($o_editor_conf->s_content_field_name), 
-							 esc_attr($o_editor_conf->s_required), 
-							 esc_attr($o_editor_conf->s_content_field_name), 
-							 esc_attr($o_editor_conf->s_placeholder), 
-							 esc_textarea($o_editor_conf->s_content));
-				// echo '<textarea class="comment-textarea" cols="50" rows="'.$textarea_rows.'" style="overflow: hidden; min-height: 4em; height: 46px; width: 100%;" name="'.$content_field_name.'" placeholder="'.__('Add a comment', X2B_DOMAIN).'..." required>'.esc_textarea($content).'</textarea>';
+			else {
+				echo '<input type="hidden" name="use_editor" value="N">';
+				echo sprintf('<textarea id="%s" class="editor-textarea required" name="%s" rows="%s" placeholder="%s" required>%s</textarea>', 
+							 esc_attr($s_content_field_name), 
+							//  esc_attr($o_editor_conf->s_required), 
+							 esc_attr($s_content_field_name), 
+							 $n_editor_height,
+							 isset( $s_placeholder ) ? $s_placeholder : __('msg_type_what_you_think', X2B_DOMAIN), 
+							 esc_textarea(strip_tags($s_content)));
+				// echo '<textarea class="comment-textarea" cols="50" rows="'.$n_textarea_rows.'" style="overflow: hidden; min-height: 4em; height: 46px; width: 100%;" name="'.$content_field_name.'" placeholder="'.__('Add a comment', X2B_DOMAIN).'..." required>'.esc_textarea($content).'</textarea>';
 			}
 			// $s_editor_html = ob_get_clean();
-			unset($o_editor_conf);
+			wp_enqueue_script(X2B_DOMAIN.'-comment-validation', X2B_URL . 'includes/modules/editor/js/comment_validation.js', [X2B_JQUERY_VALIDATION], X2B_VERSION, true);
 			// return $s_editor_html;
 		}
 

@@ -311,15 +311,15 @@ var_dump(X2B_CMD_VIEW_LIST);
 			 * add extra vaiables to the search options
 			 **/
 			// use search options on the template (the search options key has been declared, based on the language selected)
-			foreach($this->a_search_option as $opt) {
-				$a_search_option[$opt] = __($opt, X2B_DOMAIN); //Context::getLang($opt);
+			foreach($this->a_search_option as $s_opt) {
+				$a_search_option[$s_opt] = __('lbl_'.$s_opt, X2B_DOMAIN);
 			}
 
 			$a_extra_keys = \X2board\Includes\Classes\Context::get('extra_keys');
 // var_Dump($a_extra_keys);			
 			if($a_extra_keys) {
 				foreach($a_extra_keys as $key => $val) {
-					if($val->search == 'Y') {
+					if(!isset($a_search_option[$val->eid]) && $val->search == 'Y') { // 바로 위에서 설정된 locale을 변경하지 않기
 						$a_search_option[$val->eid] = $val->name;
 					}
 				}
