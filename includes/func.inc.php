@@ -11,8 +11,8 @@ if ( !defined( 'ABSPATH' ) ) {
  */
 
 function plugin_loaded(){
-	// && !wp_is_json_request()){
-	if(!session_id() && !is_admin()) { // prevent duplicated seesion activation
+	//  && !is_admin() && !wp_is_json_request()){
+	if(!session_id()) { // prevent duplicated seesion activation
 		session_start();  // activate $_SESSION while AJAX execution
 	}
 	// third parameter should be relative path to WP_PLUGIN_DIR
