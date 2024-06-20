@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: x2board\n"
-"POT-Creation-Date: 2024-06-17 20:24+0900\n"
-"PO-Revision-Date: 2024-06-17 20:24+0900\n"
+"POT-Creation-Date: 2024-06-19 12:09+0900\n"
+"PO-Revision-Date: 2024-06-19 13:35+0900\n"
 "Last-Translator: singleviewcokr <singleviewcokr@gmail.com>\n"
 "Language-Team: \n"
 "Language: ko_KR\n"
@@ -18,39 +18,39 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-0: common\n"
 "X-Poedit-SearchPathExcluded-1: includes/modules/board/skins\n"
 
-#: includes/admin/admin.php:53
+#: includes/admin/admin.php:51
 msgid "lbl_title_content"
 msgstr "제목+내용"
 
-#: includes/admin/admin.php:54
+#: includes/admin/admin.php:52
 msgid "lbl_nick_name"
 msgstr "닉네임"
 
-#: includes/admin/admin.php:55
+#: includes/admin/admin.php:53
 msgid "lbl_user_id"
 msgstr "아이디"
 
-#: includes/admin/admin.php:80 includes/admin/tpl/header.php:3
+#: includes/admin/admin.php:78 includes/admin/tpl/header.php:3
 msgid "lbl_dashboard"
 msgstr "제어판"
 
-#: includes/admin/admin.php:81 includes/admin/tpl/board_list.php:7
+#: includes/admin/admin.php:79 includes/admin/tpl/board_list.php:7
 msgid "cmd_create_board"
 msgstr "게시판 생성"
 
-#: includes/admin/admin.php:82 includes/admin/tpl/board_list.php:4
+#: includes/admin/admin.php:80 includes/admin/tpl/board_list.php:4
 msgid "cmd_board_list"
 msgstr "게시판 목록"
 
-#: includes/admin/admin.php:83
+#: includes/admin/admin.php:81
 msgid "cmd_import_board"
 msgstr "외부 게시판 가져오기"
 
-#: includes/admin/admin.php:160 includes/admin/admin.php:179
+#: includes/admin/admin.php:158 includes/admin/admin.php:177
 msgid "msg_call_invalid_module"
 msgstr "요청 모듈에 %1$s() 함수가 없습니다"
 
-#: includes/admin/admin.php:203
+#: includes/admin/admin.php:201
 msgid "msg_thank_you_using_x2board"
 msgstr ""
 "<a href=\"%1$s\" target=\"_blank\">x2Board</a>를 선택해서 감사드려"
@@ -82,7 +82,8 @@ msgstr "xe2 백업 파일 선택"
 #: includes/admin/tpl/board_import.php:41
 msgid "desc_select_xe2_backup_file"
 msgstr ""
-"xe2에서 추출한 xml 파일을 선택하세요. 여러 파일은 zip으로 압축하세요"
+"xe2에서 추출한 xml 파일을 선택하세요. 여러 파일은 zip으로 압축하세"
+"요"
 
 #: includes/admin/tpl/board_import.php:45
 #: includes/admin/tpl/board_import.php:48
@@ -96,8 +97,8 @@ msgstr "가져오기"
 #: includes/admin/tpl/board_import.php:55
 msgid "desc_select_target_board"
 msgstr ""
-"버튼을 누르면 선택 게시판을 초기화하고 XE2에서 추출한 XML 데이터를 입"
-"력합니다"
+"버튼을 누르면 선택 게시판을 초기화하고 XE2에서 추출한 XML 데이터"
+"를 입력합니다"
 
 #: includes/admin/tpl/board_list.php:16
 #: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:494
@@ -112,8 +113,8 @@ msgstr "게시판 제목"
 #: includes/admin/tpl/default-settings.php:64
 msgid "desc_x2board_title"
 msgstr ""
-"관리자만 확인할 수 있는 게시판 제목을 입력하세요. 일반 방문자에게는 "
-"은폐됩니다"
+"관리자만 확인할 수 있는 게시판 제목을 입력하세요. 일반 방문자에게"
+"는 은폐됩니다"
 
 #: includes/admin/tpl/default-settings.php:70
 msgid "name_wp_page_title"
@@ -146,8 +147,8 @@ msgstr "검색 목록 수"
 #: includes/admin/tpl/default-settings.php:92
 msgid "desc_board_search_list_count"
 msgstr ""
-"검색, 카테고리 선택 등을 할 경우 표시될 글 수를 지정할 수 있습니다. "
-"(기본 20개)"
+"검색, 카테고리 선택 등을 할 경우 표시될 글 수를 지정할 수 있습니"
+"다. (기본 20개)"
 
 #: includes/admin/tpl/default-settings.php:98
 msgid "name_board_page_count"
@@ -156,8 +157,8 @@ msgstr "페이지 수"
 #: includes/admin/tpl/default-settings.php:99
 msgid "desc_board_page_count"
 msgstr ""
-"목록 하단, 페이지를 이동하는 링크 수를 지정할 수 있습니다. (기본 10"
-"개)"
+"목록 하단, 페이지를 이동하는 링크 수를 지정할 수 있습니다. (기본 "
+"10개)"
 
 #: includes/admin/tpl/default-settings.php:105
 msgid "name_board_excerpted_title_length"
@@ -166,8 +167,8 @@ msgstr "자동 제목 문자수"
 #: includes/admin/tpl/default-settings.php:106
 msgid "desc_board_excerpted_title_length"
 msgstr ""
-"빈 제목 입력되면 본문 첫줄에서 추출하는 문자열 수를 지정합니다. (기"
-"본 20자)"
+"빈 제목 입력되면 본문 첫줄에서 추출하는 문자열 수를 지정합니다. "
+"(기본 20자)"
 
 #: includes/admin/tpl/default-settings.php:112
 msgid "name_board_header_text"
@@ -208,8 +209,8 @@ msgstr "짧은 게시글 주소"
 #: includes/admin/tpl/default-settings.php:153
 msgid "desc_board_use_rewrite"
 msgstr ""
-"짧은 게시글 주소 활성화합니다. 반드시 설정 변경 후 관리자 > 설정 > 고"
-"유주소 메뉴에서 저장을 실행하세요."
+"짧은 게시글 주소 활성화합니다. 반드시 설정 변경 후 관리자 > 설정 "
+"> 고유주소 메뉴에서 저장을 실행하세요."
 
 #: includes/admin/tpl/default-settings.php:163
 msgid "name_board_order_target"
@@ -282,8 +283,8 @@ msgstr "공지사항 제외"
 #: includes/admin/tpl/default-settings.php:195
 msgid "desc_board_except_notice"
 msgstr ""
-"목록 상단에 늘 나타나는 공지사항을 일반 목록에서 공지사항을 출력하지 "
-"않도록 합니다"
+"목록 상단에 늘 나타나는 공지사항을 일반 목록에서 공지사항을 출력하"
+"지 않도록 합니다"
 
 #: includes/admin/tpl/default-settings.php:205
 msgid "name_board_use_anonymous"
@@ -292,10 +293,10 @@ msgstr "익명 사용"
 #: includes/admin/tpl/default-settings.php:206
 msgid "desc_board_use_anonymous"
 msgstr ""
-"글쓴이의 정보를 없애고 익명으로 게시판 사용을 할 수 있게 합니다. 스킨"
-"설정에서 글쓴이 정보등을 보이지 않도록 하시면 더욱 유용합니다. 추가설"
-"정의 문서 히스토리 사용이 꺼져있지 않으면 문서 수정시 작성자가 표시"
-"될 수 있습니다"
+"글쓴이의 정보를 없애고 익명으로 게시판 사용을 할 수 있게 합니다. "
+"스킨설정에서 글쓴이 정보등을 보이지 않도록 하시면 더욱 유용합니"
+"다. 추가설정의 문서 히스토리 사용이 꺼져있지 않으면 문서 수정시 작"
+"성자가 표시될 수 있습니다"
 
 #: includes/admin/tpl/default-settings.php:216
 msgid "name_board_consultation"
@@ -304,8 +305,8 @@ msgstr "상담 기능"
 #: includes/admin/tpl/default-settings.php:217
 msgid "desc_board_consultation"
 msgstr ""
-"상담 기능은 관리권한이 없는 회원은 자신이 쓴 글만 보이도록 하는 기능"
-"입니다. 단 상담기능 사용시 비회원 글쓰기는 자동으로 금지됩니다"
+"상담 기능은 관리권한이 없는 회원은 자신이 쓴 글만 보이도록 하는 기"
+"능입니다. 단 상담기능 사용시 비회원 글쓰기는 자동으로 금지됩니다"
 
 #: includes/admin/tpl/default-settings.php:227
 msgid "name_board_protect_content"
@@ -314,8 +315,8 @@ msgstr "글 보호 기능"
 #: includes/admin/tpl/default-settings.php:228
 msgid "desc_board_protect_content"
 msgstr ""
-"작성된 글에 댓글이 작성된 경우 글 작성자는 해당 글을 수정하거나 삭제 "
-"할 수 없습니다"
+"작성된 글에 댓글이 작성된 경우 글 작성자는 해당 글을 수정하거나 삭"
+"제 할 수 없습니다"
 
 #: includes/admin/tpl/default-settings.php:238
 msgid "name_board_use_status"
@@ -340,8 +341,8 @@ msgstr "관리자 메일"
 #: includes/admin/tpl/default-settings.php:252
 msgid "desc_board_admin_mail"
 msgstr ""
-"글이나 댓글이 등록될때 등록된 메일주소로 메일이 발송됩니다. 콤마(,)"
-"로 연결시 다수의 메일주소로 발송할 수 있습니다"
+"글이나 댓글이 등록될때 등록된 메일주소로 메일이 발송됩니다. 콤마"
+"(,)로 연결시 다수의 메일주소로 발송할 수 있습니다"
 
 #: includes/admin/tpl/default-settings.php:303
 msgid "name_board_category_info"
@@ -394,8 +395,8 @@ msgstr "댓글 수"
 #: includes/admin/tpl/default-settings.php:458
 msgid "desc_comment_count"
 msgstr ""
-"댓글을 정해진 수 만큼만 표시하고, 그 이상일 경우 페이지 번호를 표시해"
-"서 이동할 수 있게 합니다"
+"댓글을 정해진 수 만큼만 표시하고, 그 이상일 경우 페이지 번호를 표"
+"시해서 이동할 수 있게 합니다"
 
 #: includes/admin/tpl/default-settings.php:465
 msgid "name_comment_use_vote_up"
@@ -449,8 +450,8 @@ msgstr "오래된 글에 댓글 금지"
 #: includes/admin/tpl/default-settings.php:501
 msgid "desc_comment_forbid_to_leave_comment_old_post_days"
 msgstr ""
-"x일이 경과한 글에는 댓글 작성할 수 없습니다. 공란이면 이 기능은 작동"
-"하지 않습니다"
+"x일이 경과한 글에는 댓글 작성할 수 없습니다. 공란이면 이 기능은 작"
+"동하지 않습니다"
 
 #: includes/admin/tpl/default-settings.php:507
 msgid "name_allow_comment_for_admin_for_old_post"
@@ -459,7 +460,8 @@ msgstr "관리자는 항상 댓글 허용"
 #: includes/admin/tpl/default-settings.php:508
 msgid "desc_allow_comment_for_admin_for_old_post"
 msgstr ""
-"오래된 글에 댓글 금지 기능이 작동할 때 관리자에게는 항상 허용합니다"
+"오래된 글에 댓글 금지 기능이 작동할 때 관리자에게는 항상 허용합니"
+"다"
 
 #: includes/admin/tpl/default-settings.php:518
 msgid "desc_post_editor_setup_header"
@@ -547,7 +549,8 @@ msgstr "문서 당 파일 크기 제한(Mb)"
 
 #: includes/admin/tpl/default-settings.php:671
 msgid "desc_file_allowed_attach_size_mb"
-msgstr "개별 문서 당 파일의 최고 용량을 지정합니다.(관리자는 무제한)"
+msgstr ""
+"개별 문서 당 파일의 최고 용량을 지정합니다.(관리자는 무제한)"
 
 #: includes/admin/tpl/default-settings.php:677
 msgid "name_file_max_attached_count"
@@ -555,7 +558,8 @@ msgstr "문서 당 파일 갯수 제한"
 
 #: includes/admin/tpl/default-settings.php:678
 msgid "desc_file_max_attached_count"
-msgstr "개별 문서 당 파일의 최대 갯수를 지정합니다.(관리자는 무제한)"
+msgstr ""
+"개별 문서 당 파일의 최대 갯수를 지정합니다.(관리자는 무제한)"
 
 #: includes/admin/tpl/default-settings.php:684
 msgid "name_file_allowed_filetypes"
@@ -564,8 +568,8 @@ msgstr "허용 확장자"
 #: includes/admin/tpl/default-settings.php:685
 msgid "desc_file_allowed_filetypes"
 msgstr ""
-"\"*.확장자\"로 지정할 수 있고 \";\" 으로 여러 개 지정이 가능합니다. "
-"예) *.* or *.jpg;*.gif"
+"\"*.확장자\"로 지정할 수 있고 \";\" 으로 여러 개 지정이 가능합니"
+"다. 예) *.* or *.jpg;*.gif"
 
 #: includes/admin/tpl/default-settings.php:691
 msgid "name_thumbnail_type"
@@ -590,8 +594,8 @@ msgstr "파일 외부 링크 허용"
 #: includes/admin/tpl/default-settings.php:703
 msgid "desc_file_allow_outlink"
 msgstr ""
-"레퍼러에 따라 파일 외부 링크를 차단할 수 있습니다.(*.wmv, *.mp3등 미"
-"디어 파일 제외)"
+"레퍼러에 따라 파일 외부 링크를 차단할 수 있습니다.(*.wmv, *.mp3등 "
+"미디어 파일 제외)"
 
 #: includes/admin/tpl/default-settings.php:707
 #: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:333
@@ -610,8 +614,8 @@ msgstr "파일 외부 링크 허용 확장"
 #: includes/admin/tpl/default-settings.php:714
 msgid "desc_file_allow_outlink_format"
 msgstr ""
-"파일 외부 링크 설정에 상관없이 허용하는 파일 확장자입니다. 여러 개 입"
-"력 시에 쉼표(,)을 이용해서 구분해주세요. 예)hwp,doc,zip,pdf"
+"파일 외부 링크 설정에 상관없이 허용하는 파일 확장자입니다. 여러 "
+"개 입력 시에 쉼표(,)을 이용해서 구분해주세요. 예)hwp,doc,zip,pdf"
 
 #: includes/admin/tpl/default-settings.php:720
 msgid "name_file_allow_outlink_site"
@@ -620,8 +624,9 @@ msgstr "파일 외부 링크 허용 사이트"
 #: includes/admin/tpl/default-settings.php:721
 msgid "desc_file_allow_outlink_site"
 msgstr ""
-"파일 외부 링크 설정에 상관없이 허용하는 사이트 주소입니다. 여러 개 입"
-"력 시에 줄을 바꿔서 구분해주세요. 예)http://www.xpressengine.com]"
+"파일 외부 링크 설정에 상관없이 허용하는 사이트 주소입니다. 여러 "
+"개 입력 시에 줄을 바꿔서 구분해주세요. 예)http://www.xpressengine."
+"com]"
 
 #: includes/admin/tpl/default-settings.php:727
 msgid "name_file_download_grant"
@@ -630,7 +635,8 @@ msgstr "다운로드 가능 그룹"
 #: includes/admin/tpl/default-settings.php:728
 msgid "desc_file_download_grant"
 msgstr ""
-"선택한 그룹만 첨부 파일을 다운로드할 수 있습니다. 공란이면 모두 허용"
+"선택한 그룹만 첨부 파일을 다운로드할 수 있습니다. 공란이면 모두 허"
+"용"
 
 #: includes/admin/tpl/default-settings.php:760
 msgid "desc_skin_vars_setup_header_no_file"
@@ -638,7 +644,8 @@ msgstr "skin_vars.php 파일이 없습니다"
 
 #: includes/admin/tpl/default-settings.php:771
 msgid "desc_skin_vars_setup_header_file_registered"
-msgstr "$skin_vars->var_id 형식으로 스킨 변수값을 호출할 수 있습니다"
+msgstr ""
+"$skin_vars->var_id 형식으로 스킨 변수값을 호출할 수 있습니다"
 
 #: includes/admin/tpl/default-settings.php:899
 #: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:175
@@ -764,7 +771,7 @@ msgstr "새 카테고리 이름"
 msgid "lbl_category_status"
 msgstr "카테고리 상태"
 
-#: includes/classes/Context.class.php:1109
+#: includes/classes/Context.class.php:1110 includes/user.php:85
 msgid "msg_undefined_locale"
 msgstr "정의되지 않은 로케일입니다"
 
@@ -784,7 +791,7 @@ msgstr "게시판 설정에 문제가 있습니다"
 #: includes/modules/file/file.controller.php:638
 #: includes/modules/post/post.controller.php:132
 #: includes/modules/post/post.controller.php:142
-#: includes/modules/post/post.controller.php:901
+#: includes/modules/post/post.controller.php:899
 msgid "msg_not_permitted"
 msgstr "권한이 없습니다"
 
@@ -792,7 +799,7 @@ msgstr "권한이 없습니다"
 msgid "msg_invalid_grant_code"
 msgstr "등록되지 않은 권한 코드입니다"
 
-#: includes/classes/ModuleObject.class.php:454
+#: includes/classes/ModuleObject.class.php:454 includes/user.php:86
 msgid "msg_file_not_exists"
 msgstr "%s 파일이 없습니다"
 
@@ -887,8 +894,8 @@ msgstr "[추가설정] 탭에서 첨부 파일 규칙을 설정합니다"
 #: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:206
 msgid "about_user_defined_address_field"
 msgstr ""
-"개인 정보는 관리자에게 항상 표시되고 게스트 본인에게는 일정 시간만 표"
-"시됩니다"
+"개인 정보는 관리자에게 항상 표시되고 게스트 본인에게는 일정 시간"
+"만 표시됩니다"
 
 #: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:329
 msgid "msg_allow_email_input_for_guest"
@@ -1132,17 +1139,17 @@ msgstr "게시글 요약"
 msgid "desc_user_define_field_comment_status"
 msgstr "댓글 가능 여부"
 
-#: includes/func.inc.php:796
+#: includes/func.inc.php:803
 msgid "msg_security_warning_embed"
 msgstr ""
-"보안 문제로 관리자 아이디로는 embed를 볼 수 없습니다. 확인하려면 다"
-"른 아이디로 접속하세요"
+"보안 문제로 관리자 아이디로는 embed를 볼 수 없습니다. 확인하려면 "
+"다른 아이디로 접속하세요"
 
-#: includes/func.inc.php:913
+#: includes/func.inc.php:920
 msgid "lbl_mins_ago"
 msgstr "%d분 전"
 
-#: includes/func.inc.php:914
+#: includes/func.inc.php:921
 msgid "lbl_hrs_ago"
 msgstr "%d시간 전"
 
@@ -1245,19 +1252,19 @@ msgstr "boardController::init()에서 알 수 없는 오류가 발생했습니�
 #: includes/modules/file/file.controller.php:822
 #: includes/modules/post/post.controller.php:63
 #: includes/modules/post/post.controller.php:66
-#: includes/modules/post/post.controller.php:205
-#: includes/modules/post/post.controller.php:420
-#: includes/modules/post/post.controller.php:517
-#: includes/modules/post/post.controller.php:520
-#: includes/modules/post/post.controller.php:525
-#: includes/modules/post/post.controller.php:1285
+#: includes/modules/post/post.controller.php:204
+#: includes/modules/post/post.controller.php:419
+#: includes/modules/post/post.controller.php:516
+#: includes/modules/post/post.controller.php:519
+#: includes/modules/post/post.controller.php:524
+#: includes/modules/post/post.controller.php:1283
 #: includes/modules/post/post.model.php:548
 msgid "msg_invalid_request"
 msgstr "잘못된 접근입니다"
 
 #: includes/modules/board/board.controller.php:190
 #: includes/modules/post/post.controller.php:187
-#: includes/modules/post/post.controller.php:659
+#: includes/modules/post/post.controller.php:658
 msgid "lbl_untitled"
 msgstr "제목 없음"
 
@@ -1288,8 +1295,8 @@ msgid "msg_not_allow_comment"
 msgstr "댓글 쓰기 금지된 게시글입니다"
 
 #: includes/modules/comment/comment.controller.php:112
-#: includes/modules/post/post.controller.php:893
-#: includes/modules/post/post.controller.php:897
+#: includes/modules/post/post.controller.php:891
+#: includes/modules/post/post.controller.php:895
 msgid "msg_invalid_post"
 msgstr "잘못된 게시글입니다"
 
@@ -1301,8 +1308,8 @@ msgstr "대댓글을 삭제하지 못했습니다"
 msgid "lbl_no_name"
 msgstr "익명"
 
-#: includes/modules/editor/editor.view.php:98
-#: includes/modules/editor/editor.view.php:151
+#: includes/modules/editor/editor.view.php:93
+#: includes/modules/editor/editor.view.php:141
 msgid "msg_type_what_you_think"
 msgstr "생각을 자유롭게 표현하세요"
 
@@ -1354,17 +1361,22 @@ msgstr "확장 사용자 정의 입력 필드"
 msgid "lbl_activated_input_fields"
 msgstr "글 작성 화면에 표시되는 필드"
 
-#: includes/modules/post/post.controller.php:390
+#: includes/modules/post/post.controller.php:389
 msgid "msg_wp_post_registration_failed"
 msgstr "워드프레스 포스트 등록 실패했습니다"
 
-#: includes/modules/post/post.controller.php:735
+#: includes/modules/post/post.controller.php:733
 msgid "msg_wp_post_update_failed"
 msgstr "워드프레스 포스트 수정 실패했습니다"
 
 #: includes/modules/post/post.model.php:1100
 msgid "opt_"
 msgstr ""
+
+#: includes/user.php:83
+msgid "msg_invalid_board_id"
+msgstr ""
+"%s 경고! shortcode를 통해서 유효하지 않은 board_id를 요청했습니다"
 
 #~ msgid "lbl_comment"
 #~ msgstr "댓글"
@@ -1569,8 +1581,8 @@ msgstr ""
 
 #~ msgid "desc_board_list_fields"
 #~ msgstr ""
-#~ "스킨에서 지원하는 경우, 목록 화면의 표시 항목과 순서를 선택를 할 "
-#~ "수 있습니다"
+#~ "스킨에서 지원하는 경우, 목록 화면의 표시 항목과 순서를 선택를 "
+#~ "할 수 있습니다"
 
 #~ msgid "desc_board_category_info"
 #~ msgstr "게시글의 분류 정보를 관리하세요"

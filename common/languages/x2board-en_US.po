@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: x2board\n"
-"POT-Creation-Date: 2024-06-17 20:25+0900\n"
-"PO-Revision-Date: 2024-06-17 20:25+0900\n"
+"POT-Creation-Date: 2024-06-19 13:34+0900\n"
+"PO-Revision-Date: 2024-06-19 13:35+0900\n"
 "Last-Translator: singleviewcokr <singleviewcokr@gmail.com>\n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -18,39 +18,39 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-0: common\n"
 "X-Poedit-SearchPathExcluded-1: includes/modules/board\n"
 
-#: includes/admin/admin.php:53
+#: includes/admin/admin.php:51
 msgid "lbl_title_content"
 msgstr "title + content"
 
-#: includes/admin/admin.php:54
+#: includes/admin/admin.php:52
 msgid "lbl_nick_name"
 msgstr "nickname"
 
-#: includes/admin/admin.php:55
+#: includes/admin/admin.php:53
 msgid "lbl_user_id"
 msgstr "user id"
 
-#: includes/admin/admin.php:80 includes/admin/tpl/header.php:3
+#: includes/admin/admin.php:78 includes/admin/tpl/header.php:3
 msgid "lbl_dashboard"
 msgstr "Dasboard"
 
-#: includes/admin/admin.php:81 includes/admin/tpl/board_list.php:7
+#: includes/admin/admin.php:79 includes/admin/tpl/board_list.php:7
 msgid "cmd_create_board"
 msgstr "Create a board"
 
-#: includes/admin/admin.php:82 includes/admin/tpl/board_list.php:4
+#: includes/admin/admin.php:80 includes/admin/tpl/board_list.php:4
 msgid "cmd_board_list"
 msgstr "Board list"
 
-#: includes/admin/admin.php:83
+#: includes/admin/admin.php:81
 msgid "cmd_import_board"
 msgstr "Import a board"
 
-#: includes/admin/admin.php:160 includes/admin/admin.php:179
+#: includes/admin/admin.php:158 includes/admin/admin.php:177
 msgid "msg_call_invalid_module"
 msgstr "Requested module does not have %1$s()"
 
-#: includes/admin/admin.php:203
+#: includes/admin/admin.php:201
 msgid "msg_thank_you_using_x2board"
 msgstr ""
 "Thank you for using <a href=\"%1$s\" target=\"_blank\">x2Board</a>! Please "
@@ -744,7 +744,7 @@ msgstr "New category name"
 msgid "lbl_category_status"
 msgstr "Category status"
 
-#: includes/classes/Context.class.php:1109
+#: includes/classes/Context.class.php:1110
 msgid "msg_undefined_locale"
 msgstr "Unknown locale"
 
@@ -760,7 +760,7 @@ msgstr "Invalid configuration"
 #: includes/modules/file/file.controller.php:638
 #: includes/modules/post/post.controller.php:132
 #: includes/modules/post/post.controller.php:142
-#: includes/modules/post/post.controller.php:901
+#: includes/modules/post/post.controller.php:899
 msgid "msg_not_permitted"
 msgstr "Your request is not permitted"
 
@@ -1109,17 +1109,21 @@ msgstr "Summary of the post"
 msgid "desc_user_define_field_comment_status"
 msgstr "Comment status of the post"
 
-#: includes/func.inc.php:796
+#: includes/func.inc.php:283 includes/func.inc.php:290
+msgid "msg_invalid_board_id"
+msgstr "warning from %s! you requested invalid board_id via shortcode"
+
+#: includes/func.inc.php:822
 msgid "msg_security_warning_embed"
 msgstr ""
 "Due to security issues, the embed cannot be viewed using the administrator "
 "ID. To check, log in with a different ID"
 
-#: includes/func.inc.php:913
+#: includes/func.inc.php:939
 msgid "lbl_mins_ago"
 msgstr "%d mins ago"
 
-#: includes/func.inc.php:914
+#: includes/func.inc.php:940
 msgid "lbl_hrs_ago"
 msgstr "%d hrs ago"
 
@@ -1141,19 +1145,19 @@ msgstr "You do not have permission"
 #: includes/modules/file/file.controller.php:822
 #: includes/modules/post/post.controller.php:63
 #: includes/modules/post/post.controller.php:66
-#: includes/modules/post/post.controller.php:205
-#: includes/modules/post/post.controller.php:420
-#: includes/modules/post/post.controller.php:517
-#: includes/modules/post/post.controller.php:520
-#: includes/modules/post/post.controller.php:525
-#: includes/modules/post/post.controller.php:1285
+#: includes/modules/post/post.controller.php:204
+#: includes/modules/post/post.controller.php:419
+#: includes/modules/post/post.controller.php:516
+#: includes/modules/post/post.controller.php:519
+#: includes/modules/post/post.controller.php:524
+#: includes/modules/post/post.controller.php:1283
 #: includes/modules/post/post.model.php:548
 msgid "msg_invalid_request"
 msgstr "Your request is invalid"
 
 #: includes/modules/comment/comment.controller.php:112
-#: includes/modules/post/post.controller.php:893
-#: includes/modules/post/post.controller.php:897
+#: includes/modules/post/post.controller.php:891
+#: includes/modules/post/post.controller.php:895
 msgid "msg_invalid_post"
 msgstr "Invalid post"
 
@@ -1170,8 +1174,8 @@ msgstr "Anonymous"
 msgid "msg_secret_post"
 msgstr "This is secret post"
 
-#: includes/modules/editor/editor.view.php:98
-#: includes/modules/editor/editor.view.php:151
+#: includes/modules/editor/editor.view.php:93
+#: includes/modules/editor/editor.view.php:141
 msgid "msg_type_what_you_think"
 msgstr "Type what you think"
 
@@ -1241,24 +1245,21 @@ msgid "cmd_reset_configuration"
 msgstr "Reset configuration"
 
 #: includes/modules/post/post.controller.php:187
-#: includes/modules/post/post.controller.php:659
+#: includes/modules/post/post.controller.php:658
 msgid "lbl_untitled"
 msgstr "Untitled"
 
-#: includes/modules/post/post.controller.php:390
+#: includes/modules/post/post.controller.php:389
 msgid "msg_wp_post_registration_failed"
 msgstr "Failed to register WP post"
 
-#: includes/modules/post/post.controller.php:735
+#: includes/modules/post/post.controller.php:733
 msgid "msg_wp_post_update_failed"
 msgstr "Failed to update WP post"
 
 #: includes/modules/post/post.model.php:1100
 msgid "opt_"
 msgstr ""
-
-#~ msgid "msg_invalid_target_board"
-#~ msgstr "임포트 대상 게시판을 지정하세요"
 
 #~ msgid "msg_import_succeeded"
 #~ msgstr "임포트 성공했습니다"

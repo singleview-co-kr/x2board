@@ -72,3 +72,4 @@ add_action( 'init', '\X2board\Includes\init_custom_route', 5);
 add_action( 'template_redirect', '\X2board\Includes\register_content_filter' );
 add_action( 'wp_enqueue_scripts', '\X2board\Includes\enqueue_user_scripts', 999 );
 add_action( 'plugins_loaded', '\X2board\Includes\plugin_loaded');
+add_shortcode(X2B_DOMAIN, '\X2board\Includes\launch_shortcode');

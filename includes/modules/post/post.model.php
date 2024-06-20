@@ -1051,7 +1051,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			$o_query_rst = new \stdClass();
 			$o_query_rst->s_query_id = $query_id;
 			$o_query_rst->s_where = "WHERE ("; 
-			$o_query_rst->s_where .= "`posts`.`board_id` in (".$args->board_id.") ";   // "`board_id` = ".get_the_ID();
+			$o_query_rst->s_where .= "`posts`.`board_id` in (".$args->board_id.") ";
 
 			if( $args->category_id ) {
 				$o_query_rst->s_where .= 'AND `category_id` in ('.$args->category_id.') ';

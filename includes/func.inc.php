@@ -11,7 +11,7 @@ if ( !defined( 'ABSPATH' ) ) {
  */
 
 function plugin_loaded(){
-	//  && !is_admin() && !wp_is_json_request()){
+	// && !is_admin() && !wp_is_json_request()){
 	if(!session_id()) { // prevent duplicated seesion activation
 		session_start();  // activate $_SESSION while AJAX execution
 	}
@@ -45,16 +45,16 @@ function init_proc_cmd() {
 		case X2B_CMD_PROC_DELETE_COMMENT:
 		case X2B_CMD_PROC_DOWNLOAD_FILE:
 		case X2B_CMD_PROC_OUTPUT_FILE:
-			_launch_x2b('proc');
+			launch_x2b('proc');
 			break;
 	}
 
 	// wp_ajax_nopriv_(action) executes for users that are not logged in
 	// you should refresh admin page if you change this hook
-	add_action('wp_ajax_nopriv_'.X2B_CMD_PROC_AJAX_FILE_UPLOAD, '\X2board\Includes\_launch_x2b');
-	add_action('wp_ajax_'.X2B_CMD_PROC_AJAX_FILE_UPLOAD, '\X2board\Includes\_launch_x2b');
-	add_action('wp_ajax_nopriv_'.X2B_CMD_PROC_AJAX_FILE_DELETE, '\X2board\Includes\_launch_x2b');
-	add_action('wp_ajax_'.X2B_CMD_PROC_AJAX_FILE_DELETE, '\X2board\Includes\_launch_x2b');
+	add_action('wp_ajax_nopriv_'.X2B_CMD_PROC_AJAX_FILE_UPLOAD, '\X2board\Includes\launch_x2b');
+	add_action('wp_ajax_'.X2B_CMD_PROC_AJAX_FILE_UPLOAD, '\X2board\Includes\launch_x2b');
+	add_action('wp_ajax_nopriv_'.X2B_CMD_PROC_AJAX_FILE_DELETE, '\X2board\Includes\launch_x2b');
+	add_action('wp_ajax_'.X2B_CMD_PROC_AJAX_FILE_DELETE, '\X2board\Includes\launch_x2b');
 }
 
 /**
@@ -167,13 +167,20 @@ function load_modules() {
 	\X2board\Includes\Classes\ModuleHandler::auto_load_modules();
 }
 
-function _launch_x2b($s_cmd_type) {
+function launch_x2b($s_cmd_type, $a_shortcode_args=null) {
 	global $G_X2B_CACHE;
 	$G_X2B_CACHE = array();
 
 	load_modules();
 
 	$o_context = \X2board\Includes\Classes\Context::getInstance();
+
+	if(is_null($a_shortcode_args)) {
+		\X2board\Includes\Classes\Context::set('board_id', intval(get_the_ID()));
+	}
+	else {
+		\X2board\Includes\Classes\Context::set('board_id', intval($a_shortcode_args['board_id']));
+	}
 	
 	// if( wp_is_json_request() ) { 
 	// $s_cmd_type == '' is primarily for admin import
@@ -207,7 +214,7 @@ function filter_the_content( $content ) {
 	++$filter_calls;
 	if(isset($post->post_content) && is_page($post->ID) && !post_password_required()){
 		if( $post->post_content === X2B_PAGE_IDENTIFIER ) {
-			_launch_x2b('view');
+			launch_x2b('view');
 			$content = str_replace(X2B_PAGE_IDENTIFIER,'', $content); //return $content . board_builder(array('id'=>$board_id));
 		} 
 	}
@@ -264,6 +271,25 @@ function filter_the_content( $content ) {
  */
 function register_content_filter() {
 	add_filter( 'the_content', '\X2board\Includes\filter_the_content' );
+}
+
+/**
+ * 게시판 생성 숏코드 [x2board]
+ * @param array $args
+ * @return string
+ */
+function launch_shortcode($a_args) {
+	if(!isset($a_args['board_id']) || !$a_args['board_id']) {
+        return sprintf(__('msg_invalid_board_id', X2B_DOMAIN), X2B_DOMAIN);            
+    }
+	// validate requested board id
+	global $wpdb;
+	$n_board_id = esc_sql( $a_args['board_id'] );
+	$s_board_cnt = $wpdb->get_var("SELECT count(*) FROM `{$wpdb->prefix}x2b_mapper` WHERE `board_id`='$n_board_id'");
+	if(intval($s_board_cnt) !== 1 ) {
+		return sprintf(__('msg_invalid_board_id', X2B_DOMAIN), X2B_DOMAIN);       
+	}
+    launch_x2b('view', $a_args);
 }
 
 /**

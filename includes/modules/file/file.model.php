@@ -171,7 +171,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileModel')) {
 		 */
 		// function getDownloadUrl($file_srl, $sid, $module_srl="")
 		public function get_download_url($file_id, $sid) {
-			return get_the_permalink().'?cmd='.X2B_CMD_PROC_DOWNLOAD_FILE.'&board_id='.get_the_ID().'&file_id='.$file_id.'&sid='.$sid;
+			$n_board_id = \X2board\Includes\Classes\Context::get('board_id');
+			return \X2board\Includes\Classes\Context::get_the_permalink().'?cmd='.X2B_CMD_PROC_DOWNLOAD_FILE.'&board_id='.$n_board_id.'&file_id='.$file_id.'&sid='.$sid;
 			// return sprintf('?module=%s&amp;cmd=%s&amp;file_id=%s&amp;sid=%s&amp;module_srl=%s', 'file', 'procFileDownload', $file_srl, $sid, $module_srl);
 		}
 

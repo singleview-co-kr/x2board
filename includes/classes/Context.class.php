@@ -208,12 +208,6 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 			// 	}
 			// }
 			$this->context = new \stdClass();
-
-			// WP stores small-letter URL like wp-%ed%8e%98%ec%9d%b4%ec%a7%80-%ec%a0%9c%eb%aa%a9-2
-			// router needs capitalized URL like wp-%ED%8E%98%EC%9D%B4%EC%A7%80-%EC%A0%9C%EB%AA%A9-2
-			if(get_post()){
-				$this->_s_page_permlink = site_url().'/'.urlencode(urldecode(get_post()->post_name));
-			}
 		}
 
 		/**
@@ -222,7 +216,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 		 * @see This function should be called only once
 		 * @return void
 		 */
-		function init($s_cmd_type)	{
+		public function init($s_cmd_type) {
 			// fix missing HTTP_RAW_POST_DATA in PHP 5.6 and above
 			// if(!isset($GLOBALS['HTTP_RAW_POST_DATA']) && version_compare(PHP_VERSION, '5.6.0', '>=') === TRUE)
 			// {
@@ -262,6 +256,12 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 											"Thursday" => "목", "Friday" => "금", "Saturday" => "토", "Sunday" =>"일" ) );
 			$this->set( 'unit_meridiem', array( "am"=> "오전", "pm" => "오후", "AM" => "오전", "PM" => "오후" ) );
 
+			// WP stores small-letter URL like wp-%ed%8e%98%ec%9d%b4%ec%a7%80-%ec%a0%9c%eb%aa%a9-2
+			// router needs capitalized URL like wp-%ED%8E%98%EC%9D%B4%EC%A7%80-%EC%A0%9C%EB%AA%A9-2
+			if(get_post()){
+				$this->_s_page_permlink = site_url().'/'.urlencode(urldecode(get_post($this->get('board_id'))->post_name));
+			}
+
 			if( $s_cmd_type == 'proc' ) {  // load controller priority
 				$s_cmd = isset( $_REQUEST['cmd'])?$_REQUEST['cmd'] : '';
 				$s_cmd_prefix = substr( $s_cmd, 0, 4 );
@@ -293,11 +293,11 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 				if( $s_cmd_prefix === '' || $s_cmd_prefix === 'view' ) {  // load view
 var_dump('detected view cmd:'. $s_cmd);
 					// set frequently used skin vars
-					$this->set( 'board_id', get_the_ID() ); // x2board id is WP page ID  get_the_ID() work only view mode
+					// $this->set( 'board_id', get_the_ID() ); // x2board id is WP page ID  get_the_ID() work only view mode
 					// pretty url is for view only
 					$this->_convert_pretty_command_uri();
 					$o_view = \X2board\Includes\getModule('board');
-					$o_view->setModuleInfo(get_the_ID());
+					$o_view->setModuleInfo($this->get('board_id'));
 					unset($o_view);
 				}
 			}
@@ -508,6 +508,20 @@ var_dump('detected view cmd:'. $s_cmd);
 		}
 
 		/**
+		 * return board id oriented permalink
+		 * WP stores small-letter URL like wp-%ed%8e%98%ec%9d%b4%ec%a7%80-%ec%a0%9c%eb%aa%a9-2
+		 * router needs capitalized URL like wp-%ED%8E%98%EC%9D%B4%EC%A7%80-%EC%A0%9C%EB%AA%A9-2
+		 * @return void
+		 */
+		public static function get_the_permalink() {
+			$o_self = self::getInstance();
+			// $this->_s_page_permlink set in $this->init();
+			$s_page_permlink = $o_self->_s_page_permlink;
+			unset($o_self);
+			return $s_page_permlink;
+		}
+
+		/**
 		 * execute view class of a requested module
 		 *
 		 * @return void
@@ -562,7 +576,7 @@ var_dump('detected view cmd:'. $s_cmd);
 			}
 			// check rewrite conf for pretty post URL
 			$a_board_rewrite_settings = get_option( X2B_REWRITE_OPTION_TITLE );
-			if(isset( $a_board_rewrite_settings[get_the_ID()])) {
+			if(isset( $a_board_rewrite_settings[$this->get('board_id')])) {
 				$set_to_vars = TRUE;
 				if( get_query_var( 'post_id' ) ) {  // post_id from custom route detected, find the code blocks by X2B_REWRITE_OPTION_TITLE
 					$this->set( 'post_id', get_query_var( 'post_id' ), $set_to_vars);
@@ -712,8 +726,10 @@ var_dump('detected view cmd:'. $s_cmd);
 		 * @return string Request method type. (Optional - GET|POST|XMLRPC|JSON)
 		 */
 		public static function getRequestMethod() {
-			$self = self::getInstance();
-			return $self->request_method;
+			$o_self = self::getInstance();
+			$s_request_method = $o_self->request_method;
+			unset($o_self);
+			return $s_request_method;
 		}
 
 		/**
@@ -734,20 +750,23 @@ var_dump('detected view cmd:'. $s_cmd);
 		 * @return void
 		 */
 		public static function set($key, $val, $set_to_get_vars = 0) {
-			$self = self::getInstance();
-			$self->context->{$key} = $val;
+			$o_self = self::getInstance();
+			$o_self->context->{$key} = $val;
 			if($set_to_get_vars === FALSE) {
+				unset($o_self);
 				return;
 			}
 			if($val === NULL || $val === '') {
-				unset($self->get_vars->{$key});
+				unset($o_self->get_vars->{$key});
+				unset($o_self);
 				return;
 			}
 // var_dump($key);
-// var_dump($self->get_vars->{$key});
-			if($set_to_get_vars || !isset($self->get_vars->{$key})) {
-				$self->get_vars->{$key} = $val;
+// var_dump($o_self->get_vars->{$key});
+			if($set_to_get_vars || !isset($o_self->get_vars->{$key})) {
+				$o_self->get_vars->{$key} = $val;
 			}	
+			unset($o_self);
 		}
 
 		/**
@@ -757,12 +776,15 @@ var_dump('detected view cmd:'. $s_cmd);
 		 * @return string Key
 		 */
 		public static function get($key) {
-			$self = self::getInstance();
-			if(!isset($self->context->{$key})) {
+			$o_self = self::getInstance();
+			if(!isset($o_self->context->{$key})) {
+				unset($o_self);
 				return null;
 			}
 // var_dump($self->context);		
-			return $self->context->{$key};
+			$o_rst = $o_self->context->{$key};
+			unset($o_self);
+			return $o_rst;
 		}
 
 		/**
@@ -775,12 +797,13 @@ var_dump('detected view cmd:'. $s_cmd);
 			if($num_args < 1) {
 				return;
 			}
-			$self = self::getInstance();
+			$o_self = self::getInstance();
 			$args_list = func_get_args();
 			$output = new \stdClass();
 			foreach($args_list as $v) {
-				$output->{$v} = $self->get($v);
+				$output->{$v} = $o_self->get($v);
 			}
+			unset($o_self);
 			return $output;
 		}
 
@@ -790,8 +813,10 @@ var_dump('detected view cmd:'. $s_cmd);
 		 * @return object All context data
 		 */
 		public static function getAll4Skin() {
-			$self = self::getInstance();
-			return (array)$self->context;
+			$o_self = self::getInstance();
+			$a_rst = (array)$o_self->context;
+			unset($o_self);
+			return $a_rst;
 		}
 
 		/**
@@ -800,10 +825,12 @@ var_dump('detected view cmd:'. $s_cmd);
 		 * @return BaseObject Request variables.
 		 */
 		public static function getRequestVars() {
-			$self = self::getInstance();
-			if($self->get_vars) {
-				return clone($self->get_vars);
+			$o_self = self::getInstance();
+			if($o_self->get_vars) {
+				$o_tmp = clone($o_self->get_vars);
+				return $o_tmp;
 			}
+			unset($o_self);
 			return new \stdClass;
 		}
 
@@ -814,12 +841,13 @@ var_dump('detected view cmd:'. $s_cmd);
 		 * @return void
 		 */
 		public static function setRequestMethod($type = '') {
-			$self = self::getInstance();
+			$o_self = self::getInstance();
 			// $self->js_callback_func = $self->getJSCallbackFunc();
-			($type && $self->request_method = $type) or
-			// ((strpos($_SERVER['CONTENT_TYPE'], 'json') || strpos($_SERVER['HTTP_CONTENT_TYPE'], 'json')) && $self->request_method = 'JSON') or
-			// ($GLOBALS['HTTP_RAW_POST_DATA'] && $self->request_method = 'XMLRPC') or ($self->js_callback_func && $self->request_method = 'JS_CALLBACK') or ($self->request_method = $_SERVER['REQUEST_METHOD']);
-			(isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'json') && $self->request_method = 'JSON') or	($self->request_method = $_SERVER['REQUEST_METHOD']);
+			($type && $o_self->request_method = $type) or
+			// ((strpos($_SERVER['CONTENT_TYPE'], 'json') || strpos($_SERVER['HTTP_CONTENT_TYPE'], 'json')) && $o_self->request_method = 'JSON') or
+			// ($GLOBALS['HTTP_RAW_POST_DATA'] && $o_self->request_method = 'XMLRPC') or ($o_self->js_callback_func && $o_self->request_method = 'JS_CALLBACK') or ($o_self->request_method = $_SERVER['REQUEST_METHOD']);
+			(isset($_SERVER['CONTENT_TYPE']) && strpos($_SERVER['CONTENT_TYPE'], 'json') && $o_self->request_method = 'JSON') or ($o_self->request_method = $_SERVER['REQUEST_METHOD']);
+			unset($o_self);
 		}
 
 		/**
@@ -837,7 +865,6 @@ var_dump('detected view cmd:'. $s_cmd);
 			// static $site_module_info = null;
 			static $current_info = null;
 
-			$self = self::getInstance();
 			// // retrieve virtual site information
 			// if(is_null($site_module_info)) {
 			// 	$site_module_info = self::get('site_module_info');
@@ -882,9 +909,10 @@ var_dump('detected view cmd:'. $s_cmd);
 			}
 			
 			$get_vars = array();
+			$o_self = self::getInstance();
 
 			// If there is no GET variables or first argument is '' to reset variables
-			if(!$self->get_vars || $args_list[0] == '') {
+			if(!$o_self->get_vars || $args_list[0] == '') {
 				// rearrange args_list
 				if(is_array($args_list) && $args_list[0] == '') {
 					array_shift($args_list);
@@ -893,7 +921,7 @@ var_dump('detected view cmd:'. $s_cmd);
 			elseif($_SERVER['REQUEST_METHOD'] == 'GET') {
 				// Otherwise, make GET variables into array
 				// $get_vars = get_object_vars($self->get_vars);
-				$get_vars = get_object_vars($self->gets('cmd', 'post_id', 'page', 'category','search_target','search_keyword'));
+				$get_vars = get_object_vars($o_self->gets('cmd', 'post_id', 'page', 'category','search_target','search_keyword'));
 // error_log(print_r($get_vars, true));
 				// 이 조건문 작동하면 ?cmd=view_post&post_id=17&cpage=2#17_comment 와 같은 댓글 페이지 처리가 안됨
 				// if( isset( $get_vars['cmd'] ) && $get_vars['cmd'] == X2B_CMD_VIEW_POST &&
@@ -905,12 +933,12 @@ var_dump('detected view cmd:'. $s_cmd);
 				// if(!!$self->get_vars->module) $get_vars['module'] = $self->get_vars->module;
 				// if(!!$self->get_vars->mid) $get_vars['mid'] = $self->get_vars->mid;
 				// if(!!$self->get_vars->act) $get_vars['act'] = $self->get_vars->act;
-				if(!!$self->get_vars->cmd) $get_vars['cmd'] = $self->get_vars->cmd;
-				if(!!$self->get_vars->page) $get_vars['page'] = $self->get_vars->page;
-				if(!!$self->get_vars->search_target) $get_vars['search_target'] = $self->get_vars->search_target;
-				if(!!$self->get_vars->search_keyword) $get_vars['search_keyword'] = $self->get_vars->search_keyword;
+				if(!!$o_self->get_vars->cmd) $get_vars['cmd'] = $o_self->get_vars->cmd;
+				if(!!$o_self->get_vars->page) $get_vars['page'] = $o_self->get_vars->page;
+				if(!!$o_self->get_vars->search_target) $get_vars['search_target'] = $o_self->get_vars->search_target;
+				if(!!$o_self->get_vars->search_keyword) $get_vars['search_keyword'] = $o_self->get_vars->search_keyword;
 				// if($get_vars['act'] == 'IS') {
-				// 	if(!!$self->get_vars->is_keyword) $get_vars['is_keyword'] = $self->get_vars->is_keyword;
+				// 	if(!!$o_self->get_vars->is_keyword) $get_vars['is_keyword'] = $o_self->get_vars->is_keyword;
 				// }
 			}
 
@@ -971,22 +999,23 @@ var_dump('detected view cmd:'. $s_cmd);
 				$page = isset( $get_vars['page'] ) ? $get_vars['page'] : ''; // $get_vars['page'];
 				$post_id = isset( $get_vars['post_id'] ) ? $get_vars['post_id'] : '';
 				$s_category_title = isset( $get_vars['category'] ) ? $get_vars['category'] : '';
+				// $s_permalink = get_the_permalink(\X2board\Includes\Classes\Context::get('board_id'));
 
 				// $tmpArray = array('rss' => 1, 'atom' => 1, 'api' => 1);
 				// $is_feed = isset($tmpArray[$act]);
-// error_log(print_r($get_vars, true));					
+// error_log(print_r($get_vars, true));
 				$target_map = array(
-					'cmd' => get_the_permalink().( strlen($cmd) > 0 ? '?'.$cmd : '' ),  // X2B_CMD_VIEW_LIST equals with blank cmd
-					'page' => get_the_permalink().'?p/'.$page,
-					'post_id' => get_the_permalink().'?'.X2B_CMD_VIEW_POST.'/'.$post_id,
-					'cmd.post_id.search_keyword.search_target' => get_the_permalink().'?'.X2B_CMD_VIEW_POST.'/'.$post_id,
-					'cmd.post_id' => '', // reserved for pretty post url  // get_the_permalink().'?'.$cmd.'/'.$post_id,
-					'cmd.page' => get_the_permalink().'?p/'.$page,
-					'category.cmd.post_id' => get_the_permalink().'?cat/'.$s_category_title,
+					'cmd' => $o_self->_s_page_permlink.( strlen($cmd) > 0 ? '?'.$cmd : '' ),  // X2B_CMD_VIEW_LIST equals with blank cmd
+					'page' => $o_self->_s_page_permlink.'?p/'.$page,
+					'post_id' => $o_self->_s_page_permlink.'?'.X2B_CMD_VIEW_POST.'/'.$post_id,
+					'cmd.post_id.search_keyword.search_target' => $o_self->_s_page_permlink.'?'.X2B_CMD_VIEW_POST.'/'.$post_id,
+					'cmd.post_id' => '', // reserved for pretty post url  // $self->_s_page_permlink.'?'.$cmd.'/'.$post_id,
+					'cmd.page' => $o_self->_s_page_permlink.'?p/'.$page,
+					'category.cmd.post_id' => $o_self->_s_page_permlink.'?cat/'.$s_category_title,
 					// 'vid' => $vid,
 					// 'mid.vid' => "$vid/$mid",
 					// 'entry.mid.vid' => "$vid/$mid/entry/" . $get_vars['entry'],
-					// 'cmd.comment_id.post_id' => get_the_permalink().'?'.$cmd.'/'.$post_id.'/'.$comment_id,
+					// 'cmd.comment_id.post_id' =>$self->_s_page_permlink.'?'.$cmd.'/'.$post_id.'/'.$comment_id,
 					// 'document_srl.mid.vid' => "$vid/$mid/$srl",
 					// 'act.document_srl.key.vid' => ($act == 'trackback') ? "$vid/$srl/$key/$act" : '',
 				);
@@ -1020,7 +1049,7 @@ var_dump('detected view cmd:'. $s_cmd);
 				// try best to provie prettier post URL as possible
 				if( self::get('use_rewrite') == 'Y' ) {
 					if( $target == 'cmd.post_id' ) {
-						$query = $cmd == X2B_CMD_VIEW_POST ? $self->_s_page_permlink.'/'.$post_id : $query .='?'.$cmd.'/'.$post_id;
+						$query = $cmd == X2B_CMD_VIEW_POST ? $o_self->_s_page_permlink.'/'.$post_id : $query .='?'.$cmd.'/'.$post_id;
 					}
 				}
 			}
@@ -1042,7 +1071,7 @@ var_dump('detected view cmd:'. $s_cmd);
 // error_log(print_r($queries, true));		
 // }
 
-				$query = get_the_permalink();
+				$query = $o_self->_s_page_permlink;
 				$n_cnt_queires = count($queries);
 				if($n_cnt_queires > 0) {
 					$query .= '?' . join('&', $queries);
@@ -1076,6 +1105,7 @@ var_dump('detected view cmd:'. $s_cmd);
 			// 	// 	$query = \X2board\Includes\get_script_path() . $query;
 			// 	// }
 			// }
+			unset($o_self);
 
 			if(!$encode) {
 				return $query;

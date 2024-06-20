@@ -388,10 +388,8 @@ var_dump(X2B_CMD_VIEW_POST);
 
 				// if the post is existed
 				if($o_post->is_exists()) { // if($o_post->isExists())
-// var_dump($o_post->get('board_id'));			
-// var_dump(get_the_ID());			
 					// if the board is not consistent with wp page ID
-					if(intval($o_post->get('board_id')) !== get_the_ID() )	{  // board_id is WP page ID
+					if(intval($o_post->get('board_id')) !== \X2board\Includes\Classes\Context::get('board_id') )	{  // board_id is WP page ID
 						return $this->_disp_message( __('msg_invalid_request', X2B_DOMAIN) ); // return $this->stop('msg_invalid_request');
 					}
 
@@ -632,7 +630,7 @@ var_dump(X2B_CMD_VIEW_POST);
 
 			$o_post_model = \X2board\Includes\getModel('post');
 			$o_args = new \stdClass();
-			$o_args->wp_page_id = get_the_ID();  // $this->module_srl;
+			$o_args->wp_page_id = \X2board\Includes\Classes\Context::get('board_id');  // $this->module_srl;
 			$output = $o_post_model->get_notice_list($o_args, $this->columnList);
 // var_dump($this->columnList);			
 			unset($o_args);
@@ -1078,7 +1076,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 		 */
 		public function write_post_hidden_fields() {
 			$a_header = array();
-			$a_header['board_id'] = get_the_ID();
+			$a_header['board_id'] = \X2board\Includes\Classes\Context::get('board_id');
 			$o_post = \X2board\Includes\Classes\Context::get('post');
 			$a_header['post_id'] = $o_post->post_id;
 			if($o_post->post_id) {  // update a old post
@@ -1132,7 +1130,7 @@ var_dump(X2B_CMD_VIEW_WRITE_POST);
 
 			$header = array();
 			$a_header['cmd'] = X2B_CMD_PROC_WRITE_COMMENT;
-			$a_header['board_id'] = get_the_ID();
+			$a_header['board_id'] = \X2board\Includes\Classes\Context::get('board_id');
 
 			$o_post = \X2board\Includes\Classes\Context::get('post');
 			if($b_embedded_editor) {  // for sketchbook5 embedded_editor editor
