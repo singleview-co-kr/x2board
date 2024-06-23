@@ -473,7 +473,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 		public function delete_files($upload_target_id) {
 			// Get a list of attachements
 			$o_file_model = \X2board\Includes\getModel('file');
-			$a_file_list = $o_file_model->get_files($upload_target_id, array('file_id', 'upload_target_id', 'uploaded_filename', 'board_id')); //, $columnList);
+			$a_file_list = $o_file_model->get_files($upload_target_id); //, $columnList);   , array('file_id', 'upload_target_id', 'uploaded_filename', 'board_id')
 			unset($o_file_model);
 			// Success returned if no attachement exists
 			if(!is_array($a_file_list)||!count($a_file_list)) {
@@ -485,7 +485,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 			foreach( $a_file_list as $_ => $o_file ) {
 				$this->_delete_file($o_file);
 				$path_info = pathinfo($o_file->uploaded_filename); //$uploaded_filename);
-				if(!in_array($path_info['dirname'], $path)) {
+				if(!in_array($path_info['dirname'], $a_path_to_unset)) {
 					$a_folder_info = explode($o_file->board_id, $path_info['dirname']);
 					// $a_path_to_unset[] = $a_folder_info[0].$o_file->board_id;
 					$a_path_to_unset[] = $path_info['dirname']; //.DIRECTORY_SEPARATOR.'..';
