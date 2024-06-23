@@ -254,7 +254,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentController')) {
 						// $output = executeQuery('comment.updateCommentListArrange', $list_args);
 						// "UPDATE  `xe_comments_list` as `comments_list`  SET `arrange` = `arrange` + ?  WHERE `parent_post_id` = ? and `head` = ? and `arrange` >= ?"
 						$result = $wpdb->update ( "{$wpdb->prefix}x2b_comments_list", 
-												  array( 'arrange' => 'arrange' + 1 ),
+												  array( 'arrange' => 'arrange + 1' ),
 												  array( 'parent_post_id' => esc_sql(intval($list_args->parent_post_id)),
 												  		 'head' => esc_sql(intval($list_args->head)),
 														 'arrange' => esc_sql(intval($list_args->arrange)) ) 

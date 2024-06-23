@@ -189,11 +189,13 @@ var_dump('post controller init()');
 // Remove XE's own tags from the contents.
 // $obj->content = preg_replace('!<\!--(Before|After)(Document|Comment)\(([0-9]+),([0-9]+)\)-->!is', '', $obj->content);
 			// if(Mobile::isFromMobilePhone() && $obj->use_editor != 'Y') {
-			if($obj->use_editor != 'Y') {  // if(wp_is_mobile() && $obj->use_editor != 'Y') {
-				if($obj->use_html != 'Y') {
-					$obj->content = htmlspecialchars($obj->content, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
+			if(!$manual_inserted) {
+				if($obj->use_editor != 'Y') {  // if(wp_is_mobile() && $obj->use_editor != 'Y') {
+					if($obj->use_html != 'Y') {
+						$obj->content = htmlspecialchars($obj->content, ENT_COMPAT | ENT_HTML401, 'UTF-8', false);
+					}
+					$obj->content = nl2br($obj->content);
 				}
-				$obj->content = nl2br($obj->content);
 			}
 			// Remove iframe and script if not a top adminisrator in the session.
 			if($o_logged_info->is_admin != 'Y') {
