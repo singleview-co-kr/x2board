@@ -293,6 +293,17 @@ function launch_shortcode($a_args) {
 }
 
 /**
+ * 관리자 실행을 위해 context 객체 생성
+ * @param none
+ * @return $o_context
+ */
+function buildup_context_from_admin() {
+	load_modules();
+	$o_context = \X2board\Includes\Classes\Context::getInstance();
+	return $o_context;
+}
+
+/**
  * Define a function to use {@see ModuleHandler::getModuleObject()} ($module_name, $type)
  *
  * @param string $module_name The module name to get a instance

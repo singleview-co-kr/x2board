@@ -226,9 +226,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Import\\importAdminController')
 			// begin - buildup proc Context for admin
 			global $G_X2B_CACHE;
 			require_once X2B_PATH . 'includes/func.inc.php';
-			\X2board\Includes\load_modules();
-			$o_context = \X2board\Includes\Classes\Context::getInstance();
+			$o_context = \X2board\Includes\buildup_context_from_admin();
 			$o_context->init('admin_import');
+			unset($o_context);
 			// end - buildup proc Context for admin
 
 			$o_post_controller = \X2board\Includes\getController('post');
@@ -347,7 +347,6 @@ var_dump('attach on comment');
 			unset($a_linear_cat_info);
 			unset($o_post_controller);
 			unset($o_comment_controller);
-			unset($o_context);
 
 			$o_rst = new \stdClass();
 			$o_rst->translation_mapper = $seo_translation_mapper;
