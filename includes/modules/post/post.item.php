@@ -583,7 +583,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postItem')) {
 			}
 			if(!isset($this->_a_uploaded_file[$sortIndex])) {
 				$o_file_model = \X2board\Includes\getModel('file');
-				$this->_a_uploaded_file[$sortIndex] = $o_file_model->get_files($this->_n_wp_post_id, array(), $sortIndex, true);
+				$this->_a_uploaded_file[$sortIndex] = $o_file_model->get_files($this->_n_wp_post_id, $sortIndex, true);  // array(),
 				unset($o_file_model);
 			}
 			return $this->_a_uploaded_file[$sortIndex];

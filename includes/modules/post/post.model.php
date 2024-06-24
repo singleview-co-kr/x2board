@@ -54,7 +54,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 		// function init() {}
 
 		/**
-		 * bringing the list of documents
+		 * bringing the list of posts
 		 * @param object $obj
 		 * @param bool $except_notice
 		 * @param bool $load_extra_vars
@@ -79,6 +79,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 			// {
 			// 	return $output;
 			// }
+			global $wpdb;
 			$o_search_check = $this->_set_search_option($obj); //, $args);// , $query_id, $use_division);
 			$query_id = $o_search_check->s_query_id; // 'post.getPostList';   // basic document list query
 			if ($o_sort_check->is_user_define_field && substr_count($obj->search_target, 'extra_vars')) {
@@ -120,7 +121,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 					$output->page = $page_navigation->cur_page;
 				}
 				elseif( $query_id == 'post.getPostList' ) { // basic post list query
-					global $wpdb;
 					$o_query = new \stdClass();
 					$o_query->s_tables = '`'.$wpdb->prefix.'x2b_posts` as `posts`';
 					$o_query->s_columns = "*";
@@ -133,7 +133,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postModel')) {
 					unset($o_query);
 				}
 				elseif( $query_id == 'post.getPostListWithExtraVars' ) { // extended user define field list query
-					global $wpdb;
 					$o_query = new \stdClass();
 					$o_query->s_tables = '`'.$wpdb->prefix.'x2b_posts` as `posts`, `'.$wpdb->prefix.'x2b_user_define_vars` as `user_vars` ';
 					$o_query->s_columns = "*";

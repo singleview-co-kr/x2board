@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: x2board\n"
-"POT-Creation-Date: 2024-06-19 13:34+0900\n"
-"PO-Revision-Date: 2024-06-19 13:35+0900\n"
+"POT-Creation-Date: 2024-06-23 15:54+0900\n"
+"PO-Revision-Date: 2024-06-23 15:57+0900\n"
 "Last-Translator: singleviewcokr <singleviewcokr@gmail.com>\n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -18,39 +18,42 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-0: common\n"
 "X-Poedit-SearchPathExcluded-1: includes/modules/board\n"
 
-#: includes/admin/admin.php:51
+#: includes/admin/admin.php:55
 msgid "lbl_title_content"
 msgstr "title + content"
 
-#: includes/admin/admin.php:52
+#: includes/admin/admin.php:56
+#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:165
+#: includes/modules/file/wp_admin_class/wp_latest_files.php:181
+#: includes/modules/post/wp_admin_class/wp_latest_posts.php:172
 msgid "lbl_nick_name"
 msgstr "nickname"
 
-#: includes/admin/admin.php:53
+#: includes/admin/admin.php:57
 msgid "lbl_user_id"
 msgstr "user id"
 
-#: includes/admin/admin.php:78 includes/admin/tpl/header.php:3
-msgid "lbl_dashboard"
-msgstr "Dasboard"
-
-#: includes/admin/admin.php:79 includes/admin/tpl/board_list.php:7
+#: includes/admin/admin.php:82 includes/admin/tpl/board_list.php:7
 msgid "cmd_create_board"
 msgstr "Create a board"
 
-#: includes/admin/admin.php:80 includes/admin/tpl/board_list.php:4
+#: includes/admin/admin.php:83 includes/admin/tpl/board_list.php:4
 msgid "cmd_board_list"
 msgstr "Board list"
 
-#: includes/admin/admin.php:81
+#: includes/admin/admin.php:84
 msgid "cmd_import_board"
 msgstr "Import a board"
 
-#: includes/admin/admin.php:158 includes/admin/admin.php:177
+#: includes/admin/admin.php:85 includes/admin/tpl/header.php:3
+msgid "lbl_control_panel"
+msgstr "Control panel"
+
+#: includes/admin/admin.php:164 includes/admin/admin.php:183
 msgid "msg_call_invalid_module"
 msgstr "Requested module does not have %1$s()"
 
-#: includes/admin/admin.php:201
+#: includes/admin/admin.php:207
 msgid "msg_thank_you_using_x2board"
 msgstr ""
 "Thank you for using <a href=\"%1$s\" target=\"_blank\">x2Board</a>! Please "
@@ -100,10 +103,40 @@ msgstr ""
 "Pressing the button initializes the selection board and inputs the XML data "
 "extracted from XE2"
 
-#: includes/admin/tpl/board_list.php:16
+#: includes/admin/tpl/board_list.php:16 includes/admin/tpl/latest_list.php:26
 #: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:494
 msgid "lbl_search"
 msgstr "Search"
+
+#: includes/admin/tpl/control_panel.php:9
+msgid "cmd_setup_plugin"
+msgstr "Setup plugin"
+
+#: includes/admin/tpl/control_panel.php:140 includes/admin/tpl/header.php:5
+msgid "cmd_goto_community"
+msgstr "Go to community"
+
+#: includes/admin/tpl/control_panel.php:178
+#: includes/admin/tpl/control_panel.php:198
+msgid "msg_not_available"
+msgstr "Not available"
+
+#: includes/admin/tpl/dashboard.php:10
+msgid "lbl_latest_post"
+msgstr "Latest posts"
+
+#: includes/admin/tpl/dashboard.php:10 includes/admin/tpl/dashboard.php:28
+#: includes/admin/tpl/dashboard.php:46
+msgid "cmd_view_more"
+msgstr "view more"
+
+#: includes/admin/tpl/dashboard.php:28
+msgid "cmd_latest_comment"
+msgstr "Latest comments"
+
+#: includes/admin/tpl/dashboard.php:46
+msgid "cmd_latest_file"
+msgstr "Latest files"
 
 #: includes/admin/tpl/default-settings.php:63
 msgid "name_x2board_title"
@@ -655,21 +688,9 @@ msgstr "Administrator"
 msgid "opt_role_customize"
 msgstr "Customize"
 
-#: includes/admin/tpl/header.php:5 includes/admin/tpl/index.php:140
-msgid "cmd_goto_community"
-msgstr "Go to community"
-
 #: includes/admin/tpl/header.php:6
 msgid "cmd_goto_support"
 msgstr "Go to support"
-
-#: includes/admin/tpl/index.php:9
-msgid "cmd_setup_plugin"
-msgstr "Setup plugin"
-
-#: includes/admin/tpl/index.php:178 includes/admin/tpl/index.php:198
-msgid "msg_not_available"
-msgstr "Not available"
 
 #: includes/admin/tpl/settings-page.php:87
 msgid "cmd_save_change"
@@ -744,7 +765,7 @@ msgstr "New category name"
 msgid "lbl_category_status"
 msgstr "Category status"
 
-#: includes/classes/Context.class.php:1110
+#: includes/classes/Context.class.php:1139
 msgid "msg_undefined_locale"
 msgstr "Unknown locale"
 
@@ -756,11 +777,11 @@ msgstr "Invalid configuration"
 #: includes/modules/comment/comment.controller.php:149
 #: includes/modules/comment/comment.controller.php:490
 #: includes/modules/comment/comment.controller.php:689
-#: includes/modules/comment/comment.controller.php:801
+#: includes/modules/comment/comment.controller.php:799
 #: includes/modules/file/file.controller.php:638
 #: includes/modules/post/post.controller.php:132
 #: includes/modules/post/post.controller.php:142
-#: includes/modules/post/post.controller.php:899
+#: includes/modules/post/post.controller.php:901
 msgid "msg_not_permitted"
 msgstr "Your request is not permitted"
 
@@ -928,6 +949,7 @@ msgid "cmd_select"
 msgstr "Please select"
 
 #: includes/classes/user_define_fields/UserDefineFields.class.php:32
+#: includes/modules/post/wp_admin_class/wp_latest_posts.php:171
 msgid "lbl_title"
 msgstr "Title"
 
@@ -1113,17 +1135,17 @@ msgstr "Comment status of the post"
 msgid "msg_invalid_board_id"
 msgstr "warning from %s! you requested invalid board_id via shortcode"
 
-#: includes/func.inc.php:822
+#: includes/func.inc.php:833
 msgid "msg_security_warning_embed"
 msgstr ""
 "Due to security issues, the embed cannot be viewed using the administrator "
 "ID. To check, log in with a different ID"
 
-#: includes/func.inc.php:939
+#: includes/func.inc.php:950
 msgid "lbl_mins_ago"
 msgstr "%d mins ago"
 
-#: includes/func.inc.php:940
+#: includes/func.inc.php:951
 msgid "lbl_hrs_ago"
 msgstr "%d hrs ago"
 
@@ -1141,43 +1163,94 @@ msgstr "You do not have permission"
 #: includes/modules/comment/comment.controller.php:142
 #: includes/modules/comment/comment.controller.php:457
 #: includes/modules/comment/comment.controller.php:460
-#: includes/modules/comment/comment.controller.php:787
+#: includes/modules/comment/comment.controller.php:785
+#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:65
 #: includes/modules/file/file.controller.php:822
+#: includes/modules/file/wp_admin_class/wp_latest_files.php:77
 #: includes/modules/post/post.controller.php:63
 #: includes/modules/post/post.controller.php:66
-#: includes/modules/post/post.controller.php:204
-#: includes/modules/post/post.controller.php:419
-#: includes/modules/post/post.controller.php:516
-#: includes/modules/post/post.controller.php:519
-#: includes/modules/post/post.controller.php:524
-#: includes/modules/post/post.controller.php:1283
-#: includes/modules/post/post.model.php:548
+#: includes/modules/post/post.controller.php:206
+#: includes/modules/post/post.controller.php:421
+#: includes/modules/post/post.controller.php:518
+#: includes/modules/post/post.controller.php:521
+#: includes/modules/post/post.controller.php:526
+#: includes/modules/post/post.controller.php:1285
+#: includes/modules/post/post.model.php:547
+#: includes/modules/post/wp_admin_class/wp_latest_posts.php:65
 msgid "msg_invalid_request"
 msgstr "Your request is invalid"
 
 #: includes/modules/comment/comment.controller.php:112
-#: includes/modules/post/post.controller.php:891
-#: includes/modules/post/post.controller.php:895
+#: includes/modules/post/post.controller.php:893
+#: includes/modules/post/post.controller.php:897
 msgid "msg_invalid_post"
 msgstr "Invalid post"
 
-#: includes/modules/comment/comment.controller.php:822
+#: includes/modules/comment/comment.controller.php:820
 msgid "fail_to_delete_children_comment"
 msgstr "Failed to delete belonged comments"
 
-#: includes/modules/comment/comment.item.php:126
+#: includes/modules/comment/comment.item.php:129
 msgid "lbl_no_name"
 msgstr "Anonymous"
 
-#: includes/modules/comment/comment.item.php:193
+#: includes/modules/comment/comment.item.php:196
 #: includes/modules/post/post.item.php:426
 msgid "msg_secret_post"
 msgstr "This is secret post"
+
+#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:51
+#: includes/modules/file/wp_admin_class/wp_latest_files.php:63
+#: includes/modules/post/wp_admin_class/wp_latest_posts.php:51
+msgid "cmd_delete"
+msgstr "삭제"
+
+#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:163
+#: includes/modules/file/wp_admin_class/wp_latest_files.php:178
+#: includes/modules/post/wp_admin_class/wp_latest_posts.php:170
+msgid "lbl_installed_wp_page"
+msgstr "게시판 설치된 WP 페이지"
+
+#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:164
+msgid "lbl_comment"
+msgstr "댓글"
+
+#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:166
+#: includes/modules/file/wp_admin_class/wp_latest_files.php:182
+#: includes/modules/post/wp_admin_class/wp_latest_posts.php:174
+msgid "lbl_ipaddress"
+msgstr "IP address"
+
+#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:167
+#: includes/modules/file/wp_admin_class/wp_latest_files.php:183
+#: includes/modules/post/wp_admin_class/wp_latest_posts.php:175
+msgid "lbl_create_date"
+msgstr "생성일"
+
+#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:168
+#: includes/modules/file/wp_admin_class/wp_latest_files.php:184
+#: includes/modules/post/wp_admin_class/wp_latest_posts.php:176
+msgid "lbl_status"
+msgstr "Status"
+
+#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:185
+#: includes/modules/file/wp_admin_class/wp_latest_files.php:227
+#: includes/modules/post/wp_admin_class/wp_latest_posts.php:193
+msgid "lbl_"
+msgstr ""
 
 #: includes/modules/editor/editor.view.php:93
 #: includes/modules/editor/editor.view.php:141
 msgid "msg_type_what_you_think"
 msgstr "Type what you think"
+
+#: includes/modules/file/file.class.php:17
+msgid "lbl_valid"
+msgstr "Valid"
+
+#: includes/modules/file/file.class.php:18
+msgid "lbl_pending"
+msgstr "Pending"
 
 #: includes/modules/file/file.controller.php:247
 msgid "msg_not_allowed_filetype"
@@ -1220,6 +1293,14 @@ msgstr "Size limit per file"
 msgid "lbl_allowed_filetypes"
 msgstr "Allowed file exensions"
 
+#: includes/modules/file/wp_admin_class/wp_latest_files.php:179
+msgid "lbl_filename"
+msgstr "Filename"
+
+#: includes/modules/file/wp_admin_class/wp_latest_files.php:180
+msgid "lbl_filesize"
+msgstr "File sze"
+
 #: includes/modules/post/post.admin.model.php:94
 msgid "lbl_available_user_define_fields"
 msgstr "Available user define fields"
@@ -1244,22 +1325,37 @@ msgstr "Drag from the left section to display on the list"
 msgid "cmd_reset_configuration"
 msgstr "Reset configuration"
 
+#: includes/modules/post/post.class.php:25
+msgid "lbl_public"
+msgstr "Public"
+
+#: includes/modules/post/post.class.php:26
+msgid "lbl_secret"
+msgstr "Secret"
+
 #: includes/modules/post/post.controller.php:187
-#: includes/modules/post/post.controller.php:658
+#: includes/modules/post/post.controller.php:660
 msgid "lbl_untitled"
 msgstr "Untitled"
 
-#: includes/modules/post/post.controller.php:389
+#: includes/modules/post/post.controller.php:391
 msgid "msg_wp_post_registration_failed"
 msgstr "Failed to register WP post"
 
-#: includes/modules/post/post.controller.php:733
+#: includes/modules/post/post.controller.php:735
 msgid "msg_wp_post_update_failed"
 msgstr "Failed to update WP post"
 
-#: includes/modules/post/post.model.php:1100
+#: includes/modules/post/post.model.php:1099
 msgid "opt_"
 msgstr ""
+
+#: includes/modules/post/wp_admin_class/wp_latest_posts.php:173
+msgid "lbl_readed_count"
+msgstr "Readed count"
+
+#~ msgid "lbl_dashboard"
+#~ msgstr "Dasboard"
 
 #~ msgid "msg_import_succeeded"
 #~ msgstr "임포트 성공했습니다"
@@ -1278,12 +1374,6 @@ msgstr ""
 
 #~ msgid "lbl_field_introduction"
 #~ msgstr "필드 소개"
-
-#~ msgid "lbl_installed_wp_page"
-#~ msgstr "게시판 설치된 WP 페이지"
-
-#~ msgid "lbl_create_date"
-#~ msgstr "생성일"
 
 #~ msgid "lbl_visit_page"
 #~ msgstr "게시판 방문하기"
@@ -1305,12 +1395,6 @@ msgstr ""
 
 #~ msgid "msg_not_allow_comment"
 #~ msgstr "댓글 쓰기 금지된 게시글입니다"
-
-#~ msgid "lbl_comment"
-#~ msgstr "댓글"
-
-#~ msgid "cmd_view"
-#~ msgstr "본문 보기"
 
 #~ msgid "lbl_uploaded_file"
 #~ msgstr "첨부 파일"
@@ -1336,9 +1420,6 @@ msgstr ""
 #~ msgid "cmd_modify"
 #~ msgstr "수정"
 
-#~ msgid "cmd_delete"
-#~ msgstr "삭제"
-
 #~ msgid "cmd_reply"
 #~ msgstr "댓글"
 
@@ -1347,9 +1428,6 @@ msgstr ""
 
 #~ msgid "lbl_last_page"
 #~ msgstr "끝 페이지"
-
-#~ msgid "cmd_write_comment"
-#~ msgstr "댓글 쓰기"
 
 #~ msgid "cmd_select_editor"
 #~ msgstr "에디터 선택하기"
@@ -1362,9 +1440,6 @@ msgstr ""
 
 #~ msgid "cmd_submit"
 #~ msgstr "등록하기"
-
-#~ msgid "lbl_secret"
-#~ msgstr "비밀글 기능"
 
 #~ msgid "cmd_use_wysiwyg"
 #~ msgstr "에디터 사용하기"
@@ -1383,12 +1458,6 @@ msgstr ""
 
 #~ msgid "lbl_date"
 #~ msgstr "날짜"
-
-#~ msgid "lbl_last_update"
-#~ msgstr "최종 수정일"
-
-#~ msgid "lbl_readed_count"
-#~ msgstr "조회 수"
 
 #~ msgid "lbl_voted_count"
 #~ msgstr "추천 수"

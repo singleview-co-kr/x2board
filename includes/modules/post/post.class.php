@@ -21,6 +21,9 @@ if ( !defined( 'ABSPATH' ) ) {
 require_once X2B_PATH . 'includes/modules/post/post.item.php';
 
 if (!class_exists('\\X2board\\Includes\\Modules\\Post\\post')) {
+	// this is for poedit recognition
+	__('lbl_public', X2B_DOMAIN);
+	__('lbl_secret', X2B_DOMAIN);
 
 	class post extends \X2board\Includes\Classes\ModuleObject {
 		/**

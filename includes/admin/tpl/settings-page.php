@@ -613,6 +613,7 @@ function x2b_wpuserfieldui_callback( $args ) {
 
 function x2b_wplistfieldui_callback( $args ) {
 	$o_board_admin_model = new \X2board\Includes\Modules\Board\boardAdminModel();
+	$o_board_admin_model->build_user_define_list_fields();
 	echo $o_board_admin_model->render_user_field_ui();
 	unset($o_board_admin_model);
 }

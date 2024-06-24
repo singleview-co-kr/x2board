@@ -455,7 +455,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 				}
 
 				if($upload_target_id && $file_id) {
-					$output = $this->_delete_file($o_file_info);
+					$output = $this->delete_file($o_file_info);
 				}
 			}
 			unset($logged_info);
@@ -483,7 +483,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 			// Delete the file
 			$a_path_to_unset = array();
 			foreach( $a_file_list as $_ => $o_file ) {
-				$this->_delete_file($o_file);
+				$this->delete_file($o_file);
 				$path_info = pathinfo($o_file->uploaded_filename); //$uploaded_filename);
 				if(!in_array($path_info['dirname'], $a_path_to_unset)) {
 					$a_folder_info = explode($o_file->board_id, $path_info['dirname']);
@@ -509,7 +509,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileController')) {
 		 * @return BaseObject
 		 */
 		// function deleteFile($file_srl)
-		private function _delete_file($o_file_info) {
+		public function delete_file($o_file_info) {
 			if(!$o_file_info->upload_target_id) {
 				return;
 			}

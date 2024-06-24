@@ -107,7 +107,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileModel')) {
 		 * @return array Returns array of object that contains file information. If no result returns null.
 		 */
 		// function getFiles($upload_target_srl, $columnList = array(), $sortIndex = 'file_srl', $ckValid = false)
-		public function get_files($upload_target_id, $columnList = array(), $sortIndex = 'file_id', $showValidOnly = false)	{
+		public function get_files($upload_target_id, $sortIndex = 'file_id', $showValidOnly = false) { 
 			// $args = new \stdClass();
 			// $args->upload_target_id = $upload_target_id;
 			// $args->sort_index = $sortIndex;
@@ -115,15 +115,14 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\fileModel')) {
 			if($showValidOnly) {
 				$s_where .= " AND `isvalid` = 'Y'";  // $args->isvalid = 'Y';
 			}
-			if(count($columnList)) {
-				$s_columns = "`".implode("`, `", $columnList)."`";
-			}
-			else {
-				$s_columns = '*';
-			}
+			// if(count($columnList)) {
+			// 	$s_columns = "`".implode("`, `", $columnList)."`";
+			// }
+			// else {
+			//	$s_columns = '*';
+			// }
 			global $wpdb;
-			$a_file_list = $wpdb->get_results("SELECT {$s_columns} FROM `{$wpdb->prefix}x2b_files` WHERE {$s_where} ORDER BY `{$sortIndex}` ASC");
-			
+			$a_file_list = $wpdb->get_results("SELECT * FROM `{$wpdb->prefix}x2b_files` WHERE {$s_where} ORDER BY `{$sortIndex}` ASC");
 			foreach ($a_file_list as &$file) {
 				$file->source_filename = htmlspecialchars(stripslashes($file->source_filename));
 				$file->download_url = $this->get_download_url($file->file_id, $file->sid);				

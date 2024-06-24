@@ -46,7 +46,7 @@
                         <td>
                             <select name="board_id">
                                 <option value=""><?php echo __('name_select_target_board', X2B_DOMAIN)?></option>
-                            <?php foreach($this->items as $o_board): ?>
+                            <?php foreach($o_board_list->items as $o_board): ?>
                                 <option value="<?php echo $o_board->board_id?>"><?php echo $o_board->board_title?></option>
                             <?php endforeach ?>
                             </select>

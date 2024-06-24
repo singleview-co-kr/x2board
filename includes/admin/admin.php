@@ -18,10 +18,14 @@ if ( !defined( 'ABSPATH' ) ) {
 if ( !defined( 'X2B_CMD_ADMIN_VIEW_IDX' ) ) {
     // define admin view cmd
     define('X2B_CMD_ADMIN_VIEW_IDX', 'x2b_disp_idx');
+	define('X2B_CMD_ADMIN_VIEW_CP', 'x2b_disp_control_panel');
 	define('X2B_CMD_ADMIN_VIEW_BOARD_LIST', 'x2b_disp_board_list');
 	define('X2B_CMD_ADMIN_VIEW_BOARD_INSERT', 'x2b_disp_board_insert');
 	define('X2B_CMD_ADMIN_VIEW_BOARD_UPDATE', 'x2b_disp_board_update');
 	define('X2B_CMD_ADMIN_VIEW_BOARD_IMPORT', 'x2b_disp_board_import');
+	define('X2B_CMD_ADMIN_VIEW_LATEST_POST', 'x2b_disp_latest_post');
+	define('X2B_CMD_ADMIN_VIEW_LATEST_COMMENT', 'x2b_disp_latest_comment');
+	define('X2B_CMD_ADMIN_VIEW_LATEST_FILE', 'x2b_disp_latest_file');
 	
     // define admin controller cmd
     define('X2B_CMD_ADMIN_PROC_INSERT_BOARD', 'x2b_proc_insert_board');
@@ -75,12 +79,14 @@ function add_admin_pages_links() {
 	$_wp_last_object_menu++;
 	// visible admin page
 	add_menu_page(X2B_ADMIN_PAGE_TITLE, X2B_DOMAIN, 'manage_x2board', X2B_CMD_ADMIN_VIEW_IDX, 'X2board\Includes\Admin\disp_admin_board', 'dashicons-admin-post', $_wp_last_object_menu);
-	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(X2B_CMD_ADMIN_VIEW_IDX, X2B_ADMIN_PAGE_TITLE, __('lbl_dashboard', X2B_DOMAIN), 'manage_x2board', X2B_CMD_ADMIN_VIEW_IDX, 'X2board\Includes\Admin\disp_admin_board' );
 	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(X2B_CMD_ADMIN_VIEW_IDX, X2B_ADMIN_PAGE_TITLE, __('cmd_create_board', X2B_DOMAIN), 'manage_x2board', X2B_CMD_ADMIN_VIEW_BOARD_INSERT, 'X2board\Includes\Admin\disp_admin_board' );
 	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(X2B_CMD_ADMIN_VIEW_IDX, X2B_ADMIN_PAGE_TITLE, __('cmd_board_list', X2B_DOMAIN), 'manage_x2board', X2B_CMD_ADMIN_VIEW_BOARD_LIST, 'X2board\Includes\Admin\disp_admin_board' );
 	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(X2B_CMD_ADMIN_VIEW_IDX, X2B_ADMIN_PAGE_TITLE, __('cmd_import_board', X2B_DOMAIN), 'manage_x2board', X2B_CMD_ADMIN_VIEW_BOARD_IMPORT, 'X2board\Includes\Admin\disp_admin_board' );
+	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(X2B_CMD_ADMIN_VIEW_IDX, X2B_ADMIN_PAGE_TITLE, __('lbl_control_panel', X2B_DOMAIN), 'manage_x2board', X2B_CMD_ADMIN_VIEW_CP, 'X2board\Includes\Admin\disp_admin_board' );
 	// hidden admin page
-	// $A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(null, X2B_ADMIN_PAGE_TITLE, __('Configure the board', X2B_DOMAIN), 'manage_x2board', X2B_CMD_ADMIN_VIEW_BOARD_UPDATE, 'X2board\Includes\Admin\disp_admin_board' );
+	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(null, X2B_ADMIN_PAGE_TITLE, null, 'manage_x2board', X2B_CMD_ADMIN_VIEW_LATEST_POST, 'X2board\Includes\Admin\disp_admin_board' );
+	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(null, X2B_ADMIN_PAGE_TITLE, null, 'manage_x2board', X2B_CMD_ADMIN_VIEW_LATEST_COMMENT, 'X2board\Includes\Admin\disp_admin_board' );
+	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page(null, X2B_ADMIN_PAGE_TITLE, null, 'manage_x2board', X2B_CMD_ADMIN_VIEW_LATEST_FILE, 'X2board\Includes\Admin\disp_admin_board' );
 	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_options_page(
 		X2B_DOMAIN,
 		'quick board',

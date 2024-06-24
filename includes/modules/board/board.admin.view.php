@@ -14,13 +14,9 @@ if (!defined('ABSPATH')) {
 
 if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 
-	class boardAdminView extends \WP_List_Table {
-		private $_n_list_per_page = 20;
-		public $items = null;  // list to display by WP_List_Table
+	class boardAdminView {
 
 		public function __construct(){
-			parent::__construct();
-// var_dump('boardAdminView');
 			$o_current_user = wp_get_current_user();
 			if( !user_can( $o_current_user, 'administrator' ) || !current_user_can('manage_x2board') ) {
 				unset($o_current_user);
@@ -81,18 +77,69 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 		// }
 
 		/**
-		 * @brief display the board module admin contents
+		 * @brief display the x2board dashboard
 		 **/
 		public function disp_idx() {
-			require_once X2B_PATH . 'includes/admin/tpl/index.php';
+			require_once X2B_PATH . 'includes\classes\FileHandler.class.php';
+			require_once X2B_PATH . 'includes\admin\tpl\default-settings.php';
+			require_once X2B_PATH . 'includes\admin\tpl\register-settings.php';
+
+			require_once X2B_PATH . 'includes\modules\board\board.admin.model.php';
+			$o_board_admin_model = new \X2board\Includes\Modules\Board\boardAdminModel();
+
+			$a_latest_posts = $o_board_admin_model->get_latest_posts();
+			$a_latest_comments = $o_board_admin_model->get_latest_comments();
+
+			$a_latest_files = $o_board_admin_model->get_latest_files();
+			unset($o_board_admin_model);
+
+			require_once X2B_PATH . 'includes/admin/tpl/dashboard.php';
+		}
+
+		/**
+		 * Display the latest posts UX
+		 **/
+		public function disp_latest_post() {
+			require_once X2B_PATH . 'includes\modules\board\board.admin.model.php';
+			$o_board_admin_model = new \X2board\Includes\Modules\Board\boardAdminModel();
+			$o_latest = $o_board_admin_model->get_latest_posts_wp_list();
+			require_once X2B_PATH . 'includes/admin/tpl/latest_list.php';
+			unset($o_latest);
+			unset($o_board_admin_model);
+		}
+
+		/**
+		 * Display the latest posts UX
+		 **/
+		public function disp_latest_comment() {
+			require_once X2B_PATH . 'includes\modules\board\board.admin.model.php';
+			$o_board_admin_model = new \X2board\Includes\Modules\Board\boardAdminModel();
+			$o_latest = $o_board_admin_model->get_latest_comments_wp_list();
+			require_once X2B_PATH . 'includes/admin/tpl/latest_list.php';
+			unset($o_latest);
+			unset($o_board_admin_model);
+		}
+
+		/**
+		 * Display the latest posts UX
+		 **/
+		public function disp_latest_file() {
+			require_once X2B_PATH . 'includes\modules\board\board.admin.model.php';
+			$o_board_admin_model = new \X2board\Includes\Modules\Board\boardAdminModel();
+			$o_latest = $o_board_admin_model->get_latest_files_wp_list();
+			require_once X2B_PATH . 'includes/admin/tpl/latest_list.php';
+			unset($o_latest);
+			unset($o_board_admin_model);
+		}
+
+		public function disp_control_panel() {
+			require_once X2B_PATH . 'includes/admin/tpl/control_panel.php';
 		}
 
 		/**
 		 * Display the board import UX
 		 **/
 		public function disp_board_import() {
-			$this->prepare_items();
-
 			wp_register_script(
 				X2B_DOMAIN . '-tab-scripts',
 				X2B_URL . 'includes/admin/js/x2board-setting-script.js',
@@ -107,18 +154,21 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 			$n_cur_auto_increment = $o_import_admin->get_x2b_sequence();
 			unset($o_import_admin);
 
+			require_once X2B_PATH . 'includes\modules\board\wp_admin_class\wp_board_list.php';
+			$o_board_list = new \X2board\Includes\Modules\Board\WpAdminClass\wpBoardList();
 			require_once X2B_PATH . 'includes/admin/tpl/board_import.php';
+			unset($o_board_list);
 		}
 
 		/**
 		 * @brief display the board module admin contents
 		 **/
 		public function disp_board_list() {
-			// https://wpengineer.com/2426/wp_list_table-a-step-by-step-guide/
-			// https://supporthost.com/wp-list-table-tutorial/
-			$this->prepare_items();
-			$post_new_file = esc_url( admin_url( "admin.php?page=x2b_disp_board_insert" ) );
+			require_once X2B_PATH . 'includes\modules\board\wp_admin_class\wp_board_list.php';
+			$o_board_list = new \X2board\Includes\Modules\Board\WpAdminClass\wpBoardList();
+			$s_create_board_url = esc_url( admin_url( "admin.php?page=".X2B_CMD_ADMIN_VIEW_BOARD_INSERT ) );
 			include_once X2B_PATH .'includes/admin/tpl/board_list.php';
+			unset($o_board_list);
 		}
 
 		/**
@@ -244,63 +294,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 			return $content_filter;
 		}
 
-
-		public function prepare_items(){
-			$columns = $this->get_columns();
-			$hidden = array();
-			$sortable = array();
-			$this->_column_headers = array($columns, $hidden, $sortable);
-			
-			$keyword = isset($_GET['s'])?esc_attr($_GET['s']):'';
-			
-			$cur_page = $this->get_pagenum();
-			global $wpdb;
-			if($keyword){
-				$keyword = esc_sql($keyword);
-				$where = "`board_name` LIKE '%{$keyword}%'";
-			}
-			else{
-				$where = '1=1';
-			}
-			$n_total = $wpdb->get_var("SELECT COUNT(*) FROM `{$wpdb->prefix}x2b_mapper` WHERE {$where}");
-			$this->items = $wpdb->get_results("SELECT * FROM `{$wpdb->prefix}x2b_mapper` WHERE {$where} ORDER BY `board_id` DESC LIMIT " . ($cur_page-1)*$this->_n_list_per_page . ",{$this->_n_list_per_page}");
-			
-			$this->set_pagination_args(array('total_items'=>$n_total, 'per_page'=>$this->_n_list_per_page));
-		}
-
-		/**
-		 * @brief 
-		 **/
-		public function get_columns(){
-			return array(
-					'cb' => '<input type="checkbox">',
-					// 'thumbnail' => __('썸네일', X2B_DOMAIN),
-					'wp_page_id' => __('lbl_installed_wp_page', X2B_DOMAIN),
-					'board_name' => __('name_x2board_title', X2B_DOMAIN),
-					// 'skin' => __('스킨', X2B_DOMAIN),
-					// 'permission_read' => __('읽기권한', X2B_DOMAIN),
-					// 'permission_write' => __('쓰기권한', X2B_DOMAIN),
-					// 'permission_comments_write' => __('댓글쓰기권한', X2B_DOMAIN),
-					'create_date' => __('lbl_create_date', X2B_DOMAIN),
-					// 'created' => __('생성일', X2B_DOMAIN),
-			);
-		}
-
-		protected function column_default( $item, $column_name ) {
-			switch( $column_name ) {
-				case 'wp_page_id':
-					$o_post = get_post(intval($item->wp_page_id)); 
-					return '<A HREF='.$o_post->guid.' target="_blank">'.__('lbl_visit_page', X2B_DOMAIN).' - '.$o_post->post_title.'</A>';
-				case 'board_name':
-					$o_post = get_post(intval($item->wp_page_id)); 
-					return '<A HREF='.admin_url( 'admin.php?page='.X2B_CMD_ADMIN_VIEW_BOARD_UPDATE.'&board_id='.$o_post->ID ).'>'.__('lbl_configure_board', X2B_DOMAIN).' - '.$item->board_title.'</A>';
-				case 'create_date':
-					return $item->$column_name;
-				default:
-					return print_r( $item, true ) ; //Show the whole array for troubleshooting purposes
-			}
-		}
-
 		/**
 		 * @brief display the selected board configuration
 		 **/
@@ -374,25 +367,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 		}
 
 		/**
-		 * @brief display the additional setup panel
-		 * additonal setup panel is for connecting the service modules with other modules
-		 **/
-		public function dispBoardAdminBoardAdditionSetup() {
-			// sice content is obtained from other modules via call by reference, declare it first
-			// $content = '';
-
-			// // get the addtional setup trigger
-			// // the additional setup triggers can be used in many modules
-			// $output = ModuleHandler::triggerCall('module.dispAdditionSetup', 'before', $content);
-			// $output = ModuleHandler::triggerCall('module.dispAdditionSetup', 'after', $content);
-			// Context::set('setup_content', $content);
-
-			// // setup the template file
-			// $this->setTemplateFile('addition_setup');
-			require_once X2B_PATH . 'include/modules/board/tpl/setting-page.php';
-		}
-
-		/**
 		 * @brief display the board mdoule delete page
 		 **/
 		public function dispBoardAdminDeleteBoard() {
@@ -414,65 +388,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 
 			// // setup the template file
 			// $this->setTemplateFile('board_delete');
-		}
-
-		/**
-		 * @brief display category information
-		 **/
-		public function dispBoardAdminCategoryInfo() {
-			// $oDocumentModel = getModel('document');
-			// $category_content = $oDocumentModel->getCategoryHTML($this->module_info->module_srl);
-			// Context::set('category_content', $category_content);
-
-			// Context::set('module_info', $this->module_info);
-			// $this->setTemplateFile('category_list');
-		}
-
-		/**
-		 * @brief display the grant information
-		 **/
-		public function dispBoardAdminGrantInfo() {
-			// get the grant infotmation from admin module
-			// $oModuleAdminModel = getAdminModel('module');
-			// $grant_content = $oModuleAdminModel->getModuleGrantHTML($this->module_info->module_srl, $this->xml_info->grant);
-			// Context::set('grant_content', $grant_content);
-
-			// $this->setTemplateFile('grant_list');
-		}
-
-		/**
-		 * @brief display extra variables
-		 **/
-		public function dispBoardAdminExtraVars() {
-			// $oDocumentModel = getModel('document');
-			// $extra_vars_content = $oDocumentModel->getExtraVarsHTML($this->module_info->module_srl);
-			// Context::set('extra_vars_content', $extra_vars_content);
-
-			// $this->setTemplateFile('extra_vars');
-		}
-
-		/**
-		 * @brief display the module skin information
-		 **/
-		public function dispBoardAdminSkinInfo() {
-			// get the grant infotmation from admin module
-			// $oModuleAdminModel = getAdminModel('module');
-			// $skin_content = $oModuleAdminModel->getModuleSkinHTML($this->module_info->module_srl);
-			// Context::set('skin_content', $skin_content);
-
-			// $this->setTemplateFile('skin_info');
-		}
-
-		/**
-		 * Display the module mobile skin information
-		 **/
-		public function dispBoardAdminMobileSkinInfo() {
-			// get the grant infotmation from admin module
-			// $oModuleAdminModel = getAdminModel('module');
-			// $skin_content = $oModuleAdminModel->getModuleMobileSkinHTML($this->module_info->module_srl);
-			// Context::set('skin_content', $skin_content);
-
-			// $this->setTemplateFile('skin_info');
 		}
 
 		/**

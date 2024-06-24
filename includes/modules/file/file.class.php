@@ -13,6 +13,9 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 
 if (!class_exists('\\X2board\\Includes\\Modules\\File\\file')) {
+	// this is for poedit recognition
+	__('lbl_valid', X2B_DOMAIN);
+	__('lbl_pending', X2B_DOMAIN);
 	
 	class file extends \X2board\Includes\Classes\ModuleObject {
 

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: x2board\n"
-"POT-Creation-Date: 2024-06-19 12:09+0900\n"
-"PO-Revision-Date: 2024-06-19 13:35+0900\n"
+"POT-Creation-Date: 2024-06-23 15:53+0900\n"
+"PO-Revision-Date: 2024-06-23 15:53+0900\n"
 "Last-Translator: singleviewcokr <singleviewcokr@gmail.com>\n"
 "Language-Team: \n"
 "Language: ko_KR\n"
@@ -18,44 +18,47 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-0: common\n"
 "X-Poedit-SearchPathExcluded-1: includes/modules/board/skins\n"
 
-#: includes/admin/admin.php:51
+#: includes/admin/admin.php:55
 msgid "lbl_title_content"
 msgstr "제목+내용"
 
-#: includes/admin/admin.php:52
+#: includes/admin/admin.php:56
+#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:165
+#: includes/modules/file/wp_admin_class/wp_latest_files.php:181
+#: includes/modules/post/wp_admin_class/wp_latest_posts.php:172
 msgid "lbl_nick_name"
 msgstr "닉네임"
 
-#: includes/admin/admin.php:53
+#: includes/admin/admin.php:57
 msgid "lbl_user_id"
 msgstr "아이디"
 
-#: includes/admin/admin.php:78 includes/admin/tpl/header.php:3
-msgid "lbl_dashboard"
-msgstr "제어판"
-
-#: includes/admin/admin.php:79 includes/admin/tpl/board_list.php:7
+#: includes/admin/admin.php:82 includes/admin/tpl/board_list.php:7
 msgid "cmd_create_board"
 msgstr "게시판 생성"
 
-#: includes/admin/admin.php:80 includes/admin/tpl/board_list.php:4
+#: includes/admin/admin.php:83 includes/admin/tpl/board_list.php:4
 msgid "cmd_board_list"
 msgstr "게시판 목록"
 
-#: includes/admin/admin.php:81
+#: includes/admin/admin.php:84
 msgid "cmd_import_board"
 msgstr "외부 게시판 가져오기"
 
-#: includes/admin/admin.php:158 includes/admin/admin.php:177
+#: includes/admin/admin.php:85 includes/admin/tpl/header.php:3
+msgid "lbl_control_panel"
+msgstr "제어판"
+
+#: includes/admin/admin.php:164 includes/admin/admin.php:183
 msgid "msg_call_invalid_module"
 msgstr "요청 모듈에 %1$s() 함수가 없습니다"
 
-#: includes/admin/admin.php:201
+#: includes/admin/admin.php:207
 msgid "msg_thank_you_using_x2board"
 msgstr ""
-"<a href=\"%1$s\" target=\"_blank\">x2Board</a>를 선택해서 감사드려"
-"요! <a href=\"%2$s\" target=\"_blank\">WordPress.org</a>에서 <a "
-"href=\"%2$s\" target=\"_blank\">평가해 주세요.</a>"
+"<a href=\"%1$s\" target=\"_blank\">x2Board</a>를 선택해서 감사드려요! <a "
+"href=\"%2$s\" target=\"_blank\">WordPress.org</a>에서 <a href=\"%2$s\" "
+"target=\"_blank\">평가해 주세요.</a>"
 
 #: includes/admin/tpl/board_import.php:17
 msgid "lbl_max_seq_id"
@@ -67,8 +70,7 @@ msgstr "변경할 최대 sequence id"
 
 #: includes/admin/tpl/board_import.php:24
 msgid "desc_req_seq_id"
-msgstr ""
-"xe2 게시판을 임포트한 후, 최대 sequence id를 적절하게 설정합니다"
+msgstr "xe2 게시판을 임포트한 후, 최대 sequence id를 적절하게 설정합니다"
 
 #: includes/admin/tpl/board_import.php:26
 #: includes/admin/tpl/settings-page.php:574
@@ -81,9 +83,7 @@ msgstr "xe2 백업 파일 선택"
 
 #: includes/admin/tpl/board_import.php:41
 msgid "desc_select_xe2_backup_file"
-msgstr ""
-"xe2에서 추출한 xml 파일을 선택하세요. 여러 파일은 zip으로 압축하세"
-"요"
+msgstr "xe2에서 추출한 xml 파일을 선택하세요. 여러 파일은 zip으로 압축하세요"
 
 #: includes/admin/tpl/board_import.php:45
 #: includes/admin/tpl/board_import.php:48
@@ -97,24 +97,54 @@ msgstr "가져오기"
 #: includes/admin/tpl/board_import.php:55
 msgid "desc_select_target_board"
 msgstr ""
-"버튼을 누르면 선택 게시판을 초기화하고 XE2에서 추출한 XML 데이터"
-"를 입력합니다"
+"버튼을 누르면 선택 게시판을 초기화하고 XE2에서 추출한 XML 데이터를 입력합니"
+"다"
 
-#: includes/admin/tpl/board_list.php:16
+#: includes/admin/tpl/board_list.php:16 includes/admin/tpl/latest_list.php:26
 #: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:494
 msgid "lbl_search"
 msgstr "검색"
 
+#: includes/admin/tpl/control_panel.php:9
+msgid "cmd_setup_plugin"
+msgstr "플러그인 설정"
+
+#: includes/admin/tpl/control_panel.php:140 includes/admin/tpl/header.php:5
+msgid "cmd_goto_community"
+msgstr "커뮤니티 바로가기"
+
+#: includes/admin/tpl/control_panel.php:178
+#: includes/admin/tpl/control_panel.php:198
+msgid "msg_not_available"
+msgstr "사용할 수 없습니다"
+
+#: includes/admin/tpl/dashboard.php:10
+msgid "lbl_latest_post"
+msgstr "최근 게시글"
+
+#: includes/admin/tpl/dashboard.php:10 includes/admin/tpl/dashboard.php:28
+#: includes/admin/tpl/dashboard.php:46
+msgid "cmd_view_more"
+msgstr "더 보기"
+
+#: includes/admin/tpl/dashboard.php:28
+msgid "cmd_latest_comment"
+msgstr "최근 댓글"
+
+#: includes/admin/tpl/dashboard.php:46
+msgid "cmd_latest_file"
+msgstr "최근 첨부 파일"
+
 #: includes/admin/tpl/default-settings.php:63
-#: includes/modules/board/board.admin.view.php:279
+#: includes/modules/board/wp_admin_class/wp_board_list.php:83
 msgid "name_x2board_title"
 msgstr "게시판 제목"
 
 #: includes/admin/tpl/default-settings.php:64
 msgid "desc_x2board_title"
 msgstr ""
-"관리자만 확인할 수 있는 게시판 제목을 입력하세요. 일반 방문자에게"
-"는 은폐됩니다"
+"관리자만 확인할 수 있는 게시판 제목을 입력하세요. 일반 방문자에게는 은폐됩"
+"니다"
 
 #: includes/admin/tpl/default-settings.php:70
 msgid "name_wp_page_title"
@@ -147,8 +177,8 @@ msgstr "검색 목록 수"
 #: includes/admin/tpl/default-settings.php:92
 msgid "desc_board_search_list_count"
 msgstr ""
-"검색, 카테고리 선택 등을 할 경우 표시될 글 수를 지정할 수 있습니"
-"다. (기본 20개)"
+"검색, 카테고리 선택 등을 할 경우 표시될 글 수를 지정할 수 있습니다. (기본 "
+"20개)"
 
 #: includes/admin/tpl/default-settings.php:98
 msgid "name_board_page_count"
@@ -157,8 +187,7 @@ msgstr "페이지 수"
 #: includes/admin/tpl/default-settings.php:99
 msgid "desc_board_page_count"
 msgstr ""
-"목록 하단, 페이지를 이동하는 링크 수를 지정할 수 있습니다. (기본 "
-"10개)"
+"목록 하단, 페이지를 이동하는 링크 수를 지정할 수 있습니다. (기본 10개)"
 
 #: includes/admin/tpl/default-settings.php:105
 msgid "name_board_excerpted_title_length"
@@ -167,8 +196,7 @@ msgstr "자동 제목 문자수"
 #: includes/admin/tpl/default-settings.php:106
 msgid "desc_board_excerpted_title_length"
 msgstr ""
-"빈 제목 입력되면 본문 첫줄에서 추출하는 문자열 수를 지정합니다. "
-"(기본 20자)"
+"빈 제목 입력되면 본문 첫줄에서 추출하는 문자열 수를 지정합니다. (기본 20자)"
 
 #: includes/admin/tpl/default-settings.php:112
 msgid "name_board_header_text"
@@ -209,8 +237,8 @@ msgstr "짧은 게시글 주소"
 #: includes/admin/tpl/default-settings.php:153
 msgid "desc_board_use_rewrite"
 msgstr ""
-"짧은 게시글 주소 활성화합니다. 반드시 설정 변경 후 관리자 > 설정 "
-"> 고유주소 메뉴에서 저장을 실행하세요."
+"짧은 게시글 주소 활성화합니다. 반드시 설정 변경 후 관리자 > 설정 > 고유주"
+"소 메뉴에서 저장을 실행하세요."
 
 #: includes/admin/tpl/default-settings.php:163
 msgid "name_board_order_target"
@@ -283,8 +311,8 @@ msgstr "공지사항 제외"
 #: includes/admin/tpl/default-settings.php:195
 msgid "desc_board_except_notice"
 msgstr ""
-"목록 상단에 늘 나타나는 공지사항을 일반 목록에서 공지사항을 출력하"
-"지 않도록 합니다"
+"목록 상단에 늘 나타나는 공지사항을 일반 목록에서 공지사항을 출력하지 않도"
+"록 합니다"
 
 #: includes/admin/tpl/default-settings.php:205
 msgid "name_board_use_anonymous"
@@ -293,10 +321,9 @@ msgstr "익명 사용"
 #: includes/admin/tpl/default-settings.php:206
 msgid "desc_board_use_anonymous"
 msgstr ""
-"글쓴이의 정보를 없애고 익명으로 게시판 사용을 할 수 있게 합니다. "
-"스킨설정에서 글쓴이 정보등을 보이지 않도록 하시면 더욱 유용합니"
-"다. 추가설정의 문서 히스토리 사용이 꺼져있지 않으면 문서 수정시 작"
-"성자가 표시될 수 있습니다"
+"글쓴이의 정보를 없애고 익명으로 게시판 사용을 할 수 있게 합니다. 스킨설정에"
+"서 글쓴이 정보등을 보이지 않도록 하시면 더욱 유용합니다. 추가설정의 문서 히"
+"스토리 사용이 꺼져있지 않으면 문서 수정시 작성자가 표시될 수 있습니다"
 
 #: includes/admin/tpl/default-settings.php:216
 msgid "name_board_consultation"
@@ -305,8 +332,8 @@ msgstr "상담 기능"
 #: includes/admin/tpl/default-settings.php:217
 msgid "desc_board_consultation"
 msgstr ""
-"상담 기능은 관리권한이 없는 회원은 자신이 쓴 글만 보이도록 하는 기"
-"능입니다. 단 상담기능 사용시 비회원 글쓰기는 자동으로 금지됩니다"
+"상담 기능은 관리권한이 없는 회원은 자신이 쓴 글만 보이도록 하는 기능입니"
+"다. 단 상담기능 사용시 비회원 글쓰기는 자동으로 금지됩니다"
 
 #: includes/admin/tpl/default-settings.php:227
 msgid "name_board_protect_content"
@@ -315,8 +342,8 @@ msgstr "글 보호 기능"
 #: includes/admin/tpl/default-settings.php:228
 msgid "desc_board_protect_content"
 msgstr ""
-"작성된 글에 댓글이 작성된 경우 글 작성자는 해당 글을 수정하거나 삭"
-"제 할 수 없습니다"
+"작성된 글에 댓글이 작성된 경우 글 작성자는 해당 글을 수정하거나 삭제 할 수 "
+"없습니다"
 
 #: includes/admin/tpl/default-settings.php:238
 msgid "name_board_use_status"
@@ -341,8 +368,8 @@ msgstr "관리자 메일"
 #: includes/admin/tpl/default-settings.php:252
 msgid "desc_board_admin_mail"
 msgstr ""
-"글이나 댓글이 등록될때 등록된 메일주소로 메일이 발송됩니다. 콤마"
-"(,)로 연결시 다수의 메일주소로 발송할 수 있습니다"
+"글이나 댓글이 등록될때 등록된 메일주소로 메일이 발송됩니다. 콤마(,)로 연결"
+"시 다수의 메일주소로 발송할 수 있습니다"
 
 #: includes/admin/tpl/default-settings.php:303
 msgid "name_board_category_info"
@@ -395,8 +422,8 @@ msgstr "댓글 수"
 #: includes/admin/tpl/default-settings.php:458
 msgid "desc_comment_count"
 msgstr ""
-"댓글을 정해진 수 만큼만 표시하고, 그 이상일 경우 페이지 번호를 표"
-"시해서 이동할 수 있게 합니다"
+"댓글을 정해진 수 만큼만 표시하고, 그 이상일 경우 페이지 번호를 표시해서 이"
+"동할 수 있게 합니다"
 
 #: includes/admin/tpl/default-settings.php:465
 msgid "name_comment_use_vote_up"
@@ -450,8 +477,8 @@ msgstr "오래된 글에 댓글 금지"
 #: includes/admin/tpl/default-settings.php:501
 msgid "desc_comment_forbid_to_leave_comment_old_post_days"
 msgstr ""
-"x일이 경과한 글에는 댓글 작성할 수 없습니다. 공란이면 이 기능은 작"
-"동하지 않습니다"
+"x일이 경과한 글에는 댓글 작성할 수 없습니다. 공란이면 이 기능은 작동하지 않"
+"습니다"
 
 #: includes/admin/tpl/default-settings.php:507
 msgid "name_allow_comment_for_admin_for_old_post"
@@ -459,9 +486,7 @@ msgstr "관리자는 항상 댓글 허용"
 
 #: includes/admin/tpl/default-settings.php:508
 msgid "desc_allow_comment_for_admin_for_old_post"
-msgstr ""
-"오래된 글에 댓글 금지 기능이 작동할 때 관리자에게는 항상 허용합니"
-"다"
+msgstr "오래된 글에 댓글 금지 기능이 작동할 때 관리자에게는 항상 허용합니다"
 
 #: includes/admin/tpl/default-settings.php:518
 msgid "desc_post_editor_setup_header"
@@ -549,8 +574,7 @@ msgstr "문서 당 파일 크기 제한(Mb)"
 
 #: includes/admin/tpl/default-settings.php:671
 msgid "desc_file_allowed_attach_size_mb"
-msgstr ""
-"개별 문서 당 파일의 최고 용량을 지정합니다.(관리자는 무제한)"
+msgstr "개별 문서 당 파일의 최고 용량을 지정합니다.(관리자는 무제한)"
 
 #: includes/admin/tpl/default-settings.php:677
 msgid "name_file_max_attached_count"
@@ -558,8 +582,7 @@ msgstr "문서 당 파일 갯수 제한"
 
 #: includes/admin/tpl/default-settings.php:678
 msgid "desc_file_max_attached_count"
-msgstr ""
-"개별 문서 당 파일의 최대 갯수를 지정합니다.(관리자는 무제한)"
+msgstr "개별 문서 당 파일의 최대 갯수를 지정합니다.(관리자는 무제한)"
 
 #: includes/admin/tpl/default-settings.php:684
 msgid "name_file_allowed_filetypes"
@@ -568,8 +591,8 @@ msgstr "허용 확장자"
 #: includes/admin/tpl/default-settings.php:685
 msgid "desc_file_allowed_filetypes"
 msgstr ""
-"\"*.확장자\"로 지정할 수 있고 \";\" 으로 여러 개 지정이 가능합니"
-"다. 예) *.* or *.jpg;*.gif"
+"\"*.확장자\"로 지정할 수 있고 \";\" 으로 여러 개 지정이 가능합니다. 예) *."
+"* or *.jpg;*.gif"
 
 #: includes/admin/tpl/default-settings.php:691
 msgid "name_thumbnail_type"
@@ -594,8 +617,8 @@ msgstr "파일 외부 링크 허용"
 #: includes/admin/tpl/default-settings.php:703
 msgid "desc_file_allow_outlink"
 msgstr ""
-"레퍼러에 따라 파일 외부 링크를 차단할 수 있습니다.(*.wmv, *.mp3등 "
-"미디어 파일 제외)"
+"레퍼러에 따라 파일 외부 링크를 차단할 수 있습니다.(*.wmv, *.mp3등 미디어 파"
+"일 제외)"
 
 #: includes/admin/tpl/default-settings.php:707
 #: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:333
@@ -614,8 +637,8 @@ msgstr "파일 외부 링크 허용 확장"
 #: includes/admin/tpl/default-settings.php:714
 msgid "desc_file_allow_outlink_format"
 msgstr ""
-"파일 외부 링크 설정에 상관없이 허용하는 파일 확장자입니다. 여러 "
-"개 입력 시에 쉼표(,)을 이용해서 구분해주세요. 예)hwp,doc,zip,pdf"
+"파일 외부 링크 설정에 상관없이 허용하는 파일 확장자입니다. 여러 개 입력 시"
+"에 쉼표(,)을 이용해서 구분해주세요. 예)hwp,doc,zip,pdf"
 
 #: includes/admin/tpl/default-settings.php:720
 msgid "name_file_allow_outlink_site"
@@ -624,9 +647,8 @@ msgstr "파일 외부 링크 허용 사이트"
 #: includes/admin/tpl/default-settings.php:721
 msgid "desc_file_allow_outlink_site"
 msgstr ""
-"파일 외부 링크 설정에 상관없이 허용하는 사이트 주소입니다. 여러 "
-"개 입력 시에 줄을 바꿔서 구분해주세요. 예)http://www.xpressengine."
-"com]"
+"파일 외부 링크 설정에 상관없이 허용하는 사이트 주소입니다. 여러 개 입력 시"
+"에 줄을 바꿔서 구분해주세요. 예)http://www.xpressengine.com]"
 
 #: includes/admin/tpl/default-settings.php:727
 msgid "name_file_download_grant"
@@ -634,9 +656,7 @@ msgstr "다운로드 가능 그룹"
 
 #: includes/admin/tpl/default-settings.php:728
 msgid "desc_file_download_grant"
-msgstr ""
-"선택한 그룹만 첨부 파일을 다운로드할 수 있습니다. 공란이면 모두 허"
-"용"
+msgstr "선택한 그룹만 첨부 파일을 다운로드할 수 있습니다. 공란이면 모두 허용"
 
 #: includes/admin/tpl/default-settings.php:760
 msgid "desc_skin_vars_setup_header_no_file"
@@ -644,8 +664,7 @@ msgstr "skin_vars.php 파일이 없습니다"
 
 #: includes/admin/tpl/default-settings.php:771
 msgid "desc_skin_vars_setup_header_file_registered"
-msgstr ""
-"$skin_vars->var_id 형식으로 스킨 변수값을 호출할 수 있습니다"
+msgstr "$skin_vars->var_id 형식으로 스킨 변수값을 호출할 수 있습니다"
 
 #: includes/admin/tpl/default-settings.php:899
 #: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:175
@@ -681,21 +700,9 @@ msgstr "관리자만"
 msgid "opt_role_customize"
 msgstr "선택 그룹 사용자"
 
-#: includes/admin/tpl/header.php:5 includes/admin/tpl/index.php:140
-msgid "cmd_goto_community"
-msgstr "커뮤니티 바로가기"
-
 #: includes/admin/tpl/header.php:6
 msgid "cmd_goto_support"
 msgstr "제품 지원 바로가기"
-
-#: includes/admin/tpl/index.php:9
-msgid "cmd_setup_plugin"
-msgstr "플러그인 설정"
-
-#: includes/admin/tpl/index.php:178 includes/admin/tpl/index.php:198
-msgid "msg_not_available"
-msgstr "사용할 수 없습니다"
 
 #: includes/admin/tpl/settings-page.php:87
 msgid "cmd_save_change"
@@ -754,7 +761,7 @@ msgstr "기본 선택 카테고리"
 #: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:97
 #: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:107
 #: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:158
-#: includes/modules/board/board.admin.model.php:192
+#: includes/modules/board/board.admin.model.php:321
 msgid "cmd_remove"
 msgstr "삭제"
 
@@ -771,7 +778,7 @@ msgstr "새 카테고리 이름"
 msgid "lbl_category_status"
 msgstr "카테고리 상태"
 
-#: includes/classes/Context.class.php:1110 includes/user.php:85
+#: includes/classes/Context.class.php:1139
 msgid "msg_undefined_locale"
 msgstr "정의되지 않은 로케일입니다"
 
@@ -780,18 +787,18 @@ msgid "msg_invalid_configuration"
 msgstr "게시판 설정에 문제가 있습니다"
 
 #: includes/classes/ModuleObject.class.php:130
-#: includes/modules/board/board.view.php:436
-#: includes/modules/board/board.view.php:694
-#: includes/modules/board/board.view.php:807
-#: includes/modules/board/board.view.php:852
+#: includes/modules/board/board.view.php:435
+#: includes/modules/board/board.view.php:693
+#: includes/modules/board/board.view.php:806
+#: includes/modules/board/board.view.php:851
 #: includes/modules/comment/comment.controller.php:149
 #: includes/modules/comment/comment.controller.php:490
 #: includes/modules/comment/comment.controller.php:689
-#: includes/modules/comment/comment.controller.php:801
+#: includes/modules/comment/comment.controller.php:799
 #: includes/modules/file/file.controller.php:638
 #: includes/modules/post/post.controller.php:132
 #: includes/modules/post/post.controller.php:142
-#: includes/modules/post/post.controller.php:899
+#: includes/modules/post/post.controller.php:901
 msgid "msg_not_permitted"
 msgstr "권한이 없습니다"
 
@@ -799,7 +806,7 @@ msgstr "권한이 없습니다"
 msgid "msg_invalid_grant_code"
 msgstr "등록되지 않은 권한 코드입니다"
 
-#: includes/classes/ModuleObject.class.php:454 includes/user.php:86
+#: includes/classes/ModuleObject.class.php:454
 msgid "msg_file_not_exists"
 msgstr "%s 파일이 없습니다"
 
@@ -894,8 +901,8 @@ msgstr "[추가설정] 탭에서 첨부 파일 규칙을 설정합니다"
 #: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:206
 msgid "about_user_defined_address_field"
 msgstr ""
-"개인 정보는 관리자에게 항상 표시되고 게스트 본인에게는 일정 시간"
-"만 표시됩니다"
+"개인 정보는 관리자에게 항상 표시되고 게스트 본인에게는 일정 시간만 표시됩니"
+"다"
 
 #: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:329
 msgid "msg_allow_email_input_for_guest"
@@ -958,6 +965,7 @@ msgid "cmd_select"
 msgstr "선택하세요"
 
 #: includes/classes/user_define_fields/UserDefineFields.class.php:32
+#: includes/modules/post/wp_admin_class/wp_latest_posts.php:171
 msgid "lbl_title"
 msgstr "제목"
 
@@ -1139,24 +1147,28 @@ msgstr "게시글 요약"
 msgid "desc_user_define_field_comment_status"
 msgstr "댓글 가능 여부"
 
-#: includes/func.inc.php:803
+#: includes/func.inc.php:283 includes/func.inc.php:290
+msgid "msg_invalid_board_id"
+msgstr "%s 경고! shortcode를 통해서 유효하지 않은 board_id를 요청했습니다"
+
+#: includes/func.inc.php:833
 msgid "msg_security_warning_embed"
 msgstr ""
-"보안 문제로 관리자 아이디로는 embed를 볼 수 없습니다. 확인하려면 "
-"다른 아이디로 접속하세요"
+"보안 문제로 관리자 아이디로는 embed를 볼 수 없습니다. 확인하려면 다른 아이"
+"디로 접속하세요"
 
-#: includes/func.inc.php:920
+#: includes/func.inc.php:950
 msgid "lbl_mins_ago"
 msgstr "%d분 전"
 
-#: includes/func.inc.php:921
+#: includes/func.inc.php:951
 msgid "lbl_hrs_ago"
 msgstr "%d시간 전"
 
 #: includes/modules/board/board.admin.controller.php:29
 #: includes/modules/board/board.admin.controller.php:305
-#: includes/modules/board/board.admin.model.php:32
-#: includes/modules/board/board.admin.view.php:27
+#: includes/modules/board/board.admin.model.php:34
+#: includes/modules/board/board.admin.view.php:23
 #: includes/modules/category/category.admin.controller.php:32
 #: includes/modules/category/category.admin.model.php:27
 #: includes/modules/file/file.controller.php:314
@@ -1183,64 +1195,48 @@ msgstr "유효하지 않은 XML 파일입니다"
 msgid "msg_upload_file_failed"
 msgstr "파일 업로드에 실패했습니다"
 
-#: includes/modules/board/board.admin.model.php:109
+#: includes/modules/board/board.admin.model.php:238
 msgid "about_list_field_configuration"
 msgstr "일부 스킨에서는 리스트 필드 설정이 작동하지 않습니다"
 
-#: includes/modules/board/board.admin.model.php:111
+#: includes/modules/board/board.admin.model.php:240
 #: includes/modules/post/post.admin.model.php:94
 msgid "lbl_available_user_define_fields"
 msgstr "선택할 수 있는 사용자 정의 입력 필드"
 
-#: includes/modules/board/board.admin.model.php:115
+#: includes/modules/board/board.admin.model.php:244
 msgid "lbl_unlisted_field"
 msgstr "리스트에서 숨기는 필드"
 
-#: includes/modules/board/board.admin.model.php:127
+#: includes/modules/board/board.admin.model.php:256
 msgid "lbl_listed_fields"
 msgstr "리스트에 표시하는 필드"
 
-#: includes/modules/board/board.admin.model.php:128
+#: includes/modules/board/board.admin.model.php:257
 #: includes/modules/post/post.admin.model.php:125
 msgid "lbl_drag_from_left"
 msgstr "좌측 패널에서 드래그&드롭 하세요"
 
-#: includes/modules/board/board.admin.model.php:132
+#: includes/modules/board/board.admin.model.php:261
 #: includes/modules/post/post.admin.model.php:129
 msgid "cmd_reset_configuration"
 msgstr "설정 초기화"
 
-#: includes/modules/board/board.admin.model.php:162
-#: includes/modules/board/board.admin.model.php:200
+#: includes/modules/board/board.admin.model.php:291
+#: includes/modules/board/board.admin.model.php:329
 msgid "lbl_field_introduction"
 msgstr "필드 소개"
-
-#: includes/modules/board/board.admin.view.php:278
-msgid "lbl_installed_wp_page"
-msgstr "게시판 설치된 WP 페이지"
-
-#: includes/modules/board/board.admin.view.php:284
-msgid "lbl_create_date"
-msgstr "생성일"
-
-#: includes/modules/board/board.admin.view.php:293
-msgid "lbl_visit_page"
-msgstr "게시판 방문하기"
-
-#: includes/modules/board/board.admin.view.php:296
-msgid "lbl_configure_board"
-msgstr "게시판 설정하기"
 
 #: includes/modules/board/board.controller.php:31
 msgid "msg_error_board_controller_init"
 msgstr "boardController::init()에서 알 수 없는 오류가 발생했습니다"
 
 #: includes/modules/board/board.controller.php:114
-#: includes/modules/board/board.view.php:394
-#: includes/modules/board/board.view.php:816
-#: includes/modules/board/board.view.php:861
-#: includes/modules/board/board.view.php:874
-#: includes/modules/board/board.view.php:976
+#: includes/modules/board/board.view.php:393
+#: includes/modules/board/board.view.php:815
+#: includes/modules/board/board.view.php:860
+#: includes/modules/board/board.view.php:873
+#: includes/modules/board/board.view.php:975
 #: includes/modules/comment/comment.controller.php:40
 #: includes/modules/comment/comment.controller.php:43
 #: includes/modules/comment/comment.controller.php:93
@@ -1248,23 +1244,26 @@ msgstr "boardController::init()에서 알 수 없는 오류가 발생했습니�
 #: includes/modules/comment/comment.controller.php:142
 #: includes/modules/comment/comment.controller.php:457
 #: includes/modules/comment/comment.controller.php:460
-#: includes/modules/comment/comment.controller.php:787
+#: includes/modules/comment/comment.controller.php:785
+#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:65
 #: includes/modules/file/file.controller.php:822
+#: includes/modules/file/wp_admin_class/wp_latest_files.php:77
 #: includes/modules/post/post.controller.php:63
 #: includes/modules/post/post.controller.php:66
-#: includes/modules/post/post.controller.php:204
-#: includes/modules/post/post.controller.php:419
-#: includes/modules/post/post.controller.php:516
-#: includes/modules/post/post.controller.php:519
-#: includes/modules/post/post.controller.php:524
-#: includes/modules/post/post.controller.php:1283
-#: includes/modules/post/post.model.php:548
+#: includes/modules/post/post.controller.php:206
+#: includes/modules/post/post.controller.php:421
+#: includes/modules/post/post.controller.php:518
+#: includes/modules/post/post.controller.php:521
+#: includes/modules/post/post.controller.php:526
+#: includes/modules/post/post.controller.php:1285
+#: includes/modules/post/post.model.php:547
+#: includes/modules/post/wp_admin_class/wp_latest_posts.php:65
 msgid "msg_invalid_request"
 msgstr "잘못된 접근입니다"
 
 #: includes/modules/board/board.controller.php:190
 #: includes/modules/post/post.controller.php:187
-#: includes/modules/post/post.controller.php:658
+#: includes/modules/post/post.controller.php:660
 msgid "lbl_untitled"
 msgstr "제목 없음"
 
@@ -1273,45 +1272,100 @@ msgid "lbl_anonymous"
 msgstr "익명"
 
 #: includes/modules/board/board.view.php:315
+#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:185
+#: includes/modules/file/wp_admin_class/wp_latest_files.php:227
+#: includes/modules/post/wp_admin_class/wp_latest_posts.php:193
 msgid "lbl_"
 msgstr ""
 
-#: includes/modules/board/board.view.php:425
+#: includes/modules/board/board.view.php:424
 msgid "msg_not_founded"
 msgstr "찾을 수 없습니다"
 
-#: includes/modules/board/board.view.php:459
-#: includes/modules/comment/comment.item.php:193
+#: includes/modules/board/board.view.php:458
+#: includes/modules/comment/comment.item.php:196
 #: includes/modules/post/post.item.php:426
 msgid "msg_secret_post"
 msgstr "비밀글입니다"
 
-#: includes/modules/board/board.view.php:730
+#: includes/modules/board/board.view.php:729
 msgid "msg_protect_content"
 msgstr "댓글이 작성된 게시글을 수정 / 삭제 할 수 없습니다"
 
-#: includes/modules/board/board.view.php:821
+#: includes/modules/board/board.view.php:820
 msgid "msg_not_allow_comment"
 msgstr "댓글 쓰기 금지된 게시글입니다"
 
+#: includes/modules/board/wp_admin_class/wp_board_list.php:82
+#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:163
+#: includes/modules/file/wp_admin_class/wp_latest_files.php:178
+#: includes/modules/post/wp_admin_class/wp_latest_posts.php:170
+msgid "lbl_installed_wp_page"
+msgstr "게시판 설치된 WP 페이지"
+
+#: includes/modules/board/wp_admin_class/wp_board_list.php:88
+#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:167
+#: includes/modules/file/wp_admin_class/wp_latest_files.php:183
+#: includes/modules/post/wp_admin_class/wp_latest_posts.php:175
+msgid "lbl_create_date"
+msgstr "생성일"
+
+#: includes/modules/board/wp_admin_class/wp_board_list.php:100
+msgid "lbl_visit_page"
+msgstr "게시판 방문하기"
+
+#: includes/modules/board/wp_admin_class/wp_board_list.php:103
+msgid "lbl_configure_board"
+msgstr "게시판 설정하기"
+
 #: includes/modules/comment/comment.controller.php:112
-#: includes/modules/post/post.controller.php:891
-#: includes/modules/post/post.controller.php:895
+#: includes/modules/post/post.controller.php:893
+#: includes/modules/post/post.controller.php:897
 msgid "msg_invalid_post"
 msgstr "잘못된 게시글입니다"
 
-#: includes/modules/comment/comment.controller.php:822
+#: includes/modules/comment/comment.controller.php:820
 msgid "fail_to_delete_children_comment"
 msgstr "대댓글을 삭제하지 못했습니다"
 
-#: includes/modules/comment/comment.item.php:126
+#: includes/modules/comment/comment.item.php:129
 msgid "lbl_no_name"
 msgstr "익명"
+
+#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:51
+#: includes/modules/file/wp_admin_class/wp_latest_files.php:63
+#: includes/modules/post/wp_admin_class/wp_latest_posts.php:51
+msgid "cmd_delete"
+msgstr "삭제"
+
+#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:164
+msgid "lbl_comment"
+msgstr "댓글"
+
+#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:166
+#: includes/modules/file/wp_admin_class/wp_latest_files.php:182
+#: includes/modules/post/wp_admin_class/wp_latest_posts.php:174
+msgid "lbl_ipaddress"
+msgstr "IP 주소"
+
+#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:168
+#: includes/modules/file/wp_admin_class/wp_latest_files.php:184
+#: includes/modules/post/wp_admin_class/wp_latest_posts.php:176
+msgid "lbl_status"
+msgstr "상태"
 
 #: includes/modules/editor/editor.view.php:93
 #: includes/modules/editor/editor.view.php:141
 msgid "msg_type_what_you_think"
 msgstr "생각을 자유롭게 표현하세요"
+
+#: includes/modules/file/file.class.php:17
+msgid "lbl_valid"
+msgstr "유효"
+
+#: includes/modules/file/file.class.php:18
+msgid "lbl_pending"
+msgstr "대기"
 
 #: includes/modules/file/file.controller.php:247
 msgid "msg_not_allowed_filetype"
@@ -1349,6 +1403,14 @@ msgstr "파일 당 크기 제한"
 msgid "lbl_allowed_filetypes"
 msgstr "허용 확장자"
 
+#: includes/modules/file/wp_admin_class/wp_latest_files.php:179
+msgid "lbl_filename"
+msgstr "파일명"
+
+#: includes/modules/file/wp_admin_class/wp_latest_files.php:180
+msgid "lbl_filesize"
+msgstr "파일 크기"
+
 #: includes/modules/post/post.admin.model.php:98
 msgid "lbl_basic_user_define_field"
 msgstr "기본 사용자 정의 입력 필드"
@@ -1361,28 +1423,40 @@ msgstr "확장 사용자 정의 입력 필드"
 msgid "lbl_activated_input_fields"
 msgstr "글 작성 화면에 표시되는 필드"
 
-#: includes/modules/post/post.controller.php:389
+#: includes/modules/post/post.class.php:25
+msgid "lbl_public"
+msgstr "공개"
+
+#: includes/modules/post/post.class.php:26
+msgid "lbl_secret"
+msgstr "비밀"
+
+#: includes/modules/post/post.controller.php:391
 msgid "msg_wp_post_registration_failed"
 msgstr "워드프레스 포스트 등록 실패했습니다"
 
-#: includes/modules/post/post.controller.php:733
+#: includes/modules/post/post.controller.php:735
 msgid "msg_wp_post_update_failed"
 msgstr "워드프레스 포스트 수정 실패했습니다"
 
-#: includes/modules/post/post.model.php:1100
+#: includes/modules/post/post.model.php:1099
 msgid "opt_"
 msgstr ""
 
-#: includes/user.php:83
-msgid "msg_invalid_board_id"
-msgstr ""
-"%s 경고! shortcode를 통해서 유효하지 않은 board_id를 요청했습니다"
+#: includes/modules/post/wp_admin_class/wp_latest_posts.php:173
+msgid "lbl_readed_count"
+msgstr "조회 수"
 
-#~ msgid "lbl_comment"
-#~ msgstr "댓글"
+#~ msgid "cmd_latest_post"
+#~ msgstr "최신글 확인"
 
-#~ msgid "cmd_view"
-#~ msgstr "본문 보기"
+#, fuzzy
+#~| msgid "lbl_configure_board"
+#~ msgid "Configure the board"
+#~ msgstr "게시판 설정하기"
+
+#~ msgid "lbl_dashboard"
+#~ msgstr "제어판"
 
 #~ msgid "lbl_uploaded_file"
 #~ msgstr "첨부 파일"
@@ -1408,9 +1482,6 @@ msgstr ""
 #~ msgid "cmd_modify"
 #~ msgstr "수정"
 
-#~ msgid "cmd_delete"
-#~ msgstr "삭제"
-
 #~ msgid "cmd_reply"
 #~ msgstr "댓글"
 
@@ -1419,9 +1490,6 @@ msgstr ""
 
 #~ msgid "lbl_last_page"
 #~ msgstr "끝 페이지"
-
-#~ msgid "cmd_write_comment"
-#~ msgstr "댓글 쓰기"
 
 #~ msgid "cmd_select_editor"
 #~ msgstr "에디터 선택하기"
@@ -1434,9 +1502,6 @@ msgstr ""
 
 #~ msgid "cmd_submit"
 #~ msgstr "등록하기"
-
-#~ msgid "lbl_secret"
-#~ msgstr "비밀글 기능"
 
 #~ msgid "cmd_use_wysiwyg"
 #~ msgstr "에디터 사용하기"
@@ -1458,9 +1523,6 @@ msgstr ""
 
 #~ msgid "lbl_last_update"
 #~ msgstr "최종 수정일"
-
-#~ msgid "lbl_readed_count"
-#~ msgstr "조회 수"
 
 #~ msgid "lbl_voted_count"
 #~ msgstr "추천 수"
@@ -1515,9 +1577,6 @@ msgstr ""
 
 #~ msgid "cmd_setup"
 #~ msgstr "설정"
-
-#~ msgid "cmd_manage_post"
-#~ msgstr "게시글 관리"
 
 #~ msgid "lbl_post_count"
 #~ msgstr "게시글 수"
@@ -1581,8 +1640,8 @@ msgstr ""
 
 #~ msgid "desc_board_list_fields"
 #~ msgstr ""
-#~ "스킨에서 지원하는 경우, 목록 화면의 표시 항목과 순서를 선택를 "
-#~ "할 수 있습니다"
+#~ "스킨에서 지원하는 경우, 목록 화면의 표시 항목과 순서를 선택를 할 수 있습"
+#~ "니다"
 
 #~ msgid "desc_board_category_info"
 #~ msgstr "게시글의 분류 정보를 관리하세요"
