@@ -339,7 +339,7 @@ foreach( $post_list as $no => $o_post ) {
 								</a>
 							<?php endif ?>
 							<?php if(isset($post_list[$cur_post_pos_in_list-1])):?><!-- cond="$post_list[$no-1]->post_id"  -->
-								<a class="bd_rd_next bubble no_bubble fr<?php if($mi->default_style=='viewer'):?> left<?php endif ?>" href="{getUrl('post_id',$post_list[$cur_post_pos_in_list-1]->post_id)}">
+								<a class="bd_rd_next bubble no_bubble fr<?php if($mi->default_style=='viewer'):?> left<?php endif ?>" href="<?php echo x2b_get_url('post_id',$post_list[$cur_post_pos_in_list-1]->post_id)?>">
 									<?php if($mi->prev_next == ' '):?><!-- cond="!$mi->prev_next"  -->
 										<span class="p"><?php echo $post_list[$cur_post_pos_in_list-1]->get_title($mi->prev_next_cut_size)?> <em class="link">Next <i class="fa fa-angle-right"></i></em></span>
 									<?php endif ?>
