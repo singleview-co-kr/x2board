@@ -66,6 +66,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentItem')) {
 			if( count((array)$a_result) ){
 				$this->set_attr($a_result[0]);
 			}
+			else {
+				$this->comment_id = null;
+			}
 		}
 
 		/**
@@ -248,7 +251,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentItem')) {
 			}
 
 			$o_file_model = \X2board\Includes\getModel('file');
-			$file_list = $o_file_model->get_files($this->comment_id, array(), 'file_id', true);
+			$file_list = $o_file_model->get_files($this->comment_id, 'file_id', true);  // array(), 
 			unset($o_file_model);
 			return $file_list;
 		}

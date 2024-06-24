@@ -781,9 +781,7 @@ var_dump($wpdb->last_error);
 
 			// check if comment already exists
 			$o_comment = $o_comment_model->get_comment($n_comment_id);
-// var_dump($o_comment);
-// exit;
-			if($o_comment->comment_id != $n_comment_id) {
+			if(!$o_comment->is_exists() || $o_comment->comment_id != $n_comment_id) {
 				return new \X2board\Includes\Classes\BaseObject(-1, __('msg_invalid_request', X2B_DOMAIN) );
 			}
 
