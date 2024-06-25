@@ -71,7 +71,7 @@ if(isset($category_list[$post->get('category_id')])) {
 					<?php endif ?><!-- </block> -->
 				</div>
 				<div class="side fr">
-					<?php if($grant->manager || $mi->display_ip_address): ?><!-- cond="$grant->manager || $mi->display_ip_address"  -->
+					<?php if($grant->manager || $mi->display_ip_address == 'Y'): ?><!-- cond="$grant->manager || $mi->display_ip_address"  -->
 						<small class="m_no">(<?php echo $post->get_ip_addr()?>) </small>
 					<?php endif ?>
 					<?php if($mi->rd_link=='3'): ?><!-- cond="$mi->rd_link=='3'"  -->
