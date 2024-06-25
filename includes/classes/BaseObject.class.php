@@ -15,8 +15,7 @@ if ( !defined( 'ABSPATH' ) ) {
 
 if (!class_exists('\\X2board\\Includes\\Classes\\BaseObject')) {
 
-	class BaseObject
-	{
+	class BaseObject {
 		/**
 		 * Error code. If `0`, it is not an error.
 		 * @var int
@@ -34,12 +33,6 @@ if (!class_exists('\\X2board\\Includes\\Classes\\BaseObject')) {
 		 * @var array
 		 */
 		var $variables = array();
-
-		/**
-		 * http status code.
-		 * @var int
-		 */
-		// var $httpStatusCode = NULL;
 
 		/**
 		 * Constructor
@@ -79,15 +72,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\BaseObject')) {
 		 * @return bool Alaways returns true.
 		 */
 		public function setMessage($message = 'success', $type = NULL) {
-			// if($str = Context::getLang($message))
-			// {
-			// 	$this->message = $str;
-			// }
-			// else
-			// {
-				$this->message = $message;
-			// }
-
+			$this->message = $message;
 			// TODO This method always returns True. We'd better remove it
 			return TRUE;
 		}
@@ -108,12 +93,9 @@ if (!class_exists('\\X2board\\Includes\\Classes\\BaseObject')) {
 		 * @param mixed $val A value for the variable
 		 * @return void
 		 */
-	// 	public function __set($key, $val) {
-	// 		$this->variables[$key] = $val;
-	// if($key=='data'){
-	// 	var_dump($this->variables);
-	// }
-	// 	}
+		// public function __set($key, $val) {
+		// 	$this->variables[$key] = $val;
+		// }
 
 		/**
 		 * Setter to set a key/value pair as an additional variable
@@ -152,7 +134,6 @@ if (!class_exists('\\X2board\\Includes\\Classes\\BaseObject')) {
 		 */
 		public function __get($key) {
 			return $this->get($key);
-			// return $this->variables[$key];
 		}
 
 		/**
@@ -176,8 +157,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\BaseObject')) {
 		public function gets() {
 			$args = func_get_args();
 			$output = new \stdClass();
-			foreach($args as $arg)
-			{
+			foreach($args as $arg) {
 				$output->{$arg} = $this->get($arg);
 			}
 			return $output;
@@ -193,20 +173,6 @@ if (!class_exists('\\X2board\\Includes\\Classes\\BaseObject')) {
 		}
 
 		/**
-		 * Method to retrieve an object of key/value pairs
-		 *
-		 * @return BaseObject
-		 */
-		// public function getObjectVars()	{
-		// 	$output = new stdClass();
-		// 	foreach($this->variables as $key => $val)
-		// 	{
-		// 		$output->{$key} = $val;
-		// 	}
-		// 	return $output;
-		// }
-
-		/**
 		 * Method to return either true or false depnding on the value in a 'error' variable
 		 *
 		 * @return bool Retruns true : error isn't 0 or false : otherwise.
@@ -215,37 +181,6 @@ if (!class_exists('\\X2board\\Includes\\Classes\\BaseObject')) {
 			// TODO This method is misleading in that it returns true if error is 0, which should be true in boolean representation.
 			return ($this->error == 0);
 		}
-		
-		/**
-		 * Setter to set HTTP status code
-		 *
-		 * @param int $code HTTP status code. Default value is `200` that means successful
-		 * @return void
-		 */
-		// function setHttpStatusCode($code = '200')
-		// {
-		// 	$this->httpStatusCode = $code;
-		// }
-
-		/**
-		 * Getter to retrieve HTTP status code
-		 *
-		 * @return int Returns HTTP status code
-		 */
-		// function getHttpStatusCode()
-		// {
-		// 	return $this->httpStatusCode;
-		// }
-
-		/**
-		 * Method to return either true or false depnding on the value in a 'error' variable
-		 *
-		 * @return bool
-		 */
-		// function toBoolean()
-		// {
-		// 	return $this->toBool();
-		// }
 	}
 }
 

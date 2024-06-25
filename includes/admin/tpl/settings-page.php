@@ -4,10 +4,8 @@
  * Portions of this code have been inspired by Easy Digital Downloads, WordPress Settings Sandbox, etc.
  *
  * @link https://singleview.co.kr
- * @since 2.6.0
  *
  * @package x2board
- * @subpackage 
  */
 
 namespace X2board\Includes\Admin\Tpl;
@@ -19,8 +17,6 @@ if (!defined('ABSPATH')) {
 
 /**
  * Render the settings page.
- *
- * @since 2.6.0
  *
  * @return void
  */
@@ -65,7 +61,6 @@ if($_GET['page'] == X2B_CMD_ADMIN_VIEW_BOARD_INSERT ){
 if($_GET['page'] == X2B_CMD_ADMIN_VIEW_BOARD_UPDATE ){
 	$s_action = X2B_CMD_ADMIN_PROC_UPDATE_BOARD;
 }
-// var_dump($s_action);
 wp_nonce_field($s_action);
 ?>				
 				<input type="hidden" name="action" value="<?php echo $s_action?>">
@@ -76,7 +71,6 @@ wp_nonce_field($s_action);
 				<div id="<?php echo esc_attr( $tab_id ); ?>">
 					<table class="form-table">
 					<?php
-// echo $tab_id.'<BR>';
 						do_settings_fields( 'x2board_settings_' . $tab_id, 'x2board_settings_' . $tab_id );
 					?>
 					</table>
@@ -132,8 +126,6 @@ wp_nonce_field($s_action);
 /**
  * Array containing the settings' sections.
  *
- * @since 2.6.0
- *
  * @return array Settings array
  */
 function x2b_get_settings_sections() {
@@ -160,8 +152,6 @@ function x2b_get_settings_sections() {
 /**
  * Miscellaneous callback funcion
  *
- * @since 2.6.0
- *
  * @param array $args Arguments passed by the setting.
  * @return void
  */
@@ -175,8 +165,6 @@ function x2b_missing_callback( $args ) {
  * Header Callback
  *
  * Renders the header.
- *
- * @since 2.6.0
  *
  * @param array $args Arguments passed by the setting.
  * @return void
@@ -198,8 +186,6 @@ function x2b_header_callback( $args ) {
 
 /**
  * Display text fields.
- *
- * @since 2.6.0
  *
  * @param array $args Array of arguments.
  * @return void
@@ -240,8 +226,6 @@ function x2b_text_callback( $args ) {
 /**
  * Display textarea.
  *
- * @since 2.6.0
- *
  * @param array $args Array of arguments.
  * @return void
  */
@@ -268,8 +252,6 @@ function x2b_textarea_callback( $args ) {
 
 /**
  * Display checboxes.
- *
- * @since 2.6.0
  *
  * @param array $args Array of arguments.
  * @return void
@@ -314,8 +296,6 @@ function x2b_checkbox_callback( $args ) {
  *
  * Renders multiple checkboxes.
  *
- * @since 2.6.0
- *
  * @param array $args Array of arguments.
  * @return void
  */
@@ -355,8 +335,6 @@ function x2b_multicheck_callback( $args ) {
  * Grantselect Callback
  *
  * Renders grant checkboxes.
- *
- * @since 2.6.0
  *
  * @param array $args Array of arguments.
  * @return void
@@ -405,13 +383,10 @@ function x2b_grantselect_callback( $args ) {
 	echo apply_filters( 'x2b_after_setting_output', $html, $args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 }
 
-
 /**
  * Radio Callback
  *
  * Renders radio boxes.
- *
- * @since 2.6.0
  *
  * @param array $args Array of arguments.
  * @return void
@@ -442,13 +417,10 @@ function x2b_radio_callback( $args ) {
 	echo apply_filters( 'x2b_after_setting_output', $html, $args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 }
 
-
 /**
  * Number Callback
  *
  * Renders number fields.
- *
- * @since 2.6.0
  *
  * @param array $args Array of arguments.
  * @return void
@@ -481,8 +453,6 @@ function x2b_number_callback( $args ) {
  *
  * Renders select fields.
  *
- * @since 2.6.0
- *
  * @param array $args Array of arguments.
  * @return void
  */
@@ -514,13 +484,10 @@ function x2b_select_callback( $args ) {
 	echo apply_filters( 'x2b_after_setting_output', $html, $args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 }
 
-
 /**
  * WP image UI Callback
  *
  * Renders image file upload UI fields.
- *
- * @since 2.6.0
  *
  * @param array $args Array of arguments.
  * @return void
@@ -547,8 +514,6 @@ function x2b_image_callback( $args ) {
  * WP sortable UI Callback
  *
  * Renders WP sortable UI fields.
- *
- * @since 2.6.0
  *
  * @param array $args Array of arguments.
  * @return void
@@ -605,403 +570,25 @@ function x2b_wpsortableui_callback( $args ) {
 	echo apply_filters( 'x2b_after_setting_output', $html, $args );
 }
 
+/**
+ * 
+ * @param  string $html Current HTML.
+ * @return 
+ */
 function x2b_wpuserfieldui_callback( $args ) {
 	$o_post_admin_model = new \X2board\Includes\Modules\Post\postAdminModel();
 	echo $o_post_admin_model->render_user_field_ui();
 	unset($o_cat_admin_model);
 }
 
+/**
+ * 
+ * @param  string $html Current HTML.
+ * @return 
+ */
 function x2b_wplistfieldui_callback( $args ) {
 	$o_board_admin_model = new \X2board\Includes\Modules\Board\boardAdminModel();
 	$o_board_admin_model->build_user_define_list_fields();
 	echo $o_board_admin_model->render_user_field_ui();
 	unset($o_board_admin_model);
 }
-
-/**
- * Display the default thumbnail below the setting.
- *
- * @since 2.6.0
- *
- * @param  string $html Current HTML.
- * @param  array  $args Argument array of the setting.
- * @return string
- */
-// function x2b_admin_thumbnail( $html, $args ) {
-
-// 	$thumb_default = crp_get_option( 'thumb_default' );
-
-// 	if ( 'thumb_default' === $args['id'] && '' !== $thumb_default ) {
-// 		$html .= '<br />';
-// 		$html .= sprintf( '<img src="%1$s" style="max-width:200px" title="%2$s" alt="%2$s" />', esc_attr( $thumb_default ), esc_html__( 'Default thumbnail', 'contextual-related-posts' ) );
-// 	}
-
-// 	return $html;
-// }
-// add_filter( 'x2b_after_setting_output', 'x2b_admin_thumbnail', 10, 2 );
-
-/**
- * Display csv fields.
- *
- * @since 2.6.0
- *
- * @param array $args Array of arguments.
- * @return void
- */
-// function x2b_csv_callback( $args ) {
-
-// 	x2b_text_callback( $args );
-// }
-
-
-/**
- * Display CSV fields of numbers.
- *
- * @since 2.6.0
- *
- * @param array $args Array of arguments.
- * @return void
- */
-// function x2b_numbercsv_callback( $args ) {
-
-// 	x2b_csv_callback( $args );
-// }
-
-
-/**
- * Descriptive text callback.
- *
- * Renders descriptive text onto the settings field.
- *
- * @since 2.6.0
- *
- * @param array $args Array of arguments.
- * @return void
- */
-// function x2b_descriptive_text_callback( $args ) {
-// 	$html = '<p class="description">' . wp_kses_post( $args['desc'] ) . '</p>';
-
-// 	/** This filter has been defined in settings-page.php */
-// 	echo apply_filters( 'crp_after_setting_output', $html, $args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-// }
-
-
-/**
- * Display CSS fields.
- *
- * @since 2.6.0
- *
- * @param array $args Array of arguments.
- * @return void
- */
-// function x2b_css_callback( $args ) {
-
-// 	x2b_textarea_callback( $args );
-// }
-
-
-/**
- * Radio callback with description.
- *
- * Renders radio boxes with each item having it separate description.
- *
- * @since 2.6.0
- *
- * @param array $args Array of arguments.
- * @return void
- */
-// function x2b_radiodesc_callback( $args ) {
-// 	global $A_X2B_ADMIN_BOARD_SETTINGS;
-// 	$html = '';
-
-// 	foreach ( $args['options'] as $option ) {
-// 		$checked = false;
-
-// 		if ( isset( $A_X2B_ADMIN_BOARD_SETTINGS[ $args['id'] ] ) && $A_X2B_ADMIN_BOARD_SETTINGS[ $args['id'] ] === $option['id'] ) {
-// 			$checked = true;
-// 		} elseif ( isset( $args['default'] ) && $args['default'] === $option['id'] && ! isset( $A_X2B_ADMIN_BOARD_SETTINGS[ $args['id'] ] ) ) {
-// 			$checked = true;
-// 		}
-
-// 		$html .= sprintf( '<input name="%1$s" id="%1$s[%2$s]" type="radio" value="%2$s" %3$s /> ', sanitize_key( $args['id'] ), $option['id'], checked( true, $checked, false ) );
-// 		$html .= sprintf( '<label for="%1$s[%2$s]">%3$s</label>', sanitize_key( $args['id'] ), $option['id'], $option['name'] );
-// 		$html .= ': <em>' . wp_kses_post( $option['description'] ) . '</em> <br />';
-// 	}
-
-// 	$html .= '<p class="description">' . wp_kses_post( $args['desc'] ) . '</p>';
-
-// 	/** This filter has been defined in settings-page.php */
-// 	echo apply_filters( 'x2b_after_setting_output', $html, $args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-// }
-
-
-/**
- * Callback for thumbnail sizes
- *
- * Renders list of radio boxes with various thumbnail sizes.
- *
- * @since 2.6.0
- *
- * @param array $args Array of arguments.
- * @return void
- */
-// function x2b_thumbsizes_callback( $args ) {
-// 	global $A_X2B_ADMIN_BOARD_SETTINGS;
-// 	$html = '';
-
-// 	if ( ! isset( $args['options']['crp_thumbnail'] ) ) {
-// 		$args['options']['crp_thumbnail'] = array(
-// 			'name'   => 'crp_thumbnail',
-// 			'width'  => crp_get_option( 'thumb_width', 150 ),
-// 			'height' => crp_get_option( 'thumb_height', 150 ),
-// 			'crop'   => crp_get_option( 'thumb_crop', true ),
-// 		);
-// 	}
-
-// 	foreach ( $args['options'] as $name => $option ) {
-// 		$checked = false;
-
-// 		if ( isset( $A_X2B_ADMIN_BOARD_SETTINGS[ $args['id'] ] ) && $A_X2B_ADMIN_BOARD_SETTINGS[ $args['id'] ] === $name ) {
-// 			$checked = true;
-// 		} elseif ( isset( $args['default'] ) && $args['default'] === $name && ! isset( $A_X2B_ADMIN_BOARD_SETTINGS[ $args['id'] ] ) ) {
-// 			$checked = true;
-// 		}
-// 		$cropped = $option['crop'] ? __( ' cropped', X2B_DOMAIN ) : '';
-
-// 		$html .= sprintf(
-// 			'<input name="%1$s" id="%1$s[%2$s]" type="radio" value="%2$s" %3$s /> ',
-// 			sanitize_key( $args['id'] ),
-// 			$name,
-// 			checked( true, $checked, false )
-// 		);
-// 		$html .= sprintf(
-// 			'<label for="%1$s[%2$s]">%3$s</label> <br />',
-// 			sanitize_key( $args['id'] ),
-// 			$name,
-// 			$name . ' (' . $option['width'] . 'x' . $option['height'] . $cropped . ')'
-// 		);
-// 	}
-
-// 	$html .= '<p class="description">' . wp_kses_post( $args['desc'] ) . '</p>';
-
-// 	/** This filter has been defined in settings-page.php */
-// 	echo apply_filters( 'x2b_after_setting_output', $html, $args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-// }
-
-
-/**
- * Display post types fields.
- *
- * @since 2.6.0
- *
- * @param array $args Array of arguments.
- * @return void
- */
-// function x2b_posttypes_callback( $args ) {
-
-// 	global $A_X2B_ADMIN_BOARD_SETTINGS;
-// 	$html = '';
-
-// 	if ( isset( $A_X2B_ADMIN_BOARD_SETTINGS[ $args['id'] ] ) ) {
-// 		$options = $A_X2B_ADMIN_BOARD_SETTINGS[ $args['id'] ];
-// 	} else {
-// 		$options = isset( $args['options'] ) ? $args['options'] : '';
-// 	}
-
-// 	// If post_types contains a query string then parse it with wp_parse_args.
-// 	if ( is_string( $options ) && strpos( $options, '=' ) ) {
-// 		$post_types = wp_parse_args( $options );
-// 	} else {
-// 		$post_types = wp_parse_list( $options );
-// 	}
-
-// 	$wp_post_types   = get_post_types(
-// 		array(
-// 			'public' => true,
-// 		)
-// 	);
-// 	$posts_types_inc = array_intersect( $wp_post_types, $post_types );
-
-// 	$html .= sprintf( '<input type="hidden" name="%1$s" value="-1" />', sanitize_key( $args['id'] ) );
-
-// 	foreach ( $wp_post_types as $wp_post_type ) {
-
-// 		$html .= sprintf( '<input name="%1$s[%2$s]" id="%1$s[%2$s]" type="checkbox" value="%2$s" %3$s /> ', sanitize_key( $args['id'] ), esc_attr( $wp_post_type ), checked( true, in_array( $wp_post_type, $posts_types_inc, true ), false ) );
-// 		$html .= sprintf( '<label for="%1$s[%2$s]">%2$s</label> <br />', sanitize_key( $args['id'] ), $wp_post_type );
-
-// 	}
-
-// 	$html .= '<p class="description">' . wp_kses_post( $args['desc'] ) . '</p>';
-
-// 	/** This filter has been defined in settings-page.php */
-// 	echo apply_filters( 'crp_after_setting_output', $html, $args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-// }
-
-
-/**
- * Display taxonomies fields.
- *
- * @since 2.6.0
- *
- * @param array $args Array of arguments.
- * @return void
- */
-// function x2b_taxonomies_callback( $args ) {
-
-// 	global $A_X2B_ADMIN_BOARD_SETTINGS;
-// 	$html = '';
-
-// 	if ( isset( $A_X2B_ADMIN_BOARD_SETTINGS[ $args['id'] ] ) ) {
-// 		$options = $A_X2B_ADMIN_BOARD_SETTINGS[ $args['id'] ];
-// 	} else {
-// 		$options = isset( $args['options'] ) ? $args['options'] : '';
-// 	}
-
-// 	// If taxonomies contains a query string then parse it with wp_parse_args.
-// 	if ( is_string( $options ) && strpos( $options, '=' ) ) {
-// 		$taxonomies = wp_parse_args( $options );
-// 	} else {
-// 		$taxonomies = wp_parse_list( $options );
-// 	}
-
-// 	/* Fetch taxonomies */
-// 	$argsc         = array(
-// 		'public' => true,
-// 	);
-// 	$output        = 'objects';
-// 	$operator      = 'and';
-// 	$wp_taxonomies = get_taxonomies( $argsc, $output, $operator );
-
-// 	$taxonomies_inc = array_intersect( wp_list_pluck( (array) $wp_taxonomies, 'name' ), $taxonomies );
-
-// 	$html .= sprintf( '<input type="hidden" name="%1$s" value="-1" />', sanitize_key( $args['id'] ) );
-
-// 	foreach ( $wp_taxonomies as $wp_taxonomy ) {
-
-// 		$html .= sprintf( '<input name="%1$s[%2$s]" id="%1$s[%2$s]" type="checkbox" value="%2$s" %3$s /> ', sanitize_key( $args['id'] ), esc_attr( $wp_taxonomy->name ), checked( true, in_array( $wp_taxonomy->name, $taxonomies_inc, true ), false ) );
-// 		$html .= sprintf( '<label for="%1$s[%2$s]">%3$s (%4$s)</label> <br />', sanitize_key( $args['id'] ), esc_attr( $wp_taxonomy->name ), $wp_taxonomy->labels->name, $wp_taxonomy->name );
-
-// 	}
-
-// 	$html .= '<p class="description">' . wp_kses_post( $args['desc'] ) . '</p>';
-
-// 	/** This filter has been defined in settings-page.php */
-// 	echo apply_filters( 'crp_after_setting_output', $html, $args ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-// }
-
-
-/**
- * Function to add an action to search for tags using Ajax.
- *
- * @since 2.6.0
- *
- * @return void
- */
-// function x2b_tags_search() {
-
-// 	if ( ! isset( $_REQUEST['tax'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-// 		wp_die();
-// 	}
-
-// 	$tax      = '';
-// 	$taxonomy = sanitize_key( $_REQUEST['tax'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-// 	if ( ! empty( $taxonomy ) ) {
-// 		$tax = get_taxonomy( $taxonomy );
-// 		if ( ! $tax ) {
-// 			wp_die();
-// 		}
-
-// 		if ( ! current_user_can( $tax->cap->assign_terms ) ) {
-// 			wp_die();
-// 		}
-// 	}
-// 	$s = isset( $_REQUEST['q'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['q'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-
-// 	$comma = _x( ',', 'tag delimiter' );
-// 	if ( ',' !== $comma ) {
-// 		$s = str_replace( $comma, ',', $s );
-// 	}
-// 	if ( false !== strpos( $s, ',' ) ) {
-// 		$s = explode( ',', $s );
-// 		$s = $s[ count( $s ) - 1 ];
-// 	}
-// 	$s = trim( $s );
-
-// 	/** This filter has been defined in /wp-admin/includes/ajax-actions.php */
-// 	$term_search_min_chars = (int) apply_filters( 'term_search_min_chars', 2, $tax, $s );
-
-// 	/*
-// 	 * Require $term_search_min_chars chars for matching (default: 2)
-// 	 * ensure it's a non-negative, non-zero integer.
-// 	 */
-// 	if ( ( 0 === $term_search_min_chars ) || ( strlen( $s ) < $term_search_min_chars ) ) {
-// 		wp_die();
-// 	}
-
-// 	$terms = get_terms(
-// 		array(
-// 			'taxonomy'   => ! empty( $taxonomy ) ? $taxonomy : null,
-// 			'name__like' => $s,
-// 			'hide_empty' => false,
-// 		)
-// 	);
-
-// 	$results = array();
-// 	foreach ( (array) $terms as $term ) {
-// 		$results[] = "{$term->name} ({$term->taxonomy}:{$term->term_taxonomy_id})";
-// 	}
-
-// 	echo wp_json_encode( $results );
-// 	wp_die();
-// }
-// add_action( 'wp_ajax_nopriv_x2b_tag_search', 'x2b_tags_search' );
-// add_action( 'wp_ajax_x2b_tag_search', 'x2b_tags_search' );
-
-
-/**
- * Display the default thumbnail below the setting.
- *
- * @since 2.6.0
- *
- * @param  string $html Current HTML.
- * @param  array  $args Argument array of the setting.
- * @return string
- */
-// function x2b_admin_thumbnail( $html, $args ) {
-
-// 	$thumb_default = x2b_get_option( 'thumb_default' );
-
-// 	if ( 'thumb_default' === $args['id'] && '' !== $thumb_default ) {
-// 		$html .= '<br />';
-// 		$html .= sprintf( '<img src="%1$s" style="max-width:200px" title="%2$s" alt="%2$s" />', esc_attr( $thumb_default ), esc_html__( 'Default thumbnail', X2B_DOMAIN ) );
-// 	}
-
-// 	return $html;
-// }
-// add_filter( 'x2b_after_setting_output', 'x2b_admin_thumbnail', 10, 2 );
-
-
-/**
- * Output messages when a specific style is selected.
- *
- * @since 2.8.0
- *
- * @param  string $html Current HTML.
- * @param  array  $args Argument array of the setting.
- * @return string
- */
-// function x2b_styles_messages( $html, $args ) {
-
-// 	$crp_styles = crp_get_option( 'crp_styles' );
-
-// 	if ( in_array( $crp_styles, array( 'rounded_thumbs', 'thumbs_grid' ), true ) && ( 'show_excerpt' === $args['id'] || 'show_author' === $args['id'] || 'show_date' === $args['id'] ) ) {
-// 		$html .= '<span style="color:red">' . esc_html__( 'This option cannot be changed because of the selected related posts style. To modify this option, you will need to select No styles or Text only in the Styles tab', X2B_DOMAIN ) . '</span>';
-// 	}
-
-// 	if ( in_array( $crp_styles, array( 'rounded_thumbs', 'thumbs_grid', 'text_only' ), true ) && 'post_thumb_op' === $args['id'] ) {
-// 		$html .= '<span style="color:red">' . esc_html__( 'This option cannot be changed because of the selected related posts style. To modify this option, you will need to select No styles in the Styles tab', X2B_DOMAIN ) . '</span>';
-// 	}
-
-// 	return $html;
-// }
-// add_filter( 'x2b_after_setting_output', 'x2b_styles_messages', 10, 2 );

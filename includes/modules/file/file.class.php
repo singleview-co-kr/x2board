@@ -26,9 +26,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\file')) {
 		protected $_s_allow_outlink_format = null;
 		protected $_s_allow_outlink_site = null;
 
-		function __construct() {
-// var_dump('file high class');	
-		}
+		function __construct() {}
 	}
 }
-/* End of file file.class.php */

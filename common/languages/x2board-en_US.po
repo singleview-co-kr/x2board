@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: x2board\n"
-"POT-Creation-Date: 2024-06-23 15:54+0900\n"
-"PO-Revision-Date: 2024-06-23 15:57+0900\n"
+"POT-Creation-Date: 2024-06-25 12:05+0900\n"
+"PO-Revision-Date: 2024-06-25 12:05+0900\n"
 "Last-Translator: singleviewcokr <singleviewcokr@gmail.com>\n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -23,9 +23,9 @@ msgid "lbl_title_content"
 msgstr "title + content"
 
 #: includes/admin/admin.php:56
-#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:165
-#: includes/modules/file/wp_admin_class/wp_latest_files.php:181
-#: includes/modules/post/wp_admin_class/wp_latest_posts.php:172
+#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:164
+#: includes/modules/file/wp_admin_class/wp_latest_files.php:180
+#: includes/modules/post/wp_admin_class/wp_latest_posts.php:171
 msgid "lbl_nick_name"
 msgstr "nickname"
 
@@ -33,27 +33,27 @@ msgstr "nickname"
 msgid "lbl_user_id"
 msgstr "user id"
 
-#: includes/admin/admin.php:82 includes/admin/tpl/board_list.php:7
+#: includes/admin/admin.php:81 includes/admin/tpl/board_list.php:7
 msgid "cmd_create_board"
 msgstr "Create a board"
 
-#: includes/admin/admin.php:83 includes/admin/tpl/board_list.php:4
+#: includes/admin/admin.php:82 includes/admin/tpl/board_list.php:4
 msgid "cmd_board_list"
 msgstr "Board list"
 
-#: includes/admin/admin.php:84
+#: includes/admin/admin.php:83
 msgid "cmd_import_board"
 msgstr "Import a board"
 
-#: includes/admin/admin.php:85 includes/admin/tpl/header.php:3
+#: includes/admin/admin.php:84 includes/admin/tpl/header.php:3
 msgid "lbl_control_panel"
 msgstr "Control panel"
 
-#: includes/admin/admin.php:164 includes/admin/admin.php:183
+#: includes/admin/admin.php:160 includes/admin/admin.php:178
 msgid "msg_call_invalid_module"
 msgstr "Requested module does not have %1$s()"
 
-#: includes/admin/admin.php:207
+#: includes/admin/admin.php:196
 msgid "msg_thank_you_using_x2board"
 msgstr ""
 "Thank you for using <a href=\"%1$s\" target=\"_blank\">x2Board</a>! Please "
@@ -104,7 +104,7 @@ msgstr ""
 "extracted from XE2"
 
 #: includes/admin/tpl/board_list.php:16 includes/admin/tpl/latest_list.php:26
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:494
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:437
 msgid "lbl_search"
 msgstr "Search"
 
@@ -610,12 +610,12 @@ msgid "desc_file_allow_outlink"
 msgstr "Allow download of appended file from extenal site"
 
 #: includes/admin/tpl/default-settings.php:707
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:333
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:302
 msgid "opt_allow"
 msgstr "Allow"
 
 #: includes/admin/tpl/default-settings.php:708
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:335
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:304
 msgid "opt_disallow"
 msgstr "Disallow"
 
@@ -655,22 +655,22 @@ msgid "desc_skin_vars_setup_header_file_registered"
 msgstr "You can access $skin_vars->var_id on the skin file"
 
 #: includes/admin/tpl/default-settings.php:899
-#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:175
-#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:127
-#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:167
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:304
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:370
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:393
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:169
+#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:121
+#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:140
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:274
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:314
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:336
 msgid "opt_role_all_users"
 msgstr "All users"
 
 #: includes/admin/tpl/default-settings.php:900
-#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:176
-#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:128
-#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:169
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:306
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:372
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:395
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:170
+#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:122
+#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:142
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:276
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:316
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:338
 msgid "opt_role_loggedin_users"
 msgstr "Loggedin users"
 
@@ -679,12 +679,12 @@ msgid "opt_role_administrator"
 msgstr "Administrator"
 
 #: includes/admin/tpl/default-settings.php:903
-#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:177
-#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:129
-#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:171
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:308
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:374
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:397
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:171
+#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:123
+#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:144
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:278
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:318
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:340
 msgid "opt_role_customize"
 msgstr "Customize"
 
@@ -742,13 +742,15 @@ msgid "lbl_update_category"
 msgstr "Updating category"
 
 #: includes/admin/tpl/settings-page.php:573
+#: includes/modules/category/category.admin.controller.php:260
+#: includes/modules/category/category.admin.model.php:105
 msgid "lbl_default_category"
 msgstr "Default category"
 
 #: includes/admin/tpl/settings-page.php:575
-#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:97
-#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:107
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:158
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:95
+#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:101
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:144
 msgid "cmd_remove"
 msgstr "Remove"
 
@@ -765,191 +767,227 @@ msgstr "New category name"
 msgid "lbl_category_status"
 msgstr "Category status"
 
-#: includes/classes/Context.class.php:1139
+#: includes/admin/tpl/sidebar.php:18 includes/admin/tpl/sidebar.php:31
+msgid "cmd_support_x2board"
+msgstr "Support x2board"
+
+#: includes/admin/tpl/sidebar.php:25
+msgid "lbl_donate_for_x2board"
+msgstr "Donate for x2board"
+
+#: includes/admin/tpl/sidebar.php:27
+msgid "cmd_enter_amount_in_usd"
+msgstr "Enter donation amount in USD"
+
+#: includes/admin/tpl/sidebar.php:42
+msgid "lbl_quick_links"
+msgstr "Quick links"
+
+#: includes/admin/tpl/sidebar.php:48
+msgid "lbl_x2board_plugin_homepage"
+msgstr "x2board homepage"
+
+#: includes/admin/tpl/sidebar.php:53
+msgid "lbl_wp_faq"
+msgstr "FAQ"
+
+#: includes/admin/tpl/sidebar.php:58
+msgid "lbl_wp_support"
+msgstr "Wordpress support"
+
+#: includes/admin/tpl/sidebar.php:63
+msgid "lbl_wp_reviews"
+msgstr "Wordpress reviews"
+
+#: includes/admin/tpl/sidebar.php:68
+msgid "lbl_github"
+msgstr "Github repository"
+
+#: includes/classes/Context.class.php:630
 msgid "msg_undefined_locale"
 msgstr "Unknown locale"
 
-#: includes/classes/ModuleObject.class.php:73
+#: includes/classes/ModuleObject.class.php:56
 msgid "msg_invalid_configuration"
 msgstr "Invalid configuration"
 
-#: includes/classes/ModuleObject.class.php:130
-#: includes/modules/comment/comment.controller.php:149
-#: includes/modules/comment/comment.controller.php:490
-#: includes/modules/comment/comment.controller.php:689
-#: includes/modules/comment/comment.controller.php:799
-#: includes/modules/file/file.controller.php:638
-#: includes/modules/post/post.controller.php:132
-#: includes/modules/post/post.controller.php:142
-#: includes/modules/post/post.controller.php:901
+#: includes/classes/ModuleObject.class.php:86
+#: includes/modules/comment/comment.controller.php:123
+#: includes/modules/comment/comment.controller.php:381
+#: includes/modules/comment/comment.controller.php:537
+#: includes/modules/comment/comment.controller.php:615
+#: includes/modules/file/file.controller.php:496
+#: includes/modules/post/post.controller.php:81
+#: includes/modules/post/post.controller.php:91
+#: includes/modules/post/post.controller.php:606
 msgid "msg_not_permitted"
 msgstr "Your request is not permitted"
 
-#: includes/classes/ModuleObject.class.php:288
+#: includes/classes/ModuleObject.class.php:196
 msgid "msg_invalid_grant_code"
 msgstr "Invalid grant code"
 
-#: includes/classes/ModuleObject.class.php:454
+#: includes/classes/ModuleObject.class.php:279
 msgid "msg_file_not_exists"
 msgstr "File: %s is not existed"
 
-#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:105
-#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:133
-#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:117
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:212
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:103
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:129
+#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:111
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:193
 msgid "lbl_field_label"
 msgstr "Field label"
 
-#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:110
-#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:138
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:220
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:107
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:133
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:201
 msgid "lbl_meta_key"
 msgstr "Meta key"
 
-#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:112
-#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:140
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:224
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:109
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:135
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:205
 msgid "about_meta_key"
 msgstr ""
 "Will be set automatically if blank, and the value is fixed after saving"
 
-#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:128
-#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:221
-#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:230
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:508
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:124
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:215
+#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:202
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:451
 msgid "lbl_display_on_content"
 msgstr "Display on content"
 
-#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:148
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:235
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:269
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:142
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:215
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:248
 msgid "lbl_label"
 msgstr "Label"
 
-#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:161
-#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:190
-#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:186
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:251
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:282
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:412
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:155
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:184
+#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:159
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:230
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:261
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:355
 msgid "lbl_default_value"
 msgstr "Default value"
 
-#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:164
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:255
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:158
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:234
 msgid "cmd_reset"
 msgstr "Reset"
 
-#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:172
-#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:124
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:290
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:166
+#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:118
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:269
 msgid "msg_whom_to_show"
 msgstr "Whom to show"
 
-#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:202
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:454
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:196
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:397
 msgid "lbl_description"
 msgstr "Description"
 
-#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:210
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:462
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:204
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:405
 msgid "lbl_css_class"
 msgstr "css class"
 
-#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:217
-#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:223
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:501
-#: includes/func.inc.php:137
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:211
+#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:195
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:444
+#: includes/func.inc.php:103
 msgid "lbl_required"
 msgstr "Required"
 
-#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:226
-#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:237
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:516
+#: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:220
+#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:209
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:459
 msgid "lbl_hiding"
 msgstr "Hiding"
 
-#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:164
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:684
+#: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:137
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:649
 msgid "lbl_notice"
 msgstr "Notice"
 
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:174
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:160
 msgid "msg_title_is_mandatory"
 msgstr "Title is mandatory"
 
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:185
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:166
 msgid "about_user_defined_file_appending_field"
 msgstr "Check Extra info tab to Configure appending policy"
 
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:206
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:187
 msgid "about_user_defined_address_field"
 msgstr ""
 "Privacy info will continue to appear to the administrator and only during "
 "the session time to the writer"
 
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:329
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:298
 msgid "msg_allow_email_input_for_guest"
 msgstr "Allow guest visitors to enter their email"
 
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:366
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:310
 msgid "lbl_allow_notice"
 msgstr "Allow notice"
 
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:389
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:702
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:332
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:667
 msgid "lbl_allow_comment"
 msgstr "Allow comment"
 
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:448
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:391
 msgid "lbl_placeholder"
 msgstr "Placeholder"
 
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:468
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:411
 msgid "lbl_printing_code"
 msgstr ""
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:606
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:571
 msgid "lbl_select_category"
 msgstr "Select category"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:643
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:645
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:608
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:610
 msgid "lbl_writer"
 msgstr "Writer"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:649
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:614
 msgid "lbl_password"
 msgstr "Password"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:680
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:645
 msgid "lbl_title_bold"
 msgstr "Bold title"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:703
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:668
 msgid "lbl_disallow_commentt"
 msgstr "Forbid comment"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:731
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:690
 #: includes/classes/user_define_fields/UserDefineFields.class.php:355
 msgid "lbl_email_address"
 msgstr "Email"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:809
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:768
 #: includes/classes/user_define_fields/UserDefineFields.class.php:134
 msgid "lbl_tag"
 msgstr "Tag"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:812
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:771
 msgid "about_tag"
 msgstr "Tag: Multiple registration using comma (,)"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:898
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:857
 msgid "cmd_select"
 msgstr "Please select"
 
 #: includes/classes/user_define_fields/UserDefineFields.class.php:32
-#: includes/modules/post/wp_admin_class/wp_latest_posts.php:171
+#: includes/modules/post/wp_admin_class/wp_latest_posts.php:170
 msgid "lbl_title"
 msgstr "Title"
 
@@ -975,7 +1013,7 @@ msgid "desc_user_define_field_category"
 msgstr "This is the classification of the post"
 
 #: includes/classes/user_define_fields/UserDefineFields.class.php:104
-#: includes/func.inc.php:138
+#: includes/func.inc.php:104
 msgid "lbl_content"
 msgstr "Main text"
 
@@ -1131,116 +1169,116 @@ msgstr "Summary of the post"
 msgid "desc_user_define_field_comment_status"
 msgstr "Comment status of the post"
 
-#: includes/func.inc.php:283 includes/func.inc.php:290
+#: includes/func.inc.php:200 includes/func.inc.php:207
 msgid "msg_invalid_board_id"
 msgstr "warning from %s! you requested invalid board_id via shortcode"
 
-#: includes/func.inc.php:833
+#: includes/func.inc.php:745
 msgid "msg_security_warning_embed"
 msgstr ""
 "Due to security issues, the embed cannot be viewed using the administrator "
 "ID. To check, log in with a different ID"
 
-#: includes/func.inc.php:950
+#: includes/func.inc.php:862
 msgid "lbl_mins_ago"
 msgstr "%d mins ago"
 
-#: includes/func.inc.php:951
+#: includes/func.inc.php:863
 msgid "lbl_hrs_ago"
 msgstr "%d hrs ago"
 
-#: includes/modules/category/category.admin.controller.php:32
-#: includes/modules/category/category.admin.model.php:27
-#: includes/modules/file/file.controller.php:314
+#: includes/modules/category/category.admin.controller.php:31
+#: includes/modules/category/category.admin.model.php:26
+#: includes/modules/file/file.controller.php:250
 #: includes/modules/post/post.admin.model.php:35
 msgid "msg_no_permission"
 msgstr "You do not have permission"
 
-#: includes/modules/comment/comment.controller.php:40
-#: includes/modules/comment/comment.controller.php:43
-#: includes/modules/comment/comment.controller.php:93
-#: includes/modules/comment/comment.controller.php:115
-#: includes/modules/comment/comment.controller.php:142
-#: includes/modules/comment/comment.controller.php:457
-#: includes/modules/comment/comment.controller.php:460
-#: includes/modules/comment/comment.controller.php:785
-#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:65
-#: includes/modules/file/file.controller.php:822
-#: includes/modules/file/wp_admin_class/wp_latest_files.php:77
-#: includes/modules/post/post.controller.php:63
-#: includes/modules/post/post.controller.php:66
-#: includes/modules/post/post.controller.php:206
-#: includes/modules/post/post.controller.php:421
-#: includes/modules/post/post.controller.php:518
-#: includes/modules/post/post.controller.php:521
-#: includes/modules/post/post.controller.php:526
-#: includes/modules/post/post.controller.php:1285
-#: includes/modules/post/post.model.php:547
-#: includes/modules/post/wp_admin_class/wp_latest_posts.php:65
+#: includes/modules/comment/comment.controller.php:39
+#: includes/modules/comment/comment.controller.php:42
+#: includes/modules/comment/comment.controller.php:83
+#: includes/modules/comment/comment.controller.php:102
+#: includes/modules/comment/comment.controller.php:116
+#: includes/modules/comment/comment.controller.php:356
+#: includes/modules/comment/comment.controller.php:359
+#: includes/modules/comment/comment.controller.php:608
+#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:64
+#: includes/modules/file/file.controller.php:640
+#: includes/modules/file/wp_admin_class/wp_latest_files.php:76
+#: includes/modules/post/post.controller.php:58
+#: includes/modules/post/post.controller.php:61
+#: includes/modules/post/post.controller.php:151
+#: includes/modules/post/post.controller.php:272
+#: includes/modules/post/post.controller.php:354
+#: includes/modules/post/post.controller.php:357
+#: includes/modules/post/post.controller.php:362
+#: includes/modules/post/post.controller.php:940
+#: includes/modules/post/post.model.php:487
+#: includes/modules/post/wp_admin_class/wp_latest_posts.php:64
 msgid "msg_invalid_request"
 msgstr "Your request is invalid"
 
-#: includes/modules/comment/comment.controller.php:112
-#: includes/modules/post/post.controller.php:893
-#: includes/modules/post/post.controller.php:897
+#: includes/modules/comment/comment.controller.php:99
+#: includes/modules/post/post.controller.php:598
+#: includes/modules/post/post.controller.php:602
 msgid "msg_invalid_post"
 msgstr "Invalid post"
 
-#: includes/modules/comment/comment.controller.php:820
+#: includes/modules/comment/comment.controller.php:634
 msgid "fail_to_delete_children_comment"
 msgstr "Failed to delete belonged comments"
 
-#: includes/modules/comment/comment.item.php:129
+#: includes/modules/comment/comment.item.php:133
 msgid "lbl_no_name"
 msgstr "Anonymous"
 
-#: includes/modules/comment/comment.item.php:196
-#: includes/modules/post/post.item.php:426
+#: includes/modules/comment/comment.item.php:217
+#: includes/modules/post/post.item.php:432
 msgid "msg_secret_post"
 msgstr "This is secret post"
 
-#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:51
-#: includes/modules/file/wp_admin_class/wp_latest_files.php:63
-#: includes/modules/post/wp_admin_class/wp_latest_posts.php:51
+#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:50
+#: includes/modules/file/wp_admin_class/wp_latest_files.php:62
+#: includes/modules/post/wp_admin_class/wp_latest_posts.php:50
 msgid "cmd_delete"
 msgstr "삭제"
 
-#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:163
-#: includes/modules/file/wp_admin_class/wp_latest_files.php:178
-#: includes/modules/post/wp_admin_class/wp_latest_posts.php:170
+#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:162
+#: includes/modules/file/wp_admin_class/wp_latest_files.php:177
+#: includes/modules/post/wp_admin_class/wp_latest_posts.php:169
 msgid "lbl_installed_wp_page"
 msgstr "게시판 설치된 WP 페이지"
 
-#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:164
+#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:163
 msgid "lbl_comment"
 msgstr "댓글"
+
+#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:165
+#: includes/modules/file/wp_admin_class/wp_latest_files.php:181
+#: includes/modules/post/wp_admin_class/wp_latest_posts.php:173
+msgid "lbl_ipaddress"
+msgstr "IP address"
 
 #: includes/modules/comment/wp_admin_class/wp_latest_comments.php:166
 #: includes/modules/file/wp_admin_class/wp_latest_files.php:182
 #: includes/modules/post/wp_admin_class/wp_latest_posts.php:174
-msgid "lbl_ipaddress"
-msgstr "IP address"
+msgid "lbl_create_date"
+msgstr "생성일"
 
 #: includes/modules/comment/wp_admin_class/wp_latest_comments.php:167
 #: includes/modules/file/wp_admin_class/wp_latest_files.php:183
 #: includes/modules/post/wp_admin_class/wp_latest_posts.php:175
-msgid "lbl_create_date"
-msgstr "생성일"
-
-#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:168
-#: includes/modules/file/wp_admin_class/wp_latest_files.php:184
-#: includes/modules/post/wp_admin_class/wp_latest_posts.php:176
 msgid "lbl_status"
 msgstr "Status"
 
-#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:185
-#: includes/modules/file/wp_admin_class/wp_latest_files.php:227
-#: includes/modules/post/wp_admin_class/wp_latest_posts.php:193
+#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:184
+#: includes/modules/file/wp_admin_class/wp_latest_files.php:226
+#: includes/modules/post/wp_admin_class/wp_latest_posts.php:192
 msgid "lbl_"
 msgstr ""
 
-#: includes/modules/editor/editor.view.php:93
-#: includes/modules/editor/editor.view.php:141
+#: includes/modules/editor/editor.view.php:87
+#: includes/modules/editor/editor.view.php:132
 msgid "msg_type_what_you_think"
 msgstr "Type what you think"
 
@@ -1252,52 +1290,52 @@ msgstr "Valid"
 msgid "lbl_pending"
 msgstr "Pending"
 
-#: includes/modules/file/file.controller.php:247
+#: includes/modules/file/file.controller.php:187
 msgid "msg_not_allowed_filetype"
 msgstr "Your file extension is forbidden"
 
-#: includes/modules/file/file.controller.php:255
-#: includes/modules/file/file.controller.php:263
+#: includes/modules/file/file.controller.php:195
+#: includes/modules/file/file.controller.php:203
 msgid "msg_exceeds_limit_size"
 msgstr "Appending file size limit exceeded"
 
-#: includes/modules/file/file.controller.php:320
-#: includes/modules/file/file.controller.php:335
+#: includes/modules/file/file.controller.php:256
+#: includes/modules/file/file.controller.php:271
 msgid "msg_upload_file_failed"
 msgstr "Failed to upload the file"
 
-#: includes/modules/file/file.controller.php:654
-#: includes/modules/file/file.controller.php:816
-#: includes/modules/file/file.controller.php:860
+#: includes/modules/file/file.controller.php:511
+#: includes/modules/file/file.controller.php:635
+#: includes/modules/file/file.controller.php:676
 msgid "msg_file_not_found"
 msgstr "Failed to find the file"
 
-#: includes/modules/file/file.controller.php:660
-#: includes/modules/file/file.controller.php:732
+#: includes/modules/file/file.controller.php:516
+#: includes/modules/file/file.controller.php:585
 msgid "msg_not_permitted_download"
 msgstr "You do not have download permission"
 
-#: includes/modules/file/file.controller.php:714
+#: includes/modules/file/file.controller.php:568
 msgid "msg_not_allowed_outlink"
 msgstr "You can not download from external link"
 
-#: includes/modules/file/file.model.php:36
+#: includes/modules/file/file.model.php:35
 msgid "lbl_allowed_attach_size"
 msgstr "Attachment file size limit per post"
 
-#: includes/modules/file/file.model.php:39
+#: includes/modules/file/file.model.php:38
 msgid "lbl_allowed_filesize"
 msgstr "Size limit per file"
 
-#: includes/modules/file/file.model.php:41
+#: includes/modules/file/file.model.php:40
 msgid "lbl_allowed_filetypes"
 msgstr "Allowed file exensions"
 
-#: includes/modules/file/wp_admin_class/wp_latest_files.php:179
+#: includes/modules/file/wp_admin_class/wp_latest_files.php:178
 msgid "lbl_filename"
 msgstr "Filename"
 
-#: includes/modules/file/wp_admin_class/wp_latest_files.php:180
+#: includes/modules/file/wp_admin_class/wp_latest_files.php:179
 msgid "lbl_filesize"
 msgstr "File sze"
 
@@ -1325,32 +1363,32 @@ msgstr "Drag from the left section to display on the list"
 msgid "cmd_reset_configuration"
 msgstr "Reset configuration"
 
-#: includes/modules/post/post.class.php:25
+#: includes/modules/post/post.class.php:22
 msgid "lbl_public"
 msgstr "Public"
 
-#: includes/modules/post/post.class.php:26
+#: includes/modules/post/post.class.php:23
 msgid "lbl_secret"
 msgstr "Secret"
 
-#: includes/modules/post/post.controller.php:187
-#: includes/modules/post/post.controller.php:660
+#: includes/modules/post/post.controller.php:133
+#: includes/modules/post/post.controller.php:458
 msgid "lbl_untitled"
 msgstr "Untitled"
 
-#: includes/modules/post/post.controller.php:391
+#: includes/modules/post/post.controller.php:249
 msgid "msg_wp_post_registration_failed"
 msgstr "Failed to register WP post"
 
-#: includes/modules/post/post.controller.php:735
+#: includes/modules/post/post.controller.php:495
 msgid "msg_wp_post_update_failed"
 msgstr "Failed to update WP post"
 
-#: includes/modules/post/post.model.php:1099
+#: includes/modules/post/post.model.php:954
 msgid "opt_"
 msgstr ""
 
-#: includes/modules/post/wp_admin_class/wp_latest_posts.php:173
+#: includes/modules/post/wp_admin_class/wp_latest_posts.php:172
 msgid "lbl_readed_count"
 msgstr "Readed count"
 
@@ -1377,9 +1415,6 @@ msgstr "Readed count"
 
 #~ msgid "lbl_visit_page"
 #~ msgstr "게시판 방문하기"
-
-#~ msgid "lbl_configure_board"
-#~ msgstr "게시판 설정하기"
 
 #~ msgid "msg_error_board_controller_init"
 #~ msgstr "boardController::init()에서 알 수 없는 오류가 발생했습니다"

@@ -34,7 +34,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\WpAdminClass\\WpBoardLis
 			$s_tables = '`'.$wpdb->prefix.'x2b_posts`';
 			$s_orderby = "ORDER BY `list_order` asc";
 			$s_limit = "LIMIT 0, 15";
-			// "SELECT `document_srl`, `module_srl`, `category_srl`, `title`, `nick_name`, `member_srl` FROM `xe_documents` as `documents` WHERE ( `status` in (?,?,?) ) and `list_order` <= 2100000000 ORDER BY `list_order` asc LIMIT 0, 5
 			$s_query = "SELECT {$s_columns} FROM {$s_tables} {$s_orderby} {$s_limit}";
 			if ($wpdb->query($s_query) === FALSE) {
 				wp_die($wpdb->last_error);
@@ -78,15 +77,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\WpAdminClass\\WpBoardLis
 		public function get_columns(){
 			return array(
 					'cb' => '<input type="checkbox">',
-					// 'thumbnail' => __('썸네일', X2B_DOMAIN),
 					'wp_page_id' => __('lbl_installed_wp_page', X2B_DOMAIN),
 					'board_name' => __('name_x2board_title', X2B_DOMAIN),
-					// 'skin' => __('스킨', X2B_DOMAIN),
-					// 'permission_read' => __('읽기권한', X2B_DOMAIN),
-					// 'permission_write' => __('쓰기권한', X2B_DOMAIN),
-					// 'permission_comments_write' => __('댓글쓰기권한', X2B_DOMAIN),
 					'create_date' => __('lbl_create_date', X2B_DOMAIN),
-					// 'created' => __('생성일', X2B_DOMAIN),
 			);
 		}
 

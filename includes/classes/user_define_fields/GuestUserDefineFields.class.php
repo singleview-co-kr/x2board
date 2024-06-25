@@ -80,6 +80,9 @@ if (!class_exists('\\X2board\\Includes\\Classes\\GuestUserDefineFields')) {
 		 */
 		// function getExtraVars() {
 		public function get_user_define_vars() {
+			if(is_null($this->_a_key)) {
+				return array();
+			}
 			return $this->_a_key;
 		}
 
@@ -180,10 +183,6 @@ if (!class_exists('\\X2board\\Includes\\Classes\\GuestUserDefineFields')) {
 if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 
 	class UserDefineItemForGuest {
-
-		// 스킨에서 사용 할 사용자 정의 옵션 input, textarea, select 이름의 prefix를 정의한다.
-		// const SKIN_OPTION_PREFIX = 'x2board_option_';
-
 		/**
 		 * Sequence of board
 		 * @var int
@@ -272,18 +271,6 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 		 * Permission
 		 * @var string
 		 */
-		// var $secret_permission = null;
-
-		/**
-		 * Permission
-		 * @var string
-		 */
-		// var $secret = null;
-
-		/**
-		 * Permission
-		 * @var string
-		 */
 		var $notice_permission = null;
 
 		/**
@@ -357,12 +344,6 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 				
 				$this->email_permission = $o_misc_info->b_email_permission;
 
-				// if( $o_misc_info->s_secret_permission ) {
-				// 	$this->secret_permission = $o_misc_info->s_secret_permission;
-				// }
-				// if( $o_misc_info->a_secret ) {
-				// 	$this->secret = $o_misc_info->a_secret;
-				// }
 				if( $o_misc_info->s_notice_permission ) {
 					$this->notice_permission = $o_misc_info->s_notice_permission;
 				}
@@ -495,21 +476,14 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 			$value = $this->_getTypeValue($this->type, $this->value);
 
 			switch($this->type) {
-				// case 'homepage' :
-				// 	return ($value) ? (sprintf('<a href="%s" target="_blank">%s</a>', \X2board\Includes\escape($value, false), strlen($value) > 60 ? substr($value, 0, 40) . '...' . substr($value, -10) : $value)) : "";
-
 				case 'email_address' :
 					return ($value) ? sprintf('<a href="mailto:%s">%s</a>', \X2board\Includes\escape($value, false), $value) : "";
-
 				case 'tel' :
 					return sprintf('%s-%s-%s', $value[0], $value[1], $value[2]);
-					
 				case 'textarea' :
 					return nl2br($value);
-					
 				case 'date' :
 					return zdate($value, "Y-m-d");
-
 				case 'checkbox' :
 				case 'select' :
 				case 'radio' :
@@ -517,13 +491,11 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 						return implode(',', $value);
 					}
 					return $value;
-
 				case 'kr_zip' :
 					if(is_array($value)) {
 						return implode(' ', $value);
 					}
 					return $value;
-
 				// case 'text' :
 				default :
 					return $value;
@@ -536,24 +508,17 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 		 * @return string Returns a form html.
 		 */
 		public function getFormHTML() {
-			// static $id_num = 1000;
-
 			$type = $this->type;
 			$s_name = esc_html($this->name);
 			$value = $this->_getTypeValue($this->type, $this->value);
 			$s_default_value = ($this->_getTypeValue($this->type, $this->default));  // esc_attr
-// error_log(print_r($this, true));
-			$column_name = $this->eid; //'extra_vars' . $this->idx;
+			$column_name = $this->eid;
 			$s_meta_key = esc_attr($this->eid);
-			// $tmp_id = $column_name . '-' . $id_num++;
-
 			$s_required = $this->is_required == '1' ? 'required' : null;
 			$s_default_class = $this->default_css_class ? $this->default_css_class : '';
 			$s_custom_class = isset($field['custom_class']) && $field['custom_class'] ? esc_attr($field['custom_class']) : '';
 			
 			$o_post = \X2board\Includes\Classes\Context::get('post');
-// var_dump($this->_getTypeValue($this->type, $this->default));
-// var_dump($this);
 			$buff = array();
 			switch($type) {
 				// default fields
@@ -709,14 +674,8 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 					$buff[] = 	'<div class="attr-value">';
 					$status_list = \X2board\Includes\Classes\Context::get('status_list');
 					foreach($status_list AS $key=>$value) {
-						// if(!in_array('secret',$mi->wrt_opt)) {
-							$s_checked = $o_post->get('status')==$key ? 'checked="checked"' : null;
-							$buff[] = '<input type="radio" name="status" value="'.$key.'" id="'.$key.'" '.$s_checked.' />';
-						// }
-						// if(in_array('secret',$mi->wrt_opt)) {
-						// 	$s_checked = $o_post->get('status')==$key || ($key=='SECRET' && !$o_post->post_id) ? 'checked="checked"' : null;
-						// 	$buff[] = '<input  type="radio" name="status" value="'.$key.'" id="'.$key.'" '.$s_checked.' />';
-						// }
+						$s_checked = $o_post->get('status')==$key ? 'checked="checked"' : null;
+						$buff[] = '<input type="radio" name="status" value="'.$key.'" id="'.$key.'" '.$s_checked.' />';
 						$buff[] = '<label for="'.$key.'">'.$value.'</label>';
 					}
 					unset($status_list);
@@ -931,24 +890,16 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 			}
 			unset($o_post);
 			if($this->desc) {
-				// $oModuleController = getController('module');
-				// $oModuleController->replaceDefinedLangCode($this->desc);
 				$buff[] = '<p>' . htmlspecialchars($this->desc, ENT_COMPAT | ENT_HTML401, 'UTF-8', false) . '</p>';
 			}
 			return join(PHP_EOL, $buff);
 		}
 
 		/**
-		 * 입력 필드 이름을 반환한다.
-		 * \includes\modules\board\skins\sketchbook5\editor-fields.php에서 사용
-		 * @param string $name
-		 * @return string
+		 * 
+		 * @param
+		 * @return
 		 */
-		// public function getOptionFieldName($name){
-		// private function _get_option_field_name( $s_name ) {
-		// 	return self::SKIN_OPTION_PREFIX . sanitize_key($s_name);
-		// }
-
 		private function _is_this_accessible($permission = null, $roles = null) {
 			$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
 			if($o_logged_info->is_admin == 'Y') {  // allow everything to an admin
@@ -981,6 +932,11 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineItemForGuest')) {
 			}
 		}
 		
+		/**
+		 * 
+		 * @param
+		 * @return
+		 */
 		private function _get_post_category_list() {
 			$a_category = \X2board\Includes\Classes\Context::get('category_list');
 			return $a_category ? $a_category : array();

@@ -8,7 +8,6 @@
  *
  * @author XEHub (developers@xpressengine.com)
  * @package /classes/db
- * @version 0.1
  */
 namespace X2board\Includes\Classes;
 
@@ -25,12 +24,6 @@ if (!class_exists('\\X2board\\Includes\\Classes\\PaginateSelect')) {
 		 * @var array
 		 */
 		private $_a_query_type = array( 'SELECT' );  //, 'INSERT', 'UPDATE', 'DELETE' );
-
-		/**
-		 * count cache path
-		 * @var string
-		 */
-		// var $count_cache_path = 'files/cache/db';
 
 		/**
 		 * error code (0 means no error)
@@ -93,10 +86,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\PaginateSelect')) {
 		 * constructor
 		 * @return void
 		 */
-		public function __construct() {
-			// $this->count_cache_path = _XE_PATH_ . $this->count_cache_path;
-			// $this->cache_file = _XE_PATH_ . $this->cache_file;
-		}
+		public function __construct() {	}
 
 		/**
 		 * Execute Query that result of the query xml file
@@ -106,9 +96,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\PaginateSelect')) {
 		 * @param array $arg_columns column list. if you want get specific colums from executed result, add column list to $arg_columns
 		 * @return object result of query
 		 */
-		public function execute_query($o_query) {// $query_id, $args = NULL, $arg_columns = NULL, $type = NULL)
-			// static $cache_file = array();
-
+		public function execute_query($o_query) {
 			// this class handles pagination select query only
 			$o_query->s_query_type = 'SELECT';
 			if( isset( $o_query->s_query_type ) ){
@@ -117,45 +105,8 @@ if (!class_exists('\\X2board\\Includes\\Classes\\PaginateSelect')) {
 
 			$this->_start_chronometry();
 
-			// if(!isset($cache_file[$query_id]) || !file_exists($cache_file[$query_id]))
-			// {
-			// 	$id_args = explode('.', $query_id);
-			// 	if(count($id_args) == 2)
-			// 	{
-			// 		$target = 'modules';
-			// 		$module = $id_args[0];
-			// 		$id = $id_args[1];
-			// 	}
-			// 	elseif(count($id_args) == 3)
-			// 	{
-			// 		$target = $id_args[0];
-			// 		$typeList = array('addons' => 1, 'widgets' => 1);
-			// 		if(!isset($typeList[$target]))
-			// 		{
-			// 			$this->actDBClassFinish();
-			// 			return;
-			// 		}
-			// 		$module = $id_args[1];
-			// 		$id = $id_args[2];
-			// 	}
-			// 	if(!$target || !$module || !$id)
-			// 	{
-			// 		$this->actDBClassFinish();
-			// 		return new BaseObject(-1, 'msg_invalid_queryid');
-			// 	}
-
-			// 	$xml_file = sprintf('%s%s/%s/queries/%s.xml', _XE_PATH_, $target, $module, $id);
-			// 	if(!file_exists($xml_file))
-			// 	{
-			// 		$this->actDBClassFinish();
-			// 		return new BaseObject(-1, 'msg_invalid_queryid');
-			// 	}
-
-			// 	// look for cache file
-			// 	$cache_file[$query_id] = $this->checkQueryCacheFile($query_id, $xml_file);
-			// }
 			// execute query
-			$output = $this->_execute_query($o_query); //$cache_file[$query_id], $args, $query_id, $arg_columns, $type);
+			$output = $this->_execute_query($o_query);
 			$this->_finish_chronometry();
 			return $output;
 		}
@@ -168,18 +119,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\PaginateSelect')) {
 		 * @param array $arg_columns column list. if you want get specific colums from executed result, add column list to $arg_columns
 		 * @return object result of query
 		 */
-		function _execute_query($o_query) {// $cache_file, $source_args, $query_id, $arg_columns, $type)
-			// if(!file_exists($cache_file))
-			// {
-			// 	return new BaseObject(-1, 'msg_invalid_queryid');
-			// }
-
-			// $output = include($cache_file);
-
-			// if((is_a($output, 'BaseObject') || is_subclass_of($output, 'BaseObject')) && !$output->toBool()) {
-			// 	return $output;
-			// }
-			
+		function _execute_query($o_query) {
 			if(in_array($o_query->s_query_type, $this->_a_query_type)) {
 				// execute select query only
 				switch($o_query->s_query_type) {
@@ -216,8 +156,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\PaginateSelect')) {
 		 * @param boolean $with_values
 		 * @return BaseObject
 		 */
-		function _execute_select_act($queryObject) { // , $connection = null, $with_values = true)
-// var_dump($queryObject);
+		function _execute_select_act($queryObject) {
 			if( !isset( $queryObject->s_columns ) ) {
 				wp_die('invalid columns');
 			}
@@ -240,19 +179,8 @@ if (!class_exists('\\X2board\\Includes\\Classes\\PaginateSelect')) {
 				$queryObject->page_count = null;
 			}
 
-			// if( isset( $queryObject->page ) ) {
-			// 	$n_star_pos = $queryObject->page * $queryObject->list_per_page;
-			// 	$s_limit = "LIMIT ".$n_star_pos.", ".$queryObject->list_per_page;
-			// }
-			// else {
-			// 	$s_limit = null;
-			// }
-
-			// $a_result = NULL;  // $result = NULL;
-			// $limit = $queryObject->getLimit();
-			// if($limit && $limit->isPageHandler())
 			if( isset( $queryObject->page ) ) {
-				return $this->_query_page_limit($queryObject);  // $connection, $a_result, $with_values
+				return $this->_query_page_limit($queryObject);
 			}
 			else {  // list query without pagination
 				wp_die('pagination query has been executed without page param!');
@@ -261,14 +189,14 @@ if (!class_exists('\\X2board\\Includes\\Classes\\PaginateSelect')) {
 
 		/**
 		 * If select query execute, return page info
+		 * _queryPageLimit($queryObject) { // $connection, $result, $with_values = true
 		 * @param BaseObject $queryObject
 		 * @param resource $result
 		 * @param resource $connection
 		 * @param boolean $with_values
 		 * @return BaseObject BaseObject with page info containing
 		 */
-		// private function _queryPageLimit($queryObject) { // $connection, $result, $with_values = true
-		private function _query_page_limit($queryObject) { // $connection, $result, $with_values = true
+		private function _query_page_limit($queryObject) {
 			global $wpdb;
 			$this->query = "SELECT COUNT(*) as `rec_cnt` FROM {$queryObject->s_tables} {$queryObject->s_where} {$queryObject->s_groupby}";
 			$o_rec_cnt = $wpdb->get_row($this->query);
@@ -283,15 +211,15 @@ if (!class_exists('\\X2board\\Includes\\Classes\\PaginateSelect')) {
 			}
 			unset($o_rec_cnt);
 
-			$list_count = $queryObject->list_count; // $limit->list_count->getValue();
+			$list_count = $queryObject->list_count;
 			if(!$list_count) {
 				$list_count = 20;
 			}
-			$page_count = $queryObject->page_count; // $limit->page_count->getValue();
+			$page_count = $queryObject->page_count;
 			if(!$page_count) {
 				$page_count = 10;
 			}
-			$page = $queryObject->page; // $limit->page->getValue();
+			$page = $queryObject->page;
 			if(!$page || $page < 1) {
 				$page = 1;
 			}
@@ -357,8 +285,8 @@ if (!class_exists('\\X2board\\Includes\\Classes\\PaginateSelect')) {
 
 		/**
 		 * Start recording DBClass log
+		 * _actDBClassStart()
 		 * @return void
-		 * _actDBClassStart
 		 */
 		private function _start_chronometry() {
 			// $this->setError(0, 'success');
@@ -368,7 +296,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\PaginateSelect')) {
 
 		/**
 		 * Finish recording DBClass log
-		 * _actDBClassFinish
+		 * _actDBClassFinish()
 		 * @return void
 		 */
 		private function _finish_chronometry() {

@@ -6,7 +6,6 @@
  * @file Password.class.php
  * @author Kijin Sung (kijin@kijinsung.com)
  * @package /classes/security
- * @version 1.1
  */
 namespace X2board\Includes\Classes\Security;
 
@@ -70,21 +69,11 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\Password')) {
 		 * @return int
 		 */
 		private function _get_work_factor() {
-			return 8;
-			// if(function_exists('getModel'))
-			// {
-			// 	$config = getModel('member')->getMemberConfig();
-			// 	$work_factor = $config->password_hashing_work_factor;
-			// 	if(!$work_factor || $work_factor < 4 || $work_factor > 31)
-			// 	{
-			// 		$work_factor = 8;  // Reasonable default
-			// 	}
+			// $n_work_factor = $config->password_hashing_work_factor;
+			// if(!$n_work_factor || $n_work_factor < 4 || $n_work_factor > 31) {
+				$n_work_factor = 8;  // Reasonable default
 			// }
-			// else
-			// {
-			// 	$work_factor = 8;
-			// }
-			// return $work_factor;
+			return $n_work_factor;
 		}
 
 		/**
@@ -157,40 +146,33 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\Password')) {
 
 		/**
 		 * @brief Check if a password matches a hash
+		 * checkPassword($password, $hash, $algorithm = null)
 		 * @param string $password The password
 		 * @param string $hash The hash
 		 * @param string $algorithm The algorithm (optional)
 		 * @return bool
 		 */
-		// public function checkPassword($password, $hash, $algorithm = null)
 		public function check_password($password, $hash, $algorithm = null) {
 			if($algorithm === null) {
 				$algorithm = $this->check_algorithm($hash);
 			}
-
 			$password = trim($password);
-
 			switch($algorithm) {
 				case 'md5':
 					return md5($password) === $hash || md5(sha1(md5($password))) === $hash;
-
 				case 'pbkdf2':
 					$hash = explode(':', $hash);
 					$hash[3] = base64_decode($hash[3]);
 					$hash_to_compare = $this->_pbkdf2($password, $hash[2], $hash[0], intval($hash[1], 10), strlen($hash[3]));
 					return $this->_strcmp_constant_time($hash_to_compare, $hash[3]);
-
 				case 'bcrypt':
 					$hash_to_compare = $this->bcrypt($password, $hash);
 					return $this->_strcmp_constant_time($hash_to_compare, $hash);
-				
-				// case 'mysql_old_password':
+								// case 'mysql_old_password':
 				// 	return (class_exists('Context') && substr(Context::getDBType(), 0, 5) === 'mysql') ?
 				// 		DB::getInstance()->isValidOldPassword($password, $hash) : false;
-
 				// case 'mysql_password':
 				// 	return $hash[0] === '*' && substr($hash, 1) === strtoupper(sha1(sha1($password, true)));
-
 				default:
 					return false;
 			}
@@ -211,15 +193,13 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\Password')) {
 			return $diff === 0;
 		}
 
-////////////////////////
 		/**
 		 * @brief Generate a cryptographically secure random string to use as a salt
 		 * @param int $length The number of bytes to return
 		 * @param string $format hex or alnum
 		 * @return string
 		 */
-		public function create_secure_salt($length, $format = 'hex')
-		{
+		public function create_secure_salt($length, $format = 'hex') {
 			// Find out how many bytes of entropy we really need
 			switch($format) {
 				case 'hex':
@@ -273,8 +253,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\Password')) {
 					return substr($output, 0, $length);
 				case 'printable':
 					$salt = '';
-					for($i = 0; $i < $length; $i++)
-					{
+					for($i = 0; $i < $length; $i++) {
 						$salt .= chr(33 + (crc32(sha1($i . $output)) % 94));
 					}
 					return $salt;
@@ -285,131 +264,6 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\Password')) {
 					return strtr($salt, '+/=', $replacements);
 			}
 		}
-
-		/**
-		 * @brief Generate a temporary password using the secure salt generator
-		 * @param int $length The number of bytes to return
-		 * @return string
-		 */
-		// public function createTemporaryPassword($length = 16)
-		// {
-		// 	while(true)
-		// 	{
-		// 		$source = base64_encode($this->createSecureSalt(64, 'binary'));
-		// 		$source = strtr($source, 'iIoOjl10/', '@#$%&*-!?');
-		// 		$source_length = strlen($source);
-		// 		for($i = 0; $i < $source_length - $length; $i++)
-		// 		{
-		// 			$candidate = substr($source, $i, $length);
-		// 			if(preg_match('/[a-z]/', $candidate) && preg_match('/[A-Z]/', $candidate) &&
-		// 				preg_match('/[0-9]/', $candidate) && preg_match('/[^a-zA-Z0-9]/', $candidate))
-		// 			{
-		// 				return $candidate;
-		// 			}
-		// 		}
-		// 	}
-		// }
-
-		/**
-		 * @brief Create a digital signature to verify the authenticity of a string
-		 * @param string $string
-		 * @return string
-		 */
-		// public static function createSignature($string)
-		// {
-		// 	$key = self::getSecretKey();
-		// 	$salt = self::createSecureSalt(8, 'alnum');
-		// 	$hash = substr(base64_encode(hash_hmac('sha256', hash_hmac('sha256', $string, $salt), $key, true)), 0, 32);
-		// 	return $salt . strtr($hash, '+/', '-_');
-		// }
-		
-		/**
-		 * @brief Check whether a signature is valid
-		 * @param string $string
-		 * @param string $signature
-		 * @return bool
-		 */
-		// public static function checkSignature($string, $signature)
-		// {
-		// 	if(strlen($signature) !== 40)
-		// 	{
-		// 		return false;
-		// 	}
-			
-		// 	$key = self::getSecretKey();
-		// 	$salt = substr($signature, 0, 8);
-		// 	$hash = substr(base64_encode(hash_hmac('sha256', hash_hmac('sha256', $string, $salt), $key, true)), 0, 32);
-		// 	return self::_strcmp_constant_time(substr($signature, 8), strtr($hash, '+/', '-_'));
-		// }
-		
-		/**
-		 * @brief Get the secret key for this site
-		 * @return bool
-		 */
-		// public static function getSecretKey()
-		// {
-		// 	// If the secret key does not exist, the config file needs to be updated
-		// 	$db_info = Context::getDbInfo();
-		// 	if(!isset($db_info->secret_key))
-		// 	{
-		// 		$db_info->secret_key = self::createSecureSalt(48, 'alnum');
-		// 		Context::setDBInfo($db_info);
-		// 		getController('install')->makeConfigFile();
-		// 	}
-		// 	return $db_info->secret_key;
-		// }
-
-		/**
-		 * @brief Check the work factor of a hash
-		 * @param string $hash The hash
-		 * @return int
-		 */
-		// function checkWorkFactor($hash)
-		// {
-		// 	if(preg_match('/^\$2[axy]\$([0-9]{2})\$/', $hash, $matches))
-		// 	{
-		// 		return intval($matches[1], 10);
-		// 	}
-		// 	elseif(preg_match('/^sha[0-9]+:([0-9]+):/', $hash, $matches))
-		// 	{
-		// 		return max(0, round(log($matches[1], 2)) - 5);
-		// 	}
-		// 	else
-		// 	{
-		// 		return false;
-		// 	}
-		// }
-
-		/**
-		 * @brief Return the best hashing algorithm supported by this server
-		 * @return string
-		 */
-		// public function getBestAlgorithm() {
-		// 	$algos = $this->_getSupportedAlgorithms();
-		// 	return key($algos);
-		// }
-
-		/**
-		 * @brief Return the currently selected hashing algorithm
-		 * @return string
-		 */
-		// public function getCurrentlySelectedAlgorithm()
-		// {
-		// 	if(function_exists('getModel'))
-		// 	{
-		// 		$config = getModel('member')->getMemberConfig();
-		// 		$algorithm = $config->password_hashing_algorithm;
-		// 		if(strval($algorithm) === '')
-		// 		{
-		// 			$algorithm = 'md5';  // Historical default for XE
-		// 		}
-		// 	}
-		// 	else
-		// 	{
-		// 		$algorithm = 'md5';
-		// 	}
-		// 	return $algorithm;
-		// }
 	}
 }
 /* End of file : Password.class.php */

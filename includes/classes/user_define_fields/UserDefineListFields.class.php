@@ -50,9 +50,12 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineListFields')) {
 													);  // 'user_id', 'user_name', 
 		}
 
+		/**
+		 *
+		 * @return
+		 */
         public function get_list_config( $a_list_config_param ) {
             // force to build init list config if theres no configuration
-// $a_list_config_param = null;
 			if(!$a_list_config_param || count($a_list_config_param) <= 0) {
                 $a_list_config = array();
                 foreach($this->_a_default_list_columns as $s_field_type) {

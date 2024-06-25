@@ -412,15 +412,15 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 		 * 번역된 필드의 레이블을 반환한다.
 		 * @return bool
 		 */
-		protected function _get_field_label(){
+		protected function _get_field_label() {
 			return $this->_a_all_fields[$this->_s_field_type]['field_label'];
 		}
 
 		/**
 		 * 필드 유형 확인.
+		 * is_default_field()
 		 * @return string
 		 */
-		// is_default_field
 		protected function _get_field_type() {
 			if(isset($this->_a_default_fields[$this->_s_field_type])) {
 				return 'default';
@@ -446,7 +446,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\UserDefineFields')) {
 		 * @return boolean
 		 */
 		protected function _is_multiline_fields() {
-			if(in_array($this->_s_field_type, $this->_a_multiline_fields )){
+			if(in_array($this->_s_field_type, $this->_a_multiline_fields )) {
 				return true;
 			}
 			return false;

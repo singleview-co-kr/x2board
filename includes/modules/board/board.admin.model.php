@@ -20,14 +20,12 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminModel')) {
 		private $_a_on_list_config = array();
 		private $_a_unchosen_list_fields = array();
 		private $_a_field_introduction = array();
-
 		private $_a_board_permalink = array();
 
 		/**
 		 * @brief constructor
 		 **/
 		public function __construct(){
-// var_dump('boardAdminModel');
 			$o_current_user = wp_get_current_user();
 			if( !user_can( $o_current_user, 'administrator' ) || !current_user_can('manage_x2board') ) {
 				unset($o_current_user);
@@ -60,7 +58,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminModel')) {
 			$o_latest_file->prepare_latest_list();
 			return $o_latest_file;
 		}
-
 
 		/**
 		 * @brief return latest comments for an admin dashboard
@@ -168,7 +165,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminModel')) {
 		 */
 		public function build_user_define_list_fields() {
 			$o_post_user_define_list_fields = \X2board\Includes\Classes\UserDefineListFields::getInstance();
-
 			// retrieve all available fields for a list
 			$a_virtual_vars = $o_post_user_define_list_fields->get_virtual_list_field_info();
 			foreach( $a_virtual_vars as $s_field_type => $s_introduction ) {
@@ -225,11 +221,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminModel')) {
 
 		/**
 		 * WP user field UI Callback
-		 *
 		 * Renders WP user field UI fields.
-		 *
-		 * @since 2.6.0
-		 *
 		 * @return void
 		 */
 		public function render_user_field_ui() {
@@ -266,8 +258,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminModel')) {
 
 		/**
 		 * @brief return the default list configration value
+		 * getDefaultListConfig($module_srl)
 		 **/
-		// function getDefaultListConfig($module_srl)
 		public function _render_off_list_fields() {
 			$s_html = null;
 			foreach($this->_a_unchosen_list_fields as $s_eid => $o_field_info) {
@@ -298,9 +290,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminModel')) {
 
 		/**
 		 * Renders unchosen user field UI fields.
-		 *
-		 * @since 2.6.0
-		 *
 		 * @param array $array of unchosen user default field 
 		 * @return void
 		 */

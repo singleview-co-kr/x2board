@@ -20,7 +20,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Category\\categoryAdminModel'))
 		 * @brief constructor
 		 **/
 		public function __construct(){
-// var_dump('categoryAdminModel');
 			$o_current_user = wp_get_current_user();
 			if( !user_can( $o_current_user, 'administrator' ) || !current_user_can('manage_x2board') ) {
 				unset($o_current_user);
@@ -31,8 +30,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Category\\categoryAdminModel'))
 
 		/**
 		 * WP 관리자 UX용 계층형 카테고리를 반환한다.
+		 * buildAdminTreeCategorySortableRow()
 		 */
-		// public function buildAdminTreeCategorySortableRow() {
 		public function build_category_sortable_html() {
 			// allocae memorty to save in the DB via saveAdminTreeCategory()
 			$a_tree_category_recursive = $this->_construct_category_array();
@@ -103,7 +102,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Category\\categoryAdminModel'))
 			}
 			foreach($tree_category as $key=>$value){
 				if( $value['is_default'] == 'Y' ){
-					$default_select = '('.esc_html__( 'Default category', X2B_DOMAIN ).')';
+					$default_select = '('.__( 'lbl_default_category', X2B_DOMAIN ).')';
 				}
 				else {
 					$default_select = '';
@@ -126,6 +125,5 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Category\\categoryAdminModel'))
 				$html .= '</li>';
 			}
 		}
-		// }
 	}
 }

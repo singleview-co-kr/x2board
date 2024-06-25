@@ -6,11 +6,8 @@
 /**
  * post class
  * @brief post the module's high class
- * {@internal Silently adds one extra Foo to compensate for lack of Foo }
- *
  * @author XEHub (developers@xpressengine.com)
  * @package /modules/post
- * @version 0.1
  */
 namespace X2board\Includes\Modules\Post;
 
@@ -30,7 +27,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\post')) {
 		 * Search option to use in admin page
 		 * @var array
 		 */
-		var $search_option = array('title','content','title_content','user_name',); // /< Search options
+		var $search_option = array('title','content','title_content','user_name',);
 		/**
 		 * XE Status list
 		 * @var array
@@ -38,7 +35,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\post')) {
 		var $statusList = array('public'=>'PUBLIC', 'secret'=>'SECRET');  // ,'private'=>'PRIVATE', 'temp'=>'TEMP'
 
 		function __construct() {
-// var_dump('post claas');
 			global $G_X2B_CACHE;
 			if(!isset($G_X2B_CACHE['POST_LIST'])) {
 				$G_X2B_CACHE['POST_LIST'] = array();
@@ -51,27 +47,27 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\post')) {
 
 		/**
 		 * Return default status
+		 * getDefaultStatus()
 		 * @return string
 		 */
-		// function getDefaultStatus() {
 		public function get_default_status() {
 			return $this->statusList['public'];
 		}
 
 		/**
 		 * Post Status List
+		 * getStatusList()
 		 * @return array
 		 */
-		// function getStatusList()
 		public function get_status_list() {
 			return $this->statusList;
 		}
 
 		/**
 		 * Return status by key
+		 * getConfigStatus($key)
 		 * @return string
 		 */
-		// function getConfigStatus($key)
 		public function get_config_status($key) {
 			if(array_key_exists(strtolower($key), $this->statusList)) {
 				return $this->statusList[$key];
@@ -80,4 +76,3 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\post')) {
 		}
 	}
 }
-/* End of file post.class.php */

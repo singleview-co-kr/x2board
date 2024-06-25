@@ -23,7 +23,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Category\\categoryModel')) {
 		 * Initialization
 		 * @return void
 		 */
-		public function init() {}
+		// public function init() {}
 
 		public function set_board_id($n_board_id) {
 			$this->_n_board_id = $n_board_id;
@@ -52,38 +52,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Category\\categoryModel')) {
 			$tree_category_recursive = $this->_construct_tree_category();
 			$a_category = [];
 			$this->_arrange_category($a_category, $tree_category_recursive, 0);
-
-			// get the user group information  <---- do not work
-			// if(\X2board\Includes\Classes\Context::get('is_logged')) {
-			// 	$o_logged_info = \X2board\Includes\Classes\Context::get('logged_info');
-			// 	$a_group_srls = array(); // array_keys($o_logged_info->group_list);
-			// }
-			// else {
-				// $a_group_srls = array();
-			// }
-			// check the grant after obtained the category list
-			// if(count($a_category)) {
-			// 	$a_category_list = array();
-			// 	foreach($a_category as $category_id => $o_category) {
-			// 		$is_granted = TRUE;
-			// 		if($o_category->group_ids) {
-			// 			$a_category_groups = explode(',',$o_category->group_ids);
-			// 			$is_granted = FALSE;
-			// 			if(count(array_intersect($a_group_srls, $a_category_groups))) {
-			// 				$is_granted = TRUE;
-			// 			}
-			// 		}
-			// 		if($is_granted) {
-			// 			$a_category_list[$category_id] = $o_category;
-			// 		}
-			// 	}
-			// }
-// var_dump($a_category);
 			return $a_category;
 		}
 
 		/**
-		 * list-category-tree-tab.php 스킨 전용
 		 * 검색 옵션의 하위 카테고리 데이터를 스킨으로 반환한다.
 		 * @param string $category_name
 		 * @return array $tree_category
@@ -262,4 +234,3 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Category\\categoryModel')) {
 		}
 	}
 }
-/* End of file category.model.php */

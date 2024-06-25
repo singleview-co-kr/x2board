@@ -45,19 +45,19 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorModel')) {
 		 *
 		 * 2 types of editors supported; document and comment.
 		 * 2 types of editors can be used on a single board. For instance each for original post and reply port.
+		 * getModuleEditor($type = 'document', $module_srl, $upload_target_srl, $primary_key_name, $content_key_name)
 		 */
-		// function getModuleEditor($type = 'document', $module_srl, $upload_target_srl, $primary_key_name, $content_key_name)
-		function get_board_editor($o_editor_config) { //$type = 'post', $upload_target_id, $primary_key_name, $content_key_name) {
+		function get_board_editor($o_editor_config) {
 			$o_config = new \stdClass();
 			$o_config->module_type = $o_editor_config->module_type;
 			$upload_target_id = $o_editor_config->upload_target_id;
 			$primary_key_name = $o_editor_config->primary_key_name;
 			$content_key_name = $o_editor_config->s_content_field_name;
 
-			$o_config->content_style = null;  // isset($o_editor_config->content_style) ? $o_editor_config->content_style : null;
-			$o_config->content_font = null;  // isset($o_editor_config->content_font) ? $o_editor_config->content_font : null;
-			$o_config->content_font_size = null;  // isset($o_editor_config->content_font_size) ? $o_editor_config->content_font_size : null;
-			$o_config->sel_editor_colorset = null;  // isset($o_editor_config->sel_editor_colorset) ? $o_editor_config->sel_editor_colorset : null;
+			$o_config->content_style = null;
+			$o_config->content_font = null;
+			$o_config->content_font_size = null;
+			$o_config->sel_editor_colorset = null;
 			
 			$o_current_module_info = \X2board\Includes\Classes\Context::get('current_module_info');
 
@@ -66,17 +66,17 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorModel')) {
 
 			// Configurations listed according to a type
 			if($o_config->module_type == 'post') {
-				$o_config->editor_skin = $o_current_module_info->post_editor_skin; // $o_editor_config->post_editor_skin;
-				$o_config->upload_file_grant = $o_current_module_info->upload_file_grant; //$o_editor_config->upload_file_grant;
-				$o_config->enable_html_grant = $o_current_module_info->enable_html_grant; //$o_editor_config->enable_html_grant;
-				$o_config->editor_height = $o_current_module_info->post_editor_height; // $o_editor_config->post_editor_height;
-				$o_config->enable_autosave = $o_current_module_info->enable_autosave; // $o_editor_config->enable_autosave;
+				$o_config->editor_skin = $o_current_module_info->post_editor_skin;
+				$o_config->upload_file_grant = $o_current_module_info->upload_file_grant;
+				$o_config->enable_html_grant = $o_current_module_info->enable_html_grant;
+				$o_config->editor_height = $o_current_module_info->post_editor_height;
+				$o_config->enable_autosave = $o_current_module_info->enable_autosave;
 			}
 			else {
-				$o_config->editor_skin = $o_current_module_info->comment_editor_skin; // $o_editor_config->comment_editor_skin;
-				$o_config->upload_file_grant = $o_current_module_info->comment_upload_file_grant; // $o_editor_config->comment_upload_file_grant;
-				$o_config->enable_html_grant = $o_current_module_info->enable_comment_html_grant; // $o_editor_config->enable_comment_html_grant;
-				$o_config->editor_height = $o_current_module_info->comment_editor_height; // $o_editor_config->comment_editor_height;
+				$o_config->editor_skin = $o_current_module_info->comment_editor_skin;
+				$o_config->upload_file_grant = $o_current_module_info->comment_upload_file_grant;
+				$o_config->enable_html_grant = $o_current_module_info->enable_comment_html_grant;
+				$o_config->editor_height = $o_current_module_info->comment_editor_height;
 				$o_config->enable_autosave = 'N';
 			}
 			unset($o_current_module_info);
@@ -103,7 +103,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorModel')) {
 			}
 			elseif(count((array)$o_config->upload_file_grant)) {
 				foreach($group_list as $s_group_name => $_) {  // $group_list = Array(  [administrator] => 1 )
-					if( isset( $o_config->upload_file_grant[$s_group_name] ) && $o_config->upload_file_grant[$s_group_name] ) {  // if(in_array($group_srl, $o_config->upload_file_grant)) {
+					if( isset( $o_config->upload_file_grant[$s_group_name] ) && $o_config->upload_file_grant[$s_group_name] ) {
 						$option->allow_fileupload = true;
 						break;
 					}
@@ -119,7 +119,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorModel')) {
 			}
 			elseif(count((array)$o_config->enable_default_component_grant)) {
 				foreach($group_list as $s_group_name => $_) {  // $group_list = Array(  [administrator] => 1 )
-					if( isset( $o_config->enable_default_component_grant[$s_group_name] ) && $o_config->enable_default_component_grant[$s_group_name] ) {  // if(in_array($group_srl, $o_config->enable_default_component_grant)) {
+					if( isset( $o_config->enable_default_component_grant[$s_group_name] ) && $o_config->enable_default_component_grant[$s_group_name] ) {
 						$option->enable_default_component = true;
 						break;
 					}
@@ -135,7 +135,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorModel')) {
 			}
 			elseif(count((array)$o_config->enable_component_grant)) {
 				foreach($group_list as $s_group_name => $_) {  // $group_list = Array(  [administrator] => 1 )
-					if( isset( $o_config->enable_component_grant[$s_group_name] ) && $o_config->enable_component_grant[$s_group_name] ) {  // if(in_array($group_srl, $o_config->enable_component_grant)) {
+					if( isset( $o_config->enable_component_grant[$s_group_name] ) && $o_config->enable_component_grant[$s_group_name] ) {
 						$option->enable_component = true;
 						break;
 					}
@@ -151,7 +151,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorModel')) {
 			}
 			elseif(count((array)$o_config->enable_html_grant)) {
 				foreach($group_list as $s_group_name => $_) {  // $group_list = Array(  [administrator] => 1 )
-					if( isset( $o_config->enable_html_grant[$s_group_name] ) && $o_config->enable_html_grant[$s_group_name] ) {  // if(in_array($group_srl, $o_config->enable_html_grant)) {
+					if( isset( $o_config->enable_html_grant[$s_group_name] ) && $o_config->enable_html_grant[$s_group_name] ) {
 						$enable_html = true;
 						break;
 					}
@@ -171,7 +171,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorModel')) {
 			// Set Height
 			$option->height = $o_config->editor_height;
 			// Set an option for Auto-save
-			$option->enable_autosave = $o_config->enable_autosave=='Y'?true:false;
+			$option->enable_autosave = $o_config->enable_autosave == 'Y' ? true : false;
 			// Other settings
 			$option->primary_key_name = $primary_key_name;
 			$option->content_key_name = $content_key_name;
@@ -184,16 +184,12 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorModel')) {
 		 * @brief Return the editor template
 		 * You can call upload_target_id when modifying content
 		 * The upload_target_id is used for a routine to check if an attachment exists
+		 * getEditor($upload_target_srl = 0, $option = null)
 		 */
-		// function getEditor($upload_target_srl = 0, $option = null)
 		private function _get_editor($upload_target_id = 0, $option = null) {
 			/**
 			 * Editor's default options
 			 */
-			// Option setting to allow file upload
-			// if($upload_target_id) {
-			// 	$option->editor_sequence = $upload_target_id;
-			// }
 			if(!$option->allow_fileupload) {
 				$allow_fileupload = false;
 			}
@@ -282,7 +278,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Editor\\editorModel')) {
 			 * Check the automatic backup feature (do not use if the post is edited)
 			 */
 			$enable_autosave = false;
-error_log(print_r('should activate includes\modules\editor\editor.model.php::_get_saved_post() '.__FILE__.':'.__LINE__, true));
+			error_log(print_r('should activate includes\modules\editor\editor.model.php::_get_saved_post() '.__FILE__.':'.__LINE__, true));
 			if($enable_autosave) {
 				// Extract auto-saved data
 				$saved_doc = $this->_get_saved_post($upload_target_id);
@@ -366,8 +362,6 @@ error_log(print_r('should activate includes\modules\editor\editor.model.php::_ge
 			 * Set a height of editor
 			 */
 			\X2board\Includes\Classes\Context::set('editor_height', $editor_height);
-			// Check an option whether to start the editor manually
-			// \X2board\Includes\Classes\Context::set('editor_manual_start', $option->manual_start);
 
 			/**
 			 * Set a skin path to pre-compile the template
@@ -381,21 +375,16 @@ error_log(print_r('should activate includes\modules\editor\editor.model.php::_ge
 			}
 			$this->set_skin_path($tpl_path);
 			\X2board\Includes\Classes\Context::set('editor_path', $tpl_path);
-			// load editor skin lang
-			// \X2board\Includes\Classes\Context::loadLang($tpl_path.'lang');
-			// Return the compiled result from tpl file
-			// $oTemplate = TemplateHandler::getInstance();
-			// return $this->render_skin_file('editor');
 			ob_start();
 			echo $this->render_skin_file('editor');
 			$s_editor_html = ob_get_clean();
-			return $s_editor_html; // $oTemplate->compile($tpl_path, $tpl_file);
+			return $s_editor_html;
 		}
 
 		/**
 		 * @brief Return a component list (DB Information included)
+		 * getComponentList($filter_enabled = true, $site_srl=0, $from_db=false)
 		 */
-		// function getComponentList($filter_enabled = true, $site_srl=0, $from_db=false)
 		private function _get_component_list($filter_enabled = true, $site_srl=0, $from_db=false) {
 			$o_emoticon = new \stdClass();
 			$o_emoticon->author = array("name" => "XEHub", "email_address" => "developers@xpressengine.com", "homepage" => "https://www.xehub.io" );
@@ -464,87 +453,12 @@ error_log(print_r('should activate includes\modules\editor\editor.model.php::_ge
 			$o_component_list->poll_maker = $o_image_link;
 			$o_component_list->image_gallery = $o_image_gallery;
 			return $o_component_list;
-			/*$component_list = false;
-
-			$oCacheHandler = \X2board\Includes\Classes\CacheHandler::getInstance('object', null, true);
-			if($oCacheHandler->isSupport()) {
-				$cache_key = $this->_getComponentListCacheKey(false, $site_srl);
-				$component_list = $oCacheHandler->get($cache_key);
-			}
-
-			if($from_db || $component_list === false) {
-				$oEditorController = \X2board\Includes\getController('editor');
-				$component_list = $oEditorController->make_cache(false, $site_srl);
-var_dump($component_list);
-				unset($oEditorController);
-			}
-
-			if(!$component_list) {
-				return array();
-			}
-
-			$logged_info = Context::get('logged_info');
-			if($logged_info && is_array($logged_info->group_list)) {
-				$group_list = array_keys($logged_info->group_list);
-			}
-			else {
-				$group_list = array();
-			}
-
-			if(count((array)$component_list)) {
-				foreach($component_list as $key => $val) {
-					if(!trim($key)) {
-						continue;
-					}
-					if(!is_dir(_XE_PATH_.'modules/editor/components/'.$key)) {
-						FileHandler::removeFile($cache_file);
-						return $this->getComponentList($filter_enabled, $site_srl);
-					}
-					if(!$filter_enabled) {
-						continue;
-					}
-					if($val->enabled == "N") {
-						unset($component_list->{$key});
-						continue;
-					}
-					if($logged_info->is_admin == "Y" || $logged_info->is_site_admin == "Y") {
-						continue;
-					}
-					if($val->target_group) {
-						if(!$logged_info) {
-							$val->enabled = "N";
-						}
-						else {
-							$is_granted = false;
-							foreach($group_list as $group_srl) {
-								if(in_array($group_srl, $val->target_group)) {
-									$is_granted = true;
-								}
-							}
-							if(!$is_granted) {
-								$val->enabled = "N";
-							}
-						}
-					}
-					if($val->enabled != "N" && $val->mid_list) {
-						$mid = Context::get('mid');
-						if(!in_array($mid, $val->mid_list)) {
-							$val->enabled = "N";
-						}
-					}
-					if($val->enabled == "N") {
-						unset($component_list->{$key});
-						continue;
-					}
-				}
-			}
-			return $component_list;*/
 		}
 
 		/**
 		 * @brief create objects of the component
 		 */
-		function getComponentObject($component, $editor_sequence = 0, $site_srl = 0)
+		/*function getComponentObject($component, $editor_sequence = 0, $site_srl = 0)
 		{
 			if(!preg_match('/^[a-zA-Z0-9_-]+$/',$component) || !preg_match('/^[0-9]+$/', $editor_sequence . $site_srl)) return;
 
@@ -565,35 +479,12 @@ var_dump($component_list);
 			}
 
 			return $this->loaded_component_list[$component][$editor_sequence];
-		}
-
-		/**
-		 * @brief Return a list of the editor skin
-		 */
-		function getEditorSkinList()
-		{
-			return FileHandler::readDir('./modules/editor/skins');
-		}
-
-		/**
-		 * @brief Return the cache file name of editor component list
-		 */
-		function getCacheFile($filter_enabled= true, $site_srl = 0)
-		{
-			$lang = Context::getLangType();
-			$cache_path = _XE_PATH_.'files/cache/editor/cache/';
-			FileHandler::makeDir($cache_path);
-			$cache_file = $cache_path.'component_list.' . $lang .'.';
-			if($filter_enabled) $cache_file .= 'filter.';
-			if($site_srl) $cache_file .= $site_srl.'.';
-			$cache_file .= 'php';
-			return $cache_file;
-		}
+		}*/
 
 		/**
 		 * @brief Get xml and db information of the component
 		 */
-		function getComponent($component_name, $site_srl = 0)
+		/*function getComponent($component_name, $site_srl = 0)
 		{
 			$args = new stdClass();
 			$args->component_name = $component_name;
@@ -647,420 +538,6 @@ var_dump($component_list);
 			}
 
 			return $xml_info;
-		}
-
-		/**
-		 * @brief Get information which has been auto-saved
-		 */
-		// function getSavedDoc($upload_target_srl)
-		/*private function _get_saved_post($upload_target_srl) {
-
-			$auto_save_args = new \stdClass();
-			$auto_save_args->board_id = \X2board\Includes\Classes\Context::get('board_id');
-
-			// Get the current board if board_id doesn't exist
-			if(!$auto_save_args->board_id) {
-				$current_module_info = \X2board\Includes\Classes\Context::get('current_module_info');
-				$auto_save_args->board_id = $current_module_info->board_id;
-			}
-			// Find a document by using member_srl for logged-in user and ipaddress for non-logged user
-			if(\X2board\Includes\Classes\Context::get('is_logged')) {
-				$logged_info = \X2board\Includes\Classes\Context::get('logged_info');
-				$auto_save_args->post_author = $logged_info->ID;
-			}
-			else {
-				$auto_save_args->certify_key = $_COOKIE['autosave_certify_key_' . $auto_save_args->board_id];
-				// @see https://github.com/xpressengine/xe-core/issues/2208
-				// 변경 이전에 작성된 게시물 호환성 유지
-				if(!$auto_save_args->certify_key) {
-					$auto_save_args->ipaddress = $_SERVER['REMOTE_ADDR'];
-				}
-			}
-			// Extract auto-saved data from the DB
-			// $output = executeQuery('editor.getSavedDocument', $auto_save_args);
-			// SELECT * FROM `xe_editor_autosave` as `editor_autosave` WHERE `module_srl` = ? and `member_srl` = ?
-
-			$saved_doc = $output->data;
-			// Return null if no result is auto-saved
-			if(!$saved_doc) {
-				return;
-			}
-
-			if($saved_doc->certify_key && !isset($auto_save_args->certify_key)) {
-				return;
-			}
-
-			// Check if the auto-saved post already exists
-			$oDocumentModel = getModel('document');
-			$oSaved = $oDocumentModel->getDocument($saved_doc->document_srl);
-			if($oSaved->isExists()) {
-				return;
-			}
-			// Move all the files if the auto-saved data contains document_srl and file
-			// Then set document_srl to editor_sequence
-			if($saved_doc->post_id && $upload_target_srl && !\X2board\Includes\Classes\Context::get('post_id')) {
-				$saved_doc->board_id = $auto_save_args->board_id;
-				$oFileController = \X2board\Includes\getController('file');
-				$oFileController->moveFile($saved_doc->post_id, $saved_doc->board_id, $upload_target_srl);
-			}
-			else if($upload_target_srl) {
-				$saved_doc->post_id = $upload_target_srl;
-			}
-			// Change auto-saved data
-			$saved_doc->certify_key = $auto_save_args->certify_key;
-			$oEditorController = \X2board\Includes\getController('editor');
-			$oEditorController->deleteSavedDoc(false);
-			$oEditorController->doSaveDoc($saved_doc);
-
-			setUserSequence($saved_doc->post_id);
-
-			return $saved_doc;
-		}*/
-
-		/**
-		 * @brief Read xml information of the component
-		 */
-		// function getComponentXmlInfo($component)
-		/*public function getComponentXmlInfo($component) {
-			$lang_type = Context::getLangType();
-
-			// Get xml file path of the requested components
-			$component_path = sprintf('%s/components/%s/', $this->module_path, $component);
-
-			$xml_file = sprintf('%sinfo.xml', $component_path);
-			$cache_file = sprintf('./files/cache/editor/%s.%s.php', $component, $lang_type);
-
-			// Include and return xml file information if cached file exists
-			if(file_exists($cache_file) && file_exists($xml_file) && filemtime($cache_file) > filemtime($xml_file))
-			{
-				include($cache_file);
-
-				return $xml_info;
-			}
-
-			$oParser = new XeXmlParser();
-			$xml_doc = $oParser->loadXmlFile($xml_file);
-
-			// Component information listed
-			$component_info = new stdClass;
-			$component_info->author = array();
-			$component_info->extra_vars = new stdClass;
-			$component_info->component_name = $component;
-			$component_info->title = $xml_doc->component->title->body;
-
-			if($xml_doc->component->version)
-			{
-				$component_info->description = str_replace('\n', "\n", $xml_doc->component->description->body);
-				$component_info->version = $xml_doc->component->version->body;
-				$component_info->date = $xml_doc->component->date->body;
-				$component_info->homepage = $xml_doc->component->link->body;
-				$component_info->license = $xml_doc->component->license->body;
-				$component_info->license_link = $xml_doc->component->license->attrs->link;
-			}
-			else
-			{
-				sscanf($xml_doc->component->author->attrs->date, '%d. %d. %d', $date_obj->y, $date_obj->m, $date_obj->d);
-				$date = sprintf('%04d%02d%02d', $date_obj->y, $date_obj->m, $date_obj->d);
-
-				$component_info->description = str_replace('\n', "\n", $xml_doc->component->author->description->body);
-				$component_info->version = $xml_doc->component->attrs->version;
-				$component_info->date = $date;
-
-				$component_info->author = array();
-				$component_info->author[0]->name = $xml_doc->component->author->name->body;
-				$component_info->author[0]->email_address = $xml_doc->component->author->attrs->email_address;
-				$component_info->author[0]->homepage = $xml_doc->component->author->attrs->link;
-			}
-
-			// Author information
-			$author_list = array();
-			if(!is_array($xml_doc->component->author)) $author_list[] = $xml_doc->component->author;
-			else $author_list = $xml_doc->component->author;
-
-			for($i = 0; $i < count($author_list); $i++)
-			{
-				$author = new stdClass;
-				$author->name = $author_list[$i]->name->body;
-				$author->email_address = $author_list[$i]->attrs->email_address;
-				$author->homepage = $author_list[$i]->attrs->link;
-				$component_info->author[] = $author;
-			}
-
-			// List extra variables (text type only for editor component)
-			$extra_vars = $xml_doc->component->extra_vars;
-			if($extra_vars)
-			{
-				$extra_var_groups = $extra_vars->group;
-				if(!$extra_var_groups)
-				{
-					$extra_var_groups = $extra_vars;
-				}
-				if(!is_array($extra_var_groups))
-				{
-					$extra_var_groups = array($extra_var_groups);
-				}
-
-				foreach($extra_var_groups as $group)
-				{
-					$extra_vars = $group->var;
-					if(!is_array($group->var))
-					{
-						$extra_vars = array($group->var);
-					}
-
-					foreach($extra_vars as $key => $val)
-					{
-						if(!$val)
-						{
-							continue;
-						}
-
-						$obj = new stdClass();
-						if(!$val->attrs)
-						{
-							$val->attrs = new stdClass();
-						}
-						if(!$val->attrs->type)
-						{
-							$val->attrs->type = 'text';
-						}
-
-						$obj->group = $group->title->body;
-						$obj->name = $val->attrs->name;
-						$obj->title = $val->title->body;
-						$obj->type = $val->attrs->type;
-						$obj->description = $val->description->body;
-						if($obj->name)
-						{
-							$obj->value = $extra_vals->{$obj->name};
-						}
-						if(strpos($obj->value, '|@|') != FALSE)
-						{
-							$obj->value = explode('|@|', $obj->value);
-						}
-						if($obj->type == 'mid_list' && !is_array($obj->value))
-						{
-							$obj->value = array($obj->value);
-						}
-
-						// 'Select'type obtained from the option list.
-						if($val->options && !is_array($val->options))
-						{
-							$val->options = array($val->options);
-						}
-
-						for($i = 0, $c = count($val->options); $i < $c; $i++)
-						{
-							$obj->options[$i] = new stdClass();
-							$obj->options[$i]->title = $val->options[$i]->title->body;
-							$obj->options[$i]->value = $val->options[$i]->attrs->value;
-						}
-
-						$component_info->extra_vars->{$obj->name} = $obj;
-					}
-				}
-			}
-
-			$buff = array();
-			$buff[] = '<?php if(!defined(\'__XE__\')) exit();';
-			$buff[] = '$xml_info = ' . var_export($component_info, TRUE) . ';';
-			$buff = str_replace('stdClass::__set_state', '(object)', implode(PHP_EOL, $buff));
-
-			FileHandler::writeFile($cache_file, $buff, 'w');
-
-			return $component_info;
-		}
-
-		function loadDrComponents()
-		{
-			$drComponentPath = _XE_PATH_ . 'modules/editor/skins/dreditor/drcomponents/';
-			$drComponentList = FileHandler::readDir($drComponentPath);
-
-			$oTemplate = &TemplateHandler::getInstance();
-
-			$drComponentInfo = array();
-			if($drComponentList)
-			{
-				foreach($drComponentList as $i => $drComponent)
-				{
-					unset($obj);
-					$obj = $this->getDrComponentXmlInfo($drComponent);
-					Context::loadLang(sprintf('%s%s/lang/',$drComponentPath,$drComponent));
-					$path = sprintf('%s%s/tpl/',$drComponentPath,$drComponent);
-					$obj->html = $oTemplate->compile($path,$drComponent);
-					$drComponentInfo[$drComponent] = $obj;
-				}
-			}
-			Context::set('drComponentList',$drComponentInfo);
-		}
-
-		function getDrComponentXmlInfo($drComponentName)
-		{
-			$lang_type = Context::getLangType();
-			// Get the xml file path of requested component
-			$component_path = sprintf('%s/skins/dreditor/drcomponents/%s/', $this->module_path, $drComponentName);
-
-			$xml_file = sprintf('%sinfo.xml', $component_path);
-			$cache_file = sprintf('./files/cache/editor/dr_%s.%s.php', $drComponentName, $lang_type);
-			// Return information after including it after cached xml file exists
-			if(file_exists($cache_file) && file_exists($xml_file) && filemtime($cache_file) > filemtime($xml_file))
-			{
-				include($cache_file);
-				return $xml_info;
-			}
-			// Return after parsing and caching if the cached file does not exist
-			$oParser = new XeXmlParser();
-			$xml_doc = $oParser->loadXmlFile($xml_file);
-
-			$component_info->component_name = $drComponentName;
-			$component_info->title = $xml_doc->component->title->body;
-			$component_info->description = str_replace('\n', "\n", $xml_doc->component->description->body);
-			$component_info->version = $xml_doc->component->version->body;
-			$component_info->date = $xml_doc->component->date->body;
-			$component_info->homepage = $xml_doc->component->link->body;
-			$component_info->license = $xml_doc->component->license->body;
-			$component_info->license_link = $xml_doc->component->license->attrs->link;
-
-			$buff = '<?php if(!defined("__XE__")) exit(); ';
-			$buff .= sprintf('$xml_info->component_name = %s;', var_export($component_info->component_name, true));
-			$buff .= sprintf('$xml_info->title = %s;', var_export($component_info->title, true));
-			$buff .= sprintf('$xml_info->description = %s;', var_export($component_info->description, true));
-			$buff .= sprintf('$xml_info->version = %s;', var_export($component_info->version, true));
-			$buff .= sprintf('$xml_info->date = %s;', var_export($component_info->date, true));
-			$buff .= sprintf('$xml_info->homepage = %s;', var_export($component_info->homepage, true));
-			$buff .= sprintf('$xml_info->license = %s;', var_export($component_info->license, true));
-			$buff .= sprintf('$xml_info->license_link = %s;', var_export($component_info->license_link, true));
-
-			// Author information
-			if(!is_array($xml_doc->component->author)) $author_list[] = $xml_doc->component->author;
-			else $author_list = $xml_doc->component->author;
-
-			for($i=0; $i < count($author_list); $i++)
-			{
-				$buff .= sprintf('$xml_info->author['.$i.']->name = %s;', var_export($author_list[$i]->name->body, true));
-				$buff .= sprintf('$xml_info->author['.$i.']->email_address = %s;', var_export($author_list[$i]->attrs->email_address, true));
-				$buff .= sprintf('$xml_info->author['.$i.']->homepage = %s;', var_export($author_list[$i]->attrs->link, true));
-			}
-
-			// List extra variables (text type only in the editor component)
-			$extra_vars = $xml_doc->component->extra_vars->var;
-			if($extra_vars)
-			{
-				if(!is_array($extra_vars)) $extra_vars = array($extra_vars);
-				foreach($extra_vars as $key => $val)
-				{
-					unset($obj);
-					$key = $val->attrs->name;
-					$title = $val->title->body;
-					$description = $val->description->body;
-					$xml_info->extra_vars->{$key}->title = $title;
-					$xml_info->extra_vars->{$key}->description = $description;
-
-					$buff .= sprintf('$xml_info->extra_vars->%s->%s = %s;', $key, 'title', var_export($title));
-					$buff .= sprintf('$xml_info->extra_vars->%s->%s = %s;', $key, 'description', var_export($description));
-				}
-			}
-
-			FileHandler::writeFile($cache_file, $buff, "w");
-
-			unset($xml_info);
-			include($cache_file);
-			return $xml_info;
-		}*/
-
-		// function getComponentListCacheKey($filter_enabled = true, $site_srl = 0) {
-		/*private function _getComponentListCacheKey($filter_enabled = true, $site_srl = 0) {
-			$cache_key = array();
-			$cache_key[] = \X2board\Includes\Classes\Context::getLangType();
-			if ($filter_enabled) {
-				$cache_key[] = 'filter';
-			}
-			if ($site_srl) {
-				$cache_key[] = $site_srl;
-			}
-			return 'editor.component_list:' . implode('.', $cache_key);
-		}*/
-
-		/**
-		 * @brief Return editor setting for each board
-		 */
-		// function getEditorConfig($module_srl = null)
-		/*private function _get_editor_config($n_board_id = null) {
-			global $G_X2B_CACHE;
-			if(!isset($G_X2B_CACHE['__editor_module_config__'][$n_board_id]) && $n_board_id) {
-				// Get trackback settings of the selected board
-				// $oModuleModel = getModel('module');
-				$G_X2B_CACHE['__editor_module_config__'][$n_board_id] = null; //$oModuleModel->getModulePartConfig('editor', $n_board_id);
-			}
-			$o_editor_config = $G_X2B_CACHE['__editor_module_config__'][$n_board_id];
-error_log(print_r($o_editor_config, true));
-			
-			// $oModuleModel = getModel('module');
-			// $o_editor_default_config = $oModuleModel->getModuleConfig('editor');
-
-			if(!is_object($o_editor_config)) {
-				$o_editor_config = new \stdClass();
-			}
-
-			if(!isset($o_editor_config->enable_autosave) || $o_editor_config->enable_autosave != 'N') {
-				$o_editor_config->enable_autosave = 'Y';
-			}
-			if(!isset($o_editor_config->enable_html_grant) || !is_array($o_editor_config->enable_html_grant)) {
-				$o_editor_config->enable_html_grant = array();
-			}
-			if(!isset($o_editor_config->enable_comment_html_grant) || !is_array($o_editor_config->enable_comment_html_grant)) {
-				$o_editor_config->enable_comment_html_grant = array();
-			}
-			if(!isset($o_editor_config->upload_file_grant) || !is_array($o_editor_config->upload_file_grant)) {
-				$o_editor_config->upload_file_grant = array();
-			}
-			if(!isset($o_editor_config->comment_upload_file_grant) || !is_array($o_editor_config->comment_upload_file_grant)) {
-				$o_editor_config->comment_upload_file_grant = array();
-			}
-			if(!isset($o_editor_config->enable_default_component_grant) || !is_array($o_editor_config->enable_default_component_grant)) {
-				$o_editor_config->enable_default_component_grant = array();
-			}
-			if(!isset($o_editor_config->enable_comment_default_component_grant) || !is_array($o_editor_config->enable_comment_default_component_grant)) {
-				$o_editor_config->enable_comment_default_component_grant = array();
-			}
-			if(!isset($o_editor_config->enable_component_grant) || !is_array($o_editor_config->enable_component_grant)) {
-				$o_editor_config->enable_component_grant = array();
-			}
-			if(!isset($o_editor_config->enable_comment_component_grant) || !is_array($o_editor_config->enable_comment_component_grant)) {
-				$o_editor_config->enable_comment_component_grant= array();
-			}
-			///////////////////////
-			if(!isset($o_editor_config->editor_height)) {
-				$o_editor_config->editor_height = 500; // ($o_editor_default_config->editor_height) ? $o_editor_default_config->editor_height : 500;
-			}
-			if(!isset($o_editor_config->comment_editor_height)) {
-				$o_editor_config->comment_editor_height = 120; // ($o_editor_default_config->comment_editor_height) ? $o_editor_default_config->comment_editor_height : 120;
-			}
-			if(!isset($o_editor_config->editor_skin)) {
-				$o_editor_config->editor_skin = 'ckeditor'; // ($o_editor_default_config->editor_skin) ? $o_editor_default_config->editor_skin : 'ckeditor';
-			}
-			if(!isset($o_editor_config->comment_editor_skin)) {
-				$o_editor_config->comment_editor_skin = 'ckeditor'; // ($o_editor_default_config->comment_editor_skin) ? $o_editor_default_config->comment_editor_skin : 'ckeditor';
-			}
-			if(!isset($o_editor_config->content_style)) {
-				$o_editor_config->content_style = 'ckeditor_light'; //($o_editor_default_config->content_style) ? $o_editor_default_config->content_style : 'ckeditor_light';
-			}
-			if(!isset($o_editor_config->content_font) && isset($o_editor_default_config->content_font)) {
-				$o_editor_config->content_font = $o_editor_default_config->content_font;
-			}
-			if(!isset($o_editor_config->content_font_size) && isset($o_editor_default_config->content_font_size)) {
-				$o_editor_config->content_font_size = $o_editor_default_config->content_font_size;
-			}
-			if(!isset($o_editor_config->sel_editor_colorset) && isset($o_editor_default_config->sel_editor_colorset)) {
-				$o_editor_config->sel_editor_colorset = $o_editor_default_config->sel_editor_colorset;
-			}
-			if(!isset($o_editor_config->sel_comment_editor_colorset) && isset($o_editor_default_config->sel_comment_editor_colorset)) {
-				$o_editor_config->sel_comment_editor_colorset = $o_editor_default_config->sel_comment_editor_colorset;
-			}
-			if(!isset($o_editor_config->comment_content_style) && isset($o_editor_default_config->comment_content_style)) {
-				$o_editor_config->comment_content_style = $o_editor_default_config->comment_content_style;
-			}
-			return $o_editor_config;
 		}*/
 	}
 }

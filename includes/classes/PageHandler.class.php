@@ -6,7 +6,6 @@
  * @class PageHandler
  * @author XEHub (developers@xpressengine.com)
  * handles page navigation
- * @version 0.1
  *
  * @remarks Getting total counts, number of pages, current page number, number of items per page, 
  *          this class implements methods and contains variables for page navigation

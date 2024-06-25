@@ -5,10 +5,8 @@
  * Functions to register the default settings of the plugin.
  *
  * @link https://singleview.co.kr 
- * @since 2.6.0
  *
  * @package x2board
- * @subpackage 
  */
 
 namespace X2board\Includes\Admin\Tpl;
@@ -17,11 +15,8 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 
-
 /**
  * Retrieve the array of plugin settings
- *
- * @since 2.6.0
  *
  * @return array Settings array
  */
@@ -39,24 +34,17 @@ function x2b_get_registered_settings() {
 	/**
 	 * Filters the settings array
 	 *
-	 * @since 2.6.0
-	 *
 	 * @param array   $a_x2b_settings Settings array
 	 */
 	return apply_filters( 'x2b_registered_settings', $a_x2b_settings );
 }
 
-
-
 /**
  * Retrieve the array of General settings
- *
- * @since 2.6.0
  *
  * @return array General settings array
  */
 function x2b_settings_general() {
-// error_log(print_r('x2b_settings_general', true));
 	$settings = array(
 		'x2board_title'					=> array(
 			'id'      => 'board_title',
@@ -174,7 +162,6 @@ function x2b_settings_general() {
 				'comment_count'            => __( 'opt_comment_count', X2B_DOMAIN ),  // 댓글 수
 				'title'        => __( 'opt_title', X2B_DOMAIN ),  // 제목
 				'nick_name'            => __( 'opt_nick_name', X2B_DOMAIN ),  // 닉네임
-				// 'user_name'        => __( 'User name', X2B_DOMAIN ),  // 이름
 				'user_id'            => __( 'opt_user_id', X2B_DOMAIN )  // 아이디
 			),
 		),
@@ -258,8 +245,6 @@ function x2b_settings_general() {
 	/**
 	 * Filters the General settings array
 	 *
-	 * @since 2.6.0
-	 *
 	 * @param array $settings General settings array
 	 */
 	return apply_filters( 'x2b_settings_general', $settings );
@@ -268,8 +253,6 @@ function x2b_settings_general() {
 
 /**
  * Retrieve the array of category settings
- *
- * @since 2.6.0
  *
  * @return array category settings array
  */
@@ -313,8 +296,6 @@ function x2b_settings_category() {
 	/**
 	 * Filters the List settings array
 	 *
-	 * @since 2.6.0
-	 *
 	 * @param array $settings List settings array
 	 */
 	return apply_filters( 'x2b_settings_category', $settings );
@@ -323,8 +304,6 @@ function x2b_settings_category() {
 
 /**
  * Retrieve the array of user define field settings
- *
- * @since 2.6.0
  *
  * @return array user define field settings array
  */
@@ -356,8 +335,6 @@ function x2b_settings_user_define_field() {
 	/**
 	 * Filters the Output settings array
 	 *
-	 * @since 2.6.0
-	 *
 	 * @param array $settings Output settings array
 	 */
 	return apply_filters( 'x2b_settings_user_define_field', $settings );
@@ -366,8 +343,6 @@ function x2b_settings_user_define_field() {
 
 /**
  * Retrieve the array of permission settings
- *
- * @since 2.6.0
  *
  * @return array Thumbnail settings array
  */
@@ -428,8 +403,6 @@ function x2b_settings_permission() {
 	/**
 	 * Filters the Thumbnail settings array
 	 *
-	 * @since 2.6.0
-	 *
 	 * @param array $settings Thumbnail settings array
 	 */
 	return apply_filters( 'x2b_settings_permission', $settings );
@@ -438,8 +411,6 @@ function x2b_settings_permission() {
 
 /**
  * Retrieve the array of extra settings
- *
- * @since 2.6.0
  *
  * @return array extra settings array
  */
@@ -735,8 +706,6 @@ function x2b_settings_extra() {
 	/**
 	 * Filters the Styles settings array
 	 *
-	 * @since 2.6.0
-	 *
 	 * @param array $settings Styles settings array
 	 */
 	return apply_filters( 'x2b_settings_extra', $settings );
@@ -745,8 +714,6 @@ function x2b_settings_extra() {
 
 /**
  * Retrieve the array of skin vars settings
- *
- * @since 2.6.0
  *
  * @return array Feed skin vars array
  */
@@ -784,33 +751,17 @@ function x2b_settings_skin_vars() {
 	/**
 	 * Filters the Feed settings array
 	 *
-	 * @since 2.6.0
-	 *
 	 * @param array $settings Feed settings array
 	 */
 	return apply_filters( 'x2b_settings_skin_vars', $settings );
 }
 
-
-/**
- * Upgrade pre v2.5.0 settings.
- *
- * @since 2.6.0
- * @return array Settings array
- */
-function x2b_upgrade_settings() {
-	return array();
-}
-
-
 /**
  * Get the various skins.
  *
- * @since 2.6.0
  * @return array skins options.
  */
 function x2b_get_board_skins() {
-
 	$s_skin_path_abs = X2B_PATH.DIRECTORY_SEPARATOR.'includes'.DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.'board'.DIRECTORY_SEPARATOR.'skins';
 	$a_skins = \X2board\Includes\Classes\FileHandler::readDir($s_skin_path_abs);
 
@@ -823,8 +774,6 @@ function x2b_get_board_skins() {
 	/**
 	 * Filter the array containing the skins to add your own.
 	 *
-	 * @since 2.6.0
-	 *
 	 * @param array $skins Different skins.
 	 */
 	return apply_filters( 'x2b_get_board_skins', $a_skin_info );
@@ -833,8 +782,6 @@ function x2b_get_board_skins() {
 
 /**
  * Get the various skins.
- *
- * @since 2.6.0
  * @return array Style options.
  */
 function x2b_get_editors() {
@@ -851,8 +798,6 @@ function x2b_get_editors() {
 	/**
 	 * Filter the array containing the skins to add your own.
 	 *
-	 * @since 2.6.0
-	 *
 	 * @param array $skins Different skins.
 	 */
 	return apply_filters( 'x2b_get_editors', $a_skin_info );
@@ -862,11 +807,9 @@ function x2b_get_editors() {
 /**
  * Get the various content styles.
  *
- * @since 2.6.0
  * @return array Style options.
  */
 function x2b_get_content_styles() {
-
 	$s_style_path_abs = X2B_PATH.DIRECTORY_SEPARATOR.'includes'.DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.'editor'.DIRECTORY_SEPARATOR.'styles';
 	$a_styles = \X2board\Includes\Classes\FileHandler::readDir($s_style_path_abs);
 
@@ -879,8 +822,6 @@ function x2b_get_content_styles() {
 	/**
 	 * Filter the array containing the skins to add your own.
 	 *
-	 * @since 2.6.0
-	 *
 	 * @param array $skins Different skins.
 	 */
 	return apply_filters( 'x2b_get_content_styles', $a_style_info );
@@ -890,7 +831,6 @@ function x2b_get_content_styles() {
 /**
  * Get x2b grants.
  *
- * @since 2.6.0
  * @return array Style options.
  */
 function x2b_get_grants() {
@@ -905,8 +845,6 @@ function x2b_get_grants() {
 	/**
 	 * Filter the array to allow privilege
 	 *
-	 * @since 2.6.0
-	 *
 	 * @param array $roles Different roles.
 	 */
 	return apply_filters( 'x2b_get_grants', $a_roles );
@@ -915,11 +853,9 @@ function x2b_get_grants() {
 /**
  * Get the various skins.
  *
- * @since 2.6.0
  * @return array Style options.
  */
 function x2b_get_editable_roles() {
-
 	if (!function_exists('get_editable_roles')) {
 		require_once(ABSPATH . '/wp-admin/includes/user.php');
 	}
@@ -933,8 +869,6 @@ function x2b_get_editable_roles() {
 
 	/**
 	 * Filter the array to allow privilege
-	 *
-	 * @since 2.6.0
 	 *
 	 * @param array $roles Different roles.
 	 */

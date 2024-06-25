@@ -24,7 +24,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\\EmbedFilter')) {
 		 */
 		var $allowscriptaccessKey = 0;
 		var $whiteUrlXmlFile = X2B_PATH . 'includes/classes/security/conf/embedWhiteUrl.xml';
-		var $whiteUrlCacheFile = null; //X2B_PATH . 'x2board/cache/embedfilter/embedWhiteUrl.php';
+		var $whiteUrlCacheFile = null;
 		var $whiteUrlList = array();
 		var $whiteIframeUrlList = array();
 		var $parser = NULL;
@@ -274,7 +274,6 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\\EmbedFilter')) {
 			$this->whiteUrlCacheFile = $s_cached_filter_path.DIRECTORY_SEPARATOR.'embedWhiteUrl.php';
 			$this->_makeWhiteDomainList();
 			
-			// include FileHandler::getRealPath($this->whiteUrlCacheFile);
 			include $this->whiteUrlCacheFile;
 			$this->whiteUrlList = $whiteUrlList;
 			$this->whiteIframeUrlList = $whiteIframeUrlList;
@@ -292,10 +291,16 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\\EmbedFilter')) {
 			return $GLOBALS['__EMBEDFILTER_INSTANCE__'];
 		}
 
+		/**
+		 * @return
+		 */
 		public function getWhiteUrlList() {
 			return $this->whiteUrlList;
 		}
 
+		/**
+		 * @return
+		 */
 		public function getWhiteIframeUrlList() {
 			return $this->whiteIframeUrlList;
 		}
@@ -325,7 +330,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\\EmbedFilter')) {
 				foreach($objectTagList AS $key => $objectTag) {
 					$isWhiteDomain = true;
 					$isWhiteMimetype = true;
-					$isWhiteExt = true;
+					// $isWhiteExt = true;
 					$ext = '';
 
 					$parser = new HtmlParser($objectTag);
@@ -335,12 +340,12 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\\EmbedFilter')) {
 								// data url check
 								if($attrValue && strtolower($attrName) == 'data') {
 									$ext = strtolower(substr(strrchr($attrValue, "."), 1));
-									$isWhiteDomain = $this->isWhiteDomain($attrValue);
+									$isWhiteDomain = $this->_isWhiteDomain($attrValue);
 								}
 
 								// mime type check
 								if(strtolower($attrName) == 'type' && $attrValue) {
-									$isWhiteMimetype = $this->isWhiteMimetype($attrValue);
+									$isWhiteMimetype = $this->_isWhiteMimetype($attrValue);
 								}
 							}
 						}
@@ -364,7 +369,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\\EmbedFilter')) {
 				foreach($embedTagList AS $key => $embedTag) {
 					$isWhiteDomain = TRUE;
 					$isWhiteMimetype = TRUE;
-					$isWhiteExt = TRUE;
+					// $isWhiteExt = TRUE;
 					$ext = '';
 
 					$parser = new HtmlParser($embedTag);
@@ -374,12 +379,12 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\\EmbedFilter')) {
 								// src url check
 								if($attrValue && strtolower($attrName) == 'src') {
 									$ext = strtolower(substr(strrchr($attrValue, "."), 1));
-									$isWhiteDomain = $this->isWhiteDomain($attrValue);
+									$isWhiteDomain = $this->_isWhiteDomain($attrValue);
 								}
 
 								// mime type check
 								if(strtolower($attrName) == 'type' && $attrValue) {
-									$isWhiteMimetype = $this->isWhiteMimetype($attrValue);
+									$isWhiteMimetype = $this->_isWhiteMimetype($attrValue);
 								}
 							}
 						}
@@ -413,7 +418,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\\EmbedFilter')) {
 								// src url check
 								if(strtolower($attrName) == 'src' && $attrValue) {
 									$ext = strtolower(substr(strrchr($attrValue, "."), 1));
-									$isWhiteDomain = $this->isWhiteIframeDomain($attrValue);
+									$isWhiteDomain = $this->_isWhiteIframeDomain($attrValue);
 								}
 							}
 						}
@@ -435,7 +440,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\\EmbedFilter')) {
 			if($paramTagList) {
 				foreach($paramTagList AS $key => $paramTag) {
 					$isWhiteDomain = TRUE;
-					$isWhiteExt = TRUE;
+					// $isWhiteExt = TRUE;
 					$ext = '';
 
 					$parser = new HtmlParser($paramTag);
@@ -444,7 +449,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\\EmbedFilter')) {
 							$name = strtolower($parser->iNodeAttributes['name']);
 							if($name == 'movie' || $name == 'src' || $name == 'href' || $name == 'url' || $name == 'source') {
 								$ext = strtolower(substr(strrchr($parser->iNodeAttributes['value'], "."), 1));
-								$isWhiteDomain = $this->isWhiteDomain($parser->iNodeAttributes['value']);
+								$isWhiteDomain = $this->_isWhiteDomain($parser->iNodeAttributes['value']);
 
 								if(!$isWhiteDomain) {
 									$content = str_replace($paramTag, htmlspecialchars($paramTag, ENT_COMPAT | ENT_HTML401, 'UTF-8', false), $content);
@@ -460,7 +465,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\\EmbedFilter')) {
 		 * Check white domain in object data attribute or embed src attribute.
 		 * @return string
 		 */
-		function isWhiteDomain($urlAttribute) {
+		private function _isWhiteDomain($urlAttribute) {
 			if(is_array($this->whiteUrlList)) {
 				foreach($this->whiteUrlList AS $key => $value) {
 					if(preg_match('@^' . preg_quote($value) . '@i', $urlAttribute)) {
@@ -475,7 +480,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\\EmbedFilter')) {
 		 * Check white domain in iframe src attribute.
 		 * @return string
 		 */
-		function isWhiteIframeDomain($urlAttribute) {
+		/*private function _isWhiteIframeDomain($urlAttribute) {
 			if(is_array($this->whiteIframeUrlList)) {
 				foreach($this->whiteIframeUrlList AS $key => $value) {
 					if(preg_match('@^' . preg_quote($value) . '@i', $urlAttribute)) {
@@ -484,26 +489,22 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\\EmbedFilter')) {
 				}
 			}
 			return FALSE;
-		}
+		}*/
 
 		/**
 		 * Check white mime type in object type attribute or embed type attribute.
 		 * @return string
 		 */
-		function isWhiteMimetype($mimeType) {
+		private function _isWhiteMimetype($mimeType) {
 			if(isset($this->mimeTypeList[$mimeType])) {
 				return TRUE;
 			}
 			return FALSE;
 		}
 
-		function isWhiteExt($ext) {
-			if(isset($this->extList[$ext])) {
-				return TRUE;
-			}
-			return FALSE;
-		}
-
+		/**
+		 * @return
+		 */
 		private function _checkAllowScriptAccess($m) {
 			if($m[1] == 'object') {
 				$this->allowscriptaccessList[] = 1;
@@ -529,6 +530,9 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\\EmbedFilter')) {
 			return $m[0];
 		}
 
+		/**
+		 * @return
+		 */
 		private function _addAllowScriptAccess($m) {
 			if($this->allowscriptaccessList[$this->allowscriptaccessKey] == 1) {
 				$m[0] = $m[0] . '<param name="allowscriptaccess" value="never"></param>';
@@ -543,8 +547,8 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\\EmbedFilter')) {
 		 * @return void
 		 */
 		private function _makeWhiteDomainList($whitelist = NULL) {
-			$whiteUrlXmlFile = $this->whiteUrlXmlFile; //FileHandler::getRealPath($this->whiteUrlXmlFile);
-			$whiteUrlCacheFile = $this->whiteUrlCacheFile; //FileHandler::getRealPath($this->whiteUrlCacheFile);
+			$whiteUrlXmlFile = $this->whiteUrlXmlFile;
+			$whiteUrlCacheFile = $this->whiteUrlCacheFile;
 
 			$isMake = FALSE;
 			if(!file_exists($whiteUrlCacheFile)) {
@@ -613,14 +617,6 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\\EmbedFilter')) {
 					}
 				}
 
-				// $db_info = Context::getDBInfo();
-				// if($db_info->embed_white_object) {
-				// 	$whiteUrlList = array_merge($whiteUrlList, $db_info->embed_white_object);
-				// }
-				// if($db_info->embed_white_iframe) {
-				// 	$whiteIframeUrlList = array_merge($whiteIframeUrlList, $db_info->embed_white_iframe);
-				// }
-
 				$whiteUrlList = array_unique($whiteUrlList);
 				$whiteIframeUrlList = array_unique($whiteIframeUrlList);
 				asort($whiteUrlList);
@@ -632,7 +628,6 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\\EmbedFilter')) {
 				$buff[] = '$whiteIframeUrlList = ' . var_export($whiteIframeUrlList, TRUE) . ';';
 				
 				$o_wp_filesystem->put_contents($this->whiteUrlCacheFile, implode(PHP_EOL, $buff));
-				// FileHandler::writeFile($this->whiteUrlCacheFile, implode(PHP_EOL, $buff));
 				unset($o_wp_filesystem);
 			}
 		}

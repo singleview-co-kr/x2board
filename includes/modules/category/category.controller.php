@@ -21,7 +21,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Category\\categoryController'))
 		 * Initialization
 		 * @return void
 		 */
-		function init() {}
+		// function init() {}
 
 		public function set_board_id($n_board_id) {
 			$this->_n_board_id = $n_board_id;
@@ -29,11 +29,11 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Category\\categoryController'))
 
 		/**
 		 * Update post_count in the category.
+		 * updateCategoryCount($module_srl, $category_srl, $document_count = 0)
 		 * @param int $category_srl
 		 * @param int $document_count
 		 * @return object
 		 */
-		// function updateCategoryCount($module_srl, $category_srl, $document_count = 0)
 		public function update_category_count($n_category_id) {
 			$n_post_count = $this->_get_post_count_by_category($n_category_id);
 			global $wpdb;
@@ -48,16 +48,14 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Category\\categoryController'))
 
 		/**
 		 * Wanted number of posts belonging to category
+		 * getCategoryDocumentCount($module_srl, $category_srl)
 		 * @param int $category_srl
 		 * @return int
 		 */
-		// function getCategoryDocumentCount($module_srl, $category_srl)
 		private function _get_post_count_by_category($n_category_id) {
 			global $wpdb;
 			$count = $wpdb->get_var("SELECT count(*) as `count` FROM `{$wpdb->prefix}x2b_posts` WHERE `category_id`='$n_category_id' AND `board_id`='$this->_n_board_id'");
 			return intval($count);
 		}
-
 	}
 }
-/* End of file category.controller.php */

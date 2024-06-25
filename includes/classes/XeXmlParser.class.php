@@ -104,9 +104,8 @@ if (!class_exists('\\X2board\\Includes\\Classes\\XeXmlParser')) {
 				$start = getMicroTime();
 			}
 
-			$this->lang = 'en';//Context::getLangType();
-
-			$this->input = $input ? $input : $GLOBALS['HTTP_RAW_POST_DATA'];
+			$this->lang = Context::getLangType();
+			$this->input = $input; // ? $input : $GLOBALS['HTTP_RAW_POST_DATA'];
 			$this->input = str_replace(array('', ''), array('', ''), $this->input);
 
 			// extracts a supported language

@@ -134,12 +134,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postAdminModel')) {
 		}
 
 		/**
-		 * unchosen user default field UI render
-		 *
-		 * Renders unchosen user field UI fields.
-		 *
-		 * @since 2.6.0
-		 *
+		 * Renders unchosen user field UI
 		 * @param array $array of unchosen user default field 
 		 * @return void
 		 */
@@ -152,13 +147,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postAdminModel')) {
 		}
 
 		/**
-		 * unchosen user default field UI render
-		 *
-		 * Renders unchosen user field UI fields.
-		 *
-		 * @since 2.6.0
-		 *
-		 * @param array $array of unchosen user default field 
+		 * Render user extended fields
+		 * @param 
 		 * @return void
 		 */
 		private function _render_user_extended_fields() {
@@ -170,13 +160,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\postAdminModel')) {
 		}
 
 		/**
-		 * unchosen user default field UI render
-		 *
-		 * Renders unchosen user field UI fields.
-		 *
-		 * @since 2.6.0
-		 *
-		 * @param array $array of unchosen user default field 
+		 * Render user define fields
+		 * @param
 		 * @return void
 		 */
 		private function _render_user_define_fields() {

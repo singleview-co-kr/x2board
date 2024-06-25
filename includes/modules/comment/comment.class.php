@@ -8,7 +8,6 @@
  *
  * @author XEHub (developers@xpressengine.com)
  * @package /modules/comment
- * @version 0.1
  */
 namespace X2board\Includes\Modules\Comment;
 
@@ -30,7 +29,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\comment')) {
 		 * @return void
 		 */
 		function __construct() {
-var_dump('comment high class __construct');
 			if(!isset($_SESSION['x2b_own_comment'])) {
 				$_SESSION['x2b_own_comment'] = array();
 			}
@@ -49,7 +47,5 @@ var_dump('comment high class __construct');
 			}
 			return $this->a_status_option['allow'];
 		}
-
 	}
 }
-/* End of file comment.class.php */

@@ -73,8 +73,7 @@ global $A_X2B_ADMIN_SETTINGS_PAGE;
 function add_admin_pages_links() {
 	global $A_X2B_ADMIN_SETTINGS_PAGE;
 	$A_X2B_ADMIN_SETTINGS_PAGE = array();
-	
-	// add_action( "load-$crp_settings_tools", 'crp_settings_help' );
+
 	global $_wp_last_object_menu;
 	$_wp_last_object_menu++;
 	// visible admin page
@@ -94,15 +93,12 @@ function add_admin_pages_links() {
 		X2B_CMD_ADMIN_VIEW_BOARD_UPDATE,
 		'X2board\Includes\Admin\disp_admin_board'
 	);
-// var_dump($A_X2B_ADMIN_SETTINGS_PAGE)	;
-// exit;
 }
 add_action( 'admin_menu', 'X2board\Includes\Admin\add_admin_pages_links', 99 );
 
 
 /* Plugins Loaded Hook */
 function admin_init() {
-// error_log(print_r('x2b_admin_init', true));
 	// 관리자에게 manage_x2board 권한 추가
 	$admin_role = get_role('administrator');
 	if(!$admin_role->has_cap('manage_x2board')){
@@ -167,7 +163,6 @@ function disp_admin_board() {
 	unset($o_module);
 }
 
-
 /**
  * Trigger Board Admin control.
  */
@@ -187,11 +182,8 @@ function proc_admin_board(){
 	exit; // to execute wp_redirect(admin_url());
 }
 
-
 /**
  * Add rating links to the admin dashboard
- *
- * @since 2.6.0
  *
  * @param string $footer_text The existing footer text.
  * @return string Updated Footer text
@@ -199,31 +191,21 @@ function proc_admin_board(){
 function footer( $footer_text ) {
 	global $A_X2B_ADMIN_SETTINGS_PAGE;
 	$current_screen = get_current_screen();
-// var_dump($current_screen->id);
-// var_dump($A_X2B_ADMIN_SETTINGS_PAGE);
-	if ( in_array( $current_screen->id, $A_X2B_ADMIN_SETTINGS_PAGE, true ) ) {
-
+	if( in_array( $current_screen->id, $A_X2B_ADMIN_SETTINGS_PAGE, true ) ) {
 		$text = sprintf(
 			__( 'msg_thank_you_using_x2board', X2B_DOMAIN ),
 			'https://singleview.co.kr/x2board',
 			'https://wordpress.org/support/plugin/x2board/reviews/#new-post'
 		);
-
 		return str_replace( '</span>', '', $footer_text ) . ' | ' . $text . '</span>';
-
 	} else {
-
 		return $footer_text;
-
 	}
 }
 add_filter( 'admin_footer_text', 'X2board\Includes\Admin\footer' );
 
-
 /**
  * Enqueue Admin JS
- *
- * @since 2.9.0
  *
  * @param string $hook The current admin page.
  */
@@ -260,47 +242,3 @@ function load_scripts( $hook ) {
 	}
 }
 add_action( 'admin_enqueue_scripts', 'X2board\Includes\Admin\load_scripts' );
-
-
-/**
- * This function enqueues scripts and styles in the Customizer.
- *
- * @since 2.9.0
- */
-// function x2b_customize_controls_enqueue_scripts() {
-// 	wp_enqueue_script( 'customize-controls' );
-// 	wp_enqueue_script( 'x2b-suggest-js' );
-// 	wp_enqueue_style( 'x2b-admin-customizer-css' );
-// }
-// add_action( 'customize_controls_enqueue_scripts', 'x2b_customize_controls_enqueue_scripts', 99 );
-
-
-/**
- * Adds minor CSS styles to the admin menu.
- *
- * @since 3.1.1
- */
-// function x2b_admin_css() {
-
-// 	if ( ! is_customize_preview() ) {
-// 		$css = '
-// 			<style type="text/css">
-// 				a.crp_button {
-// 					background: green;
-// 					padding: 10px;
-// 					color: white;
-// 					text-decoration: none;
-// 					text-shadow: none;
-// 					border-radius: 3px;
-// 					transition: all 0.3s ease 0s;
-// 					border: 1px solid green;
-// 				}
-// 				a.crp_button:hover {
-// 					box-shadow: 3px 3px 10px #666;
-// 				}
-// 			</style>';
-
-// 		echo $css; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-// 	}
-// }
-// add_action( 'admin_head', 'x2b_admin_css' );

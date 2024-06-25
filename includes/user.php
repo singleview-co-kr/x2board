@@ -2,11 +2,8 @@
 /**
  * The user-specific functionality of the plugin.
  *
- * @link  https://singleview.co.kr/
- * @since 2.6.0
- *
- * @package    x2board
- * @subpackage User
+ * @author  https://singleview.co.kr/
+ * @version 0.0.1
  */
 
 namespace X2board\Includes;
@@ -35,7 +32,7 @@ if ( !defined( 'X2B_CMD_VIEW_LIST' ) ) {
     define('X2B_CMD_PROC_VERIFY_PASSWORD', 'proc_verify_password');
     define('X2B_CMD_PROC_MODIFY_POST', 'proc_modify_post');
     define('X2B_CMD_PROC_DELETE_POST', 'proc_delete_post');
-    define('X2B_CMD_PROC_WRITE_COMMENT', 'proc_write_comment');  // include X2B_CMD_PROC_REPLY_COMMENT
+    define('X2B_CMD_PROC_WRITE_COMMENT', 'proc_write_comment');
     define('X2B_CMD_PROC_DELETE_COMMENT', 'proc_delete_comment');
     define('X2B_CMD_PROC_DOWNLOAD_FILE', 'proc_download_file');
     define('X2B_CMD_PROC_OUTPUT_FILE', 'proc_output_file');

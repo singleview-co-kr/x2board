@@ -2,11 +2,8 @@
 /**
  * The skin functionality of the plugin.
  *
- * @link  https://singleview.co.kr/
- * @since 2.6.0
- *
- * @package    x2board
- * @subpackage no_namespace.helper
+ * @author  https://singleview.co.kr/
+ * @version 0.0.1
  */
 function x2b_get_url() {  // this function is same with func.inc.php::get_url()
     $n_num_args = func_num_args();
@@ -72,9 +69,3 @@ function x2b_zdate($str, $format) {
 function x2b_get_time_gap($date, $format = 'Y.m.d') {
 	return \X2board\Includes\getTimeGap($date, $format);
 }
-
-/*function x2b_include_skin($s_skin_filename) {
-	$o_board_view = \X2board\Includes\getView('board');
-	echo $o_board_view->render_skin_file($s_skin_filename);
-	unset($o_board_view);
-}*/

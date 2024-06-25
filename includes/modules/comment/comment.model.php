@@ -8,7 +8,6 @@
  *
  * @author XEHub (developers@xpressengine.com)
  * @package /modules/comment
- * @version 0.1
  */
 namespace X2board\Includes\Modules\Comment;
 
@@ -28,12 +27,12 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 
 		/**
 		 * Get the comment
+		 * getComment($comment_srl = 0, $is_admin = FALSE, $columnList = array())
 		 * @param int $comment_srl
 		 * @param bool $is_admin
 		 * @param array $columnList
 		 * @return commentItem
 		 */
-		// function getComment($comment_srl = 0, $is_admin = FALSE, $columnList = array())
 		public function get_comment($comment_id = 0, $is_admin = FALSE, $columnList = array()) {
 			$o_comment = new commentItem($comment_id, $columnList);
 			if($is_admin) {
@@ -44,21 +43,18 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 
 		/**
 		 * Get the total number of comments in corresponding with document_srl.
+		 * getCommentCount($document_srl)
 		 * @param int $document_srl
 		 * @return int
 		 */
-		// function getCommentCount($document_srl)
 		public function get_comment_count($n_parent_post_id) {
-			// $args = new stdClass();
-			// $args->document_srl = $n_parent_post_id;
-// var_dump($n_parent_post_id);
-			// get the number of comments on the document module
+			// get the number of comments on the post module
 			$o_post_model = \X2board\Includes\getModel('post');
-			$columnList = null; //array('document_srl', 'module_srl');
+			$columnList = null;
 			$o_post = $o_post_model->get_post($n_parent_post_id, FALSE, TRUE, $columnList);
 			unset($o_post_model);
 
-			// return if no doc exists.
+			// return if no post exists.
 			if(!$o_post->is_exists()) {
 				return;
 			}
@@ -75,8 +71,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 			if($is_using_validation) {
 				$s_where .= "AND status=1";
 			}
-			// $output = executeQuery('comment.getCommentCount', $args, NULL, 'master');
-			// $total_count = $output->data->count;
 			global $wpdb;
 			$count = $wpdb->get_var("SELECT count(*) as `count` FROM `{$wpdb->prefix}x2b_comments` WHERE {$s_where}");
 			return intval($count);
@@ -84,13 +78,13 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 
 		/**
 		 * Get a comment list of the post in corresponding post_id
+		 * getCommentList($document_srl, $page = 0, $is_admin = FALSE, $count = 0)
 		 * @param int $document_srl
 		 * @param int $page
 		 * @param bool $is_admin
 		 * @param int $count
 		 * @return object
 		 */
-		// function getCommentList($document_srl, $page = 0, $is_admin = FALSE, $count = 0)
 		public function get_comment_list($n_parent_post_id, $page = 0, $is_admin = FALSE, $count = 0) {
 			if(!isset($n_parent_post_id)) {
 				return;
@@ -102,7 +96,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 			$o_post = $o_post_model->get_post($n_parent_post_id, FALSE, TRUE, $columnList);
 			unset($o_post_model);
 
-			// return if no doc exists.
+			// return if no post exists.
 			if(!$o_post->is_exists()) {
 				return;
 			}
@@ -111,35 +105,19 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 			if($o_post->get_comment_count() < 1) {
 				return;
 			}
-
-			// get a list of comments
-			// $module_srl = $oDocument->get('module_srl');
-
 			$board_id = $o_post->get('board_id');
 			if(!$count) {
 				$o_comment_config = $this->_get_comment_config();
 				$comment_count = $o_comment_config->comment_count;
-				// if(!$comment_count) {
-				// 	$comment_count = 50;
-				// }
 			}
 			else {
 				$comment_count = $count;
 			}
-// var_dump($comment_count);
+
 			// get a very last page if no page exists
 			if(!$page) {
 				$page = (int) ( ($o_post->get_comment_count() - 1) / $comment_count) + 1;
 			}
-// var_dump($o_post->get_comment_count());			
-// var_dump($comment_count);
-// var_dump($board_id);
-			// get a list of comments
-			// $args = new \stdClass();
-			// $args->document_srl = $document_srl;
-			// $args->list_count = $comment_count;
-			// $args->page = $page;
-			// $args->page_count = 10;
 
 			//check if module is using validation system
 			$o_comment_controller = \X2board\Includes\getController('comment');
@@ -150,14 +128,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 				$s_where_comment_status = "`comments`.`status`=1 AND ";
 			}
 
-			// call trigger (before)
-			// $trigger_output = ModuleHandler::triggerCall('comment.getCommentList', 'before', $args);
-			// if($trigger_output instanceof BaseObject && !$trigger_output->toBool())
-			// {
-			// 	return $output;
-			// }
-
-			// $output = executeQueryArray('comment.getCommentPageList', $args);
 			global $wpdb;
 			$o_query = new \stdClass();
 			$o_query->s_tables = '`'.$wpdb->prefix.'x2b_comments` as `comments`, `'.$wpdb->prefix.'x2b_comments_list` as `comments_list`';
@@ -180,7 +150,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 				$o_rst_check = \X2board\Includes\get_paginate_select($o_query);
 				if(!$o_rst_check->data) {
 					$this->_fix_comment_list($o_post->get('board_id'), $n_parent_post_id);
-					// $output = executeQueryArray('comment.getCommentPageList', $args);
 					$output = \X2board\Includes\get_paginate_select($o_query);
 					if(!$output->toBool()) {
 						return $output;
@@ -189,23 +158,15 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 				unset($o_rst_check);
 			}
 			unset($o_query);
-
-			// call trigger (after)
-			// $trigger_output = ModuleHandler::triggerCall('comment.getCommentList', 'after', $output);
-			// if($trigger_output instanceof BaseObject && !$trigger_output->toBool())
-			// {
-			// 	return $trigger_output;
-			// }
-
 			return $output;
 		}
 
 		/**
 		 * Return a configuration of comments for each module
+		 * getCommentConfig($module_srl)
 		 * @param int $module_srl
 		 * @return object
 		 */
-		// function getCommentConfig($module_srl)
 		private function _get_comment_config() {
 			$o_board_config = \X2board\Includes\Classes\Context::get('current_module_info');
 			$o_comment_config = new \stdClass();
@@ -220,23 +181,15 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 			if(!isset($o_comment_config->comment_count)) {
 				$o_comment_config->comment_count = 50;
 			}
-			// $oModuleModel = getModel('module');
-			// $comment_config = $oModuleModel->getModulePartConfig('comment', $module_srl);
-			// if(!is_object($comment_config)) {
-			// 	$comment_config = new stdClass();
-			// }
-			// if(!isset($comment_config->comment_count)) {
-			// 	$comment_config->comment_count = 50;
-			// }
 			return $o_comment_config;
 		}
 
 		/**
 		 * Returns the number of child comments
+		 * getChildComments($comment_srl)
 		 * @param int $comment_id
 		 * @return int
 		 */
-		// function getChildComments($comment_srl)
 		public function get_child_comments($n_comment_id) {
 			global $wpdb;
 			$s_query = "SELECT `comment_id`, `comment_author` FROM ".$wpdb->prefix."x2b_comments WHERE `parent_comment_id`=".$n_comment_id;
@@ -248,10 +201,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 				$wpdb->flush();
 			}
 			return $a_result;
-			// $args = new stdClass();
-			// $args->comment_srl = $comment_srl;
-			// $output = executeQueryArray('comment.getChildComments', $args, NULL, 'master');
-			// return $output->data;
 		}
 
 		/**
@@ -262,7 +211,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 		 */
 		private function _fix_comment_list($n_board_id, $n_parent_post_id) {
 			// create a lock file to prevent repeated work when performing a batch job
-			// $lock_file = "./files/cache/tmp/lock." . $n_parent_post_id;
 			$s_lock_folder = wp_get_upload_dir()['basedir'].DIRECTORY_SEPARATOR.X2B_DOMAIN.DIRECTORY_SEPARATOR.'cache'.DIRECTORY_SEPARATOR.'tmp'.DIRECTORY_SEPARATOR.'lock';
 			if( !file_exists( $s_lock_folder ) ) {
 				wp_mkdir_p( $s_lock_folder );
@@ -279,13 +227,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 			$o_wp_filesystem->put_contents($s_lock_file, ''); // FileHandler::writeFile($s_lock_file, '');
 
 			// get a list
-			// $args = new stdClass();
-			// $args->document_srl = $n_parent_post_id;
-			// $args->list_order = 'list_order';
-			// $output = executeQuery('comment.getCommentList', $args);
-			// if(!$output->toBool()) {
-			// 	return $output;
-			// }
 			global $wpdb;
 			// SELECT `comment_srl`, `parent_srl`, `regdate` FROM `xe_comments` as `comments` WHERE ( `document_srl` = ? ) and `list_order` <= 2100000000 ORDER BY `list_order` asc 
 			$s_query = "SELECT `comment_id`, `parent_comment_id`, `regdate_dt` FROM ".$wpdb->prefix."x2b_comments WHERE `parent_post_id`=".$n_parent_post_id.' and `list_order` <= 2100000000 ORDER BY `list_order` asc';
@@ -296,12 +237,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 				$a_source_list = $wpdb->get_results($s_query);
 				$wpdb->flush();
 			}
-			// return $a_result;
-			
-			// $source_list = $output->data;
-			// if(!is_array($a_source_list)) {
-			// 	$a_source_list = array($a_source_list);
-			// }
 
 			// Sort comments by the hierarchical structure
 			$n_comment_count = count($a_source_list);
@@ -342,7 +277,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 					$o_comment_args->arrange = $item->arrange;
 					$o_comment_args->head = $item->head;
 					$o_comment_args->depth = $item->depth;
-					$o_comment_controller->insert_comment_list($o_comment_args);  // executeQuery('comment.insertCommentList', $comment_args);
+					$o_comment_controller->insert_comment_list($o_comment_args);
 					unset($o_comment_args);
 				}
 				unset($o_comment_controller);
@@ -352,7 +287,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 			unset($o_root);
 
 			// remove the lock file if successful.
-			$o_wp_filesystem->delete($s_lock_file);  // FileHandler::removeFile($s_lock_file);
+			$o_wp_filesystem->delete($s_lock_file);
 			unset($o_wp_filesystem);
 		}
 
@@ -391,718 +326,5 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Comment\\commentModel')) {
 				}
 			}
 		}
-
-
-
-
-//////////////////////////
-
-
-		/**
-		 * Check if you have a permission to comment_srl
-		 * use only session information
-		 * @param int $comment_srl
-		 * @return bool
-		 */
-		function isGranted($comment_srl)
-		{
-			return $_SESSION['own_comment'][$comment_srl];
-		}
-
-		/**
-		 * Returns the number of child comments
-		 * @param int $comment_srl
-		 * @return int
-		 */
-		/*function getChildCommentCount($comment_srl)
-		{
-			$args = new stdClass();
-			$args->comment_srl = $comment_srl;
-			$output = executeQuery('comment.getChildCommentCount', $args, NULL, 'master');
-			return (int) $output->data->count;
-		}*/
-
-		/**
-		 * Get the comment list(not paginating)
-		 * @param string|array $comment_srl_list
-		 * @param array $columnList
-		 * @return array
-		 */
-		/*function getComments($comment_srl_list, $columnList = array())
-		{
-			if(is_array($comment_srl_list))
-			{
-				$comment_srls = implode(',', $comment_srl_list);
-			}
-
-			// fetch from a database
-			$args = new stdClass();
-			$args->comment_srls = $comment_srls;
-			$output = executeQuery('comment.getComments', $args, $columnList);
-			if(!$output->toBool())
-			{
-				return;
-			}
-
-			$comment_list = $output->data;
-			if(!$comment_list)
-			{
-				return;
-			}
-			if(!is_array($comment_list))
-			{
-				$comment_list = array($comment_list);
-			}
-
-			$comment_count = count($comment_list);
-			foreach($comment_list as $key => $attribute)
-			{
-				if(!$attribute->comment_srl)
-				{
-					continue;
-				}
-
-				$oComment = NULL;
-				$oComment = new commentItem();
-				$oComment->setAttribute($attribute);
-				if($is_admin)
-				{
-					$oComment->setGrant();
-				}
-
-				$result[$attribute->comment_srl] = $oComment;
-			}
-			return $result;
-		}*/
-
-		/**
-		 * Get the total number of comments in corresponding with document_srl.
-		 * @param string $date
-		 * @param array $moduleSrlList
-		 * @return int
-		 */
-		function getCommentCountByDate($date = '', $moduleSrlList = array())
-		{
-			$args = new stdClass();
-			if($date)
-			{
-				$args->regDate = date('Ymd', strtotime($date));
-			}
-
-			if(count($moduleSrlList) > 0)
-			{
-				$args->module_srl = $moduleSrlList;
-			}
-
-			$output = executeQuery('comment.getCommentCount', $args);
-			if(!$output->toBool())
-			{
-				return 0;
-			}
-
-			return $output->data->count;
-		}
-
-		/**
-		 * Get the total number of comments in corresponding with module_srl.
-		 * @param int $module_srl
-		 * @param bool $published
-		 * @return int
-		 */
-		/*function getCommentAllCount($module_srl, $published = null)
-		{
-			$args = new stdClass();
-			$args->module_srl = $module_srl;
-
-			if(is_null($published))
-			{
-				// check if module is using comment validation system
-				$oCommentController = getController("comment");
-				$is_using_validation = $oCommentController->isModuleUsingPublishValidation($module_srl);
-				if($is_using_validation)
-				{
-					$args->status = 1;
-				}
-			}
-			else
-			{
-				if($published)
-				{
-					$args->status = 1;
-				}
-				else
-				{
-					$args->status = 0;
-				}
-			}
-
-			$output = executeQuery('comment.getCommentCount', $args);
-			$total_count = $output->data->count;
-
-			return (int) $total_count;
-		}*/
-
-		/**
-		 * Get the comment in corresponding with mid.
-		 * @todo add commentItems to cache too
-		 * @param object $obj
-		 * @param array $columnList
-		 * @return array
-		 */
-		/*function getNewestCommentList($obj, $columnList = array())
-		{
-			$args = new stdClass();
-
-			if(!is_object($obj))
-			{
-				$obj = new stdClass();
-			}
-
-			if($obj->mid)
-			{
-				$oModuleModel = getModel('module');
-				$obj->module_srl = $oModuleModel->getModuleSrlByMid($obj->mid);
-				unset($obj->mid);
-			}
-
-			// check if module_srl is an arrary.
-			if(is_array($obj->module_srl))
-			{
-				$args->module_srl = implode(',', $obj->module_srl);
-			}
-			else
-			{
-				$args->module_srl = $obj->module_srl;
-			}
-
-			$args->document_srl = $obj->document_srl;
-			$args->list_count = $obj->list_count;
-
-			if(strpos($args->module_srl, ",") === false)
-			{
-				if($args->module_srl)
-				{
-					// check if module is using comment validation system
-					$oCommentController = getController("comment");
-					$is_using_validation = $oCommentController->isModuleUsingPublishValidation($obj->module_srl);
-					if($is_using_validation)
-					{
-						$args->status = 1;
-					}
-				}
-			}
-
-			$output = executeQuery('comment.getNewestCommentList', $args, $columnList);
-
-			if(!$output->toBool())
-			{
-				return $output;
-			}
-
-			$comment_list = $output->data;
-			if($comment_list)
-			{
-				if(!is_array($comment_list))
-				{
-					$comment_list = array($comment_list);
-				}
-
-				$comment_count = count($comment_list);
-
-				foreach($comment_list as $key => $attribute)
-				{
-					if(!$attribute->comment_srl)
-					{
-						continue;
-					}
-
-					$oComment = NULL;
-					$oComment = new commentItem();
-					$oComment->setAttribute($attribute);
-
-					$result[$key] = $oComment;
-				}
-				$output->data = $result;
-			}
-
-			return $result;
-		}*/
-
-		/**
-		 * Get all the comments in time decending order(for administrators)
-		 * @param object $obj
-		 * @param array $columnList
-		 * @return object
-		 */
-		/*function getTotalCommentList($obj, $columnList = array())
-		{
-			$query_id = 'comment.getTotalCommentList';
-
-			// Variables
-			$args = new stdClass();
-			$args->sort_index = 'list_order';
-			$args->page = $obj->page ? $obj->page : 1;
-			$args->list_count = $obj->list_count ? $obj->list_count : 20;
-			$args->page_count = $obj->page_count ? $obj->page_count : 10;
-			$args->s_module_srl = $obj->module_srl;
-			$args->exclude_module_srl = $obj->exclude_module_srl;
-
-			// check if module is using comment validation system
-			$oCommentController = getController("comment");
-			$is_using_validation = $oCommentController->isModuleUsingPublishValidation($obj->module_srl);
-			if($is_using_validation)
-			{
-				$args->s_is_published = 1;
-			}
-
-			// Search options
-			$search_target = $obj->search_target ? $obj->search_target : trim(Context::get('search_target'));
-			$search_keyword = $obj->search_keyword ? $obj->search_keyword : trim(Context::get('search_keyword'));
-			if($search_target && $search_keyword)
-			{
-				switch($search_target)
-				{
-					case 'content' :
-						if($search_keyword)
-						{
-							$search_keyword = str_replace(' ', '%', $search_keyword);
-						}
-
-						$args->s_content = $search_keyword;
-						break;
-
-					case 'user_id' :
-						if($search_keyword)
-						{
-							$search_keyword = str_replace(' ', '%', $search_keyword);
-						}
-
-						$args->s_user_id = $search_keyword;
-						$query_id = 'comment.getTotalCommentListWithinMember';
-						$args->sort_index = 'comments.list_order';
-						break;
-
-					case 'user_name' :
-						if($search_keyword)
-						{
-							$search_keyword = str_replace(' ', '%', $search_keyword);
-						}
-
-						$args->s_user_name = $search_keyword;
-						break;
-
-					case 'nick_name' :
-						if($search_keyword)
-						{
-							$search_keyword = str_replace(' ', '%', $search_keyword);
-						}
-
-						$args->s_nick_name = $search_keyword;
-						break;
-
-					case 'email_address' :
-						if($search_keyword)
-						{
-							$search_keyword = str_replace(' ', '%', $search_keyword);
-						}
-
-						$args->s_email_address = $search_keyword;
-						break;
-
-					case 'homepage' :
-						if($search_keyword)
-						{
-							$search_keyword = str_replace(' ', '%', $search_keyword);
-						}
-
-						$args->s_homepage = $search_keyword;
-						break;
-
-					case 'regdate' :
-						$args->s_regdate = $search_keyword;
-						break;
-
-					case 'last_update' :
-						$args->s_last_upate = $search_keyword;
-						break;
-
-					case 'ipaddress' :
-						$args->s_ipaddress = $search_keyword;
-						break;
-
-					case 'is_secret' :
-						$args->s_is_secret = $search_keyword;
-						break;
-
-					case 'is_published' :
-						if($search_keyword == 'Y')
-						{
-							$args->s_is_published = 1;
-						}
-
-						if($search_keyword == 'N')
-						{
-							$args->s_is_published = 0;
-						}
-
-						break;
-
-					case 'module':
-						$args->s_module_srl = (int) $search_keyword;
-						break;
-
-					case 'member_srl' :
-						$args->{"s_" . $search_target} = (int) $search_keyword;
-						break;
-				}
-			}
-
-			// comment.getTotalCommentList query execution
-			$output = executeQueryArray($query_id, $args, $columnList);
-
-			// return when no result or error occurance
-			if(!$output->toBool() || !count($output->data))
-			{
-				return $output;
-			}
-
-			foreach($output->data as $key => $val)
-			{
-				unset($_oComment);
-				$_oComment = new CommentItem(0);
-				$_oComment->setAttribute($val);
-				$output->data[$key] = $_oComment;
-			}
-
-			return $output;
-		}*/
-
-		/**
-		 * Get all the comment count in time decending order(for administrators)
-		 * @param object $obj
-		 * @return int
-		 */
-		/*function getTotalCommentCount($obj)
-		{
-			$query_id = 'comment.getTotalCommentCountByGroupStatus';
-
-			// Variables
-			$args = new stdClass();
-			$args->s_module_srl = $obj->module_srl;
-			$args->exclude_module_srl = $obj->exclude_module_srl;
-
-			// Search options
-			$search_target = $obj->search_target ? $obj->search_target : trim(Context::get('search_target'));
-			$search_keyword = $obj->search_keyword ? $obj->search_keyword : trim(Context::get('search_keyword'));
-
-			if($search_target && $search_keyword)
-			{
-				switch($search_target)
-				{
-					case 'content' :
-						if($search_keyword)
-						{
-							$search_keyword = str_replace(' ', '%', $search_keyword);
-						}
-
-						$args->s_content = $search_keyword;
-						break;
-
-					case 'user_id' :
-						if($search_keyword)
-						{
-							$search_keyword = str_replace(' ', '%', $search_keyword);
-						}
-
-						$args->s_user_id = $search_keyword;
-						$query_id = 'comment.getTotalCommentCountWithinMemberByGroupStatus';
-						break;
-
-					case 'user_name' :
-						if($search_keyword)
-						{
-							$search_keyword = str_replace(' ', '%', $search_keyword);
-						}
-						$args->s_user_name = $search_keyword;
-
-						break;
-
-					case 'nick_name' :
-						if($search_keyword)
-						{
-							$search_keyword = str_replace(' ', '%', $search_keyword);
-						}
-
-						$args->s_nick_name = $search_keyword;
-						break;
-
-					case 'email_address' :
-						if($search_keyword)
-						{
-							$search_keyword = str_replace(' ', '%', $search_keyword);
-						}
-
-						$args->s_email_address = $search_keyword;
-						break;
-
-					case 'homepage' :
-						if($search_keyword)
-						{
-							$search_keyword = str_replace(' ', '%', $search_keyword);
-						}
-
-						$args->s_homepage = $search_keyword;
-						break;
-
-					case 'regdate' :
-						$args->s_regdate = $search_keyword;
-						break;
-
-					case 'last_update' :
-						$args->s_last_upate = $search_keyword;
-						break;
-
-					case 'ipaddress' :
-						$args->s_ipaddress = $search_keyword;
-						break;
-
-					case 'is_secret' :
-						$args->s_is_secret = $search_keyword;
-						break;
-
-					case 'member_srl' :
-						$args->{"s_" . $search_target} = (int) $search_keyword;
-						break;
-				}
-			}
-
-			$output = executeQueryArray($query_id, $args);
-
-			// return when no result or error occurance
-			if(!$output->toBool() || !count($output->data))
-			{
-				return $output;
-			}
-
-			return $output->data;
-		}*/
-
-		/**
-		 * Return a list of voting member
-		 * @return void
-		 */
-		/*function getCommentVotedMemberList()
-		{
-			$comment_srl = Context::get('comment_srl');
-			if(!$comment_srl)
-			{
-				return new BaseObject(-1, 'msg_invalid_request');
-			}
-
-			$point = Context::get('point');
-			if($point != -1)
-			{
-				$point = 1;
-			}
-
-			$oCommentModel = getModel('comment');
-			$oComment = $oCommentModel->getComment($comment_srl, FALSE, FALSE);
-			$module_srl = $oComment->get('module_srl');
-			if(!$module_srl)
-			{
-				return new BaseObject(-1, 'msg_invalid_request');
-			}
-
-			$oModuleModel = getModel('module');
-			$comment_config = $oModuleModel->getModulePartConfig('comment', $module_srl);
-
-			$args = new stdClass();
-
-			if($point == -1)
-			{
-				if($comment_config->use_vote_down != 'S')
-				{
-					return new BaseObject(-1, 'msg_invalid_request');
-				}
-
-				$args->below_point = 0;
-			}
-			else
-			{
-				if($comment_config->use_vote_up != 'S')
-				{
-					return new BaseObject(-1, 'msg_invalid_request');
-				}
-
-				$args->more_point = 0;
-			}
-
-			$args->comment_srl = $comment_srl;
-			$output = executeQueryArray('comment.getVotedMemberList', $args);
-			if(!$output->toBool())
-			{
-				return $output;
-			}
-
-			$oMemberModel = getModel('member');
-			if($output->data)
-			{
-				foreach($output->data as $k => $d)
-				{
-					$profile_image = $oMemberModel->getProfileImage($d->member_srl);
-					$output->data[$k]->src = $profile_image->src;
-				}
-			}
-
-			$this->add('voted_member_list', $output->data);
-		}*/
-
-		/**
-		 * Return a secret status by secret field
-		 * @return array
-		 */
-		/*function getSecretNameList()
-		{
-			global $lang;
-
-			if(!isset($lang->secret_name_list))
-			{
-				return array('Y' => 'Secret', 'N' => 'Public');
-			}
-			else
-			{
-				return $lang->secret_name_list;
-			}
-		}*/
-
-		/**
-		 * Get the total number of comments in corresponding with member_srl.
-		 * @param int $member_srl
-		 * @return int
-		 */
-		/*function getCommentCountByMemberSrl($member_srl)
-		{
-			$args = new stdClass();
-			$args->member_srl = $member_srl;
-			$output = executeQuery('comment.getCommentCountByMemberSrl', $args);
-			return (int) $output->data->count;
-		}*/
-
-
-		/**
-		 * Get comment list of the doc in corresponding woth member_srl.
-		 * @param int $member_srl
-		 * @param array $columnList
-		 * @param int $page
-		 * @param bool $is_admin
-		 * @param int $count
-		 * @return object
-		 */
-		/*function getCommentListByMemberSrl($member_srl, $columnList = array(), $page = 0, $is_admin = FALSE, $count = 0)
-		{
-			$args = new stdClass();
-			$args->member_srl = $member_srl;
-			$args->list_count = $count;
-			$output = executeQuery('comment.getCommentListByMemberSrl', $args, $columnList);
-			$comment_list = $output->data;
-
-			if(!$comment_list) return array();
-			if(!is_array($comment_list)) $comment_list = array($comment_list);
-
-			return $comment_list;
-		}*/
-
-		/**
-		 * display the pop-up menu of the post
-		 * Print, scrap, vote-up(recommen), vote-down(non-recommend), report features added
-		 * @return void
-		 */
-		// function getCommentMenu()
-		// {
-		// 	// get the post's id number and the current login information
-		// 	$comment_srl = Context::get('target_srl');
-		// 	$mid = Context::get('cur_mid');
-		// 	$logged_info = Context::get('logged_info');
-		// 	$act = Context::get('cur_act');
-
-		// 	// array values for menu_list, "comment post, target, url"
-		// 	$menu_list = array();
-
-		// 	// call a trigger
-		// 	ModuleHandler::triggerCall('comment.getCommentMenu', 'before', $menu_list);
-
-		// 	$oCommentController = getController('comment');
-
-		// 	// feature that only member can do
-		// 	if($logged_info->member_srl)
-		// 	{
-		// 		$oCommentModel = getModel('comment');
-		// 		$columnList = array('comment_srl', 'module_srl', 'member_srl', 'ipaddress');
-		// 		$oComment = $oCommentModel->getComment($comment_srl, FALSE, $columnList);
-		// 		$module_srl = $oComment->get('module_srl');
-		// 		$member_srl = $oComment->get('member_srl');
-
-		// 		$oModuleModel = getModel('module');
-		// 		$comment_config = $oModuleModel->getModulePartConfig('document', $module_srl);
-
-		// 		if($comment_config->use_vote_up != 'N' && $member_srl != $logged_info->member_srl)
-		// 		{
-		// 			// Add a vote-up button for positive feedback
-		// 			$url = sprintf("doCallModuleAction('comment','procCommentVoteUp','%s')", $comment_srl);
-		// 			$oCommentController->addCommentPopupMenu($url, 'cmd_vote', '', 'javascript');
-		// 		}
-
-		// 		if($comment_config->use_vote_down != 'N' && $member_srl != $logged_info->member_srl)
-		// 		{
-		// 			// Add a vote-down button for negative feedback
-		// 			$url = sprintf("doCallModuleAction('comment','procCommentVoteDown','%s')", $comment_srl);
-		// 			$oCommentController->addCommentPopupMenu($url, 'cmd_vote_down', '', 'javascript');
-		// 		}
-
-		// 		// Add the report feature against abused posts
-		// 		$url = sprintf("doCallModuleAction('comment','procCommentDeclare','%s')", $comment_srl);
-		// 		$oCommentController->addCommentPopupMenu($url, 'cmd_declare', '', 'javascript');
-		// 	}
-
-		// 	// call a trigger (after)
-		// 	ModuleHandler::triggerCall('comment.getCommentMenu', 'after', $menu_list);
-
-		// 	if($this->grant->manager){
-		// 		$str_confirm = Context::getLang('confirm_move');
-		// 		$url = sprintf("if(!confirm('%s')) return; var params = new Array(); params['comment_srl']='%s'; params['mid']=current_mid;params['cur_url']=current_url; exec_xml('comment', 'procCommentAdminMoveToTrash', params)", $str_confirm, $comment_srl);
-		// 		$oCommentController->addCommentPopupMenu($url,'cmd_trash','','javascript');
-
-		// 	}
-
-		// 	// find a comment by IP matching if an administrator.
-		// 	if($logged_info->is_admin == 'Y')
-		// 	{
-		// 		$oCommentModel = getModel('comment');
-		// 		$oComment = $oCommentModel->getComment($comment_srl);
-
-		// 		if($oComment->isExists())
-		// 		{
-		// 			// Find a post of the corresponding ip address
-		// 			$url = getUrl('', 'module', 'admin', 'act', 'dispCommentAdminList', 'search_target', 'ipaddress', 'search_keyword', $oComment->getIpAddress());
-		// 			$oCommentController->addCommentPopupMenu($url, 'cmd_search_by_ipaddress', $icon_path, 'TraceByIpaddress');
-
-		// 			$url = sprintf("var params = new Array(); params['ipaddress_list']='%s'; exec_xml('spamfilter', 'procSpamfilterAdminInsertDeniedIP', params, completeCallModuleAction)", $oComment->getIpAddress());
-		// 			$oCommentController->addCommentPopupMenu($url, 'cmd_add_ip_to_spamfilter', '', 'javascript');
-		// 		}
-		// 	}
-
-		// 	// Changing a language of pop-up menu
-		// 	$menus = Context::get('comment_popup_menu_list');
-		// 	$menus_count = count($menus);
-
-		// 	for($i = 0; $i < $menus_count; $i++)
-		// 	{
-		// 		$menus[$i]->str = Context::getLang($menus[$i]->str);
-		// 	}
-
-		// 	// get a list of final organized pop-up menus
-		// 	$this->add('menus', $menus);
-		// }
 	}
 }
-/* End of file comment.model.php */

@@ -40,7 +40,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\WpAdminClass\\wpLatestFil
 			$s_tables = '`'.$wpdb->prefix.'x2b_files`';
 			$s_orderby = "ORDER BY `file_id` desc";
 			$s_limit = "LIMIT 0, 15";
-			// SELECT `comment_srl`, `module_srl`, `document_srl`, `content`, `nick_name`, `member_srl` FROM `xe_comments` as `comments` WHERE `list_order` <= 2100000000 ORDER BY `list_order` asc LIMIT 5
 			$s_query = "SELECT {$s_columns} FROM {$s_tables} {$s_orderby} {$s_limit}";
 			if ($wpdb->query($s_query) === FALSE) {
 				wp_die($wpdb->last_error);
@@ -148,7 +147,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\File\\WpAdminClass\\wpLatestFil
 				$s_where = null;
 			}
 
-			$s_total_count_query = "SELECT COUNT(*) FROM {$s_tables} {$s_where}";  // $n_total = $wpdb->get_var("SELECT COUNT(*) FROM {$s_tables} {$s_where}");
+			$s_total_count_query = "SELECT COUNT(*) FROM {$s_tables} {$s_where}";
 			if ($wpdb->query($s_total_count_query) === FALSE) {
 				wp_die($wpdb->last_error);
 			} 

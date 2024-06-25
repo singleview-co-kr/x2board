@@ -41,7 +41,6 @@ if (!class_exists('\\X2board\\Includes\\Classes\\AdminExtendedUserDefineFieldsIt
 		public function __construct($a_single_field) {
 			parent::__construct();
 
-// var_dump($a_single_field);
 			// default fields
 			$this->_s_field_type = $a_single_field['field_type'];
 			$this->_s_field_label = $a_single_field['field_label'];
@@ -82,7 +81,6 @@ if (!class_exists('\\X2board\\Includes\\Classes\\AdminExtendedUserDefineFieldsIt
 		 * @return string Returns a widget html.
 		 */
 		public function get_widget_html() {
-// var_dump('extended widget of '.$this->_s_field_type);
 			$s_html = null;
 			$s_html .=			'<li class="extends '.$this->_s_field_type.'">
 									<div class="x2board-extends-fields">
@@ -105,13 +103,11 @@ if (!class_exists('\\X2board\\Includes\\Classes\\AdminExtendedUserDefineFieldsIt
 											<label class="attr-name">'.__('lbl_field_label', X2B_DOMAIN).'</label>
 											<div class="attr-value"><input type="text" class="field_data field_name" placeholder="'.esc_attr($this->_s_field_label).'"></div>
 										</div>';
-				// if(isset($item['meta_key'])){
-					$s_html .= 			'<div class="attr-row">
+				$s_html .= 				'<div class="attr-row">
 											<label class="attr-name">'.__('lbl_meta_key', X2B_DOMAIN).'</label>
 											<div class="attr-value"><input type="text" class="field_data meta_key" placeholder="meta_key"></div>
 											<div class="description">※ '.__('about_meta_key', X2B_DOMAIN).'</div>
 										</div>';
-				// }
 				$s_html .= '<div class="attr-row">
 							<label class="attr-name">'.$this->_s_field_label.'</label>
 							<div class="attr-value">';
@@ -133,13 +129,11 @@ if (!class_exists('\\X2board\\Includes\\Classes\\AdminExtendedUserDefineFieldsIt
 							<label class="attr-name">'.__('lbl_field_label', X2B_DOMAIN).'</label>
 							<div class="attr-value"><input type="text" class="field_data field_name" placeholder="'.esc_attr($this->_s_field_label).'"></div>
 						</div>';
-				// if(isset($item['meta_key'])) {
-					$s_html .= '<div class="attr-row">
-								<label class="attr-name">'.__('lbl_meta_key', X2B_DOMAIN).'</label>
-								<div class="attr-value"><input type="text" class="field_data meta_key" placeholder="meta_key"></div>
-								<div class="description">※ '.__('about_meta_key', X2B_DOMAIN).'</div>
-							</div>';
-				// }
+				$s_html .= '<div class="attr-row">
+							<label class="attr-name">'.__('lbl_meta_key', X2B_DOMAIN).'</label>
+							<div class="attr-value"><input type="text" class="field_data meta_key" placeholder="meta_key"></div>
+							<div class="description">※ '.__('about_meta_key', X2B_DOMAIN).'</div>
+						</div>';
 				if(!empty($this->_a_row)) {
 					$uniq_id = 'php_'.uniqid();
 					$s_html .= '<div class="x2board-radio-reset">

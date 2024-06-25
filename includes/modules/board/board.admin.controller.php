@@ -22,7 +22,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 		 * @brief constructor
 		 **/
 		public function __construct(){
-// var_dump('boardAdminController');
 			$o_current_user = wp_get_current_user();
 			if( !user_can( $o_current_user, 'administrator' ) || !current_user_can('manage_'.X2B_DOMAIN) ) {
 				unset($o_current_user);
@@ -76,10 +75,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 						else{
 							echo '<script>alert("'.__('msg_invalid_xml_file', X2B_DOMAIN).'");</script>';
 						}
-						
-						// if($xmlfile) {
-						// 	unlink($xmlfile);
-						// }
 					}
 					else{
 						echo '<script>alert("'.__('msg_upload_file_failed', X2B_DOMAIN).'");</script>';
@@ -96,7 +91,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 			check_admin_referer( X2B_CMD_ADMIN_PROC_UPDATE_BOARD );  // check nounce
 			if( isset($_POST['delete_board']) ) {
 				// delete all post related
-				
 				// delete x2board mapper info
 				global $wpdb;
 				$wpdb->delete(
@@ -223,6 +217,11 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 			wp_redirect(admin_url('admin.php?page=x2b_disp_board_update&board_id=' . $n_board_id ));
 		}
 
+		/**
+		 *
+		 * @param
+		 * @return 
+		 */
 		private function _proc_list_fields_config() {
 			$o_user_define_list_fields = new \X2board\Includes\Classes\UserDefineListFields();
 			$a_list_config = array();
@@ -464,8 +463,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 				$o_cache_handler->delete($cache_key);
 			}
 			unset($o_cache_handler);
-// var_dump($result);
-// exit;			
 		}		
 
 		/**
@@ -486,7 +483,7 @@ exit;
 								'post_type'      => 'page',
 								'post_name'      => $s_wp_page_title,
 								'post_content'   => X2B_PAGE_IDENTIFIER, // 'Keep this mark, x2board-installed',
-								'post_status'    => 'publish',  // 'pending'    
+								'post_status'    => 'publish',
 								'comment_status' => 'closed',
 								'ping_status'    => 'closed',
 								'post_author'    => $o_cur_admin->ID,
@@ -494,103 +491,24 @@ exit;
 								// 'guid'           => site_url() . "/my-page-req1"
 							);
 			unset($o_cur_admin);
-// var_dump($x2b_page);
 			$n_page_id = wp_insert_post( $x2b_page, FALSE ); // Get Post ID - FALSE to return 0 instead of wp_error.
 			
 			// insert x2board
 			$s_x2board_title = isset($a_x2b_settings[X2B_DOMAIN.'_title']) ? esc_sql(sanitize_text_field($a_x2b_settings[X2B_DOMAIN.'_title'])) : '';
 			$this->_insert_new_board($n_page_id, $a_x2b_settings[X2B_DOMAIN.'_title']);
-// var_dump($n_page_id);			
 			unset($a_x2b_settings);
-			
-exit();			
+				
 			if ( $n_page_id ) {
 				wp_redirect(admin_url('admin.php?page='.X2B_CMD_ADMIN_VIEW_BOARD_UPDATE.'&board_id='.$n_page_id));
 				exit;
 			}
-			
 			exit();
-			
-			// generate module model/controller object
-			// $oModuleController = getController('module');
-			// $oModuleModel = getModel('module');
-
-			// // setup the board module infortmation
-			// $args = Context::getRequestVars();
-			// $args->module = 'board';
-			// $args->mid = $args->board_name;
-			// if(is_array($args->use_status)) $args->use_status = implode('|@|', $args->use_status);
-			// unset($args->board_name);
-
-			// // setup extra_order_target
-			// $extra_order_target = array();
-			// if($args->module_srl)
-			// {
-			// 	$oDocumentModel = getModel('document');
-			// 	$module_extra_vars = $oDocumentModel->getExtraKeys($args->module_srl);
-			// 	foreach($module_extra_vars as $oExtraItem)
-			// 	{
-			// 		$extra_order_target[$oExtraItem->eid] = $oExtraItem->name;
-			// 	}
-			// }
-
-			// // setup other variables
-			// if($args->except_notice != 'Y') $args->except_notice = 'N';
-			// if($args->use_anonymous != 'Y') $args->use_anonymous = 'N';
-			// if($args->consultation != 'Y') $args->consultation = 'N';
-			// if($args->protect_content!= 'Y') $args->protect_content = 'N';
-			// if(!in_array($args->order_target,$this->order_target) && !array_key_exists($args->order_target, $extra_order_target)) $args->order_target = 'list_order';
-			// if(!in_array($args->order_type, array('asc', 'desc'))) $args->order_type = 'asc';
-
-			// // if there is an existed module
-			// if($args->module_srl) {
-			// 	$module_info = $oModuleModel->getModuleInfoByModuleSrl($args->module_srl);
-			// 	if($module_info->module_srl != $args->module_srl) unset($args->module_srl);
-			// }
-
-			// // insert/update the board module based on module_srl
-			// if(!$args->module_srl) {
-			// 	$args->hide_category = 'N';
-			// 	$output = $oModuleController->insertModule($args);
-			// 	$msg_code = 'success_registed';
-			// } else {
-			// 	$args->hide_category = $module_info->hide_category;
-			// 	$output = $oModuleController->updateModule($args);
-			// 	$msg_code = 'success_updated';
-			// }
-
-			// if(!$output->toBool()) return $output;
-
-			// // setup list config
-			// $list = explode(',',Context::get('list'));
-			// if(count($list))
-			// {
-			// 	$list_arr = array();
-			// 	foreach($list as $val)
-			// 	{
-			// 		$val = trim($val);
-			// 		if(!$val) continue;
-			// 		if(substr($val,0,10)=='extra_vars') $val = substr($val,10);
-			// 		$list_arr[] = $val;
-			// 	}
-			// 	$oModuleController = getController('module');
-			// 	$oModuleController->insertModulePartConfig('board', $output->get('module_srl'), $list_arr);
-			// }
-
-			// $this->setMessage($msg_code);
-			// if (Context::get('success_return_url')){
-			// 	changeValueInUrl('mid', $args->mid, $module_info->mid);
-			// 	$this->setRedirectUrl(Context::get('success_return_url'));
-			// }else{
-			// 	$this->setRedirectUrl(getNotEncodedUrl('', 'module', 'admin', 'act', 'dispBoardAdminBoardInfo', 'module_srl', $output->get('module_srl')));
-			// }
 		}
 
 		/**
 		 * @brief create new category ajax
 		 **/
 		public function proc_insert_category() {
-// error_log(print_r('proc_insert_category', true));
 			require_once X2B_PATH . 'includes\modules\category\category.admin.controller.php';
 			$o_cat_admin_controller = new \X2board\Includes\Modules\Category\categoryAdminController();
 			$_POST = stripslashes_deep($_POST);
@@ -605,7 +523,6 @@ exit();
 		 * @brief update name or remove old category ajax
 		 **/
 		public function proc_manage_category() {
-// error_log(print_r('proc_manage_category', true));
 			require_once X2B_PATH . 'includes\modules\category\category.admin.controller.php';
 			$o_cat_admin_controller = new \X2board\Includes\Modules\Category\categoryAdminController();
 			$_POST = stripslashes_deep($_POST);	
@@ -622,7 +539,6 @@ exit();
 		 * @brief reorder whole category ajax
 		 **/
 		public function proc_reorder_category() {
-// error_log(print_r('proc_reorder_category', true));
 			require_once X2B_PATH . 'includes\modules\category\category.admin.controller.php';
 			$o_cat_admin_controller = new \X2board\Includes\Modules\Category\categoryAdminController();
 			$_POST = stripslashes_deep($_POST);

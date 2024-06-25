@@ -16,4 +16,3 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Category\\category')) {
 		function __construct() {}
 	}
 }
-/* End of file file.class.php */

@@ -28,7 +28,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\WpAdminClass\\wpLatestPos
 			$s_tables = '`'.$wpdb->prefix.'x2b_posts`';
 			$s_orderby = "ORDER BY `list_order` asc";
 			$s_limit = "LIMIT 0, 15";
-			// "SELECT `document_srl`, `module_srl`, `category_srl`, `title`, `nick_name`, `member_srl` FROM `xe_documents` as `documents` WHERE ( `status` in (?,?,?) ) and `list_order` <= 2100000000 ORDER BY `list_order` asc LIMIT 0, 5
 			$s_query = "SELECT {$s_columns} FROM {$s_tables} {$s_orderby} {$s_limit}";
 			if ($wpdb->query($s_query) === FALSE) {
 				wp_die($wpdb->last_error);
@@ -140,7 +139,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\WpAdminClass\\wpLatestPos
 				$s_where = null;
 			}
 
-			$s_total_count_query = "SELECT COUNT(*) FROM {$s_tables} {$s_where}";  // $n_total = $wpdb->get_var("SELECT COUNT(*) FROM {$s_tables} {$s_where}");
+			$s_total_count_query = "SELECT COUNT(*) FROM {$s_tables} {$s_where}";
 			if ($wpdb->query($s_total_count_query) === FALSE) {
 				wp_die($wpdb->last_error);
 			} 

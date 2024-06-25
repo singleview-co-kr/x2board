@@ -260,16 +260,9 @@ if (!class_exists('\\X2board\\Includes\\Classes\\CacheHandler')) {
 	}
 }
 
-
 if (!class_exists('\\X2board\\Includes\\Classes\\CacheBase')) {
 
 	class CacheBase {
-		/**
-		 * Default valid time
-		 * @var int
-		 */
-		// var $valid_time = 36000;
-
 		/**
 		 * Get cached data
 		 *
@@ -278,7 +271,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\CacheBase')) {
 		 * 								If stored time is older then modified time, return false.
 		 * @return false|mixed Return false on failure or older then modified time. Return the string associated with the $key on success.
 		 */
-		function get($key, $modified_time = 0) {
+		public function get($key, $modified_time = 0) {
 			return false;
 		}
 
@@ -292,7 +285,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\CacheBase')) {
 		 * 							If no ttl is supplied, use the default valid time.
 		 * @return bool|void Returns true on success or false on failure. If use CacheFile, returns void.
 		 */
-		function put($key, $obj, $valid_time = 0) {
+		public function put($key, $obj, $valid_time = 0) {
 			return false;
 		}
 
@@ -304,7 +297,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\CacheBase')) {
 		 * 								If stored time is older then modified time, the data is invalid.
 		 * @return bool Return true on valid or false on invalid.
 		 */
-		function isValid($key, $modified_time = 0) {
+		public function isValid($key, $modified_time = 0) {
 			return false;
 		}
 
@@ -313,7 +306,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\CacheBase')) {
 		 *
 		 * @return boolean
 		 */
-		function isSupport() {
+		public function isSupport() {
 			return false;
 		}
 
@@ -322,10 +315,9 @@ if (!class_exists('\\X2board\\Includes\\Classes\\CacheBase')) {
 		 *
 		 * @return bool|void Returns true on success or false on failure. If use CacheFile, returns void.
 		 */
-		function truncate() {
+		public function truncate() {
 			return false;
 		}
-
 	}
 }
 /* End of file CacheHandler.class.php */

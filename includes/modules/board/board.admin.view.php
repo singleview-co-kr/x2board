@@ -26,73 +26,19 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 		}
 		
 		/**
-		 * @brief initialization
-		 *
-		 * board module can be divided into general use and admin use.\n
-		 **/
-		// function init() {
-		// 	// check module_srl is existed or not
-		// 	$module_srl = Context::get('module_srl');
-		// 	if(!$module_srl && $this->module_srl) {
-		// 		$module_srl = $this->module_srl;
-		// 		Context::set('module_srl', $module_srl);
-		// 	}
-
-		// 	// generate module model object
-		// 	$oModuleModel = getModel('module');
-
-		// 	// get the module infomation based on the module_srl
-		// 	if($module_srl) {
-		// 		$module_info = $oModuleModel->getModuleInfoByModuleSrl($module_srl);
-		// 		if(!$module_info) {
-		// 			Context::set('module_srl','');
-		// 			$this->act = 'list';
-		// 		} else {
-		// 			ModuleModel::syncModuleToSite($module_info);
-		// 			$this->module_info = $module_info;
-		// 			$this->module_info->use_status = explode('|@|', $module_info->use_status);
-		// 			Context::set('module_info',$module_info);
-		// 		}
-		// 	}
-
-		// 	if($module_info && $module_info->module != 'board') return $this->stop("msg_invalid_request");
-
-		// 	// get the module category list
-		// 	$module_category = $oModuleModel->getModuleCategories();
-		// 	Context::set('module_category', $module_category);
-
-		// 	$security = new Security();
-		// 	$security->encodeHTML('module_info.');
-		// 	$security->encodeHTML('module_category..');
-
-		// 	// setup template path (board admin panel templates is resided in the tpl folder)
-		// 	$template_path = sprintf("%stpl/",$this->module_path);
-		// 	$this->setTemplatePath($template_path);
-
-		// 	// install order (sorting) options
-		// 	foreach($this->order_target as $key) $order_target[$key] = Context::getLang($key);
-		// 	$order_target['list_order'] = Context::getLang('document_srl');
-		// 	$order_target['update_order'] = Context::getLang('last_update');
-		// 	Context::set('order_target', $order_target);
-		// }
-
-		/**
 		 * @brief display the x2board dashboard
 		 **/
 		public function disp_idx() {
 			require_once X2B_PATH . 'includes\classes\FileHandler.class.php';
 			require_once X2B_PATH . 'includes\admin\tpl\default-settings.php';
 			require_once X2B_PATH . 'includes\admin\tpl\register-settings.php';
-
 			require_once X2B_PATH . 'includes\modules\board\board.admin.model.php';
+			
 			$o_board_admin_model = new \X2board\Includes\Modules\Board\boardAdminModel();
-
 			$a_latest_posts = $o_board_admin_model->get_latest_posts();
 			$a_latest_comments = $o_board_admin_model->get_latest_comments();
-
 			$a_latest_files = $o_board_admin_model->get_latest_files();
 			unset($o_board_admin_model);
-
 			require_once X2B_PATH . 'includes/admin/tpl/dashboard.php';
 		}
 
@@ -132,6 +78,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 			unset($o_board_admin_model);
 		}
 
+		/**
+		 * Display the board control panel UX
+		 **/
 		public function disp_control_panel() {
 			require_once X2B_PATH . 'includes/admin/tpl/control_panel.php';
 		}
@@ -235,8 +184,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 			$whitelist .= 'maps.google.co.kr' . PHP_EOL;
 			$whitelist .= 'docs.google.com' . PHP_EOL;
 			$whitelist .= 'tv.naver.com' . PHP_EOL;
-			$whitelist .= 'serviceapi.nmv.naver.com' . PHP_EOL;
-			$whitelist .= 'serviceapi.rmcnmv.naver.com' . PHP_EOL;
 			$whitelist .= 'videofarm.daum.net' . PHP_EOL;
 			$whitelist .= 'tv.kakao.com' . PHP_EOL;
 			$whitelist .= 'player.vimeo.com' . PHP_EOL;
@@ -244,12 +191,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 			$whitelist .= 'slideshare.net' . PHP_EOL;
 			$whitelist .= 'www.slideshare.net' . PHP_EOL;
 			$whitelist .= 'channel.pandora.tv' . PHP_EOL;
-			$whitelist .= 'mgoon.com' . PHP_EOL;
-			$whitelist .= 'www.mgoon.com' . PHP_EOL;
 			$whitelist .= 'tudou.com' . PHP_EOL;
 			$whitelist .= 'www.tudou.com' . PHP_EOL;
 			$whitelist .= 'player.youku.com' . PHP_EOL;
-			$whitelist .= 'videomega.tv' . PHP_EOL;
 			$whitelist .= 'mtab.clickmon.co.kr' . PHP_EOL;
 			$whitelist .= 'tab2.clickmon.co.kr';
 			
@@ -365,37 +309,5 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 			\X2board\Includes\Admin\Tpl\x2b_register_settings();
 			\X2board\Includes\Admin\Tpl\x2b_options_page();
 		}
-
-		/**
-		 * @brief display the board mdoule delete page
-		 **/
-		public function dispBoardAdminDeleteBoard() {
-			// if(!Context::get('module_srl')) return $this->dispBoardAdminContent();
-			// if(!in_array($this->module_info->module, array('admin', 'board','blog','guestbook'))) {
-			// 	return $this->alertMessage('msg_invalid_request');
-			// }
-
-			// $module_info = Context::get('module_info');
-
-			// $oDocumentModel = getModel('document');
-			// $document_count = $oDocumentModel->getDocumentCount($module_info->module_srl);
-			// $module_info->document_count = $document_count;
-
-			// Context::set('module_info',$module_info);
-
-			// $security = new Security();
-			// $security->encodeHTML('module_info..mid','module_info..module','module_info..document_count');
-
-			// // setup the template file
-			// $this->setTemplateFile('board_delete');
-		}
-
-		/**
-		 * @brief board module message
-		 **/
-		// function alertMessage($message) {
-		// 	$script =  sprintf('<script> xAddEventListener(window,"load", function() { alert("%s"); } );</script>', Context::getLang($message));
-		// 	Context::addHtmlHeader( $script );
-		// }
 	} // END CLASS
 } 

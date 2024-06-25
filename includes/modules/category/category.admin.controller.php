@@ -25,7 +25,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Category\\categoryAdminControll
 		 * @brief constructor
 		 **/
 		public function __construct(){
-// error_log(print_r('categoryAdminController', true));
 			$o_current_user = wp_get_current_user();
 			if( !user_can( $o_current_user, 'administrator' ) || !current_user_can('manage_x2board') ) {
 				unset($o_current_user);
@@ -84,7 +83,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Category\\categoryAdminControll
 		 * @param int $parent_id; only if XML dump via XE2Import.class.php
 		 */
 		public function update_category($n_board_id, $s_serialized_category) {
-// error_log(print_r('update_category', true));
 			if($n_board_id <= 0 ) {
 				return '';
 			}
@@ -105,7 +103,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Category\\categoryAdminControll
 		 * @param int $parent_id; only if XML dump via XE2Import.class.php
 		 */
 		public function reorder_category($n_board_id, $a_tree_category) {
-// error_log(print_r('update_category', true));
 			if($n_board_id <= 0 ) {
 				return '';
 			}
@@ -218,7 +215,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Category\\categoryAdminControll
 			if($this->_tree_category_new || $this->_empty_tree){  // new info has priority
 				$tree_category_source = $this->_tree_category_new;
 			}
-// error_log(print_r($this->_tree_category_new, true));
 			$tree_category_recursive = [];
 			foreach($tree_category_source as $item){
 				if(!(isset($item['parent_id']) && $item['parent_id'])){
@@ -261,7 +257,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Category\\categoryAdminControll
 			if($tree_category){
 				foreach($tree_category as $key=>$value){
 					if( $value['is_default'] == 'Y' ){
-						$default_select = '('.esc_html__( 'Default category', X2B_DOMAIN ).')';
+						$default_select = '('.__( 'lbl_default_category', X2B_DOMAIN ).')';
 					}
 					else {
 						$default_select = '';
@@ -352,7 +348,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Category\\categoryAdminControll
 			}
 		}
 
-		// better recursive array merge function listed on the array_merge_recursive PHP page in the comments
+		/**
+		 * better recursive array merge function listed on the array_merge_recursive PHP page in the comments
+		 * @param
+		 */
 		private function _array_merge_recursive_distinct(array $array1, array $array2) {
 			$merged = $array1;
 			foreach ($array2 as $key => &$value) {

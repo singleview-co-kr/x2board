@@ -3,10 +3,8 @@
  * The admin-specific functionality of the plugin.
  *
  * @link  https://singleview.co.kr
- * @since 2.6.0
  *
  * @package    x2board
- * @subpackage Admin
  */
 
 namespace X2board\Includes\Admin;

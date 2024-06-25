@@ -61,11 +61,3 @@
 		</div>
 	</div>
 </div>
-<script>
-function kboard_system_option_update(form){
-	jQuery.post(ajaxurl, jQuery(form).serialize(), function(res){
-		window.location.reload();
-	});
-	return false;
-}
-</script>
