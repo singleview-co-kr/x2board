@@ -472,12 +472,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 		public function proc_insert_board() {
 			check_admin_referer( X2B_CMD_ADMIN_PROC_INSERT_BOARD );  // check nounce
 			$_POST = stripslashes_deep($_POST);
-var_dump($_POST);			
-exit;
-			// insert wp page
-			$a_x2b_settings = $_POST['x2b_settings'];
-			$s_wp_page_title = isset($a_x2b_settings['wp_page_title']) ? esc_sql(sanitize_text_field($a_x2b_settings['wp_page_title'])) : '';
 
+			// insert wp page
+			$s_wp_page_title = isset($_POST['wp_page_title']) ? esc_sql(sanitize_text_field($_POST['wp_page_title'])) : '';
 			$o_cur_admin = wp_get_current_user();
 			$x2b_page  = array( 'post_title'     => $s_wp_page_title,
 								'post_type'      => 'page',
@@ -494,9 +491,8 @@ exit;
 			$n_page_id = wp_insert_post( $x2b_page, FALSE ); // Get Post ID - FALSE to return 0 instead of wp_error.
 			
 			// insert x2board
-			$s_x2board_title = isset($a_x2b_settings[X2B_DOMAIN.'_title']) ? esc_sql(sanitize_text_field($a_x2b_settings[X2B_DOMAIN.'_title'])) : '';
-			$this->_insert_new_board($n_page_id, $a_x2b_settings[X2B_DOMAIN.'_title']);
-			unset($a_x2b_settings);
+			$s_x2board_title = isset($_POST['board_title']) ? esc_sql(sanitize_text_field($_POST['board_title'])) : '';
+			$this->_insert_new_board($n_page_id, $s_x2board_title);
 				
 			if ( $n_page_id ) {
 				wp_redirect(admin_url('admin.php?page='.X2B_CMD_ADMIN_VIEW_BOARD_UPDATE.'&board_id='.$n_page_id));
