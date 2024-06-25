@@ -210,6 +210,36 @@ function launch_shortcode($a_args) {
 }
 
 /**
+ * Change browser title to post title
+ * https://wordpress.org/support/topic/change-title-tag-within-page/
+ * @param wp page title
+ * @return new browser_title
+ */
+function change_browser_title($data) {
+	if(isset($_GET['post_id'])) {
+		$s_post_name = esc_sql($_GET['post_id']);
+	}
+	else { 
+		global $post;
+		$s_wp_page_name = '/'.urlencode(urldecode($post->post_name));
+		$s_x2b_post_id = str_replace($s_wp_page_name, '', $_SERVER['REQUEST_URI']);
+		$a_query = explode('/', $s_x2b_post_id, 2);
+		$s_post_name = '-0'; // sentinel
+		if(is_numeric($a_query[1])) { // try best to find post_id from prettier post URL as possible, then give up
+			$s_post_name = $a_query[1];
+		}
+		unset($a_query);
+	}
+    global $wpdb;
+    $s_post_title = $wpdb->get_var( $wpdb->prepare( "SELECT `post_title` FROM $wpdb->posts WHERE `post_name` = %s AND `post_type`='%s'", $s_post_name, X2B_DOMAIN ));
+	if(is_null($s_post_title)) {
+		return $data;  // no change
+	}
+    // add your condition according to page 
+    return $s_post_title.' &#8211; '. $data;
+}
+
+/**
  * 관리자 실행을 위해 context 객체 생성
  * @param none
  * @return $o_context

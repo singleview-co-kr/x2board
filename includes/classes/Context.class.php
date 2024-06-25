@@ -559,9 +559,8 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Context')) {
 					'page' => $o_self->_s_page_permlink.'?p/'.$page,
 					'post_id' => $o_self->_s_page_permlink.'?'.X2B_CMD_VIEW_POST.'/'.$post_id,
 					'cmd.post_id.search_keyword.search_target' => $o_self->_s_page_permlink.'?'.X2B_CMD_VIEW_POST.'/'.$post_id,
-					'cmd.post_id' => '', // reserved for pretty post url  // $self->_s_page_permlink.'?'.$cmd.'/'.$post_id,
+					'cmd.post_id' => '', // reserved for pretty post url
 					'cmd.page' => $o_self->_s_page_permlink.'?p/'.$page,
-					'category.cmd.post_id' => $o_self->_s_page_permlink.'?cat/'.$s_category_title,
 				);
 				// cmd.comment_id.page.post_id..
 				$a_check_query = array( 'cmd', 'post_id', 'category', 'tag', 'search_keyword', 'search_target' );
