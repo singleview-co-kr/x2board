@@ -1,46 +1,54 @@
 <?php
-/* Copyright (C) XEHub <https://www.xehub.io> 
-   it was document.class.php */
+/*
+Copyright (C) XEHub <https://www.xehub.io>
+	it was document.class.php */
 /* WP port by singleview.co.kr */
 
 /**
  * post class
+ *
  * @brief post the module's high class
  * @author XEHub (developers@xpressengine.com)
  * @package /modules/post
  */
 namespace X2board\Includes\Modules\Post;
 
-if ( !defined( 'ABSPATH' ) ) {
-    exit;  // Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;  // Exit if accessed directly.
 }
 
 require_once X2B_PATH . 'includes/modules/post/post.item.php';
 
-if (!class_exists('\\X2board\\Includes\\Modules\\Post\\post')) {
+if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\post' ) ) {
 	// this is for poedit recognition
-	__('lbl_public', X2B_DOMAIN);
-	__('lbl_secret', X2B_DOMAIN);
+	__( 'lbl_public', X2B_DOMAIN );
+	__( 'lbl_secret', X2B_DOMAIN );
 
 	class post extends \X2board\Includes\Classes\ModuleObject {
 		/**
 		 * Search option to use in admin page
+		 *
 		 * @var array
 		 */
-		var $search_option = array('title','content','title_content','user_name',);
+		var $search_option = array( 'title', 'content', 'title_content', 'user_name' );
 		/**
 		 * XE Status list
+		 *
 		 * @var array
 		 */
-		var $statusList = array('public'=>'PUBLIC', 'secret'=>'SECRET');  // ,'private'=>'PRIVATE', 'temp'=>'TEMP'
+		var $statusList = array(
+			'public' => 'PUBLIC',
+			'secret' => 'SECRET',
+			// ,'private'=>'PRIVATE', 'temp'=>'TEMP'
+		);  
 
 		function __construct() {
 			global $G_X2B_CACHE;
-			if(!isset($G_X2B_CACHE['POST_LIST'])) {
+			if ( ! isset( $G_X2B_CACHE['POST_LIST'] ) ) {
 				$G_X2B_CACHE['POST_LIST'] = array();
 			}
-			
-			if(!isset($_SESSION['x2b_own_post'])) {
+
+			if ( ! isset( $_SESSION['x2b_own_post'] ) ) {
 				$_SESSION['x2b_own_post'] = array();
 			}
 		}
@@ -48,6 +56,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\post')) {
 		/**
 		 * Return default status
 		 * getDefaultStatus()
+		 *
 		 * @return string
 		 */
 		public function get_default_status() {
@@ -57,6 +66,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\post')) {
 		/**
 		 * Post Status List
 		 * getStatusList()
+		 *
 		 * @return array
 		 */
 		public function get_status_list() {
@@ -66,11 +76,12 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Post\\post')) {
 		/**
 		 * Return status by key
 		 * getConfigStatus($key)
+		 *
 		 * @return string
 		 */
-		public function get_config_status($key) {
-			if(array_key_exists(strtolower($key), $this->statusList)) {
-				return $this->statusList[$key];
+		public function get_config_status( $key ) {
+			if ( array_key_exists( strtolower( $key ), $this->statusList ) ) {
+				return $this->statusList[ $key ];
 			}
 			return $this->get_default_status();
 		}

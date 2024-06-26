@@ -10,8 +10,8 @@
 
 namespace X2board\Includes\Admin\Tpl;
 
-if (!defined('ABSPATH')) {
-    exit; // Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
 }
 
 
@@ -26,10 +26,10 @@ function x2b_options_page() {
 	ob_start();
 	?>
 	<div class="wrap">
-		<?php include 'header.php' ?>
+		<?php include 'header.php'; ?>
 
 		<!-- <p>
-			<a class="x2b_button" href="<?php //echo admin_url( 'tools.php?page=x2b_tools_page' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>">
+			<a class="x2b_button" href="<?php // echo admin_url( 'tools.php?page=x2b_tools_page' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>">
 				<?php // esc_html_e( 'Visit the Tools page', 'autoclose' ); ?>
 			</a>
 		<p> -->
@@ -53,18 +53,18 @@ function x2b_options_page() {
 			</ul>
 
 			<!-- <form method="post" action="options.php"> -->
-			<form id="x2b-setting-form" action="<?php echo admin_url('admin-post.php')?>" method="post" enctype="multipart/form-data">
-<?php 
-if($_GET['page'] == X2B_CMD_ADMIN_VIEW_BOARD_INSERT ){
-	$s_action = X2B_CMD_ADMIN_PROC_INSERT_BOARD;
-}
-if($_GET['page'] == X2B_CMD_ADMIN_VIEW_BOARD_UPDATE ){
-	$s_action = X2B_CMD_ADMIN_PROC_UPDATE_BOARD;
-}
-wp_nonce_field($s_action);
-?>				
-				<input type="hidden" name="action" value="<?php echo $s_action?>">
-				<input type="hidden" name="board_id" value="<?php echo $_GET['board_id']?>">
+			<form id="x2b-setting-form" action="<?php echo admin_url( 'admin-post.php' ); ?>" method="post" enctype="multipart/form-data">
+	<?php
+	if ( $_GET['page'] == X2B_CMD_ADMIN_VIEW_BOARD_INSERT ) {
+		$s_action = X2B_CMD_ADMIN_PROC_INSERT_BOARD;
+	}
+	if ( $_GET['page'] == X2B_CMD_ADMIN_VIEW_BOARD_UPDATE ) {
+		$s_action = X2B_CMD_ADMIN_PROC_UPDATE_BOARD;
+	}
+	wp_nonce_field( $s_action );
+	?>
+					<input type="hidden" name="action" value="<?php echo $s_action; ?>">
+				<input type="hidden" name="board_id" value="<?php echo $_GET['board_id']; ?>">
 
 				<?php foreach ( x2b_get_settings_sections() as $tab_id => $tab_name ) : ?>
 
@@ -195,7 +195,6 @@ function x2b_text_callback( $args ) {
 	// First, we read the options collection.
 	global $A_X2B_ADMIN_BOARD_SETTINGS;
 
-// var_dump($args['id']);
 	if ( isset( $A_X2B_ADMIN_BOARD_SETTINGS[ $args['id'] ] ) ) {
 		$value = $A_X2B_ADMIN_BOARD_SETTINGS[ $args['id'] ];
 	} else {
@@ -262,21 +261,19 @@ function x2b_checkbox_callback( $args ) {
 	global $A_X2B_ADMIN_BOARD_SETTINGS;
 	$default = isset( $args['options'] ) ? $args['options'] : '';
 	$set     = isset( $A_X2B_ADMIN_BOARD_SETTINGS[ $args['id'] ] ) ? $A_X2B_ADMIN_BOARD_SETTINGS[ $args['id'] ] : x2b_get_default_option( $args['id'] );
-	
-	if( isset( $args['checked_value'] ) ) {
-		$s_checked_value = isset( $args['checked_value']['checked'] ) ? $args['checked_value']['checked'] : '1';
+
+	if ( isset( $args['checked_value'] ) ) {
+		$s_checked_value   = isset( $args['checked_value']['checked'] ) ? $args['checked_value']['checked'] : '1';
 		$s_unchecked_value = isset( $args['checked_value']['unchecked'] ) ? $args['checked_value']['unchecked'] : '-1';
-	}
-	else {
-		$s_checked_value = '1';
+	} else {
+		$s_checked_value   = '1';
 		$s_unchecked_value = '-1';
 	}
 
-	if( $set !== '-1'){
-		if( $s_checked_value == '1' ){
-			$checked = ! empty( $set ) ? checked( 1, intval($set), false ) : '';
-		}
-		else {
+	if ( $set !== '-1' ) {
+		if ( $s_checked_value == '1' ) {
+			$checked = ! empty( $set ) ? checked( 1, intval( $set ), false ) : '';
+		} else {
 			$checked = ! empty( $set ) ? checked( $s_checked_value, $set, false ) : '';
 		}
 	}
@@ -312,10 +309,9 @@ function x2b_multicheck_callback( $args ) {
 				$enabled = null;
 			}
 
-			if( isset( $args['mandatory'] ) ) { // mandatory field
-				$s_disabled = isset( $args['mandatory'][ $key ] ) && $args['mandatory'][ $key ] == 'mandatory' ? ' checked="checked" onclick="alert(\''.$key.' is mandatory\'); return false;"' : '';
-			}
-			else {
+			if ( isset( $args['mandatory'] ) ) { // mandatory field
+				$s_disabled = isset( $args['mandatory'][ $key ] ) && $args['mandatory'][ $key ] == 'mandatory' ? ' checked="checked" onclick="alert(\'' . $key . ' is mandatory\'); return false;"' : '';
+			} else {
 				$s_disabled = null;
 			}
 
@@ -353,30 +349,29 @@ function x2b_grantselect_callback( $args ) {
 	} else {
 		$chosen = '';
 	}
-	
+
 	$html = sprintf( '<select id="%1$s" name="%1$s" %2$s class="x2board-grant-select"/>', esc_attr( $args['id'] ), $chosen );
 	foreach ( $args['options'] as $option => $name ) {
 		$html .= sprintf( '<option value="%1$s" %2$s>%3$s</option>', esc_attr( $option ), selected( $option, $value, false ), $name );
 	}
 	$html .= '</select>';
 
-	if( $value == X2B_CUSTOMIZE ) {
-		$s_hide_class = '';
+	if ( $value == X2B_CUSTOMIZE ) {
+		$s_hide_class    = '';
 		$a_allowed_grant = $A_X2B_ADMIN_BOARD_SETTINGS['board_grant'][ $args['id'] ];
-	}
-	else {
-		$s_hide_class = 'x2board-hide';
+	} else {
+		$s_hide_class    = 'x2board-hide';
 		$a_allowed_grant = array();
 	}
 
-	$html .= '<div class="x2board-permission-read-roles-view '.$s_hide_class.'">';
-	foreach(get_editable_roles() as $roles_key=>$roles_value) {
-		$s_mandatory = $roles_key=='administrator' ? 'onclick="return false" '.checked( true, true, false ) : '';
-		$s_checked = ( $roles_key != 'administrator' && in_array($roles_key, $a_allowed_grant)) ? checked( true, true, false ) : '';
-		$html .= '<label><input type="checkbox" name="grant['.esc_attr($args['id']).']['.X2B_CUSTOMIZE.'][]" class="field_data roles_checkbox" value="'.$roles_key.'" '.$s_mandatory.' '.$s_checked.'> '. _x($roles_value['name'], 'User role').'</label>';
+	$html .= '<div class="x2board-permission-read-roles-view ' . $s_hide_class . '">';
+	foreach ( get_editable_roles() as $roles_key => $roles_value ) {
+		$s_mandatory = $roles_key == 'administrator' ? 'onclick="return false" ' . checked( true, true, false ) : '';
+		$s_checked   = ( $roles_key != 'administrator' && in_array( $roles_key, $a_allowed_grant ) ) ? checked( true, true, false ) : '';
+		$html       .= '<label><input type="checkbox" name="grant[' . esc_attr( $args['id'] ) . '][' . X2B_CUSTOMIZE . '][]" class="field_data roles_checkbox" value="' . $roles_key . '" ' . $s_mandatory . ' ' . $s_checked . '> ' . _x( $roles_value['name'], 'User role' ) . '</label>';
 	}
-	
-	$html .='</div>';
+
+	$html .= '</div>';
 	$html .= '<p class="description">' . wp_kses_post( $args['desc'] ) . '</p>';
 
 	/** This filter has been defined in settings-page.php */
@@ -397,8 +392,8 @@ function x2b_radio_callback( $args ) {
 
 	foreach ( $args['options'] as $key => $option ) {
 		$checked = false;
-		if(is_numeric($key)) {
-			$key = strval($key);
+		if ( is_numeric( $key ) ) {
+			$key = strval( $key );
 		}
 
 		if ( isset( $A_X2B_ADMIN_BOARD_SETTINGS[ $args['id'] ] ) && $A_X2B_ADMIN_BOARD_SETTINGS[ $args['id'] ] === $key ) {
@@ -498,10 +493,10 @@ function x2b_image_callback( $args ) {
 	$s_var_id = esc_attr( $args['id'] );
 
 	$html = sprintf( '<input type="file" id="%1$s" name="%1$s" accept="image/gif, image/png, image/jpeg" />', $s_var_id );
-	if(isset($A_X2B_ADMIN_BOARD_SETTINGS[$s_var_id]['full_url'])) {
+	if ( isset( $A_X2B_ADMIN_BOARD_SETTINGS[ $s_var_id ]['full_url'] ) ) {
 		$html .= '<br />';
-		$html .= sprintf( '<img src="%1$s" style="max-width:200px" />', esc_attr( $A_X2B_ADMIN_BOARD_SETTINGS[$s_var_id]['full_url'] ) );
-		$html .= '<label><input type="checkbox" name="delete_old_file['.$s_var_id.']" value="'.esc_attr( $A_X2B_ADMIN_BOARD_SETTINGS[$s_var_id]['abs_path'] ).'">'.__( 'cmd_delete_file', X2B_DOMAIN ).'</label>';
+		$html .= sprintf( '<img src="%1$s" style="max-width:200px" />', esc_attr( $A_X2B_ADMIN_BOARD_SETTINGS[ $s_var_id ]['full_url'] ) );
+		$html .= '<label><input type="checkbox" name="delete_old_file[' . $s_var_id . ']" value="' . esc_attr( $A_X2B_ADMIN_BOARD_SETTINGS[ $s_var_id ]['abs_path'] ) . '">' . __( 'cmd_delete_file', X2B_DOMAIN ) . '</label>';
 	}
 	$html .= '<p class="description">' . wp_kses_post( $args['desc'] ) . '</p>';
 
@@ -524,9 +519,9 @@ function x2b_wpsortableui_callback( $args ) {
 		<div class="col-wrap">
 			<div class="form-wrap">
 				<div class="x2board-update-category">
-					<h2>'.__( 'lbl_update_category', X2B_DOMAIN ).'</h2>
+					<h2>' . __( 'lbl_update_category', X2B_DOMAIN ) . '</h2>
 					<div class="form-field form-required term-name-wrap">
-						<label for="update-category-name">'.__( 'lbl_update_category', X2B_DOMAIN ).'</label>
+						<label for="update-category-name">' . __( 'lbl_update_category', X2B_DOMAIN ) . '</label>
 						<input type="text" id="update-category-name" class="update_category_name" name="update_category_name">
 						<input type="hidden" id="current-category-name" class="update_category_name" name="current_category_name">
 						<input type="hidden" id="category-id" name="category_id" value="">
@@ -535,34 +530,34 @@ function x2b_wpsortableui_callback( $args ) {
 				</div>
 				
 				<div class="x2board-update-category btn">
-					<label><input type="checkbox" id="default-category" name="default-category" value="Y">'.__( 'lbl_default_category', X2B_DOMAIN ).'</label>
-					<button type="button" class="button" onclick="x2board_category_handler(\'update\')">'.__( 'cmd_update', X2B_DOMAIN ).'</button>
-					<button type="button" class="button" onclick="x2board_category_handler(\'remove\')">'.__( 'cmd_remove', X2B_DOMAIN ).'</button>
+					<label><input type="checkbox" id="default-category" name="default-category" value="Y">' . __( 'lbl_default_category', X2B_DOMAIN ) . '</label>
+					<button type="button" class="button" onclick="x2board_category_handler(\'update\')">' . __( 'cmd_update', X2B_DOMAIN ) . '</button>
+					<button type="button" class="button" onclick="x2board_category_handler(\'remove\')">' . __( 'cmd_remove', X2B_DOMAIN ) . '</button>
 				</div>
 				
 				<div class="x2board-new-category">
-					<h2>'.__( 'cmd_add_new_category', X2B_DOMAIN ).'</h2>
+					<h2>' . __( 'cmd_add_new_category', X2B_DOMAIN ) . '</h2>
 					<div class="form-field form-required term-name-wrap">
-						<label for="new-category-name">'.__( 'lbl_new_category_name', X2B_DOMAIN ).'</label>
+						<label for="new-category-name">' . __( 'lbl_new_category_name', X2B_DOMAIN ) . '</label>
 						<input type="text" id="new-category-name" name="new_category">
 						<input type="hidden" id="new-parent-id">
 					</div>
 				</div>
 				
 				<div class="x2board-new-category-btn">
-					<button type="button" class="button-primary" onclick="x2board_category_handler(\'insert\')">'.__( 'cmd_add_new_category', X2B_DOMAIN ).'</button>
+					<button type="button" class="button-primary" onclick="x2board_category_handler(\'insert\')">' . __( 'cmd_add_new_category', X2B_DOMAIN ) . '</button>
 				</div>
 			</div>
 		</div>
 	</div>
 	<div class="x2board-category-setting-right">
 		<div class="x2board-category-setting-sortable">
-		<h2>'.__( 'lbl_category_status', X2B_DOMAIN ).'</h2>
+		<h2>' . __( 'lbl_category_status', X2B_DOMAIN ) . '</h2>
 		<ul class="sortable">';
-	
+
 	$o_cat_admin_model = new \X2board\Includes\Modules\Category\categoryAdminModel();
-	$html .= $o_cat_admin_model->build_category_sortable_html();
-	unset($o_cat_admin_model);
+	$html             .= $o_cat_admin_model->build_category_sortable_html();
+	unset( $o_cat_admin_model );
 
 	$html .= '</ul>
 		</div>
@@ -571,24 +566,24 @@ function x2b_wpsortableui_callback( $args ) {
 }
 
 /**
- * 
+ *
  * @param  string $html Current HTML.
- * @return 
+ * @return
  */
 function x2b_wpuserfieldui_callback( $args ) {
 	$o_post_admin_model = new \X2board\Includes\Modules\Post\postAdminModel();
 	echo $o_post_admin_model->render_user_field_ui();
-	unset($o_cat_admin_model);
+	unset( $o_cat_admin_model );
 }
 
 /**
- * 
+ *
  * @param  string $html Current HTML.
- * @return 
+ * @return
  */
 function x2b_wplistfieldui_callback( $args ) {
 	$o_board_admin_model = new \X2board\Includes\Modules\Board\boardAdminModel();
 	$o_board_admin_model->build_user_define_list_fields();
 	echo $o_board_admin_model->render_user_field_ui();
-	unset($o_board_admin_model);
+	unset( $o_board_admin_model );
 }

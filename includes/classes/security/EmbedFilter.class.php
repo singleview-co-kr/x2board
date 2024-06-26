@@ -398,39 +398,6 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\\EmbedFilter')) {
 		}
 
 		/**
-		 * Check iframe tag in the content.
-		 * @return void
-		 */
-		function checkIframeTag(&$content) {
-			// check in Purifier class
-			return;
-			/*preg_match_all('/<\s*iframe\s*[^>]+(?:\/?>?)/is', $content, $m);
-			$iframeTagList = $m[0];
-			if($iframeTagList) {
-				foreach($iframeTagList AS $key => $iframeTag) {
-					$isWhiteDomain = TRUE;
-					$ext = '';
-
-					$parser = new HtmlParser($iframeTag);
-					while($parser->parse()) {
-						if(is_array($parser->iNodeAttributes)) {
-							foreach($parser->iNodeAttributes AS $attrName => $attrValue) {
-								// src url check
-								if(strtolower($attrName) == 'src' && $attrValue) {
-									$ext = strtolower(substr(strrchr($attrValue, "."), 1));
-									$isWhiteDomain = $this->_isWhiteIframeDomain($attrValue);
-								}
-							}
-						}
-					}
-					if(!$isWhiteDomain) {
-						$content = str_replace($iframeTag, htmlspecialchars($iframeTag, ENT_COMPAT | ENT_HTML401, 'UTF-8', false), $content);
-					}
-				}
-			}*/
-		}
-
-		/**
 		 * Check param tag in the content.
 		 * @return void
 		 */
@@ -475,21 +442,6 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\\EmbedFilter')) {
 			}
 			return FALSE;
 		}
-
-		/**
-		 * Check white domain in iframe src attribute.
-		 * @return string
-		 */
-		/*private function _isWhiteIframeDomain($urlAttribute) {
-			if(is_array($this->whiteIframeUrlList)) {
-				foreach($this->whiteIframeUrlList AS $key => $value) {
-					if(preg_match('@^' . preg_quote($value) . '@i', $urlAttribute)) {
-						return TRUE;
-					}
-				}
-			}
-			return FALSE;
-		}*/
 
 		/**
 		 * Check white mime type in object type attribute or embed type attribute.
@@ -631,6 +583,54 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\\EmbedFilter')) {
 				unset($o_wp_filesystem);
 			}
 		}
+
+		/**
+		 * Check iframe tag in the content.
+		 * @return void
+		 */
+		function checkIframeTag(&$content) {
+			// check in Purifier class
+			return;
+			/*preg_match_all('/<\s*iframe\s*[^>]+(?:\/?>?)/is', $content, $m);
+			$iframeTagList = $m[0];
+			if($iframeTagList) {
+				foreach($iframeTagList AS $key => $iframeTag) {
+					$isWhiteDomain = TRUE;
+					$ext = '';
+
+					$parser = new HtmlParser($iframeTag);
+					while($parser->parse()) {
+						if(is_array($parser->iNodeAttributes)) {
+							foreach($parser->iNodeAttributes AS $attrName => $attrValue) {
+								// src url check
+								if(strtolower($attrName) == 'src' && $attrValue) {
+									$ext = strtolower(substr(strrchr($attrValue, "."), 1));
+									$isWhiteDomain = $this->_isWhiteIframeDomain($attrValue);
+								}
+							}
+						}
+					}
+					if(!$isWhiteDomain) {
+						$content = str_replace($iframeTag, htmlspecialchars($iframeTag, ENT_COMPAT | ENT_HTML401, 'UTF-8', false), $content);
+					}
+				}
+			}*/
+		}
+
+		/**
+		 * Check white domain in iframe src attribute.
+		 * @return string
+		 */
+		/*private function _isWhiteIframeDomain($urlAttribute) {
+			if(is_array($this->whiteIframeUrlList)) {
+				foreach($this->whiteIframeUrlList AS $key => $value) {
+					if(preg_match('@^' . preg_quote($value) . '@i', $urlAttribute)) {
+						return TRUE;
+					}
+				}
+			}
+			return FALSE;
+		}*/
 	}
 }
 /* End of file : EmbedFilter.class.php */

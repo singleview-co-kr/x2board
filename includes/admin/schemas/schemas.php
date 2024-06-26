@@ -9,29 +9,34 @@
 
 namespace X2board\Includes\Admin;
 
-if ( !defined( 'ABSPATH' ) ) {
-    exit;  // Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;  // Exit if accessed directly.
 }
 
 global $wpdb;
-	
+
 require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 $charset_collate = $wpdb->get_charset_collate();
 
-dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_sequence` (
+dbDelta(
+	"CREATE TABLE `{$wpdb->prefix}x2b_sequence` (
 `seq` bigint(64) unsigned NOT NULL AUTO_INCREMENT,
 PRIMARY KEY (`seq`)
-) {$charset_collate};");
+) {$charset_collate};"
+);
 
-dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_mapper` (
+dbDelta(
+	"CREATE TABLE `{$wpdb->prefix}x2b_mapper` (
 `board_id` bigint(20) unsigned NOT NULL,
 `wp_page_id` bigint(20) unsigned NOT NULL,
 `board_title` varchar(127) NOT NULL,
 `create_date` datetime NOT NULL,
 PRIMARY KEY (`board_id`)
-) {$charset_collate};");
+) {$charset_collate};"
+);
 
-dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_posts` (
+dbDelta(
+	"CREATE TABLE `{$wpdb->prefix}x2b_posts` (
 `post_id` bigint(20) unsigned NOT NULL,
 `board_id` bigint(20) unsigned NOT NULL,
 `parent_post_id` bigint(20) unsigned NOT NULL DEFAULT 0,
@@ -85,9 +90,11 @@ KEY `idx_board_notice` (`board_id`,`is_notice`),
 KEY `idx_board_post_id` (`board_id`,`post_id`),
 KEY `idx_board_blamed_count` (`board_id`,`blamed_count`),
 KEY `idx_board_status` (`board_id`,`status`)
-) {$charset_collate};");
+) {$charset_collate};"
+);
 
-dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_comments` (
+dbDelta(
+	"CREATE TABLE `{$wpdb->prefix}x2b_comments` (
 `comment_id` bigint(11) NOT NULL,
 `board_id` bigint(11) NOT NULL DEFAULT 0,
 `parent_post_id` bigint(11) NOT NULL DEFAULT 0,
@@ -120,9 +127,11 @@ KEY `idx_last_update_dt` (`last_update_dt`),
 KEY `idx_ipaddress` (`ipaddress`),
 KEY `idx_list_order` (`list_order`),
 KEY `idx_status` (`status`)
-) {$charset_collate};");
+) {$charset_collate};"
+);
 
-dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_comments_list` (
+dbDelta(
+	"CREATE TABLE `{$wpdb->prefix}x2b_comments_list` (
 `comment_id` bigint(11) NOT NULL,
 `parent_post_id` bigint(11) NOT NULL DEFAULT 0,
 `head` bigint(11) NOT NULL DEFAULT 0,
@@ -134,9 +143,11 @@ dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_comments_list` (
 PRIMARY KEY (`comment_id`),
 KEY `idx_list` (`parent_post_id`,`head`,`arrange`),
 KEY `idx_date` (`board_id`,`regdate_dt`)
-) {$charset_collate};");		
+) {$charset_collate};"
+);
 
-dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_files` (
+dbDelta(
+	"CREATE TABLE `{$wpdb->prefix}x2b_files` (
 `file_id` bigint(11) NOT NULL,
 `upload_target_id` bigint(11) NOT NULL DEFAULT 0,
 `upload_target_type` char(3) DEFAULT NULL,
@@ -164,9 +175,11 @@ KEY `idx_is_valid` (`isvalid`),
 KEY `idx_list_order` (`cover_image`),
 KEY `idx_regdate` (`regdate`),
 KEY `idx_ipaddress` (`ipaddress`)
-) {$charset_collate};");
+) {$charset_collate};"
+);
 
-dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_categories` (
+dbDelta(
+	"CREATE TABLE `{$wpdb->prefix}x2b_categories` (
 `category_id` bigint(11) NOT NULL DEFAULT 0,
 `board_id` bigint(11) NOT NULL DEFAULT 0,
 `parent_id` bigint(12) NOT NULL DEFAULT 0,
@@ -186,9 +199,11 @@ dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_categories` (
 PRIMARY KEY (`category_id`),
 KEY `idx_board_id` (`board_id`),
 KEY `idx_regdate_dt` (`regdate_dt`)
-) {$charset_collate};");
+) {$charset_collate};"
+);
 
-dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_user_define_keys` (
+dbDelta(
+	"CREATE TABLE `{$wpdb->prefix}x2b_user_define_keys` (
 `board_id` bigint(11) NOT NULL,
 `var_idx` bigint(11) NOT NULL,
 `var_name` varchar(250) NOT NULL,
@@ -200,9 +215,11 @@ dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_user_define_keys` (
 `eid` varchar(40) DEFAULT NULL,
 `json_param` text DEFAULT NULL,
 UNIQUE KEY `unique_board_keys` (`board_id`,`var_idx`)
-) {$charset_collate};");
+) {$charset_collate};"
+);
 
-dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_user_define_vars` (
+dbDelta(
+	"CREATE TABLE `{$wpdb->prefix}x2b_user_define_vars` (
 `board_id` bigint(11) NOT NULL,
 `post_id` bigint(11) NOT NULL,
 `var_idx` bigint(11) NOT NULL,
@@ -211,4 +228,5 @@ dbDelta("CREATE TABLE `{$wpdb->prefix}x2b_user_define_vars` (
 `eid` varchar(40) DEFAULT NULL,
 UNIQUE KEY `unique_extra_vars` (`board_id`,`post_id`,`var_idx`),
 KEY `idx_post_list_order` (`post_id`,`board_id`,`var_idx`)
-) {$charset_collate};");
+) {$charset_collate};"
+);

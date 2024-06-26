@@ -1,5 +1,6 @@
 <?php
-/* Copyright (C) XEHub <https://www.xehub.io> */
+/*
+Copyright (C) XEHub <https://www.xehub.io> */
 /* WP port by singleview.co.kr */
 
 /**
@@ -9,12 +10,12 @@
  */
 namespace X2board\Includes\Modules\Member;
 
-if ( !defined( 'ABSPATH' ) ) {
-    exit;  // Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;  // Exit if accessed directly.
 }
 
-if (!class_exists('\\X2board\\Includes\\Modules\\Member\\member')) {
-	
+if ( ! class_exists( '\\X2board\\Includes\\Modules\\Member\\member' ) ) {
+
 	class member extends \X2board\Includes\Classes\ModuleObject {
 		/**
 		 * constructor

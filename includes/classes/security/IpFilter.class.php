@@ -3,28 +3,30 @@
 
 namespace X2board\Includes\Classes;
 
-if (!defined('ABSPATH')) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly
 
-if (!class_exists('\\X2board\\Includes\\Classes\\IpFilter')) {
+if ( ! class_exists( '\\X2board\\Includes\\Classes\\IpFilter' ) ) {
 
 	class IpFilter {
-		public static function filter($ip_list, $ip = NULL) {
-			if(!$ip) $ip = $_SERVER['REMOTE_ADDR'];
-			$long_ip = ip2long($ip);
-			foreach($ip_list as $filter_ip) {	
-				$range = explode('-', $filter_ip);
-				if(!$range[1]) {  // single address type
-					$star_pos = strpos($filter_ip, '*');
-					if($star_pos !== FALSE ) { // wild card exist 
-						if(strncmp($filter_ip, $ip, $star_pos)===0) return true;
-					}
-					else if(strcmp($filter_ip, $ip)===0) {
+		public static function filter( $ip_list, $ip = null ) {
+			if ( ! $ip ) {
+				$ip = $_SERVER['REMOTE_ADDR'];
+			}
+			$long_ip = ip2long( $ip );
+			foreach ( $ip_list as $filter_ip ) {
+				$range = explode( '-', $filter_ip );
+				if ( ! $range[1] ) {  // single address type
+					$star_pos = strpos( $filter_ip, '*' );
+					if ( $star_pos !== false ) { // wild card exist
+						if ( strncmp( $filter_ip, $ip, $star_pos ) === 0 ) {
+							return true;
+						}
+					} elseif ( strcmp( $filter_ip, $ip ) === 0 ) {
 						return true;
 					}
-				}
-				else if(ip2long($range[0]) <= $long_ip && ip2long($range[1]) >= $long_ip) {
+				} elseif ( ip2long( $range[0] ) <= $long_ip && ip2long( $range[1] ) >= $long_ip ) {
 					return true;
 				}
 			}
