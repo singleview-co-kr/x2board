@@ -229,7 +229,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 		 * 본문/제목/댓글 금지단어를 반환한다.
 		 * @param string $to_array
 		 */
-		private function _get_forbidden_word_in_contents($to_array=false){
+		private function _get_forbidden_word($to_array=false){
 			$content_filter = get_option('x2b_content_filter', '');
 			if($to_array){
 				$content_filter = explode(',', $content_filter);
