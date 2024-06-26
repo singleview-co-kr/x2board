@@ -227,7 +227,7 @@ function change_browser_title( $data ) {
 		$s_x2b_post_id  = str_replace( $s_wp_page_name, '', $_SERVER['REQUEST_URI'] );
 		$a_query        = explode( '/', $s_x2b_post_id, 2 );
 		$s_post_name    = '-0'; // sentinel
-		if ( is_numeric( $a_query[1] ) ) { // try best to find post_id from prettier post URL as possible, then give up
+		if ( isset($a_query[1]) && is_numeric( $a_query[1] ) ) { // try best to find post_id from prettier post URL as possible, then give up
 			$s_post_name = $a_query[1];
 		}
 		unset( $a_query );
