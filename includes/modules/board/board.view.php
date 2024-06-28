@@ -59,7 +59,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 				$this->consultation = FALSE;
 			}
 
-			$o_post_model = \X2board\Includes\getModel('post');
+			$o_post_model = \X2board\Includes\get_model('post');
 			$a_status = $this->_get_status_name_list();
 			if(isset($a_status['SECRET'])) {
 				$this->module_info->secret = 'Y';  // for notify_message checkbox on post/comment editor
@@ -67,7 +67,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			unset($a_status);
 
 			// editor 스킨의 사용자 입력 field 출력
-			$o_post_model = \X2board\Includes\getModel('post');
+			$o_post_model = \X2board\Includes\get_model('post');
 			$this->_default_fields = $o_post_model->get_default_fields();
 			$this->_extends_fields = $o_post_model->get_extended_fields();
 			$a_user_input_field = $o_post_model->get_user_define_fields();
@@ -110,7 +110,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			unset($a_ignore_key);
 
 			// remove [post_id]_cpage from get_vars
-			$o_args = \X2board\Includes\Classes\Context::getRequestVars();
+			$o_args = \X2board\Includes\Classes\Context::get_request_vars();
 			foreach($o_args as $name => $value) {
 				if(preg_match('/[0-9]+_cpage/', $name)) {
 					Context::set($name, '', TRUE);
@@ -180,7 +180,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 				return $this->_disp_message('msg_not_permitted');
 			}
 
-			$o_editor_view = \X2board\Includes\getView('editor');
+			$o_editor_view = \X2board\Includes\get_view('editor');
 			echo $o_editor_view->render_editor_css();
 			unset($o_editor_view);
 
@@ -212,7 +212,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			$this->_view_post();
 
 			// list config, columnList setting
-			$o_board_model = \X2board\Includes\getModel('board');
+			$o_board_model = \X2board\Includes\get_model('board');
 			$this->listConfig = $o_board_model->get_list_config(); //$this->module_info->module_srl);
 			unset($o_board_model);
 			if(!$this->listConfig) {
@@ -240,7 +240,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			$n_page = \X2board\Includes\Classes\Context::get('page');
 
 			// generate post model object
-			$o_post_model = \X2board\Includes\getModel('post');
+			$o_post_model = \X2board\Includes\get_model('post');
 
 			$o_post = null;
 			/**
@@ -361,7 +361,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 				$o_args->order_type = $this->module_info->order_type ? $this->module_info->order_type : 'asc';
 			}
 
-			$o_post_model = \X2board\Includes\getModel('post');
+			$o_post_model = \X2board\Includes\get_model('post');
 			// set the current page of posts
 			$post_id = \X2board\Includes\Classes\Context::get('post_id');  //$g_a_x2b_query_param['post_id'];
 			if(!$o_args->page && $post_id) {
@@ -415,7 +415,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 					\X2board\Includes\Classes\Context::set('category_recursive', array());
 					return;
 				}
-				$o_category_model = \X2board\Includes\getModel('category');
+				$o_category_model = \X2board\Includes\get_model('category');
 				$o_category_model->set_board_id(\X2board\Includes\Classes\Context::get('board_id'));
 				$a_linear_category = $o_category_model->build_linear_category();
 				unset($o_category_model);
@@ -435,7 +435,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 				return;
 			}
 
-			$o_post_model = \X2board\Includes\getModel('post');
+			$o_post_model = \X2board\Includes\get_model('post');
 			$o_args = new \stdClass();
 			$o_args->wp_page_id = \X2board\Includes\Classes\Context::get('board_id');
 			$output = $o_post_model->get_notice_list($o_args, $this->columnList);
@@ -500,7 +500,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			 * check if the category user define field is enabled or not
 			 **/
 			if( \X2board\Includes\Classes\Context::get('use_category') ) {
-				$o_category_model = \X2board\Includes\getModel('category');
+				$o_category_model = \X2board\Includes\get_model('category');
 				$o_category_model->set_board_id(\X2board\Includes\Classes\Context::get('board_id'));
 				$a_linear_category = $o_category_model->build_linear_category();
 				unset($o_category_model);
@@ -510,7 +510,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 
 			// GET parameter post_id from request
 			$n_post_id = \X2board\Includes\Classes\Context::get('post_id');
-			$o_post_model = \X2board\Includes\getModel('post');
+			$o_post_model = \X2board\Includes\get_model('post');
 			$o_post = $o_post_model->get_post(0, $this->grant->manager);
 			$o_post->set_post($n_post_id);
 
@@ -528,7 +528,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			}
 			
 			if(!$o_post->is_exists()) {
-				$o_post->set_post(\X2board\Includes\getNextSequence(), false); // reserve new post id for file appending
+				$o_post->set_post(\X2board\Includes\get_next_sequence(), false); // reserve new post id for file appending
 			}
 			if(!$o_post->get('status')) {
 				$o_post->add('status', $o_post_model->get_default_status());
@@ -561,7 +561,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			}
 
 			// get the post information
-			$o_post_model = \X2board\Includes\getModel('post');
+			$o_post_model = \X2board\Includes\get_model('post');
 			$o_post = $o_post_model->get_post($n_post_id);
 			unset($o_post_model);
 			if(!$o_post->is_exists()) {
@@ -574,7 +574,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			}
 
 			// obtain the comment (create an empty comment post for comment_form usage)
-			$o_comment_model = \X2board\Includes\getModel('comment');
+			$o_comment_model = \X2board\Includes\get_model('comment');
 			$o_source_comment = $o_comment = $o_comment_model->get_comment(0);
 			unset($o_comment_model);
 			$o_comment->add('parent_post_id', $n_post_id);
@@ -607,7 +607,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			}
 
 			// get comment information
-			$o_comment_model = \X2board\Includes\getModel('comment');
+			$o_comment_model = \X2board\Includes\get_model('comment');
 			$o_comment = $o_comment_model->get_comment($n_comment_id, $this->grant->manager);
 			$o_source_comment = $o_comment_model->get_comment();
 
@@ -637,7 +637,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 		private function _get_status_name_list() {
 			$a_result_list = array();
 			if(!empty($this->module_info->use_status)) {
-				$o_post_model = \X2board\Includes\getModel('post');
+				$o_post_model = \X2board\Includes\get_model('post');
 				$a_status_name_list = $o_post_model->get_status_name_list();
 				unset($o_post_model);
 				if(is_array($this->module_info->use_status)) {
@@ -665,7 +665,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 
 			// if post exists, get the post information
 			if($n_post_id) {
-				$o_post_model = \X2board\Includes\getModel('post');
+				$o_post_model = \X2board\Includes\get_model('post');
 				$o_post = $o_post_model->get_post($n_post_id);
 				unset($o_post_model);
 			}
@@ -708,7 +708,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			}
 
 			// get the comment
-			$o_comment_model = \X2board\Includes\getModel('comment');
+			$o_comment_model = \X2board\Includes\get_model('comment');
 			$o_source_comment = $o_comment_model->get_comment($parent_comment_id, $this->grant->manager);
 
 			// if the comment is not existed, opoup an error message
@@ -721,7 +721,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			}
 
 			// Check allow comment
-			$o_post_model = \X2board\Includes\getModel('post');
+			$o_post_model = \X2board\Includes\get_model('post');
 			$o_post = $o_post_model->get_post($o_source_comment->get('parent_post_id'));
 			unset($o_post_model);
 			if(!$o_post->allow_comment()) {
@@ -760,7 +760,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 
 			// if the comment exists, then get the comment information
 			if($n_comment_id) {
-				$o_comment_model = \X2board\Includes\getModel('comment');
+				$o_comment_model = \X2board\Includes\get_model('comment');
 				$o_comment = $o_comment_model->get_comment($n_comment_id, $this->grant->manager);
 				unset($o_comment_model);
 			}

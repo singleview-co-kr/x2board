@@ -58,7 +58,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 		 * @brief check download file
 		 **/
 		private function _proc_output_file() {
-			$o_file_controller = \X2board\Includes\getController('file');
+			$o_file_controller = \X2board\Includes\get_controller('file');
 			$o_file_controller->init(); // to init related $_SESSION
 			$o_file_controller->proc_file_output();
 			unset($o_file_controller);
@@ -68,7 +68,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 		 * @brief check download file
 		 **/
 		private function _proc_download_file() {
-			$o_file_controller = \X2board\Includes\getController('file');
+			$o_file_controller = \X2board\Includes\get_controller('file');
 			$o_file_controller->init(); // to init related $_SESSION
 			$o_appending_file_conf = new \stdClass();
 			foreach( $this->module_info as $s_key => $val ){
@@ -86,7 +86,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 		 **/
 		private function _proc_ajax_file_upload() {
 			check_ajax_referer(X2B_AJAX_SECURITY, 'security');
-			$o_file_controller = \X2board\Includes\getController('file');
+			$o_file_controller = \X2board\Includes\get_controller('file');
 			$o_file_controller->init(); // to init related $_SESSION
 			$upload_attach_files = $o_file_controller->proc_file_upload();
 			unset($o_file_controller);
@@ -98,11 +98,11 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 		 **/
 		private function _proc_ajax_file_delete() {
 			check_ajax_referer(X2B_AJAX_SECURITY, 'security');
-			$o_file_controller = \X2board\Includes\getController('file');
+			$o_file_controller = \X2board\Includes\get_controller('file');
 			$o_file_controller->init(); // to init related $_SESSION
 			$o_rst = $o_file_controller->proc_file_delete();
 			unset($o_file_controller);
-			if(!$o_rst->toBool()){
+			if(!$o_rst->to_bool()){
 				wp_send_json(['result'=>'error', 'message'=>__('msg_invalid_request', X2B_DOMAIN)]);
 			}		
 			wp_send_json(['result'=>'success']);		
@@ -141,7 +141,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 
 			$obj->post_author = $o_logged_info->ID;
 
-			$o_comment_class = \X2board\Includes\getClass('comment');
+			$o_comment_class = \X2board\Includes\get_class('comment');
 			if( $obj->allow_comment == 'N' ) {
 				$obj->comment_status = $o_comment_class->get_status_by_key('deny'); // 'DENY';
 			}
@@ -179,7 +179,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 			}
 
 			// generate post module model object
-			$o_post_model = \X2board\Includes\getModel('post');
+			$o_post_model = \X2board\Includes\get_model('post');
 			// check if the post is existed
 			$o_post = $o_post_model->get_post($obj->post_id, $this->grant->manager);
 			unset($o_post_model);
@@ -209,7 +209,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 			}
 			unset($o_logged_info);
 			
-			$o_post_model = \X2board\Includes\getModel('post');
+			$o_post_model = \X2board\Includes\get_model('post');
 			$s_secret_status = $o_post_model->get_config_status('secret');
 			$s_public_status = $o_post_model->get_config_status('public');
 			unset($o_post_model);
@@ -245,20 +245,20 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 				}
 				
 				// generate controller object of post module
-				$o_post_controller = \X2board\Includes\getController('post');
+				$o_post_controller = \X2board\Includes\get_controller('post');
 				$output = $o_post_controller->update_post($o_post, $obj, true);
 				unset($o_post_controller);
 				$msg_code = 'success_updated';
 			} 
 			else {  // insert a new post otherwise
-				$o_post_controller = \X2board\Includes\getController('post');
+				$o_post_controller = \X2board\Includes\get_controller('post');
 				$output = $o_post_controller->insert_post($obj, $bAnonymous);
 				unset($o_post_controller);
 
 				$msg_code = 'success_registed';
 				$obj->post_id = $output->get('post_id');
 				// send an email to admin user
-				// if($output->toBool() && $this->module_info->admin_mail) {
+				// if($output->to_bool() && $this->module_info->admin_mail) {
 					// $oModuleModel = getModel('module');
 					// $member_config = $oModuleModel->getModuleConfig('member');
 					
@@ -277,7 +277,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 					// }
 				// }
 			}
-			if(!$output->toBool()) {  // if there is an error
+			if(!$output->to_bool()) {  // if there is an error
 				$this->add('s_wp_redirect_url', $this->_s_wp_post_guid.'?cmd='.X2B_CMD_VIEW_MESSAGE.'&message='.$output->getMessage());
 			}
 			else { // if s_wp_redirect_url is not added, automatically redirect to home_url
@@ -329,7 +329,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 			}
 
 			// check if the post is existed
-			$o_post_model = \X2board\Includes\getModel('post');
+			$o_post_model = \X2board\Includes\get_model('post');
 			$o_post = $o_post_model->get_post($obj->parent_post_id);
 			if(!$o_post->is_exists()) {
 				$this->add('s_wp_redirect_url', $this->_s_wp_post_guid.'?cmd='.X2B_CMD_VIEW_MESSAGE.'&message=msg_not_found');
@@ -356,10 +356,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 			}
 
 			// generate comment  module model object
-			$o_comment_model = \X2board\Includes\getModel('comment');
+			$o_comment_model = \X2board\Includes\get_model('comment');
 
 			// generate comment module controller object
-			$o_comment_controller = \X2board\Includes\getController('comment');
+			$o_comment_controller = \X2board\Includes\get_controller('comment');
 
 			// check the comment is existed
 			// if the comment is not existed, then generate a new sequence
@@ -399,7 +399,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 				$output = $o_comment_controller->update_comment($obj, $this->grant->manager);
 			}
 
-			if(!$output->toBool()) {
+			if(!$output->to_bool()) {
 				$this->add('s_wp_redirect_url', $this->_s_wp_post_guid.'?cmd='.X2B_CMD_VIEW_MESSAGE.'&message='.$output->getMessage());
 				return;
 			}
@@ -422,7 +422,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 				return;
 			}
 
-			$o_post_model = \X2board\Includes\getModel('post');
+			$o_post_model = \X2board\Includes\get_model('post');
 			$o_post = $o_post_model->get_post($n_post_id);
 			unset($o_post_model);
 			// check protect content
@@ -432,12 +432,12 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 			}
 
 			// generate post module controller object
-			$o_post_controller = \X2board\Includes\getController('post');
+			$o_post_controller = \X2board\Includes\get_controller('post');
 
 			// delete the post
 			$output = $o_post_controller->delete_post($n_post_id, $this->grant->manager);
 			unset($o_post_controller);
-			if(!$output->toBool()) {
+			if(!$output->to_bool()) {
 				unset($output);
 				$this->add('s_wp_redirect_url', $this->_s_wp_post_guid.'?cmd='.X2B_CMD_VIEW_MESSAGE.'&message='.$output->getMessage());
 				return;
@@ -460,11 +460,11 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 				return;
 			}
 			// generate comment controller object
-			$o_comment_controller = \X2board\Includes\getController('comment');
+			$o_comment_controller = \X2board\Includes\get_controller('comment');
 			$output = $o_comment_controller->delete_comment($n_comment_id, $this->grant->manager);
 			
 			unset($o_comment_controller);
-			if(!$output->toBool()) {
+			if(!$output->to_bool()) {
 				$this->add('s_wp_redirect_url', $this->_s_wp_post_guid.'?cmd='.X2B_CMD_VIEW_MESSAGE.'&message='.$output->getMessage());
 				return;
 			}
@@ -480,11 +480,11 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 			$s_password = \X2board\Includes\Classes\Context::get('password');
 			$n_post_id = \X2board\Includes\Classes\Context::get('post_id');
 			$n_comment_id = \X2board\Includes\Classes\Context::get('comment_id');
-			$o_member_model = \X2board\Includes\getModel('member');
+			$o_member_model = \X2board\Includes\get_model('member');
 
 			if($n_comment_id) {  // if the comment exists
 				// get the comment information
-				$o_comment_model = \X2board\Includes\getModel('comment');
+				$o_comment_model = \X2board\Includes\get_model('comment');
 				$o_comment = $o_comment_model->get_comment($n_comment_id);
 				unset($o_comment_model);
 				if(!$o_comment->is_exists()) {
@@ -501,7 +501,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardController')) {
 				unset($o_comment);
 				$this->add('s_wp_redirect_url', $this->_s_wp_post_guid.'?cmd='.X2B_CMD_VIEW_MODIFY_COMMENT.'&post_id='.$n_post_id.'&comment_id='.$n_comment_id);
 			} else {  // get the post information
-				$o_post_model = \X2board\Includes\getModel('post');
+				$o_post_model = \X2board\Includes\get_model('post');
 				$o_post = $o_post_model->get_post($n_post_id);
 				unset($o_post_model);
 				if(!$o_post->is_exists()) {

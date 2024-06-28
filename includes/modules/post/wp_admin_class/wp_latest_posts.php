@@ -91,7 +91,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\WpAdminClass\\wpLatest
 			require_once X2B_PATH . 'includes/func.inc.php';
 			\X2board\Includes\buildup_context_from_admin();
 			// generate post module controller object
-			$o_post_controller = \X2board\Includes\getController( 'post' );
+			$o_post_controller = \X2board\Includes\get_controller( 'post' );
 			// loop over the array of post IDs and delete them
 			foreach ( $a_delete_post_id as $n_post_id ) {
 				$o_post_controller->delete_post( $n_post_id, true ); // $this->grant->manager = true

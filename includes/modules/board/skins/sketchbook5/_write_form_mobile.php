@@ -10,7 +10,7 @@
 // include_once('./modules/file/file.controller.php');
 
 /*
-$o_file_controller = \X2board\Includes\getController('file');
+$o_file_controller = \X2board\Includes\get_controller('file');
 $editor_sequence = '1';
 $upload_target_id = $post_id;
 $o_file_controller->set_upload_info($editor_sequence, $upload_target_id);
@@ -21,7 +21,7 @@ $_SESSION['x2b_upload_info'][$editor_sequence]->upload_target_id = $upload_targe
 
 // Context::loadLang('./modules/editor/lang');
 // File config
-// $o_file_model = \X2board\Includes\getModel('file');
+// $o_file_model = \X2board\Includes\get_model('file');
 // $file_config = $o_file_model->getUploadConfig();
 // unset($o_file_model);
 

@@ -99,8 +99,8 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\Context' ) ) {
 		 * @return void
 		 */
 		public function init( $s_cmd_type ) {
-			$this->setRequestMethod( '' );
-			$this->_setRequestArgument();
+			$this->set_request_method( '' );
+			$this->_set_request_argument();
 
 			$o_logged_info           = wp_get_current_user();
 			$o_logged_info->is_admin = current_user_can( 'manage_options' ) ? 'Y' : 'N';
@@ -140,9 +140,9 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\Context' ) ) {
 				$s_cmd        = isset( $_REQUEST['cmd'] ) ? $_REQUEST['cmd'] : '';
 				$s_cmd_prefix = substr( $s_cmd, 0, 4 );
 				if ( $s_cmd_prefix === 'proc' ) {
-					$o_controller = \X2board\Includes\getController( 'board' );
+					$o_controller = \X2board\Includes\get_controller( 'board' );
 					$n_board_id   = sanitize_text_field( intval( $_REQUEST['board_id'] ) );
-					$o_controller->setModuleInfo( $n_board_id );
+					$o_controller->set_module_info( $n_board_id );
 					$next_page_url = $o_controller->get( 's_wp_redirect_url' );
 					if ( wp_redirect( $next_page_url ) ) {
 						unset( $o_controller );
@@ -156,8 +156,8 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\Context' ) ) {
 				exit;  // required to execute wp_redirect()
 			}  ///////// end of proc mode //////////////////////
 			elseif ( $s_cmd_type === 'admin_import' ) {
-				$o_controller = \X2board\Includes\getModule( 'board', 'controller' );
-				$o_controller->setModuleInfo( intval( $_POST['board_id'] ) );
+				$o_controller = \X2board\Includes\get_module( 'board', 'controller' );
+				$o_controller->set_module_info( intval( $_POST['board_id'] ) );
 				unset( $o_controller );
 			} else {  // begin of view mode //////////////////////
 				$s_cmd        = self::get( 'cmd' );
@@ -165,8 +165,8 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\Context' ) ) {
 				if ( $s_cmd_prefix === '' || $s_cmd_prefix === 'view' ) {  // load view
 					// pretty url is for view only
 					$this->_convert_pretty_command_uri();
-					$o_view = \X2board\Includes\getModule( 'board' );
-					$o_view->setModuleInfo( $this->get( 'board_id' ) );
+					$o_view = \X2board\Includes\get_module( 'board' );
+					$o_view->set_module_info( $this->get( 'board_id' ) );
 					unset( $o_view );
 				}
 			}
@@ -192,11 +192,11 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\Context' ) ) {
 		 *
 		 * @return void
 		 */
-		private function _setRequestArgument() {
+		private function _set_request_argument() {
 			if ( ! count( $_REQUEST ) ) {
 				return;
 			}
-			$requestMethod = $this->getRequestMethod();
+			$requestMethod = $this->get_request_method();
 			foreach ( $_REQUEST as $key => $val ) {
 				if ( $val === '' || self::get( $key ) || in_array( $key, $this->_a_ignore_request ) ) {
 					continue;
@@ -214,7 +214,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\Context' ) ) {
 				}
 
 				if ( $set_to_vars ) {
-					$this->_recursiveCheckVar( $val );
+					$this->_recursive_check_var( $val );
 				}
 
 				$this->set( $key, $val, $set_to_vars );
@@ -357,7 +357,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\Context' ) ) {
 		/**
 		 *
 		 */
-		private function _recursiveCheckVar( $val ) {
+		private function _recursive_check_var( $val ) {
 			if ( is_string( $val ) ) {
 				foreach ( $this->_a_patterns as $pattern ) {
 					if ( preg_match( $pattern, $val ) ) {
@@ -367,7 +367,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\Context' ) ) {
 				}
 			} elseif ( is_array( $val ) ) {
 				foreach ( $val as $val2 ) {
-					$this->_recursiveCheckVar( $val2 );
+					$this->_recursive_check_var( $val2 );
 				}
 			}
 		}
@@ -377,7 +377,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\Context' ) ) {
 		 *
 		 * @return string Request method type. (Optional - GET|POST|XMLRPC|JSON)
 		 */
-		public static function getRequestMethod() {
+		public static function get_request_method() {
 			$o_self           = self::getInstance();
 			$s_request_method = $o_self->request_method;
 			unset( $o_self );
@@ -461,7 +461,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\Context' ) ) {
 		 *
 		 * @return object All context data
 		 */
-		public static function getAll4Skin() {
+		public static function get_all_4_skin() {
 			$o_self = self::getInstance();
 			$a_rst  = (array) $o_self->context;
 			unset( $o_self );
@@ -473,7 +473,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\Context' ) ) {
 		 *
 		 * @return BaseObject Request variables.
 		 */
-		public static function getRequestVars() {
+		public static function get_request_vars() {
 			$o_self = self::getInstance();
 			if ( $o_self->get_vars ) {
 				$o_tmp = clone($o_self->get_vars);
@@ -489,7 +489,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\Context' ) ) {
 		 * @param string $type Request method. (Optional - GET|POST|XMLRPC|JSON)
 		 * @return void
 		 */
-		public static function setRequestMethod( $type = '' ) {
+		public static function set_request_method( $type = '' ) {
 			$o_self = self::getInstance();
 			( $type && $o_self->request_method = $type ) or
 			( isset( $_SERVER['CONTENT_TYPE'] ) && strpos( $_SERVER['CONTENT_TYPE'], 'json' ) && $o_self->request_method = 'JSON' ) or ( $o_self->request_method = $_SERVER['REQUEST_METHOD'] );
@@ -661,7 +661,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\Context' ) ) {
 		 *
 		 * @return string Language type
 		 */
-		public static function getLangType() {
+		public static function get_lang_type() {
 			$a_locale = array(
 				'ko_KR' => 'ko',
 				'en_GB' => 'en',

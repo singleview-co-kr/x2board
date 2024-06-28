@@ -25,7 +25,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\FileHandler' ) ) {
 		 * @param $val Size in string (ex., 10, 10K, 10M, 10G )
 		 * @return int converted size
 		 */
-		public static function returnBytes( $val ) {
+		public static function return_bytes( $val ) {
 			$unit = strtoupper( substr( $val, -1 ) );
 			$val  = (float) $val;
 			switch ( $unit ) {
@@ -73,8 +73,8 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\FileHandler' ) ) {
 		 * @param bool   $concat_prefix If TRUE, return file name as absolute path
 		 * @return string[] Array of the filenames in the path
 		 */
-		public static function readDir( $path, $filter = '', $to_lower = false, $concat_prefix = false ) {
-			$path   = self::_getRealPath( $path );
+		public static function read_dir( $path, $filter = '', $to_lower = false, $concat_prefix = false ) {
+			$path   = self::_get_real_path( $path );
 			$output = array();
 
 			if ( substr( $path, -1 ) != '/' ) {
@@ -114,7 +114,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\FileHandler' ) ) {
 		 * @param string $source path to change into absolute path
 		 * @return string Absolute path
 		 */
-		private static function _getRealPath( $source ) {
+		private static function _get_real_path( $source ) {
 			if ( strlen( $source ) >= 2 && substr_compare( $source, './', 0, 2 ) === 0 ) {
 				return _X2B_PATH_ . substr( $source, 2 );
 			}
@@ -128,7 +128,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\FileHandler' ) ) {
 		 * @return bool Returns FALSE if the file does not exists, or Returns full path file(string).
 		 */
 		public static function exists( $s_filename ) {
-			$s_filename = self::_getRealPath( $s_filename );
+			$s_filename = self::_get_real_path( $s_filename );
 			return file_exists( $s_filename ) ? $s_filename : false;
 		}
 
@@ -166,7 +166,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\FileHandler' ) ) {
 		 * @return bool Returns FALSE if the dir is not dir, or Returns full path of dir(string).
 		 */
 		public static function is_x2b_dir( $path ) {
-			$path = self::_getRealPath( $path );
+			$path = self::_get_real_path( $path );
 			return is_dir( $path ) ? $path : false;
 		}
 
@@ -178,7 +178,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\FileHandler' ) ) {
 		 * @return bool TRUE: it's ok, FALSE: otherwise
 		 */
 		private static function _check_memory_load_image( &$imageInfo ) {
-			$memoryLimit = self::returnBytes( ini_get( 'memory_limit' ) );
+			$memoryLimit = self::return_bytes( ini_get( 'memory_limit' ) );
 			if ( $memoryLimit == -1 ) {
 				return true;
 			}
@@ -191,7 +191,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\FileHandler' ) ) {
 			// }
 
 			$memoryNeeded    = round( ( $imageInfo[0] * $imageInfo[1] * $imageInfo['bits'] * $channels / 8 + $K64 ) * $TWEAKFACTOR );
-			$availableMemory = self::returnBytes( ini_get( 'memory_limit' ) ) - memory_get_usage();
+			$availableMemory = self::return_bytes( ini_get( 'memory_limit' ) ) - memory_get_usage();
 			if ( $availableMemory < $memoryNeeded ) {
 				return false;
 			}
@@ -217,7 +217,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\FileHandler' ) ) {
 				return;
 			}
 
-			$target_file = self::_getRealPath( $target_file );
+			$target_file = self::_get_real_path( $target_file );
 			if ( ! $resize_width ) {
 				$resize_width = 100;
 			}

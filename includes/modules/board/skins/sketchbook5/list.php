@@ -444,9 +444,6 @@ else {
 	});
 	</script>
 	<?php endif?>
-
-	<?php //if($board->contribution()):?>
-	<div class="x2board-default-poweredby">
-		<a href="#" title="">Powered by x2board</a>
-	</div>
+	
+	<div class="x2board-default-poweredby">Powered by x2board</div>
 <?php endif?>

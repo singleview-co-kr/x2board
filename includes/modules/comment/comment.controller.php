@@ -83,13 +83,13 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentController' 
 
 			// if password exists, hash it.
 			if ( ! $manual_inserted && $obj->password ) {
-				$obj->password = \X2board\Includes\getModel( 'member' )->hash_password( $obj->password );
+				$obj->password = \X2board\Includes\get_model( 'member' )->hash_password( $obj->password );
 			}
 
 			// get the original posting
 			if ( ! $manual_inserted ) {
 				// get a object of post model
-				$o_post_model = \X2board\Includes\getModel( 'post' );
+				$o_post_model = \X2board\Includes\get_model( 'post' );
 				$o_post       = $o_post_model->get_post( $parent_post_id );
 				unset( $o_post_model );
 
@@ -115,13 +115,13 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentController' 
 			}
 
 			if ( ! $obj->comment_id ) {
-				$obj->comment_id = \X2board\Includes\getNextSequence();
-			} elseif ( ! $is_admin && ! $manual_inserted && ! \X2board\Includes\checkUserSequence( $obj->comment_id ) ) {
+				$obj->comment_id = \X2board\Includes\get_next_sequence();
+			} elseif ( ! $is_admin && ! $manual_inserted && ! \X2board\Includes\check_user_sequence( $obj->comment_id ) ) {
 				return new \X2board\Includes\Classes\BaseObject( -1, __( 'msg_not_permitted', X2B_DOMAIN ) );
 			}
 
 			// determine the order
-			$obj->list_order = \X2board\Includes\getNextSequence() * -1;
+			$obj->list_order = \X2board\Includes\get_next_sequence() * -1;
 
 			// remove XE's own tags from the contents
 			// $obj->comment_content = preg_replace('!<\!--(Before|After)(Document|Comment)\(([0-9]+),([0-9]+)\)-->!is', '', $obj->comment_content);
@@ -139,7 +139,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentController' 
 
 			// remove iframe and script if not a top administrator on the session.
 			if ( $o_logged_info->is_admin != 'Y' ) {
-				$obj->content = \X2board\Includes\removeHackTag( $obj->content );
+				$obj->content = \X2board\Includes\remove_hack_tag( $obj->content );
 			}
 			unset( $o_logged_info );
 
@@ -252,19 +252,19 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentController' 
 			unset( $a_insert_data );
 
 			// creat the comment model object
-			$o_comment_model = \X2board\Includes\getModel( 'comment' );
+			$o_comment_model = \X2board\Includes\get_model( 'comment' );
 			// get the number of all comments in the posting
 			$n_comment_count = $o_comment_model->get_comment_count( $parent_post_id );
 			unset( $o_comment_model );
 
 			// handle appended files
-			$o_file_controller = \X2board\Includes\getController( 'file' );
+			$o_file_controller = \X2board\Includes\get_controller( 'file' );
 			$o_file_controller->set_files_valid( $obj->comment_id );
 			unset( $o_file_controller );
 			$this->update_uploaded_count( $obj->comment_id );
 
 			// create the controller object of the document
-			$o_post_controller = \X2board\Includes\getController( 'post' );
+			$o_post_controller = \X2board\Includes\get_controller( 'post' );
 
 			// Update the number of comments in the post
 			if ( ! $using_validation ) {
@@ -361,7 +361,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentController' 
 			}
 
 			// create a comment model object
-			$o_comment_model = \X2board\Includes\getModel( 'comment' );
+			$o_comment_model = \X2board\Includes\get_model( 'comment' );
 			// get the original data
 			$o_source_comment = $o_comment_model->get_comment( $obj->comment_id );
 			unset( $o_comment_model );
@@ -378,7 +378,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentController' 
 			}
 
 			if ( $obj->password ) {
-				$obj->password = \X2board\Includes\getModel( 'member' )->hashPassword( $obj->password );
+				$obj->password = \X2board\Includes\get_model( 'member' )->hashPassword( $obj->password );
 			}
 
 			$logged_info = \X2board\Includes\Classes\Context::get( 'logged_info' );
@@ -414,7 +414,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentController' 
 
 			// remove iframe and script if not a top administrator on the session
 			if ( $logged_info->is_admin != 'Y' ) {
-				$obj->content = \X2board\Includes\removeHackTag( $obj->content );
+				$obj->content = \X2board\Includes\remove_hack_tag( $obj->content );
 			}
 			unset( $logged_info );
 
@@ -447,7 +447,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentController' 
 			unset( $a_ignore_key );
 
 			// handle appended files
-			$o_file_controller = \X2board\Includes\getController( 'file' );
+			$o_file_controller = \X2board\Includes\get_controller( 'file' );
 			$o_file_controller->set_files_valid( $obj->comment_id );
 			unset( $o_file_controller );
 			$this->update_uploaded_count( $obj->comment_id );
@@ -480,7 +480,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentController' 
 
 		public function update_uploaded_count( $n_comment_id ) {
 			global $wpdb;
-			$o_file_model = \X2board\Includes\getModel( 'file' );
+			$o_file_model = \X2board\Includes\get_model( 'file' );
 			$n_file_count = $o_file_model->get_files_count( $n_comment_id );
 			unset( $o_file_model );
 			$result = $wpdb->update(
@@ -530,7 +530,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentController' 
 				$o_post = new \X2board\Includes\Modules\Post\postItem();
 				$o_post->set_attr( $obj );
 			} else {
-				$o_post_model = \X2board\Includes\getModel( 'post' );
+				$o_post_model = \X2board\Includes\get_model( 'post' );
 				$o_post       = $o_post_model->get_post( $n_post_id );
 				unset( $o_post_model );
 			}
@@ -602,7 +602,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentController' 
 		 */
 		public function delete_comment( $n_comment_id, $is_admin = false, $isMoveToTrash = false ) {
 			// create the comment model object
-			$o_comment_model = \X2board\Includes\getModel( 'comment' );
+			$o_comment_model = \X2board\Includes\get_model( 'comment' );
 
 			// check if comment already exists
 			$o_comment = $o_comment_model->get_comment( $n_comment_id );
@@ -637,7 +637,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentController' 
 				} else {
 					foreach ( $childs as $val ) {
 						$output = $this->delete_comment( $val->comment_id, $is_admin, $isMoveToTrash ); // recursive
-						if ( ! $output->toBool() ) {
+						if ( ! $output->to_bool() ) {
 							return $output;
 						}
 					}
@@ -671,11 +671,11 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentController' 
 			// only post is exists
 			if ( isset( $comment_count ) ) {
 				// create the controller object of the post
-				$o_post_controller = \X2board\Includes\getController( 'post' );
+				$o_post_controller = \X2board\Includes\get_controller( 'post' );
 				// update comment count of the article posting
 				$output = $o_post_controller->update_comment_count( $n_parent_post_id, $comment_count, null, false );
 				unset( $o_post_controller );
-				if ( ! $output->toBool() ) {
+				if ( ! $output->to_bool() ) {
 					return $output;
 				}
 			}

@@ -768,7 +768,7 @@ function x2b_settings_skin_vars() {
  */
 function x2b_get_board_skins() {
 	$s_skin_path_abs = X2B_PATH . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'board' . DIRECTORY_SEPARATOR . 'skins';
-	$a_skins         = \X2board\Includes\Classes\FileHandler::readDir( $s_skin_path_abs );
+	$a_skins         = \X2board\Includes\Classes\FileHandler::read_dir( $s_skin_path_abs );
 
 	$a_skin_info = array();
 	foreach ( $a_skins as $_ => $s_skin_name ) {
@@ -793,7 +793,7 @@ function x2b_get_board_skins() {
 function x2b_get_editors() {
 
 	$s_skin_path_abs = X2B_PATH . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'editor' . DIRECTORY_SEPARATOR . 'skins';
-	$a_skins         = \X2board\Includes\Classes\FileHandler::readDir( $s_skin_path_abs );
+	$a_skins         = \X2board\Includes\Classes\FileHandler::read_dir( $s_skin_path_abs );
 
 	$a_skin_info = array();
 	foreach ( $a_skins as $_ => $s_skin_name ) {
@@ -817,7 +817,7 @@ function x2b_get_editors() {
  */
 function x2b_get_content_styles() {
 	$s_style_path_abs = X2B_PATH . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'editor' . DIRECTORY_SEPARATOR . 'styles';
-	$a_styles         = \X2board\Includes\Classes\FileHandler::readDir( $s_style_path_abs );
+	$a_styles         = \X2board\Includes\Classes\FileHandler::read_dir( $s_style_path_abs );
 
 	$a_style_info = array();
 	foreach ( $a_styles as $_ => $s_style_name ) {

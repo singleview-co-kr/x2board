@@ -24,7 +24,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Editor\\editorModel' ) ) {
 		 * Editor internally generates editor_sequence from 1 to 30 for temporary use.
 		 * That means there is a limitation that more than 30 editors cannot be displayed on a single page.
 		 *
-		 * However, editor_sequence can be value from getNextSequence() in case of the modified or the auto-saved for file upload
+		 * However, editor_sequence can be value from get_next_sequence() in case of the modified or the auto-saved for file upload
 		 */
 
 		/**
@@ -287,7 +287,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Editor\\editorModel' ) ) {
 			 */
 			$files_count = 0;
 			if ( $allow_fileupload ) {
-				$oFileModel = \X2board\Includes\getModel( 'file' );
+				$oFileModel = \X2board\Includes\get_model( 'file' );
 				// Get upload configuration to set on SWFUploader
 				$file_config                      = $oFileModel->get_upload_config();
 				$file_config->allowed_attach_size = $file_config->allowed_attach_size * 1048576; // 1024*1024;
@@ -298,7 +298,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Editor\\editorModel' ) ) {
 				$upload_status = $oFileModel->get_upload_status();
 				\X2board\Includes\Classes\Context::set( 'upload_status', $upload_status );
 				// Upload enabled (internally caching)
-				$oFileController = \X2board\Includes\getController( 'file' );
+				$oFileController = \X2board\Includes\get_controller( 'file' );
 				$oFileController->set_upload_info( $editor_sequence, $upload_target_id );
 				unset( $oFileController );
 				// Check if the file already exists

@@ -99,7 +99,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\File\\fileController' ) ) {
 			}
 			// Create if upload_target_srl is not defined in the session information
 			if ( ! $upload_target_id ) {
-				$_SESSION['x2b_upload_info'][ $editor_sequence ]->upload_target_id = $upload_target_id = \X2board\Includes\getNextSequence();
+				$_SESSION['x2b_upload_info'][ $editor_sequence ]->upload_target_id = $upload_target_id = \X2board\Includes\get_next_sequence();
 			}
 
 			$output         = $this->insert_file( $a_file_info, $n_board_id, $upload_target_id );  // , $module_srl
@@ -168,7 +168,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\File\\fileController' ) ) {
 				$file_info['name'] = base64_decode( strtr( $match[1], ':', '/' ) );
 			}
 
-			$o_file_model = \X2board\Includes\getModel( 'file' );
+			$o_file_model = \X2board\Includes\get_model( 'file' );
 			$logged_info  = \X2board\Includes\Classes\Context::get( 'logged_info' );
 			if ( ! $manual_insert ) {
 				// Get the file configurations
@@ -210,7 +210,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\File\\fileController' ) ) {
 
 			// https://github.com/xpressengine/xe-core/issues/1713
 			$file_info['name'] = preg_replace( '/\.((ph(p|t|ar)?[0-9]?|p?html?|cgi|pl|exe|(?:a|j)sp|inc).*)$/i', '$0-x', $file_info['name'] );
-			$file_info['name'] = \X2board\Includes\removeHackTag( $file_info['name'] );
+			$file_info['name'] = \X2board\Includes\remove_hack_tag( $file_info['name'] );
 			$file_info['name'] = str_replace( array( '<', '>' ), array( '%3C', '%3E' ), $file_info['name'] );
 			$file_info['name'] = str_replace( '&amp;', '&', $file_info['name'] );
 
@@ -218,7 +218,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\File\\fileController' ) ) {
 			$o_random = new \X2board\Includes\Classes\Security\Password();
 
 			$s_attach_path     = wp_get_upload_dir()['basedir'] . DIRECTORY_SEPARATOR . X2B_ATTACH_FILE_PATH;
-			$s_attach_rand_dir = \X2board\Includes\getNumberingPath( $upload_target_id, 3 );
+			$s_attach_rand_dir = \X2board\Includes\get_numbering_path( $upload_target_id, 3 );
 			// Set upload path by checking if the attachement is an image or other kinds of file
 			$b_img_file = $o_file_model->is_image_file( $file_info['name'] );
 
@@ -239,7 +239,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\File\\fileController' ) ) {
 				$s_file_type       = 'image';
 				$thumbnail_abs_url = $o_file_model->get_thumbnail_url( $s_file_type, $filename );
 			} else {
-				$s_path            = $s_attach_path . DIRECTORY_SEPARATOR . 'binaries' . DIRECTORY_SEPARATOR . $n_board_id . DIRECTORY_SEPARATOR . $s_attach_rand_dir; // \X2board\Includes\getNumberingPath($upload_target_id,3);
+				$s_path            = $s_attach_path . DIRECTORY_SEPARATOR . 'binaries' . DIRECTORY_SEPARATOR . $n_board_id . DIRECTORY_SEPARATOR . $s_attach_rand_dir;
 				$filename          = $s_path . $o_random->create_secure_salt( 32, 'hex' );
 				$direct_download   = 'N';
 				$s_file_type       = 'binary';
@@ -254,7 +254,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\File\\fileController' ) ) {
 			}
 
 			// Check uploaded file
-			if ( ! $manual_insert && ! \X2board\Includes\checkUploadedFile( $file_info['tmp_name'], $file_info['name'] ) ) {
+			if ( ! $manual_insert && ! \X2board\Includes\check_uploaded_file( $file_info['tmp_name'], $file_info['name'] ) ) {
 				return new \X2board\Includes\Classes\BaseObject( -1, __( 'msg_upload_file_failed', X2B_DOMAIN ) );
 			}
 
@@ -273,7 +273,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\File\\fileController' ) ) {
 			}
 
 			// file information
-			$a_new_file['file_id']           = \X2board\Includes\getNextSequence();
+			$a_new_file['file_id']           = \X2board\Includes\get_next_sequence();
 			$a_new_file['upload_target_id']  = $upload_target_id;
 			$a_new_file['board_id']          = $n_board_id;
 			$a_new_file['direct_download']   = $direct_download;
@@ -337,7 +337,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\File\\fileController' ) ) {
 			$upload_target_id = $_SESSION['x2b_upload_info'][ $editor_sequence ]->upload_target_id;
 
 			$logged_info  = \X2board\Includes\Classes\Context::get( 'logged_info' );
-			$o_file_model = \X2board\Includes\getModel( 'file' );
+			$o_file_model = \X2board\Includes\get_model( 'file' );
 
 			$ids = explode( ',', $file_id );
 			if ( ! count( $ids ) ) {
@@ -384,7 +384,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\File\\fileController' ) ) {
 		 */
 		public function delete_files( $upload_target_id ) {
 			// Get a list of attachements
-			$o_file_model = \X2board\Includes\getModel( 'file' );
+			$o_file_model = \X2board\Includes\get_model( 'file' );
 			$a_file_list  = $o_file_model->get_files( $upload_target_id );
 			unset( $o_file_model );
 			// Success returned if no attachement exists
@@ -506,7 +506,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\File\\fileController' ) ) {
 			// Get file information from the DB
 			$columnList = array( 'file_id', 'sid', 'isvalid', 'source_filename', 'board_id', 'uploaded_filename', 'file_size', 'author', 'upload_target_id', 'upload_target_type' );
 
-			$o_file_model = \X2board\Includes\getModel( 'file' );
+			$o_file_model = \X2board\Includes\get_model( 'file' );
 			$file_obj     = $o_file_model->get_file( $file_id, $columnList );
 			unset( $o_file_model );
 			// If the requested file information is incorrect, an error that file cannot be found appears
@@ -598,7 +598,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\File\\fileController' ) ) {
 			$file_key = $_SESSION['__X2B_FILE_KEY__'][ $file_id ] = $o_random->create_secure_salt( 32, 'hex' );
 			unset( $o_random );
 			$board_id = \X2board\Includes\Classes\Context::get( 'board_id' );
-			header( 'Location: ' . \X2board\Includes\getNotEncodedUrl( '', 'cmd', X2B_CMD_PROC_OUTPUT_FILE, 'board_id', $board_id, 'file_id', $file_id, 'file_key', $file_key ) );
+			header( 'Location: ' . \X2board\Includes\get_not_encoded_url( '', 'cmd', X2B_CMD_PROC_OUTPUT_FILE, 'board_id', $board_id, 'file_id', $file_id, 'file_key', $file_key ) );
 			\X2board\Includes\Classes\Context::close();
 			exit();
 		}
@@ -625,7 +625,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\File\\fileController' ) ) {
 			}
 			$columnList = array( 'source_filename', 'uploaded_filename', 'file_size' );
 
-			$o_file_model = \X2board\Includes\getModel( 'file' );
+			$o_file_model = \X2board\Includes\get_model( 'file' );
 			$file_obj     = $o_file_model->get_file( $file_id, $columnList );
 			unset( $o_file_model );
 

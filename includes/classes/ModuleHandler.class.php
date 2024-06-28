@@ -59,7 +59,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\ModuleHandler' ) ) {
 			$s_modules_path_abs = X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'modules';
 
 			$a_requested_modules = array();
-			$a_modules           = \X2board\Includes\Classes\FileHandler::readDir( $s_modules_path_abs );
+			$a_modules           = \X2board\Includes\Classes\FileHandler::read_dir( $s_modules_path_abs );
 			foreach ( $a_modules as $_ => $s_module_name ) {
 				$s_single_module_path_abs = $s_modules_path_abs . DIRECTORY_SEPARATOR . $s_module_name;
 				if ( ! is_dir( $s_single_module_path_abs ) ) {
@@ -70,7 +70,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\ModuleHandler' ) ) {
 					$a_requested_modules[ $s_module_name ] = array();
 				}
 
-				$a_module_files = \X2board\Includes\Classes\FileHandler::readDir( $s_single_module_path_abs );
+				$a_module_files = \X2board\Includes\Classes\FileHandler::read_dir( $s_single_module_path_abs );
 				foreach ( $a_module_files as $__ => $s_module_file ) {
 					$s_single_file_path_abs = $s_single_module_path_abs . DIRECTORY_SEPARATOR . $s_module_file;
 					if ( is_dir( $s_single_file_path_abs ) ) {
@@ -122,7 +122,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\ModuleHandler' ) ) {
 		public static function &get_module_instance( $s_module_name, $type = 'view' ) {
 			global $G_X2B_CACHE;
 			if ( __DEBUG__ == 3 ) {
-				$start_time = \X2board\Includes\getMicroTime();
+				$start_time = \X2board\Includes\get_micro_time();
 			}
 
 			$parent_module = $s_module_name;
@@ -159,9 +159,9 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\ModuleHandler' ) ) {
 				}
 
 				// Set variables to the instance
-				$oModule->setModule( $s_module_name );
+				$oModule->set_module( $s_module_name );
 				$class_path = self::_get_real_path( $class_path );
-				$oModule->setModulePath( $class_path );
+				$oModule->set_module_path( $class_path );
 
 				// If the module has a constructor, run it.
 				if ( ! isset( $G_X2B_CACHE['_called_constructor'][ $instance_name ] ) ) {
@@ -176,7 +176,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\ModuleHandler' ) ) {
 			}
 
 			if ( __DEBUG__ == 3 ) {
-				$G_X2B_CACHE['__elapsed_class_load__'] += \X2board\Includes\getMicroTime() - $start_time;
+				$G_X2B_CACHE['__elapsed_class_load__'] += \X2board\Includes\get_micro_time() - $start_time;
 			}
 			// return the instance
 			return $G_X2B_CACHE['_loaded_module'][ $s_module_name ][ $type ][ $kind ];

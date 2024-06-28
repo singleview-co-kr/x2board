@@ -94,7 +94,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\WpAdminClass\\wpLat
 			require_once X2B_PATH . 'includes/func.inc.php';
 			\X2board\Includes\buildup_context_from_admin();
 			// generate comment module controller object
-			$o_comment_controller = \X2board\Includes\getController( 'comment' );
+			$o_comment_controller = \X2board\Includes\get_controller( 'comment' );
 			// loop over the array of post IDs and delete them
 			foreach ( $a_delete_comment_id as $n_comment_id ) {
 				$o_comment_controller->delete_comment( $n_comment_id, true ); // $this->grant->manager = true

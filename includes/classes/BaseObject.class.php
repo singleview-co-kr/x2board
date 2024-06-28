@@ -181,7 +181,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\BaseObject' ) ) {
 		 *
 		 * @return bool Retruns true : error isn't 0 or false : otherwise.
 		 */
-		function toBool() {
+		function to_bool() {
 			// TODO This method is misleading in that it returns true if error is 0, which should be true in boolean representation.
 			return ( $this->error == 0 );
 		}

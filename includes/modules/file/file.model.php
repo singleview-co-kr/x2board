@@ -66,7 +66,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\File\\fileModel' ) ) {
 			}
 			$grant = \X2board\Includes\Classes\Context::get( 'grant' );
 
-			$o_post_model = \X2board\Includes\getModel( 'post' );
+			$o_post_model = \X2board\Includes\get_model( 'post' );
 			$o_post       = $o_post_model->get_post( $o_file_info->upload_target_id );
 			unset( $o_post_model );
 			if ( $o_post->is_exists() ) {
@@ -190,8 +190,8 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\File\\fileModel' ) ) {
 			$o_file_config = $this->_get_file_config( $n_board_id );
 			$o_logged_info = \X2board\Includes\Classes\Context::get( 'logged_info' );
 			if ( $o_logged_info->is_admin == 'Y' ) {
-				$iniPostMaxSize                     = \X2board\Includes\Classes\FileHandler::returnbytes( ini_get( 'post_max_size' ) );
-				$iniUploadMaxSize                   = \X2board\Includes\Classes\FileHandler::returnbytes( ini_get( 'upload_max_filesize' ) );
+				$iniPostMaxSize                     = \X2board\Includes\Classes\FileHandler::return_bytes( ini_get( 'post_max_size' ) );
+				$iniUploadMaxSize                   = \X2board\Includes\Classes\FileHandler::return_bytes( ini_get( 'upload_max_filesize' ) );
 				$size                               = min( $iniPostMaxSize, $iniUploadMaxSize ) / 1048576;
 				$o_file_config->allowed_attach_size = $size;
 				$o_file_config->allowed_filesize    = $size;

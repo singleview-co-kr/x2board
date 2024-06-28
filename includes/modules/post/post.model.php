@@ -87,7 +87,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postModel' ) ) {
 					$group_args             = clone($args);
 					$group_args->sort_index = 'documents.' . $args->sort_index;
 					$output                 = executeQueryArray( $query_id, $group_args );
-					if ( ! $output->toBool() || ! count( $output->data ) ) {
+					if ( ! $output->to_bool() || ! count( $output->data ) ) {
 						return $output;
 					}
 
@@ -141,7 +141,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postModel' ) ) {
 			unset( $o_search_check );
 
 			// Return if no result or an error occurs
-			if ( ! $output->toBool() || ! count( $output->data ) ) {
+			if ( ! $output->to_bool() || ! count( $output->data ) ) {
 				return $output;
 			}
 
@@ -209,7 +209,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postModel' ) ) {
 			$o_query->s_orderby    = 'ORDER BY `list_order` desc';
 			$output                = \X2board\Includes\get_paginate_select( $o_query );
 			unset( $o_query );
-			if ( ! $output->toBool() || ! $output->data ) {
+			if ( ! $output->to_bool() || ! $output->data ) {
 				return $output;
 			}
 
@@ -599,7 +599,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postModel' ) ) {
 				// get module_srl extra_vars list
 				if ( $load_extra_vars ) {
 					$extra_output = executeQueryArray( 'post.getGroupsExtraVars', $extra_args );
-					if ( ! $extra_output->data || ! $extra_output->toBool() ) {
+					if ( ! $extra_output->data || ! $extra_output->to_bool() ) {
 						$sortIndex = 'list_order';
 					} else {
 						$check_array = array();
@@ -1052,7 +1052,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postModel' ) ) {
 		 * @return array
 		 */
 		private function _get_category_list( $s_category_label ) {
-			$o_category = \X2board\Includes\getModel( 'category' );
+			$o_category = \X2board\Includes\get_model( 'category' );
 			$n_board_id = \X2board\Includes\Classes\Context::get( 'board_id' );
 			$o_category->set_board_id( $n_board_id );
 			$a_tree_category = $o_category->build_linear_category();

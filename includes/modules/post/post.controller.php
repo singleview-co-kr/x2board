@@ -78,14 +78,14 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 
 			// Register it if no given post_id exists
 			if ( ! $obj->post_id ) {
-				$obj->post_id = \X2board\Includes\getNextSequence();
-			} elseif ( ! $manual_inserted && ! \X2board\Includes\checkUserSequence( $obj->post_id ) ) {
+				$obj->post_id = \X2board\Includes\get_next_sequence();
+			} elseif ( ! $manual_inserted && ! \X2board\Includes\check_user_sequence( $obj->post_id ) ) {
 				return new \X2board\Includes\Classes\BaseObject( -1, __( 'msg_not_permitted', X2B_DOMAIN ) );
 			}
 
 			// Set to 0 if the category_id doesn't exist
 			if ( $obj->category_id ) {
-				$o_category_model = \X2board\Includes\getModel( 'category' );
+				$o_category_model = \X2board\Includes\get_model( 'category' );
 				$o_category_model->set_board_id( \X2board\Includes\Classes\Context::get( 'board_id' ) );
 				$a_linear_category = $o_category_model->build_linear_category();
 				unset( $o_category_model );
@@ -113,7 +113,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 			}
 			// Check the status of password hash for manually inserting. Apply hashing for otherwise.
 			if ( $obj->password && ! $obj->password_is_hashed ) {
-				$obj->password = \X2board\Includes\getModel( 'member' )->hash_password( $obj->password );
+				$obj->password = \X2board\Includes\get_model( 'member' )->hash_password( $obj->password );
 			}
 			// Insert member's information only if the member is logged-in and not manually registered.
 			$o_logged_info = \X2board\Includes\Classes\Context::get( 'logged_info' );
@@ -146,7 +146,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 			}
 			// Remove iframe and script if not a top adminisrator in the session.
 			if ( $o_logged_info->is_admin != 'Y' ) {
-				$obj->content = \X2board\Includes\removeHackTag( $obj->content );
+				$obj->content = \X2board\Includes\remove_hack_tag( $obj->content );
 			}
 			// An error appears if both log-in info and user name don't exist.
 			if ( ! $o_logged_info->ID && ! $obj->nick_name ) {
@@ -213,7 +213,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 			unset( $a_insert_data );
 
 			// Insert all extended user defined variables if the post successfully inserted.
-			$o_post_model                  = \X2board\Includes\getModel( 'post' );
+			$o_post_model                  = \X2board\Includes\get_model( 'post' );
 			$a_user_define_extended_fields = $o_post_model->get_user_define_extended_fields( $a_new_post['board_id'] );
 			unset( $o_post_model );
 
@@ -230,7 +230,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 
 			// Update the category if the category_id exists.
 			if ( $obj->category_id ) {
-				$o_category_controller = \X2board\Includes\getController( 'category' );
+				$o_category_controller = \X2board\Includes\get_controller( 'category' );
 				$o_category_controller->set_board_id( $obj->board_id );
 				$o_category_controller->update_category_count( $obj->category_id );
 				unset( $o_category_controller );
@@ -240,7 +240,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 				$this->_add_grant( $a_new_post['post_id'] );
 			}
 
-			$o_file_controller = \X2board\Includes\getController( 'file' );
+			$o_file_controller = \X2board\Includes\get_controller( 'file' );
 			$o_file_controller->set_files_valid( $a_new_post['post_id'] );
 			unset( $o_file_controller );
 			$this->update_uploaded_count( array( $a_new_post['post_id'] ) );
@@ -387,7 +387,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 
 			if ( $bUseHistory ) {
 				$args               = new \stdClass();
-				$args->history_srl  = \X2board\Includes\getNextSequence();
+				$args->history_srl  = \X2board\Includes\get_next_sequence();
 				$args->document_srl = $o_new_obj->document_srl;
 				$args->module_srl   = $module_srl;
 				if ( $document_config->use_history == 'Y' ) {
@@ -415,10 +415,10 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 			unset( $o_new_obj->_saved_doc_content );
 			unset( $o_new_obj->_saved_doc_message );
 
-			$o_post_model = \X2board\Includes\getModel( 'post' );
+			$o_post_model = \X2board\Includes\get_model( 'post' );
 			// Set the category_srl to 0 if the changed category is not exsiting.
 			if ( intval( $o_old_post->get( 'category_id' ) ) != intval( $o_new_obj->category_id ) ) {
-				$o_category_model = \X2board\Includes\getModel( 'category' );
+				$o_category_model = \X2board\Includes\get_model( 'category' );
 				$o_category_model->set_board_id( \X2board\Includes\Classes\Context::get( 'board_id' ) );
 				$a_linear_category = $o_category_model->build_linear_category();
 				unset( $o_category_model );
@@ -429,10 +429,10 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 				unset( $a_linear_category );
 			}
 			// Change the update order
-			$o_new_obj->update_order = \X2board\Includes\getNextSequence() * -1;
+			$o_new_obj->update_order = \X2board\Includes\get_next_sequence() * -1;
 			// Hash the password if it exists
 			if ( $o_new_obj->password ) {
-				$o_new_obj->password = \X2board\Includes\getModel( 'member' )->hash_password( $o_new_obj->password );
+				$o_new_obj->password = \X2board\Includes\get_model( 'member' )->hash_password( $o_new_obj->password );
 			}
 
 			$o_logged_info = \X2board\Includes\Classes\Context::get( 'logged_info' );
@@ -475,7 +475,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 			}
 			// Remove iframe and script if not a top adminisrator in the session.
 			if ( $o_logged_info->is_admin != 'Y' ) {
-				$o_new_obj->content = \X2board\Includes\removeHackTag( $o_new_obj->content );
+				$o_new_obj->content = \X2board\Includes\remove_hack_tag( $o_new_obj->content );
 			}
 
 			// sanitize other user input fields, $o_new_obj->content has been sanitized enough
@@ -504,7 +504,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 			$this->_delete_extended_user_defined_vars_all( $a_new_post['board_id'], $a_new_post['post_id'] );
 
 			// store all extended user defined variables
-			$o_post_model                  = \X2board\Includes\getModel( 'post' );
+			$o_post_model                  = \X2board\Includes\get_model( 'post' );
 			$a_user_define_extended_fields = $o_post_model->get_user_define_extended_fields( $a_new_post['board_id'] );
 			unset( $o_post_model );
 
@@ -518,7 +518,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 					$this->_insert_user_defined_value( $a_new_post['board_id'], $a_new_post['post_id'], $idx, $o_user_input_value, $o_user_define_item->eid );
 				}
 			}
-			$o_file_controller = \X2board\Includes\getController( 'file' );
+			$o_file_controller = \X2board\Includes\get_controller( 'file' );
 			$o_file_controller->set_files_valid( $a_new_post['post_id'] );
 			unset( $o_file_controller );
 			$this->update_uploaded_count( array( $a_new_post['post_id'] ) );
@@ -526,7 +526,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 
 			// Update the category if the category_id exists.
 			if ( $o_old_post->get( 'category_id' ) != $o_new_obj->category_id || $o_old_post->get( 'board_id' ) == $o_logged_info->ID ) {
-				$o_category_controller = \X2board\Includes\getController( 'category' );
+				$o_category_controller = \X2board\Includes\get_controller( 'category' );
 				$o_category_controller->set_board_id( $o_new_obj->board_id );
 				if ( $o_old_post->get( 'category_id' ) != $o_new_obj->category_id ) {  // decrease post count from old category
 					$o_category_controller->update_category_count( $o_old_post->get( 'category_id' ) );
@@ -540,14 +540,14 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 			unset( $o_old_post );
 
 			// Remove the thumbnail file
-			$s_post_thumbnail_dir = wp_get_upload_dir()['basedir'] . DIRECTORY_SEPARATOR . X2B_DOMAIN . DIRECTORY_SEPARATOR . 'thumbnails' . DIRECTORY_SEPARATOR . \X2board\Includes\getNumberingPath( $o_new_obj->post_id, 3 );
+			$s_post_thumbnail_dir = wp_get_upload_dir()['basedir'] . DIRECTORY_SEPARATOR . X2B_DOMAIN . DIRECTORY_SEPARATOR . 'thumbnails' . DIRECTORY_SEPARATOR . \X2board\Includes\get_numbering_path( $o_new_obj->post_id, 3 );
 			$this->_o_wp_filesystem->delete( $s_post_thumbnail_dir );
 
 			// remove from cache
 			$o_cache_handler = \X2board\Includes\Classes\CacheHandler::getInstance( 'object' );
 			if ( $o_cache_handler->isSupport() ) {
 				// remove post item from cache
-				$cache_key = 'post_item:' . \X2board\Includes\getNumberingPath( $o_new_obj->post_id ) . $o_new_obj->post_id;
+				$cache_key = 'post_item:' . \X2board\Includes\get_numbering_path( $o_new_obj->post_id ) . $o_new_obj->post_id;
 				$o_cache_handler->delete( $cache_key );
 			}
 			unset( $o_cache_handler );
@@ -568,7 +568,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 		public function update_uploaded_count( $a_post_id ) {
 			if ( is_array( $a_post_id ) ) {
 				global $wpdb;
-				$o_file_model = \X2board\Includes\getModel( 'file' );
+				$o_file_model = \X2board\Includes\get_model( 'file' );
 				$a_post_id    = array_unique( $a_post_id );
 				foreach ( $a_post_id as $_ => $n_post_id ) {
 					$fileCount = $o_file_model->get_files_count( $n_post_id );
@@ -597,7 +597,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 		public function delete_post( $n_post_id, $is_admin = false, $isEmptyTrash = false, $o_post = null ) {
 			if ( ! $isEmptyTrash ) {
 				// get model object of the document
-				$o_post_model = \X2board\Includes\getModel( 'post' );
+				$o_post_model = \X2board\Includes\get_model( 'post' );
 				// Check if the documnet exists
 				$o_post = $o_post_model->get_post( $n_post_id, $is_admin );
 				unset( $o_post_model );
@@ -635,7 +635,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 			$n_category_id = $o_post->get( 'category_id' );
 			if ( $n_category_id ) {
 				// $this->updateCategoryCount($oDocument->get('module_srl'),$oDocument->get('category_srl'));
-				$o_category_controller = \X2board\Includes\getController( 'category' );
+				$o_category_controller = \X2board\Includes\get_controller( 'category' );
 				$o_category_controller->set_board_id( $n_board_id );
 				$o_category_controller->update_category_count( $n_category_id );
 				unset( $o_category_controller );
@@ -647,9 +647,9 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 			$this->_delete_extended_user_defined_vars_all( $n_board_id, $n_post_id );
 
 			// Call a trigger (after)
-			$o_comment_controller = \X2board\Includes\getController( 'comment' );
+			$o_comment_controller = \X2board\Includes\get_controller( 'comment' );
 			$o_rst                = $o_comment_controller->trigger_after_delete_post_comments( $n_post_id );
-			if ( ! $o_rst->toBool() ) {
+			if ( ! $o_rst->to_bool() ) {
 				wp_die( 'weird error occured in \includes\modules\comment\comment.controller.php::trigger_after_delete_post_comments()' );
 			}
 			unset( $o_comment_controller );
@@ -660,18 +660,18 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 			$this->_delete_post_voted_log( $n_board_id, $n_post_id );
 
 			// Remove the thumbnail file
-			$s_post_thumbnail_dir = wp_get_upload_dir()['basedir'] . DIRECTORY_SEPARATOR . X2B_DOMAIN . DIRECTORY_SEPARATOR . 'thumbnails' . DIRECTORY_SEPARATOR . \X2board\Includes\getNumberingPath( $n_post_id, 3 );
+			$s_post_thumbnail_dir = wp_get_upload_dir()['basedir'] . DIRECTORY_SEPARATOR . X2B_DOMAIN . DIRECTORY_SEPARATOR . 'thumbnails' . DIRECTORY_SEPARATOR . \X2board\Includes\get_numbering_path( $n_post_id, 3 );
 			$this->_o_wp_filesystem->delete( $s_post_thumbnail_dir );
 
 			// Remove a attached file
-			$o_file_controller = \X2board\Includes\getController( 'file' );
+			$o_file_controller = \X2board\Includes\get_controller( 'file' );
 			$o_file_controller->delete_files( $n_post_id );
 			unset( $o_file_controller );
 
 			// remove from cache
 			$o_cache_handler = \X2board\Includes\Classes\CacheHandler::getInstance( 'object' );
 			if ( $o_cache_handler->isSupport() ) {
-				$cache_key = 'post_item:' . \X2board\Includes\getNumberingPath( $n_post_id ) . $n_post_id;
+				$cache_key = 'post_item:' . \X2board\Includes\get_numbering_path( $n_post_id ) . $n_post_id;
 				$o_cache_handler->delete( $cache_key );
 			}
 			unset( $o_cache_handler );
@@ -745,7 +745,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 			$o_module_info = \X2board\Includes\Classes\Context::get( 'current_module_info' );
 
 			if ( $o_module_info->grant_list == X2B_ALL_USERS ) {
-				$o_post_class         = \X2board\Includes\getClass( 'post' );
+				$o_post_class         = \X2board\Includes\get_class( 'post' );
 				$s_post_status_public = $o_post_class->get_config_status( 'public' );
 				unset( $o_post_class );
 				if ( $s_post_status == $s_post_status_public ) {
@@ -847,13 +847,13 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 		public function update_comment_count( $n_post_id, $comment_count, $s_last_updater, $comment_inserted = false ) {
 			$a_param = array();
 			if ( $comment_inserted ) {
-				$a_param['update_order'] = -1 * \X2board\Includes\getNextSequence();
+				$a_param['update_order'] = -1 * \X2board\Includes\get_next_sequence();
 				$a_param['last_updater'] = $s_last_updater;
 
 				$o_cache_handler = \X2board\Includes\Classes\CacheHandler::getInstance( 'object' );
 				if ( $o_cache_handler->isSupport() ) {
 					// remove post item from cache
-					$cache_key = 'post_item:' . \X2board\Includes\getNumberingPath( $n_post_id ) . $n_post_id;
+					$cache_key = 'post_item:' . \X2board\Includes\get_numbering_path( $n_post_id ) . $n_post_id;
 					$o_cache_handler->delete( $cache_key );
 				}
 				unset( $o_cache_handler );
@@ -995,7 +995,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 				$oArg->var_idx      = $oSingleExtraVar->var_idx;
 				$oArg->value        = $oSingleExtraVar->value;
 				$oRst               = executeQuery( 'document.updateDocumentExtraVar', $oArg );
-				if ( ! $oRst->toBool() ) {
+				if ( ! $oRst->to_bool() ) {
 					return $oRst;
 				}
 			}

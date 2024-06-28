@@ -623,7 +623,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 					$buff[] = '</div>';
 					break;
 				case 'content':
-					$o_editor_view = \X2board\Includes\getView( 'editor' );
+					$o_editor_view = \X2board\Includes\get_view( 'editor' );
 					$buff[]        = $o_editor_view->get_post_editor_html( $o_post->post_id, $this->placeholder );// $o_editor_conf);
 					unset( $o_editor_view );
 
@@ -646,7 +646,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 					$buff[] = '</div>';
 					break;
 				case 'attach':
-					$o_editor_view = \X2board\Includes\getView( 'editor' );
+					$o_editor_view = \X2board\Includes\get_view( 'editor' );
 					$buff[]        = $o_editor_view->get_attach_ux_html( $o_post->get_uploaded_files() );
 					unset( $o_editor_view );
 					break;
@@ -679,7 +679,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 					if ( $this->_is_this_accessible( $this->allow_comment_permission, $this->allow_comment ) ) {
 						$s_allow_checked    = null;
 						$s_disallow_checked = null;
-						$o_comment_class    = \X2board\Includes\getClass( 'comment' );
+						$o_comment_class    = \X2board\Includes\get_class( 'comment' );
 						if ( ! $o_post->comment_status || $o_post->comment_status == $o_comment_class->get_status_by_key( 'allow' ) ) {
 							$s_allow_checked = 'checked="checked"';
 						} else {
@@ -731,7 +731,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 						else {
 							$s_checked_disabled = null;
 						}
-						$o_post_class = \X2board\Includes\getClass('post');
+						$o_post_class = \X2board\Includes\get_class('post');
 						if($o_post->status == $o_post_class->get_config_status('secret')) {
 							$s_checked = 'checked';
 						}
@@ -755,7 +755,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 					if($this->_is_this_accessible($this->allow_comment_permission, $this->allow_comment)) {
 						$s_allow_checked = null;
 						$s_disallow_checked = null;
-						$o_comment_class = \X2board\Includes\getClass('comment');
+						$o_comment_class = \X2board\Includes\get_class('comment');
 						if(!$o_post->comment_status || $o_post->comment_status == $o_comment_class->get_status_by_key('allow')) {
 							$s_allow_checked = 'checked="checked"';
 						}

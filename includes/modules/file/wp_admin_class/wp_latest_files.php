@@ -29,9 +29,9 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\File\\WpAdminClass\\wpLatest
 			parent::__construct();
 			require_once X2B_PATH . 'includes/func.inc.php';
 			\X2board\Includes\buildup_context_from_admin();
-			$this->_o_post_model    = \X2board\Includes\getModel( 'post' );
-			$this->_o_comment_model = \X2board\Includes\getModel( 'comment' );
-			$this->_o_file_model    = \X2board\Includes\getModel( 'file' );
+			$this->_o_post_model    = \X2board\Includes\get_model( 'post' );
+			$this->_o_comment_model = \X2board\Includes\get_model( 'comment' );
+			$this->_o_file_model    = \X2board\Includes\get_model( 'file' );
 		}
 
 		/**
@@ -106,7 +106,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\File\\WpAdminClass\\wpLatest
 			require_once X2B_PATH . 'includes/func.inc.php';
 			\X2board\Includes\buildup_context_from_admin();
 			// generate comment module controller object
-			$o_file_controller = \X2board\Includes\getController( 'file' );
+			$o_file_controller = \X2board\Includes\get_controller( 'file' );
 			global $wpdb;
 			// loop over the array of post IDs and delete them
 			foreach ( $a_delete_file_id as $n_file_id ) {

@@ -24,7 +24,7 @@ function x2b_get_url() {
  *
  */
 function x2b_write_post_input_fields() {
-	$o_board_view = \X2board\Includes\getView( 'board' );
+	$o_board_view = \X2board\Includes\get_view( 'board' );
 	$o_board_view->write_post_hidden_fields();
 	$a_field = \X2board\Includes\Classes\Context::get( 'field' );
 	if ( $a_field ) {
@@ -40,7 +40,7 @@ function x2b_write_post_input_fields() {
  *
  */
 function x2b_write_comment_hidden_fields() {
-	$o_board_view = \X2board\Includes\getView( 'board' );
+	$o_board_view = \X2board\Includes\get_view( 'board' );
 	$o_board_view->write_comment_hidden_fields();
 	unset( $o_board_view );
 }
@@ -49,7 +49,7 @@ function x2b_write_comment_hidden_fields() {
  *
  */
 function x2b_write_comment_hidden_fields_embeded_editor() {
-	$o_board_view = \X2board\Includes\getView( 'board' );
+	$o_board_view = \X2board\Includes\get_view( 'board' );
 	$o_board_view->write_comment_hidden_fields( true );
 	unset( $o_board_view );
 }
@@ -58,7 +58,7 @@ function x2b_write_comment_hidden_fields_embeded_editor() {
  *
  */
 function x2b_write_comment_editor() {
-	$o_editor_view = \X2board\Includes\getView( 'editor' );
+	$o_editor_view = \X2board\Includes\get_view( 'editor' );
 	$o_editor_view->get_comment_editor_html();
 	unset( $o_editor_view );
 }
@@ -67,7 +67,7 @@ function x2b_write_comment_editor() {
  *
  */
 function x2b_write_comment_filebox() {
-	$o_editor_view = \X2board\Includes\getView( 'editor' );
+	$o_editor_view = \X2board\Includes\get_view( 'editor' );
 	$o_comment     = \X2board\Includes\Classes\Context::get( 'o_the_comment' );
 	if ( $o_comment ) {
 		$a_appended_file = $o_comment->get_uploaded_files();
@@ -90,5 +90,5 @@ function x2b_zdate( $str, $format ) {
  *
  */
 function x2b_get_time_gap( $date, $format = 'Y.m.d' ) {
-	return \X2board\Includes\getTimeGap( $date, $format );
+	return \X2board\Includes\get_time_gap( $date, $format );
 }

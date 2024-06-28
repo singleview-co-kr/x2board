@@ -104,10 +104,10 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\XeXmlParser' ) ) {
 		function parse( $input = '', $arg1 = null, $arg2 = null ) {
 			// Save the compile starting time for debugging
 			if ( __DEBUG__ == 3 ) {
-				$start = getMicroTime();
+				$start = get_micro_time();
 			}
 
-			$this->lang  = Context::getLangType();
+			$this->lang  = Context::get_lang_type();
 			$this->input = $input; // ? $input : $GLOBALS['HTTP_RAW_POST_DATA'];
 			$this->input = str_replace( array( '', '' ), array( '', '' ), $this->input );
 
@@ -146,7 +146,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\XeXmlParser' ) ) {
 			$output = array_shift( $this->output );
 			// Save compile starting time for debugging
 			if ( __DEBUG__ == 3 ) {
-				$GLOBALS['__xmlparse_elapsed__'] += getMicroTime() - $start;
+				$GLOBALS['__xmlparse_elapsed__'] += get_micro_time() - $start;
 			}
 
 			return $output;

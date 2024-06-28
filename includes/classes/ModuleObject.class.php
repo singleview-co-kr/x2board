@@ -51,7 +51,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\ModuleObject' ) ) {
 		 *  ["write_comment"]=> object(stdClass)#175 (2) { ["title"]=> string(13) "댓글 작성" ["default"]=> string(5) "guest" }
 		 *  ["consultation_read"]=> object(stdClass)#176 (2) { ["title"]=> string(16) "상담글 조회" ["default"]=> string(7) "manager" } }
 		 */
-		public function setModuleInfo( $n_board_id ) {
+		public function set_module_info( $n_board_id ) {
 			require_once X2B_PATH . 'includes\admin\tpl\default-settings.php';
 			require_once X2B_PATH . 'includes\admin\tpl\register-settings.php';
 			$o_rst = \X2board\Includes\Admin\Tpl\x2b_load_settings( $n_board_id );
@@ -281,7 +281,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\ModuleObject' ) ) {
 			ob_start();
 
 			// convert module_info into a skin-callable variable
-			extract( Context::getAll4Skin(), EXTR_SKIP );
+			extract( Context::get_all_4_skin(), EXTR_SKIP );
 
 			// convert skin_vars into a skin-callable variable via $skin_vars->var_id
 			$a_skin_vars = array( 'skin_vars' => $this->skin_vars );
@@ -298,7 +298,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\ModuleObject' ) ) {
 		 * @param string $module name of module
 		 * @return void
 		 * */
-		public function setModule( $s_module ) {
+		public function set_module( $s_module ) {
 			$this->module = $s_module;
 		}
 
@@ -308,7 +308,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\ModuleObject' ) ) {
 		 * @param string $path the directory path to a module directory
 		 * @return void
 		 * */
-		public function setModulePath( $path ) {
+		public function set_module_path( $path ) {
 			if ( substr_compare( $path, '/', -1 ) !== 0 ) {
 				$path .= '/';
 			}

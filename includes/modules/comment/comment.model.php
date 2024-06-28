@@ -53,7 +53,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentModel' ) ) {
 		 */
 		public function get_comment_count( $n_parent_post_id ) {
 			// get the number of comments on the post module
-			$o_post_model = \X2board\Includes\getModel( 'post' );
+			$o_post_model = \X2board\Includes\get_model( 'post' );
 			$columnList   = null;
 			$o_post       = $o_post_model->get_post( $n_parent_post_id, false, true, $columnList );
 			unset( $o_post_model );
@@ -68,7 +68,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentModel' ) ) {
 			unset( $o_post );
 
 			// check if module is using validation system
-			$o_comment_controller = \X2board\Includes\getController( 'comment' );
+			$o_comment_controller = \X2board\Includes\get_controller( 'comment' );
 			$is_using_validation  = $o_comment_controller->is_using_comment_validation();
 			unset( $o_comment_controller );
 			$s_where = "`parent_post_id`='$n_parent_post_id'";
@@ -96,7 +96,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentModel' ) ) {
 			}
 
 			// get the number of comments on the document module
-			$o_post_model = \X2board\Includes\getModel( 'post' );
+			$o_post_model = \X2board\Includes\get_model( 'post' );
 			$columnList   = array( 'n_post_id', 'board_id', 'comment_count' );
 			$o_post       = $o_post_model->get_post( $n_parent_post_id, false, true, $columnList );
 			unset( $o_post_model );
@@ -124,7 +124,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentModel' ) ) {
 			}
 
 			// check if module is using validation system
-			$o_comment_controller = \X2board\Includes\getController( 'comment' );
+			$o_comment_controller = \X2board\Includes\get_controller( 'comment' );
 			$is_using_validation  = $o_comment_controller->is_using_comment_validation();
 			unset( $o_comment_controller );
 			$s_where_comment_status = null;
@@ -143,7 +143,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentModel' ) ) {
 			$o_query->page_count = $comment_count;
 			$output              = \X2board\Includes\get_paginate_select( $o_query );
 			// return if an error occurs in the query results
-			if ( ! $output->toBool() ) {
+			if ( ! $output->to_bool() ) {
 				return $output;
 			}
 
@@ -155,7 +155,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentModel' ) ) {
 				if ( ! $o_rst_check->data ) {
 					$this->_fix_comment_list( $o_post->get( 'board_id' ), $n_parent_post_id );
 					$output = \X2board\Includes\get_paginate_select( $o_query );
-					if ( ! $output->toBool() ) {
+					if ( ! $output->to_bool() ) {
 						return $output;
 					}
 				}
@@ -271,7 +271,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentModel' ) ) {
 
 			// insert values to the database
 			if ( count( $a_comment_list ) ) {
-				$o_comment_controller = \X2board\Includes\getController( 'comment' );
+				$o_comment_controller = \X2board\Includes\get_controller( 'comment' );
 				foreach ( $a_comment_list as $n_comment_id => $item ) {
 					$o_comment_args                 = new \stdClass();
 					$o_comment_args->comment_id     = $n_comment_id;

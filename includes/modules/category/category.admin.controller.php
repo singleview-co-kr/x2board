@@ -44,7 +44,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Category\\categoryAdminContr
 			global $wpdb;
 			// new cat information
 			$a_new_cat                   = array();
-			$a_new_cat['category_id']    = \X2board\Includes\getNextSequence();
+			$a_new_cat['category_id']    = \X2board\Includes\get_next_sequence();
 			$a_new_cat['board_id']       = esc_sql( $n_board_id );
 			$a_new_cat['title']          = esc_sql( $new_cat_name );
 			$a_new_cat['regdate_dt']     = date( 'YmdHis', current_time( 'timestamp' ) );

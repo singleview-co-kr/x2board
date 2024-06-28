@@ -227,8 +227,8 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Import\\importAdminControlle
 			unset( $o_context );
 			// end - buildup proc Context for admin
 
-			$o_post_controller    = \X2board\Includes\getController( 'post' );
-			$o_comment_controller = \X2board\Includes\getController( 'comment' );
+			$o_post_controller    = \X2board\Includes\get_controller( 'post' );
+			$o_comment_controller = \X2board\Includes\get_controller( 'comment' );
 
 			$seo_translation_mapper  = array();
 			$user_translation_mapper = array();  // $user_translation_mapper[<string>xe_user_id] = <int>wp_user_id
@@ -346,7 +346,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Import\\importAdminControlle
 
 		private function _register_attachments( $n_upload_target_id, $a_attaches_from_xml ) {
 			echo 'register attaches to ' . $n_upload_target_id . '<BR>';
-			$o_file_controller = \X2board\Includes\getController( 'file' );
+			$o_file_controller = \X2board\Includes\get_controller( 'file' );
 			$file_info         = array();
 
 			foreach ( $a_attaches_from_xml as $_ => $single_attach_info ) {

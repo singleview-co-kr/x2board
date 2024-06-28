@@ -302,7 +302,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\PaginateSelect' ) ) {
 		 */
 		private function _start_chronometry() {
 			// $this->setError(0, 'success');
-			$this->act_dbclass_start    = \X2board\Includes\getMicroTime();
+			$this->act_dbclass_start    = \X2board\Includes\get_micro_time();
 			$this->elapsed_dbclass_time = 0;
 		}
 
@@ -318,7 +318,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\PaginateSelect' ) ) {
 			}
 
 			global $G_X2B_CACHE;
-			$this->act_dbclass_finish                 = \X2board\Includes\getMicroTime();
+			$this->act_dbclass_finish                 = \X2board\Includes\get_micro_time();
 			$elapsed_dbclass_time                     = $this->act_dbclass_finish - $this->act_dbclass_start;
 			$this->elapsed_dbclass_time               = $elapsed_dbclass_time;
 			$G_X2B_CACHE['__dbclass_elapsed_time__'] += $elapsed_dbclass_time;

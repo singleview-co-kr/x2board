@@ -80,7 +80,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postItem' ) ) {
 			$this->_n_wp_post_id = $attribute->post_id;
 			$this->adds( $attribute );
 
-			$o_post_model = \X2board\Includes\getModel( 'post' );
+			$o_post_model = \X2board\Includes\get_model( 'post' );
 			$s_secret_tag = $o_post_model->get_config_status( 'secret' );
 			unset( $o_post_model );
 
@@ -113,7 +113,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postItem' ) ) {
 			}
 
 			// append if any extended user field exists
-			$o_post_model          = \X2board\Includes\getModel( 'post' );
+			$o_post_model          = \X2board\Includes\get_model( 'post' );
 			$a_extended_user_field = $o_post_model->get_post_user_define_vars_from_DB( array( $this->_n_wp_post_id ) );
 			unset( $o_post_model );
 			foreach ( $a_extended_user_field as $_ => $o_user_field ) {
@@ -124,7 +124,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postItem' ) ) {
 				$n_category_id = intval( $this->get( 'category_id' ) );
 				$n_board_id    = intval( $this->get( 'board_id' ) );
 
-				$o_category_model = \X2board\Includes\getModel( 'category' );
+				$o_category_model = \X2board\Includes\get_model( 'category' );
 				$s_title          = $o_category_model->get_category_name( $n_board_id, $n_category_id );
 				unset( $o_category_model );
 			} else {
@@ -174,9 +174,9 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postItem' ) ) {
 			}
 
 			// Get a list of comments
-			$o_comment_model = \X2board\Includes\getModel( 'comment' );
+			$o_comment_model = \X2board\Includes\get_model( 'comment' );
 			$output          = $o_comment_model->get_comment_list( $this->_n_wp_post_id, $cpage ); // , $is_admin);
-			if ( ! $output->toBool() || ! count( $output->data ) ) {
+			if ( ! $output->to_bool() || ! count( $output->data ) ) {
 				// return array to avoid Warning:  Invalid argument supplied for foreach() under any case
 				return array();
 			}
@@ -332,7 +332,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postItem' ) ) {
 		public function get_status() {
 			$s_cur_post_status = $this->get( 'status' );
 			if ( ! $s_cur_post_status ) {
-				$o_post_class     = \X2board\Includes\getClass( 'post' );
+				$o_post_class     = \X2board\Includes\get_class( 'post' );
 				$s_default_status = $o_post_class->get_default_status();
 				unset( $o_post_class );
 				return $s_default_status;
@@ -357,7 +357,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postItem' ) ) {
 		 * @return
 		 */
 		public function is_secret() {
-			$o_post_model = \X2board\Includes\getModel( 'post' );
+			$o_post_model = \X2board\Includes\get_model( 'post' );
 			$s_secret_tag = $o_post_model->get_config_status( 'secret' );
 			unset( $o_post_model );
 			return $this->get( 'status' ) == $s_secret_tag ? true : false;
@@ -369,7 +369,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postItem' ) ) {
 		 * @return void
 		 */
 		public function update_readed_count() {
-			$o_post_controller = \X2board\Includes\getController( 'post' );
+			$o_post_controller = \X2board\Includes\get_controller( 'post' );
 			if ( $o_post_controller->update_readed_count( $this ) ) {
 				$readed_count = $this->get( 'readed_count' );
 				$this->add( 'readed_count', $readed_count + 1 );
@@ -458,7 +458,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postItem' ) ) {
 
 			$s_content = $this->get( 'content' );
 			if ( ! $stripEmbedTagException ) {
-				\X2board\Includes\stripEmbedTagForAdmin( $s_content, $this->get( 'post_author' ) );
+				\X2board\Includes\strip_embed_tag_for_admin( $s_content, $this->get( 'post_author' ) );
 			}
 
 			$n_post_author_id = $this->get( 'post_author' );
@@ -514,7 +514,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postItem' ) ) {
 				return false;
 			}
 
-			$o_post_model     = \X2board\Includes\getModel( 'post' );
+			$o_post_model     = \X2board\Includes\get_model( 'post' );
 			$configStatusList = $o_post_model->get_status_list();
 			if ( $status == $configStatusList['public'] ) {  // || $status == $configStatusList['publish']) {
 				return true;
@@ -599,7 +599,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postItem' ) ) {
 				return array();
 			}
 			if ( ! isset( $this->_a_uploaded_file[ $sortIndex ] ) ) {
-				$o_file_model                         = \X2board\Includes\getModel( 'file' );
+				$o_file_model                         = \X2board\Includes\get_model( 'file' );
 				$this->_a_uploaded_file[ $sortIndex ] = $o_file_model->get_files( $this->_n_wp_post_id, $sortIndex, true );  // array(),
 				unset( $o_file_model );
 			}
@@ -632,7 +632,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postItem' ) ) {
 			if ( ! $this->get( 'board_id' ) || ! $this->_n_wp_post_id ) {
 				return null;
 			}
-			$o_post_model        = \X2board\Includes\getModel( 'post' );
+			$o_post_model        = \X2board\Includes\get_model( 'post' );
 			$inserted_extra_vars = $o_post_model->get_user_define_vars( $this->_n_wp_post_id );
 			unset( $o_post_model );
 
@@ -942,7 +942,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postItem' ) ) {
 
 			// Define thumbnail information
 			$n_board_id         = \X2board\Includes\Classes\Context::get( 'board_id' );
-			$s_rand_dir         = \X2board\Includes\getNumberingPath( $this->_n_wp_post_id, 3 );
+			$s_rand_dir         = \X2board\Includes\get_numbering_path( $this->_n_wp_post_id, 3 );
 			$thumbnail_path     = wp_get_upload_dir()['basedir'] . DIRECTORY_SEPARATOR . X2B_DOMAIN . DIRECTORY_SEPARATOR . 'thumbnails' .
 								DIRECTORY_SEPARATOR . $n_board_id . DIRECTORY_SEPARATOR . $s_rand_dir;
 			$thumbnail_file     = sprintf( '%s%dx%d.%s.jpg', $thumbnail_path, $width, $height, $thumbnail_type );

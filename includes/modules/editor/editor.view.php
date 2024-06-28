@@ -69,7 +69,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Editor\\editorView' ) ) {
 				$o_editor_conf->s_content_field_name = $s_content_field_name;
 
 				echo '<input type="hidden" name="use_editor" value="Y">';
-				$o_editor_model = \X2board\Includes\getModel( 'editor' );
+				$o_editor_model = \X2board\Includes\get_model( 'editor' );
 				echo $o_editor_model->get_board_editor( $o_editor_conf );
 				unset( $o_editor_model );
 			} elseif ( $s_editor_type == 'WordPress' ) {
@@ -127,7 +127,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Editor\\editorView' ) ) {
 				$o_editor_conf->primary_key_name     = 'comment_id';
 				$o_editor_conf->s_content_field_name = $s_content_field_name;
 
-				$o_editor_model = \X2board\Includes\getModel( 'editor' );
+				$o_editor_model = \X2board\Includes\get_model( 'editor' );
 				echo $o_editor_model->get_board_editor( $o_editor_conf );
 				unset( $o_editor_model );
 				unset( $o_editor_conf );

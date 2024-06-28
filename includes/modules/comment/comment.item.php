@@ -156,7 +156,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentItem' ) ) {
 				return true;
 			}
 
-			$o_post_model = \X2board\Includes\getModel( 'post' );
+			$o_post_model = \X2board\Includes\get_model( 'post' );
 			$o_post       = $o_post_model->get_post( $this->get( 'post_id' ) );
 			unset( $o_post_model );
 			if ( $o_post->is_granted() ) {
@@ -231,7 +231,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentItem' ) ) {
 				return __( 'msg_secret_post', X2B_DOMAIN );
 			}
 			$s_content = $this->get( 'content' );
-			\X2board\Includes\stripEmbedTagForAdmin( $s_content, $this->get( 'comment_author' ) );
+			\X2board\Includes\strip_embed_tag_for_admin( $s_content, $this->get( 'comment_author' ) );
 
 			// if additional information which can access contents is set
 			$n_comment_author_id = $this->get( 'comment_author' );
@@ -279,7 +279,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentItem' ) ) {
 				return array();
 			}
 
-			$o_file_model = \X2board\Includes\getModel( 'file' );
+			$o_file_model = \X2board\Includes\get_model( 'file' );
 			$file_list    = $o_file_model->get_files( $this->comment_id, 'file_id', true );
 			unset( $o_file_model );
 			return $file_list;

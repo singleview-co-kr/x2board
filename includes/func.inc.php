@@ -261,7 +261,7 @@ function buildup_context_from_admin() {
  * @param string $kind admin, null
  * @return mixed Module instance
  */
-function getModule( $module_name, $type = 'view', $kind = '' ) {
+function get_module( $module_name, $type = 'view', $kind = '' ) {
 	global $G_X2B_CACHE;
 	if ( ! isset( $G_X2B_CACHE['__MODULE_EXTEND__'] ) ) {
 		$G_X2B_CACHE['__MODULE_EXTEND__'] = array();
@@ -285,8 +285,8 @@ function getModule( $module_name, $type = 'view', $kind = '' ) {
  * @param string $module_name The module name to get a controller instance
  * @return mixed Module controller instance
  */
-function getController( $module_name ) {
-	return getModule( $module_name, 'controller' );
+function get_controller( $module_name ) {
+	return get_module( $module_name, 'controller' );
 }
 
 /**
@@ -295,8 +295,8 @@ function getController( $module_name ) {
  * @param string $module_name The module name to get a view instance
  * @return mixed Module view instance
  */
-function getView( $module_name ) {
-	return getModule( $module_name, 'view' );
+function get_view( $module_name ) {
+	return get_module( $module_name, 'view' );
 }
 
 /**
@@ -305,8 +305,8 @@ function getView( $module_name ) {
  * @param string $module_name The module name to get a model instance
  * @return mixed Module model instance
  */
-function getModel( $module_name ) {
-	return getModule( $module_name, 'model' );
+function get_model( $module_name ) {
+	return get_module( $module_name, 'model' );
 }
 
 /**
@@ -315,8 +315,8 @@ function getModel( $module_name ) {
  * @param string $module_name The module name to get a class instance
  * @return mixed Module class instance
  */
-function getClass( $module_name ) {
-	return getModule( $module_name, 'class' );
+function get_class( $module_name ) {
+	return get_module( $module_name, 'class' );
 }
 
 /**
@@ -336,10 +336,9 @@ function get_paginate_select( $o_query ) {
 /**
  * Alias of DB::getNextSequence()
  *
- * @see DB::getNextSequence()
  * @return int
  */
-function getNextSequence() {
+function get_next_sequence() {
 	global $wpdb;
 	$s_query = "INSERT INTO `{$wpdb->prefix}x2b_sequence` (seq) values ('0')";
 	if ( $wpdb->query( $s_query ) === false ) {
@@ -352,7 +351,7 @@ function getNextSequence() {
 			wp_die( $wpdb->last_error );
 		}
 	}
-	setUserSequence( $seq );
+	set_user_sequence( $seq );
 	return $seq;
 }
 
@@ -362,7 +361,7 @@ function getNextSequence() {
  * @param int $seq sequence number
  * @return void
  */
-function setUserSequence( $seq ) {
+function set_user_sequence( $seq ) {
 	$arr_seq = array();
 	if ( isset( $_SESSION['x2b_seq'] ) ) {
 		if ( ! is_array( $_SESSION['x2b_seq'] ) ) {
@@ -380,7 +379,7 @@ function setUserSequence( $seq ) {
  * @param int $seq sequence number
  * @return boolean
  */
-function checkUserSequence( $seq ) {
+function check_user_sequence( $seq ) {
 	if ( ! isset( $_SESSION['x2b_seq'] ) ) {
 		return false;
 	}
@@ -395,7 +394,7 @@ function checkUserSequence( $seq ) {
  *
  * @return float
  */
-function getMicroTime() {
+function get_micro_time() {
 	list($time1, $time2) = explode( ' ', microtime() );
 	return (float) $time1 + (float) $time2;
 }
@@ -411,7 +410,7 @@ function getMicroTime() {
  * @return string
  */
 function escape( $str, $double_escape = true, $escape_defined_lang_code = false ) {
-	if ( ! $escape_defined_lang_code && isDefinedLangCode( $str ) ) {
+	if ( ! $escape_defined_lang_code && is_defined_lang_code( $str ) ) {
 		return $str;
 	}
 
@@ -419,7 +418,7 @@ function escape( $str, $double_escape = true, $escape_defined_lang_code = false 
 	return htmlspecialchars( $str, $flags, 'UTF-8', $double_escape );
 }
 
-function isDefinedLangCode( $str ) {
+function is_defined_lang_code( $str ) {
 	return preg_match( '!^\$user_lang->([a-z0-9\_]+)$!is', trim( $str ) );
 }
 
@@ -436,7 +435,7 @@ function zdate( $str, $format = 'Y-m-d H:i:s', $conversion = true ) {
 		return;
 	}
 	if ( $conversion == true ) {  // convert the date format according to the language
-		switch ( substr( get_locale(), 0, 2 ) ) {  // Context::getLangType()) {
+		switch ( substr( get_locale(), 0, 2 ) ) {  // Context::get_lang_type()) {
 			case 'en':
 			case 'es':
 				if ( $format == 'Y-m-d' ) {
@@ -503,11 +502,11 @@ function zdate( $str, $format = 'Y-m-d H:i:s', $conversion = true ) {
  * @param boot $short If set, returns short string
  * @return string
  */
-function getMonthName( $month, $short = true ) {
+/*function getMonthName( $month, $short = true ) {
 	$short_month = array( '', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' );
 	$long_month  = array( '', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' );
 	return ! $short ? $long_month[ $month ] : $short_month[ $month ];
-}
+}*/
 
 /**
  * YYYYMMDDHHIISS format changed to unix time value
@@ -552,7 +551,7 @@ function zgap() {
  * @param string $content Taget content
  * @return string
  */
-function removeHackTag( $content ) {
+function remove_hack_tag( $content ) {
 	require_once X2B_PATH . 'includes/classes/security/EmbedFilter.class.php';
 	$oEmbedFilter = \X2board\Includes\Classes\Security\EmbedFilter::getInstance();
 	$oEmbedFilter->check( $content );
@@ -566,11 +565,11 @@ function removeHackTag( $content ) {
 	 */
 	$content = preg_replace_callback(
 		'@<(/?)([a-z]+[0-9]?)((?>"[^"]*"|\'[^\']*\'|[^>])*?\b(?:on[a-z]+|data|style|background|href|(?:dyn|low)?src)\s*=[\s\S]*?)(/?)($|>|<)@i',
-		'\X2board\Includes\removeSrcHack',
+		'\X2board\Includes\remove_src_hack',
 		$content
 	);
-	$content = checkXmpTag( $content );
-	$content = blockWidgetCode( $content );
+	$content = check_xmp_tag( $content );
+	$content = block_widget_code( $content );
 	return $content;
 }
 
@@ -580,7 +579,7 @@ function removeHackTag( $content ) {
  * @param array $match
  * @return string
  */
-function removeSrcHack( $match ) {
+function remove_src_hack( $match ) {
 	$tag = strtolower( $match[2] );
 
 	// xmp tag ?뺣━
@@ -673,7 +672,7 @@ function removeSrcHack( $match ) {
  * @param string $content Taget content
  * @return string
  **/
-function blockWidgetCode( $s_content ) {
+function block_widget_code( $s_content ) {
 	$s_content = preg_replace( '/(<(?:img|div)(?:[^>]*))(widget)(?:(=([^>]*?)>))/is', '$1blocked-widget$3', $s_content );
 	return $s_content;
 }
@@ -684,7 +683,7 @@ function blockWidgetCode( $s_content ) {
  * @param string $content Target content
  * @return string
  */
-function checkXmpTag( $s_content ) {
+function check_xmp_tag( $s_content ) {
 	$s_content = preg_replace( '@<(/?)xmp.*?>@i', '<\1xmp>', $s_content );
 	if ( ( $start_xmp = strrpos( $s_content, '<xmp>' ) ) !== false ) {
 		if ( ( $close_xmp = strrpos( $s_content, '</xmp>' ) ) === false ) {
@@ -774,7 +773,7 @@ function get_script_path() {
  * @param int    $writer_member_srl
  * @return void
  */
-function stripEmbedTagForAdmin( &$s_content, $writer_member_id ) {
+function strip_embed_tag_for_admin( &$s_content, $writer_member_id ) {
 	if ( ! \X2board\Includes\Classes\Context::get( 'is_logged' ) ) {
 		return;
 	}
@@ -800,11 +799,11 @@ function stripEmbedTagForAdmin( &$s_content, $writer_member_id ) {
  * @param int $no A given number
  * @param int $size A given digits
  */
-function getNumberingPath( $no, $size = 3 ) {
+function get_numbering_path( $no, $size = 3 ) {
 	$mod    = pow( 10, $size );
 	$output = sprintf( '%0' . $size . 'd/', $no % $mod );
 	if ( $no >= $mod ) {
-		$output .= getNumberingPath( (int) $no / $mod, $size );
+		$output .= get_numbering_path( (int) $no / $mod, $size );
 	}
 	return $output;
 }
@@ -815,7 +814,7 @@ function getNumberingPath( $no, $size = 3 ) {
  * @param string $file Taget file path
  * @return bool
  */
-function checkUploadedFile( $file, $filename = null ) {
+function check_uploaded_file( $file, $filename = null ) {
 	require_once X2B_PATH . 'includes/classes/security/UploadFileFilter.class.php';
 	return \X2board\Includes\Classes\Security\UploadFileFilter::check( $file, $filename );
 }
@@ -826,7 +825,7 @@ function checkUploadedFile( $file, $filename = null ) {
  * @see getUrl()
  * @return string
  */
-function getNotEncodedUrl() {
+function get_not_encoded_url() {
 	$num_args  = func_num_args();
 	$args_list = func_get_args();
 
@@ -895,7 +894,7 @@ function cut_str( $string, $cut_size = 0, $tail = '...' ) {
  * @param string $format If gap is within a day, returns this format.
  * @return string
  */
-function getTimeGap( $date, $format = 'Y.m.d' ) {
+function get_time_gap( $date, $format = 'Y.m.d' ) {
 	// traslate yyyy-mm-dd hh:ii:ss' into 'yyyymmddhhiiss'
 	$date = preg_replace( '/[ \-\:]/i', '', $date );
 	$gap  = $_SERVER['REQUEST_TIME'] + zgap() - ztime( $date );
