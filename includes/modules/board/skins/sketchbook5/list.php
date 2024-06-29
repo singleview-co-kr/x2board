@@ -444,6 +444,4 @@ else {
 	});
 	</script>
 	<?php endif?>
-
-	<div class="x2board-default-poweredby">Powered by x2board</div>
 <?php endif?>

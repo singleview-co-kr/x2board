@@ -181,7 +181,7 @@ function filter_the_content( $content ) {
 			$content = str_replace( X2B_PAGE_IDENTIFIER, '', $content ); // return $content . board_builder(array('id'=>$board_id));
 		}
 	}
-	return $content;
+	return $content.'<div class="'.X2B_DOMAIN.'-default-poweredby">Powered by '.X2B_DOMAIN.'</div>';
 }
 
 /**
