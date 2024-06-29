@@ -72,18 +72,24 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			$a_user_input_field = $o_post_model->get_user_define_fields();
 			\X2board\Includes\Classes\Context::set('field', $a_user_input_field);
 			
-			$n_count_category = $o_post_model->get_category_count();
 			$b_category_activated = false;
 			$b_comment_activated = false;
 			foreach($a_user_input_field as $_ => $o_user_field ) {
-				if($o_user_field->type == 'category' && $n_count_category) {
-					$b_category_activated = true;
+				if($o_user_field->type == 'category' ) {
+					$o_category_model = \X2board\Includes\get_model('category');
+					$o_category_model->set_board_id(\X2board\Includes\Classes\Context::get('board_id'));
+					$a_linear_category = $o_category_model->build_linear_category();
+					unset($o_category_model);
+					\X2board\Includes\Classes\Context::set('category_list', $a_linear_category);
+					if(count( $a_linear_category ) ) {
+						$b_category_activated = true;
+					}
+					unset($a_linear_category);
 				}
 				if($o_user_field->type == 'attach') {
 					$b_comment_activated = true;
 				}
 			}
-
 			unset($a_user_input_field);
 			\X2board\Includes\Classes\Context::set('use_category', $b_category_activated ? 'Y': 'N');
 			// set for comment attach feature
@@ -345,7 +351,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			}
 
 			// if the category is enabled, then get the category
-			if(\X2board\Includes\Classes\Context::get('use_category')) {
+			if(\X2board\Includes\Classes\Context::get('use_category') == 'Y' ) {
 				$o_args->category_id = trim(urldecode(\X2board\Includes\Classes\Context::get('category')));
 			}
 			else {
@@ -411,17 +417,11 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 		 * dispBoardCategoryList()
 		 **/
 		private function _disp_category_list() {
-			if(\X2board\Includes\Classes\Context::get('use_category')) { // check if the use_category option is enabled;  -1 deactivated
+			if(\X2board\Includes\Classes\Context::get('use_category') == 'Y' ) { // check if the use_category option is enabled;  -1 deactivated
 				if(!$this->grant->list) { // check the grant
 					\X2board\Includes\Classes\Context::set('category_recursive', array());
 					return;
 				}
-				$o_category_model = \X2board\Includes\get_model('category');
-				$o_category_model->set_board_id(\X2board\Includes\Classes\Context::get('board_id'));
-				$a_linear_category = $o_category_model->build_linear_category();
-				unset($o_category_model);
-				\X2board\Includes\Classes\Context::set('category_list', $a_linear_category);
-				unset($a_linear_category);
 			}
 		}
 
@@ -495,18 +495,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			// check grant
 			if(!$this->grant->write_post) {
 				return $this->_disp_message( __('msg_not_permitted', X2B_DOMAIN) );
-			}
-
-			/**
-			 * check if the category user define field is enabled or not
-			 **/
-			if( \X2board\Includes\Classes\Context::get('use_category') ) {
-				$o_category_model = \X2board\Includes\get_model('category');
-				$o_category_model->set_board_id(\X2board\Includes\Classes\Context::get('board_id'));
-				$a_linear_category = $o_category_model->build_linear_category();
-				unset($o_category_model);
-				\X2board\Includes\Classes\Context::set('category_list', $a_linear_category);
-				unset($a_linear_category);
 			}
 
 			// GET parameter post_id from request

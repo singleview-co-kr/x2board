@@ -590,6 +590,9 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 					}
 					break;*/
 				case 'category':
+					if( \X2board\Includes\Classes\Context::get( 'use_category' ) != 'Y' ) {
+						break;
+					}
 					$s_name        = strlen( $s_name ) ? $s_name : __( $this->type, X2B_DOMAIN );
 					$buff[]        = '<div class="x2board-attr-row ' . $s_default_class . ' ' . $s_required . '">';
 					$buff[]        = '<label class="attr-name" for="' . $s_meta_key . '"><span class="field-name">' . $s_name . '</span></label>';

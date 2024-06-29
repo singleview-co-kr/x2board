@@ -204,7 +204,7 @@ $mi->write_btm_btn = !isset($mi->write_btm_btn) ? ' ' : $mi->write_btm_btn;
 $mi->cmt_this_btn = !isset($mi->cmt_this_btn) ? ' ' : $mi->cmt_this_btn;
 $mi->cmt_vote = !isset($mi->cmt_vote) ? ' ' : $mi->cmt_vote;
 $mi->thumbnail_type = !isset($mi->thumbnail_type) ? 'crop' : $mi->thumbnail_type;
-
+$mi->cnb_count = !isset($mi->cnb_count) ? 'N' : $mi->cnb_count;
 
 if(!isset($_COOKIE['cookie_viewer_with'])){
     $_COOKIE['cookie_viewer_with'] = null;

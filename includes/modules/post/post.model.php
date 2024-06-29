@@ -1044,21 +1044,6 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postModel' ) ) {
 		}
 
 		/**
-		 * get category count
-		 *
-		 * @param 
-		 * @return int
-		 */
-		public function get_category_count() {
-			$o_category = \X2board\Includes\get_model( 'category' );
-			$n_board_id = \X2board\Includes\Classes\Context::get( 'board_id' );
-			$o_category->set_board_id( $n_board_id );
-			$a_tree_category = $o_category->build_linear_category();
-			unset( $o_category );
-			return count($a_tree_category);
-		}
-
-		/**
 		 * Bringing the Categories list the specific module
 		 * Speed and variety of categories, considering the situation created by the php script to include a list of the must, in principle, to use
 		 * getCategoryList()
