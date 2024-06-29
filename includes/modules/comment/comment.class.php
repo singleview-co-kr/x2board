@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;  // Exit if accessed directly.
 }
 
-require_once X2B_PATH . 'includes/modules/comment/comment.item.php';
+require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'comment' . DIRECTORY_SEPARATOR . 'comment.item.php';
 
 if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\comment' ) ) {
 

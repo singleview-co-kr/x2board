@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 
 if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) {
 
-	require_once X2B_PATH . 'includes\classes\user_define_fields\UserDefineListFields.class.php';
+	require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'user_define_fields' . DIRECTORY_SEPARATOR . 'UserDefineListFields.class.php';
 
 	class boardAdminController {
 
@@ -37,7 +37,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 			check_admin_referer( X2B_CMD_ADMIN_PROC_UPDATE_SEQ );  // check nounce
 
 			if( isset($_POST['x2b_sequence_max_id']) ) {
-				require_once X2B_PATH . 'includes\modules\import\import.admin.controller.php';
+				require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR . 'import.admin.controller.php';
 				$o_import_admin = new \X2board\Includes\Modules\Import\importAdminController();
 				$o_import_admin->set_x2b_sequence($_POST['x2b_sequence_max_id']);
 				unset($o_import_admin);
@@ -65,7 +65,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 					if(is_uploaded_file($uploaded_file)) {
 						$file_extension = explode('.', $uploaded_filename);
 						if(end($file_extension) == 'xml' || end($file_extension) == 'zip'){
-							require_once X2B_PATH . 'includes\modules\import\import.admin.controller.php';
+							require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR . 'import.admin.controller.php';
 							$o_import_admin = new \X2board\Includes\Modules\Import\importAdminController();
 							$o_import_admin->set_board_id($_POST['board_id']);
 							$o_import_admin->import_xe_xml($uploaded_file, $file_extension[0]);
@@ -114,9 +114,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 		public function proc_update_board() {
 			check_admin_referer( X2B_CMD_ADMIN_PROC_UPDATE_BOARD );  // check nounce
 
-			require_once X2B_PATH . 'includes\classes\FileHandler.class.php';
-			require_once X2B_PATH . 'includes\admin\tpl\default-settings.php';
-			require_once X2B_PATH . 'includes\admin\tpl\register-settings.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'FileHandler.class.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . 'default-settings.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . 'register-settings.php';
 
 			// begin - remove unnecessary params
 			unset( $_POST['_wpnonce']);
@@ -281,7 +281,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 			$a_old_skin_vars = get_option( $s_x2b_setting_skin_vars_title );
 			if( count($a_valid_img_file) ) {  // update file info if requested
 				// Get random number generator
-				require_once X2B_PATH . 'includes/classes/security/Password.class.php';
+				require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'security' . DIRECTORY_SEPARATOR . 'Password.class.php';
 				$o_random = new \X2board\Includes\Classes\Security\Password();
 				foreach($a_valid_img_file as $s_skin_var_id => $a_file_info) {
 					if( !$this->_is_image_file($a_file_info['name']) ) {
@@ -455,7 +455,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 				}
 			}
 			// delete user defined field cache
-			require_once X2B_PATH . 'includes/classes/cache/CacheHandler.class.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . 'CacheHandler.class.php';
 			$o_cache_handler = \X2board\Includes\Classes\CacheHandler::getInstance('object', null, true);
 			if($o_cache_handler->isSupport()) {
 				$object_key = 'module_post_user_define_keys:' . $n_board_id;
@@ -505,7 +505,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 		 * @brief create new category ajax
 		 **/
 		public function proc_insert_category() {
-			require_once X2B_PATH . 'includes\modules\category\category.admin.controller.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'category' . DIRECTORY_SEPARATOR . 'category.admin.controller.php';
 			$o_cat_admin_controller = new \X2board\Includes\Modules\Category\categoryAdminController();
 			$_POST = stripslashes_deep($_POST);
 			$n_board_id = isset($_POST['board_id'])?$_POST['board_id']:'';
@@ -519,7 +519,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 		 * @brief update name or remove old category ajax
 		 **/
 		public function proc_manage_category() {
-			require_once X2B_PATH . 'includes\modules\category\category.admin.controller.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'category' . DIRECTORY_SEPARATOR . 'category.admin.controller.php';
 			$o_cat_admin_controller = new \X2board\Includes\Modules\Category\categoryAdminController();
 			$_POST = stripslashes_deep($_POST);	
 			if( !isset($_POST['board_id']) || !isset($_POST['tree_category']) ){
@@ -535,7 +535,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 		 * @brief reorder whole category ajax
 		 **/
 		public function proc_reorder_category() {
-			require_once X2B_PATH . 'includes\modules\category\category.admin.controller.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'category' . DIRECTORY_SEPARATOR . 'category.admin.controller.php';
 			$o_cat_admin_controller = new \X2board\Includes\Modules\Category\categoryAdminController();
 			$_POST = stripslashes_deep($_POST);
 			$a_tree_category = isset($_POST['tree_category_serialize'])?json_decode($_POST['tree_category_serialize']):'';

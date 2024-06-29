@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postAdminModel' ) ) {
 
-	require_once X2B_PATH . 'includes\classes\user_define_fields\AdminUserDefineFields.class.php';
+	require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'user_define_fields' . DIRECTORY_SEPARATOR . 'AdminUserDefineFields.class.php';
 
 	class postAdminModel {
 		private $_a_unchosen_user_default_fields = array();

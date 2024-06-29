@@ -14,8 +14,8 @@ namespace X2board\Includes\Modules\Post;
 
 if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postItem' ) ) {
 
-	require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
-	require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
+	require_once ABSPATH . 'wp-admin' . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-wp-filesystem-base.php';
+	require_once ABSPATH . 'wp-admin' . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-wp-filesystem-direct.php';
 
 	class postItem extends \X2board\Includes\Classes\BaseObject {
 		/**
@@ -967,7 +967,10 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postItem' ) ) {
 			}
 
 			// Create lockfile to prevent race condition
-			global $wp_filesystem;
+			require_once ABSPATH . 'wp-admin' . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-wp-filesystem-base.php';
+			require_once ABSPATH . 'wp-admin' . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-wp-filesystem-direct.php';
+			$wp_filesystem = new \WP_Filesystem_Direct( false );
+
 			$wp_filesystem->put_contents(
 				$thumbnail_lockfile,
 				'',
@@ -1066,6 +1069,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postItem' ) ) {
 					FS_CHMOD_FILE // predefined mode settings for WP files
 				);
 			}
+			unset($wp_filesystem);
 			return $thumbnail_url . '?' . date( 'YmdHis', filemtime( $thumbnail_file ) );
 		}
 	}

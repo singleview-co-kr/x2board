@@ -8,7 +8,7 @@ if ( !defined( 'ABSPATH' ) ) {
 
 if (!class_exists('\\X2board\\Includes\\Classes\\Security\\\EmbedFilter')) {
 
-	include X2B_PATH . 'includes/classes/security/phphtmlparser/src/htmlparser.inc';
+	include X2B_PATH . 'includes'.DIRECTORY_SEPARATOR.'classes'.DIRECTORY_SEPARATOR.'security'.DIRECTORY_SEPARATOR.'phphtmlparser'.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'htmlparser.inc';
 
 	class EmbedFilter {
 
@@ -23,7 +23,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\\EmbedFilter')) {
 		 * @var int
 		 */
 		var $allowscriptaccessKey = 0;
-		var $whiteUrlXmlFile = X2B_PATH . 'includes/classes/security/conf/embedWhiteUrl.xml';
+		var $whiteUrlXmlFile = X2B_PATH . 'includes'.DIRECTORY_SEPARATOR.'classes'.DIRECTORY_SEPARATOR.'security'.DIRECTORY_SEPARATOR.'conf'.DIRECTORY_SEPARATOR.'embedWhiteUrl.xml';
 		var $whiteUrlCacheFile = null;
 		var $whiteUrlList = array();
 		var $whiteIframeUrlList = array();
@@ -522,8 +522,8 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\\EmbedFilter')) {
 				$whiteUrlList = array();
 				$whiteIframeUrlList = array();
 
-				require_once ( ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php' );
-				require_once ( ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php' );
+				require_once ( ABSPATH . 'wp-admin'.DIRECTORY_SEPARATOR.'includes'.DIRECTORY_SEPARATOR.'class-wp-filesystem-base.php' );
+				require_once ( ABSPATH . 'wp-admin'.DIRECTORY_SEPARATOR.'includes'.DIRECTORY_SEPARATOR.'class-wp-filesystem-direct.php' );
 				$o_wp_filesystem = new \WP_Filesystem_Direct(false);
 
 				if( (isset($whitelist->object) && gettype($whitelist->object) == 'array') && 
@@ -536,7 +536,7 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\\EmbedFilter')) {
 					
 					$xmlBuff = $o_wp_filesystem->get_contents( $this->whiteUrlXmlFile );
 
-					require_once X2B_PATH . 'includes/classes/XeXmlParser.class.php';
+					require_once X2B_PATH . 'includes'.DIRECTORY_SEPARATOR.'classes'.DIRECTORY_SEPARATOR.'XeXmlParser.class.php';
 					$xmlParser = new \X2board\Includes\Classes\XeXmlParser();
 					$domainListObj = $xmlParser->parse($xmlBuff);
 					$embedDomainList = $domainListObj->whiteurl->embed->domain;

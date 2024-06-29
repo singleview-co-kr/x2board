@@ -175,7 +175,7 @@ $mi->votes = !isset($mi->votes) || $mi->votes == ' ' ? ' ' : $mi->votes;
 $mi->declare = !isset($mi->declare) || $mi->declare == ' ' ? ' ' : $mi->declare;
 $mi->rd_nav_tx = !isset($mi->rd_nav_tx) || $mi->rd_nav_tx == ' ' ? ' ' : $mi->rd_nav_tx;
 $mi->rd_nav_item = !isset($mi->rd_nav_item) || $mi->rd_nav_item == ' ' ? ' ' : $mi->rd_nav_item;
-$mi->show_files = !isset($mi->show_files) || $mi->show_files == ' ' ? ' ' : $mi->show_files;
+$mi->show_files = !isset($mi->show_files) ? '3' : $mi->show_files;
 $mi->select_editor = !isset($mi->select_editor) || $mi->select_editor == ' ' ? ' ' : $mi->select_editor;
 $mi->rd_lst = !isset($mi->rd_lst) || $mi->rd_lst == '-1' ? null : $mi->rd_lst;
 $mi->title = !isset($mi->title) || $mi->title == '-1' ? null : $mi->title;
@@ -203,6 +203,8 @@ $mi->srch_btm = !isset($mi->srch_btm) ? ' ' : $mi->srch_btm;
 $mi->write_btm_btn = !isset($mi->write_btm_btn) ? ' ' : $mi->write_btm_btn;
 $mi->cmt_this_btn = !isset($mi->cmt_this_btn) ? ' ' : $mi->cmt_this_btn;
 $mi->cmt_vote = !isset($mi->cmt_vote) ? ' ' : $mi->cmt_vote;
+$mi->thumbnail_type = !isset($mi->thumbnail_type) ? 'crop' : $mi->thumbnail_type;
+
 
 if(!isset($_COOKIE['cookie_viewer_with'])){
     $_COOKIE['cookie_viewer_with'] = null;

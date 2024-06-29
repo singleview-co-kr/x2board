@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 
 if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminModel')) {
 	
-	require_once X2B_PATH . 'includes\classes\user_define_fields\UserDefineListFields.class.php';
+	require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'user_define_fields' . DIRECTORY_SEPARATOR . 'UserDefineListFields.class.php';
 
 	class boardAdminModel {
 		private $_a_on_list_config = array();
@@ -38,7 +38,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminModel')) {
 		 * @brief return latest files for an admin dashboard
 		 */
 		public function get_latest_files() {
-			require_once X2B_PATH . 'includes\modules\file\wp_admin_class\wp_latest_files.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'file' . DIRECTORY_SEPARATOR . 'wp_admin_class' . DIRECTORY_SEPARATOR . 'wp_latest_files.php';
 			$o_latest_file = new \X2board\Includes\Modules\File\WpAdminClass\wpLatestFiles();
 			$a_file_result = $o_latest_file->get_latest();
 			unset($o_latest_file);
@@ -53,7 +53,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminModel')) {
 		 * @brief return latest files for an admin dashboard
 		 */
 		public function get_latest_files_wp_list() {
-			require_once X2B_PATH . 'includes\modules\file\wp_admin_class\wp_latest_files.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'file' . DIRECTORY_SEPARATOR . 'wp_admin_class' . DIRECTORY_SEPARATOR . 'wp_latest_files.php';
 			$o_latest_file = new \X2board\Includes\Modules\File\WpAdminClass\wpLatestFiles();
 			$o_latest_file->prepare_latest_list();
 			return $o_latest_file;
@@ -63,7 +63,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminModel')) {
 		 * @brief return latest comments for an admin dashboard
 		 */
 		public function get_latest_comments() {
-			require_once X2B_PATH . 'includes\modules\comment\wp_admin_class\wp_latest_comments.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'comment' . DIRECTORY_SEPARATOR . 'wp_admin_class' . DIRECTORY_SEPARATOR . 'wp_latest_comments.php';
 			$o_latest_comment = new \X2board\Includes\Modules\Comment\WpAdminClass\wpLatestComments();
 			$a_comment_result = $o_latest_comment->get_latest();
 			unset($o_latest_comment);
@@ -80,7 +80,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminModel')) {
 					$s_comment_permlink = $s_page_permlink.'/'.$o_comment->parent_post_id;
 				}
 				else {  // http://127.0.0.1/wp-%ED%8E%98%EC%9D%B4%EC%A7%80-%EC%A0%9C%EB%AA%A9-2?view_post/4147
-					$s_comment_permlink .= $s_page_permlink.'?'.X2B_CMD_VIEW_POST.'/'.$o_comment->parent_post_id;
+					$s_comment_permlink = $s_page_permlink.'?'.X2B_CMD_VIEW_POST.'/'.$o_comment->parent_post_id;
 				}
 
 				$s_comment_permlink .= '#comment_'.$o_comment->comment_id;
@@ -96,7 +96,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminModel')) {
 		 * @brief return latest comments for an admin dashboard
 		 */
 		public function get_latest_comments_wp_list() {
-			require_once X2B_PATH . 'includes\modules\comment\wp_admin_class\wp_latest_comments.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'comment' . DIRECTORY_SEPARATOR . 'wp_admin_class' . DIRECTORY_SEPARATOR . 'wp_latest_comments.php';
 			$o_latest_comment = new \X2board\Includes\Modules\Comment\WpAdminClass\wpLatestComments();
 			$o_latest_comment->prepare_latest_list();
 			return $o_latest_comment;
@@ -106,7 +106,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminModel')) {
 		 * @brief return latest posts for an admin dashboard
 		 */
 		public function get_latest_posts() {
-			require_once X2B_PATH . 'includes\modules\post\wp_admin_class\wp_latest_posts.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'post' . DIRECTORY_SEPARATOR . 'wp_admin_class' . DIRECTORY_SEPARATOR . 'wp_latest_posts.php';
 			$o_latest_post = new \X2board\Includes\Modules\Post\WpAdminClass\wpLatestPosts();
 			$a_post_result = $o_latest_post->get_latest();
 			unset($o_latest_post);
@@ -123,7 +123,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminModel')) {
 					$s_post_permlink = $s_page_permlink.'/'.$o_post->post_id;
 				}
 				else {  // http://127.0.0.1/wp-%ED%8E%98%EC%9D%B4%EC%A7%80-%EC%A0%9C%EB%AA%A9-2?view_post/4147
-					$s_post_permlink .= $s_page_permlink.'?'.X2B_CMD_VIEW_POST.'/'.$o_post->post_id;
+					$s_post_permlink = $s_page_permlink.'?'.X2B_CMD_VIEW_POST.'/'.$o_post->post_id;
 				}
 
 				$o_post->s_post_permlink = $s_post_permlink;
@@ -137,7 +137,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminModel')) {
 		 * @brief return latest posts for an admin dashboard
 		 */
 		public function get_latest_posts_wp_list() {
-			require_once X2B_PATH . 'includes\modules\post\wp_admin_class\wp_latest_posts.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'post' . DIRECTORY_SEPARATOR . 'wp_admin_class' . DIRECTORY_SEPARATOR . 'wp_latest_posts.php';
 			$o_latest_post = new \X2board\Includes\Modules\Post\WpAdminClass\wpLatestPosts();
 			$o_latest_post->prepare_latest_list();
 			return $o_latest_post;

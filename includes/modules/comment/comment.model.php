@@ -227,8 +227,8 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentModel' ) ) {
 				return;
 			}
 
-			require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
-			require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
+			require_once ABSPATH . 'wp-admin' . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-wp-filesystem-base.php';
+			require_once ABSPATH . 'wp-admin' . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-wp-filesystem-direct.php';
 			$o_wp_filesystem = new \WP_Filesystem_Direct( false );
 			$o_wp_filesystem->put_contents( $s_lock_file, '' ); // FileHandler::writeFile($s_lock_file, '');
 

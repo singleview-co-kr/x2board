@@ -135,7 +135,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 
 			// load textdomain for skin_vars
 			// third parameter should be relative path to WP_PLUGIN_DIR
-			load_plugin_textdomain(X2B_DOMAIN, false, X2B_DOMAIN.DIRECTORY_SEPARATOR.'includes'.DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.'board'.DIRECTORY_SEPARATOR.'skins'.DIRECTORY_SEPARATOR.$this->module_info->skin.DIRECTORY_SEPARATOR.'lang');
+			load_plugin_textdomain(X2B_DOMAIN, false, X2B_DOMAIN . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'board' . DIRECTORY_SEPARATOR . 'skins' . DIRECTORY_SEPARATOR . $this->module_info->skin . DIRECTORY_SEPARATOR . 'lang');
 
 			// Avoid warning - Undefined variable: sort_index
 			if(!\X2board\Includes\Classes\Context::get('sort_index')) {

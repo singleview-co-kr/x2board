@@ -190,7 +190,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Editor\\editorModel' ) ) {
 			}
 			\X2board\Includes\Classes\Context::set( 'content_style', $option->content_style );
 
-			$content_style_path = ltrim( $this->module_path, './' ) . 'styles/' . $option->content_style;
+			$content_style_path = $this->module_path . 'styles/' . $option->content_style;
 			\X2board\Includes\Classes\Context::set( 'content_style_path', $content_style_path );
 
 			$a_content_style_path = explode( 'wp-content', $content_style_path );

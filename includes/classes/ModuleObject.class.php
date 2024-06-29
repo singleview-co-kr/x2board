@@ -52,8 +52,8 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\ModuleObject' ) ) {
 		 *  ["consultation_read"]=> object(stdClass)#176 (2) { ["title"]=> string(16) "상담글 조회" ["default"]=> string(7) "manager" } }
 		 */
 		public function set_module_info( $n_board_id ) {
-			require_once X2B_PATH . 'includes\admin\tpl\default-settings.php';
-			require_once X2B_PATH . 'includes\admin\tpl\register-settings.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . 'default-settings.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . 'register-settings.php';
 			$o_rst = \X2board\Includes\Admin\Tpl\x2b_load_settings( $n_board_id );
 			if ( $o_rst->b_ok === false ) {
 				unset( $o_rst );

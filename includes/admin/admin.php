@@ -44,7 +44,7 @@ if ( ! defined( 'X2B_ADMIN_ATTACH_FILE_PATH' ) ) {
 
 /*  Plugins Activation Hook */
 function activate() {
-	require_once X2B_PATH . 'includes/admin/schemas/schemas.php';
+	require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'schemas' . DIRECTORY_SEPARATOR . 'schemas.php';
 }
 
 register_activation_hook( X2B__FILE__, 'X2board\Includes\Admin\activate' );

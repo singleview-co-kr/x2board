@@ -733,7 +733,7 @@ function x2b_settings_skin_vars() {
 	);
 
 	if ( $A_X2B_ADMIN_BOARD_SETTINGS && isset( $A_X2B_ADMIN_BOARD_SETTINGS['board_skin'] ) ) {
-		$s_skin_vars_path = X2B_PATH . 'includes\modules\board\skins\\' . $A_X2B_ADMIN_BOARD_SETTINGS['board_skin'] . '\skin_vars.php';
+		$s_skin_vars_path = X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'board' . DIRECTORY_SEPARATOR . 'skins' . DIRECTORY_SEPARATOR . $A_X2B_ADMIN_BOARD_SETTINGS['board_skin']  . DIRECTORY_SEPARATOR . 'skin_vars.php';
 		if ( file_exists( $s_skin_vars_path ) ) {
 			require_once $s_skin_vars_path;
 			$a_tmp_settings = array(
@@ -863,7 +863,7 @@ function x2b_get_grants() {
  */
 function x2b_get_editable_roles() {
 	if ( ! function_exists( 'get_editable_roles' ) ) {
-		require_once ABSPATH . '/wp-admin/includes/user.php';
+		require_once ABSPATH . DIRECTORY_SEPARATOR . 'wp-admin' . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'user.php';
 	}
 
 	$a_roles = array();

@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;  // Exit if accessed directly.
 }
 
-require_once X2B_PATH . 'includes/modules/post/post.item.php';
+require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'post' . DIRECTORY_SEPARATOR . 'post.item.php';
 
 if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\post' ) ) {
 	// this is for poedit recognition

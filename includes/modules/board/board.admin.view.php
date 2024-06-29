@@ -29,27 +29,27 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 		 * @brief display the x2board dashboard
 		 **/
 		public function disp_idx() {
-			require_once X2B_PATH . 'includes\classes\FileHandler.class.php';
-			require_once X2B_PATH . 'includes\admin\tpl\default-settings.php';
-			require_once X2B_PATH . 'includes\admin\tpl\register-settings.php';
-			require_once X2B_PATH . 'includes\modules\board\board.admin.model.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'FileHandler.class.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . 'default-settings.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . 'register-settings.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'board' . DIRECTORY_SEPARATOR . 'board.admin.model.php';
 			
 			$o_board_admin_model = new \X2board\Includes\Modules\Board\boardAdminModel();
 			$a_latest_posts = $o_board_admin_model->get_latest_posts();
 			$a_latest_comments = $o_board_admin_model->get_latest_comments();
 			$a_latest_files = $o_board_admin_model->get_latest_files();
 			unset($o_board_admin_model);
-			require_once X2B_PATH . 'includes/admin/tpl/dashboard.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . 'dashboard.php';
 		}
 
 		/**
 		 * Display the latest posts UX
 		 **/
 		public function disp_latest_post() {
-			require_once X2B_PATH . 'includes\modules\board\board.admin.model.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'board\board.admin.model.php';
 			$o_board_admin_model = new \X2board\Includes\Modules\Board\boardAdminModel();
 			$o_latest = $o_board_admin_model->get_latest_posts_wp_list();
-			require_once X2B_PATH . 'includes/admin/tpl/latest_list.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . 'latest_list.php';
 			unset($o_latest);
 			unset($o_board_admin_model);
 		}
@@ -58,10 +58,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 		 * Display the latest posts UX
 		 **/
 		public function disp_latest_comment() {
-			require_once X2B_PATH . 'includes\modules\board\board.admin.model.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'board' . DIRECTORY_SEPARATOR . 'board.admin.model.php';
 			$o_board_admin_model = new \X2board\Includes\Modules\Board\boardAdminModel();
 			$o_latest = $o_board_admin_model->get_latest_comments_wp_list();
-			require_once X2B_PATH . 'includes/admin/tpl/latest_list.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . 'latest_list.php';
 			unset($o_latest);
 			unset($o_board_admin_model);
 		}
@@ -70,10 +70,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 		 * Display the latest posts UX
 		 **/
 		public function disp_latest_file() {
-			require_once X2B_PATH . 'includes\modules\board\board.admin.model.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'board' . DIRECTORY_SEPARATOR . 'board.admin.model.php';
 			$o_board_admin_model = new \X2board\Includes\Modules\Board\boardAdminModel();
 			$o_latest = $o_board_admin_model->get_latest_files_wp_list();
-			require_once X2B_PATH . 'includes/admin/tpl/latest_list.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . 'latest_list.php';
 			unset($o_latest);
 			unset($o_board_admin_model);
 		}
@@ -82,7 +82,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 		 * Display the board control panel UX
 		 **/
 		public function disp_control_panel() {
-			require_once X2B_PATH . 'includes/admin/tpl/control_panel.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . 'control_panel.php';
 		}
 
 		/**
@@ -98,14 +98,14 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 			);
 			wp_enqueue_script( X2B_DOMAIN . '-tab-scripts' );
 
-			require_once X2B_PATH . 'includes\modules\import\import.admin.model.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR . 'import.admin.model.php';
 			$o_import_admin = new \X2board\Includes\Modules\Import\importAdminModel();
 			$n_cur_auto_increment = $o_import_admin->get_x2b_sequence();
 			unset($o_import_admin);
 
-			require_once X2B_PATH . 'includes\modules\board\wp_admin_class\wp_board_list.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'board' . DIRECTORY_SEPARATOR . 'wp_admin_class' . DIRECTORY_SEPARATOR . 'wp_board_list.php';
 			$o_board_list = new \X2board\Includes\Modules\Board\WpAdminClass\wpBoardList();
-			require_once X2B_PATH . 'includes/admin/tpl/board_import.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . 'board_import.php';
 			unset($o_board_list);
 		}
 
@@ -113,10 +113,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 		 * @brief display the board module admin contents
 		 **/
 		public function disp_board_list() {
-			require_once X2B_PATH . 'includes\modules\board\wp_admin_class\wp_board_list.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'board' . DIRECTORY_SEPARATOR . 'wp_admin_class' . DIRECTORY_SEPARATOR . 'wp_board_list.php';
 			$o_board_list = new \X2board\Includes\Modules\Board\WpAdminClass\wpBoardList();
 			$s_create_board_url = esc_url( admin_url( "admin.php?page=".X2B_CMD_ADMIN_VIEW_BOARD_INSERT ) );
-			include_once X2B_PATH .'includes/admin/tpl/board_list.php';
+			include_once X2B_PATH .'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . 'board_list.php';
 			unset($o_board_list);
 		}
 
@@ -249,13 +249,13 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 		 * @brief display the board insert form
 		 **/
 		public function disp_board_insert() {
-			require_once X2B_PATH . 'includes\classes\FileHandler.class.php';
-			require_once X2B_PATH . 'includes\admin\tpl\settings-page.php';
-			require_once X2B_PATH . 'includes\admin\tpl\default-settings.php';
-			require_once X2B_PATH . 'includes\admin\tpl\register-settings.php';
-			require_once X2B_PATH . 'includes\modules\board\board.admin.model.php';
-			require_once X2B_PATH . 'includes\modules\category\category.admin.model.php';
-			require_once X2B_PATH . 'includes\modules\post\post.admin.model.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'FileHandler.class.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . 'settings-page.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . 'default-settings.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . 'register-settings.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'board' . DIRECTORY_SEPARATOR . 'board.admin.model.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'category' . DIRECTORY_SEPARATOR . 'category.admin.model.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'post' . DIRECTORY_SEPARATOR . 'post.admin.model.php';
 
 			wp_register_script(
 				X2B_DOMAIN . '-tab-scripts',

@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly
 
-require_once X2B_PATH . 'includes\classes\user_define_fields\UserDefineFields.class.php';
+require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'user_define_fields' . DIRECTORY_SEPARATOR . 'UserDefineFields.class.php';
 
 if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineListFields' ) ) {
 

@@ -26,8 +26,8 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Import\\importAdminControlle
 		);
 
 		public function __construct() {
-			require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
-			require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
+			require_once ABSPATH . 'wp-admin' . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-wp-filesystem-base.php';
+			require_once ABSPATH . 'wp-admin' . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-wp-filesystem-direct.php';
 			$this->_o_fileSystemDirect   = new \WP_Filesystem_Direct( false );
 			$this->_s_wp_upload_base_dir = wp_get_upload_dir()['basedir'];
 		}
@@ -164,7 +164,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Import\\importAdminControlle
 				// 게시판 기존 문서 정보 삭제 - 종료
 
 				// register category
-				require_once X2B_PATH . 'includes\modules\category\category.admin.controller.php';
+				require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'category' . DIRECTORY_SEPARATOR . 'category.admin.controller.php';
 				$o_cat_admin_controller = new \X2board\Includes\Modules\Category\categoryAdminController();
 
 				echo '연속된 XML 덤프의 첫 파일이므로 원본 게시판의 카테고리 정보를 입력합니다.<BR>';
@@ -221,7 +221,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Import\\importAdminControlle
 
 			// begin - buildup proc Context for admin
 			global $G_X2B_CACHE;
-			require_once X2B_PATH . 'includes/func.inc.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'func.inc.php';
 			$o_context = \X2board\Includes\buildup_context_from_admin();
 			$o_context->init( 'admin_import' );
 			unset( $o_context );
