@@ -130,6 +130,8 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\Context' ) ) {
 				)
 			);
 
+			date_default_timezone_set(wp_timezone_string());
+
 			// WP stores small-letter URL like wp-%ed%8e%98%ec%9d%b4%ec%a7%80-%ec%a0%9c%eb%aa%a9-2
 			// router needs capitalized URL like wp-%ED%8E%98%EC%9D%B4%EC%A7%80-%EC%A0%9C%EB%AA%A9-2
 			if ( get_post() ) {
