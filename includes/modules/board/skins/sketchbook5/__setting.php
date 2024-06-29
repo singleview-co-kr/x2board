@@ -15,7 +15,7 @@ if(!isset($mi->thumbnail_height) || strlen($mi->thumbnail_height)==0) $mi->thumb
 if(!isset($mi->zine_thumb_width) || strlen($mi->zine_thumb_width)==0) $mi->zine_thumb_width = 90;
 if(!isset($mi->zine_thumb_height) || strlen($mi->zine_thumb_height)==0) $mi->zine_thumb_height = 90;
 if(!isset($mi->zine_margin) || strlen($mi->zine_margin)==0) $mi->zine_margin = 10;
-// if(!isset($mi->cmt_wrt) || strlen($mi->cmt_wrt)==0) $mi->cmt_wrt = 'simple';
+if(!isset($mi->cmt_wrt) || strlen($mi->cmt_wrt)==0) $mi->cmt_wrt = 'simple';
 if(!isset($mi->img_insert_align) || strlen($mi->img_insert_align)==0) $mi->img_insert_align = 'center';
 
 $mi->duration_new = 3600 * $mi->duration_new;  // 60*60 == 3600
@@ -34,10 +34,10 @@ if(isset($_COOKIE['bd_editor'])) $mi->cmt_wrt = $_COOKIE['bd_editor'];
 if(isset($_COOKIE['cookie_viewer_with'])) $mi->viewer_with = '';
 
 $mi->shadow = null;
-if($mi->custom_color) $mi->color = $mi->custom_color;
-if($mi->custom_shadow) $mi->shadow = $mi->custom_shadow;
-if(!$mi->color) $mi->color = 333333;
-if(!$mi->color) $mi->shadow = '#999';
+if(isset($mi->custom_color)) $mi->color = $mi->custom_color;
+if(isset($mi->custom_shadow)) $mi->shadow = $mi->custom_shadow;
+if(!isset($mi->color)) $mi->color = 333333;
+if(!isset($mi->color)) $mi->shadow = '#999';
 // var_dump($mi->btm_mn);
 if($mi->colorset=='black') $mi->color = EEEEEE;
 if($mi->colorset=='black') $mi->shadow = '#000';
@@ -69,6 +69,7 @@ if(wp_is_mobile()) {
 	if($mi->to_sns!='N') $mi->to_sns = 3;
 }
 
+$mi->default_style = null;
 if(isset($listStyle)) {
     if($listStyle=='list') { 
         $mi->default_style = 'list';
@@ -123,21 +124,85 @@ if(wp_is_mobile()) {
 $mi->ribbon_img = isset($mi->ribbon_img['full_url']) ? $mi->ribbon_img['full_url'] : null;
 $mi->no_attached_img = isset($mi->no_attached_img['full_url']) ? $mi->no_attached_img['full_url'] : null;
 $mi->use_category = $use_category;
-$mi->normal_lst_tdw = $mi->normal_lst_tdw;
+$mi->normal_lst_tdw = isset($mi->normal_lst_tdw) ? $mi->normal_lst_tdw : null;
 $mi->header_text = $current_module_info->header_text;
 
-$mi->rd_ft_nav = $mi->rd_ft_nav == '-1' ? null : $mi->rd_ft_nav;
-$mi->btm_mn = $mi->btm_mn == '-1' ? array() : $mi->btm_mn;
-$mi->preview = $mi->preview == '-1' ? array() : $mi->preview;
-$mi->cmt_count = $mi->cmt_count == '-1' ? array() : $mi->cmt_count;
-$mi->ext_img = $mi->ext_img == '-1' ? array() : $mi->ext_img;
-$mi->to_sns_small = $mi->to_sns_small == ' ' ? null : $mi->to_sns_small;
-$mi->fdb_style = $mi->fdb_style == ' ' ? null : $mi->fdb_style;
-$mi->profile_img = $mi->profile_img == ' ' ? null : $mi->profile_img;
-$mi->fdb_nav = $mi->fdb_nav == ' ' ? null : $mi->fdb_nav;
-$mi->cmt_wrt_position = $mi->cmt_wrt_position == ' ' ? null : $mi->cmt_wrt_position;
+$mi->rd_ft_nav = !isset($mi->rd_ft_nav) || $mi->rd_ft_nav == '-1' ? null : $mi->rd_ft_nav;
+$mi->btm_mn = !isset($mi->btm_mn) || $mi->btm_mn == '-1' ? array() : $mi->btm_mn;
+$mi->preview = !isset($mi->preview) || $mi->preview == '-1' ? array() : $mi->preview;
+$mi->cmt_count = !isset($mi->cmt_count) || $mi->cmt_count == '-1' ? array() : $mi->cmt_count;
+$mi->ext_img = !isset($mi->ext_img) || $mi->ext_img == '-1' ? array() : $mi->ext_img;
+
+$mi->to_sns_small = !isset($mi->to_sns_small) || $mi->to_sns_small == ' ' ? ' ' : $mi->to_sns_small;
+$mi->fdb_style = !isset($mi->fdb_style) || $mi->fdb_style == ' ' ? ' ' : $mi->fdb_style;
+$mi->profile_img = !isset($mi->profile_img) || $mi->profile_img == ' ' ? ' ' : $mi->profile_img;
+$mi->fdb_nav = !isset($mi->fdb_nav) || $mi->fdb_nav == ' ' ? ' ' : $mi->fdb_nav;
+$mi->cmt_wrt_position = !isset($mi->cmt_wrt_position) || $mi->cmt_wrt_position == ' ' ? ' ' : $mi->cmt_wrt_position;
 $mi->page_count = $current_module_info->page_count;
 $mi->use_status = $current_module_info->use_status;
+$mi->cnb = !isset($mi->cnb) ? ' ' : $mi->cnb;
+$mi->lst_viewer = !isset($mi->lst_viewer) || $mi->lst_viewer == ' ' ? ' ' : $mi->lst_viewer;
+$mi->hd_tx = !isset($mi->hd_tx) || $mi->hd_tx == ' ' ? ' ' : $mi->hd_tx;
+$mi->fdb_count = !isset($mi->fdb_count) || $mi->fdb_count == ' ' ? ' ' : $mi->fdb_count;
+$mi->hover = !isset($mi->hover) || $mi->hover == ' ' ? ' ' : $mi->hover;
+$mi->select_lst = !isset($mi->select_lst) || $mi->select_lst == '-1' ? null : $mi->select_lst;
+$mi->select_lst_more = !isset($mi->select_lst_more) || $mi->select_lst_more == '-1' ? null : $mi->select_lst_more;
+$mi->link_board = !isset($mi->link_board) || $mi->link_board == ' ' ? ' ' : $mi->link_board;
+$mi->bubble = !isset($mi->bubble) || $mi->bubble == ' ' ? ' ' : $mi->bubble;
+$mi->files_type = !isset($mi->files_type) || $mi->files_type == ' ' ? ' ' : $mi->files_type;
+$mi->img_opt = !isset($mi->img_opt) || $mi->img_opt == '-1' ? null : $mi->img_opt;
+$mi->img_link = !isset($mi->img_link) || $mi->img_link == ' ' ? ' ' : $mi->img_link;
+$mi->rd_nav_side = !isset($mi->rd_nav_side) || $mi->rd_nav_side == ' ' ? ' ' : $mi->rd_nav_side;
+$mi->wizard = !isset($mi->wizard) || $mi->wizard == ' ' ? ' ' : $mi->wizard;
+$mi->font_btn = !isset($mi->font_btn) || $mi->font_btn == ' ' ? ' ' : $mi->font_btn;
+$mi->font = !isset($mi->font) || $mi->font == ' ' ? ' ' : $mi->font;
+$mi->viewer = !isset($mi->viewer) || $mi->viewer == ' ' ? ' ' : $mi->viewer;
+$mi->viewer_with = !isset($mi->viewer_with) || $mi->viewer_with == ' ' ? ' ' : $mi->viewer_with;
+$mi->rd_nav = !isset($mi->rd_nav) || $mi->rd_nav == ' ' ? ' ' : $mi->rd_nav;
+$mi->rd_tl_font = !isset($mi->rd_tl_font) || $mi->rd_tl_font == ' ' ? ' ' : $mi->rd_tl_font;
+$mi->rd_top_font = !isset($mi->rd_top_font) || $mi->rd_top_font == ' ' ? ' ' : $mi->rd_top_font;
+$mi->rd_btm_font = !isset($mi->rd_btm_font) || $mi->rd_btm_font == ' ' ? ' ' : $mi->rd_btm_font;
+$mi->prev_next_cut_size = !isset($mi->prev_next_cut_size) || $mi->prev_next_cut_size == '-1' ? null : $mi->prev_next_cut_size;
+$mi->rd_nav_style = !isset($mi->rd_nav_style) || $mi->rd_nav_style == ' ' ? ' ' : $mi->rd_nav_style;
+$mi->rd_padding = !isset($mi->rd_padding) || $mi->rd_padding == '-1' ? null : $mi->rd_padding;
+$mi->rd_style = !isset($mi->rd_style) || $mi->rd_style == ' ' ? ' ' : $mi->rd_style;
+$mi->et_var = !isset($mi->et_var) || $mi->et_var == ' ' ? ' ' : $mi->et_var;
+$mi->to_sns = !isset($mi->to_sns) || $mi->to_sns == ' ' ? ' ' : $mi->to_sns;
+$mi->img_insert = !isset($mi->img_insert) || $mi->img_insert == ' ' ? ' ' : $mi->img_insert;
+$mi->display_sign = !isset($mi->display_sign) || $mi->display_sign == '-1' ? null : $mi->display_sign;
+$mi->prev_next = !isset($mi->prev_next) || $mi->prev_next == ' ' ? ' ' : $mi->prev_next;
+$mi->votes = !isset($mi->votes) || $mi->votes == ' ' ? ' ' : $mi->votes;
+$mi->declare = !isset($mi->declare) || $mi->declare == ' ' ? ' ' : $mi->declare;
+$mi->rd_nav_tx = !isset($mi->rd_nav_tx) || $mi->rd_nav_tx == ' ' ? ' ' : $mi->rd_nav_tx;
+$mi->rd_nav_item = !isset($mi->rd_nav_item) || $mi->rd_nav_item == ' ' ? ' ' : $mi->rd_nav_item;
+$mi->show_files = !isset($mi->show_files) || $mi->show_files == ' ' ? ' ' : $mi->show_files;
+$mi->select_editor = !isset($mi->select_editor) || $mi->select_editor == ' ' ? ' ' : $mi->select_editor;
+$mi->rd_lst = !isset($mi->rd_lst) || $mi->rd_lst == '-1' ? null : $mi->rd_lst;
+$mi->title = !isset($mi->title) || $mi->title == '-1' ? null : $mi->title;
+$mi->srch_window = !isset($mi->srch_window) || $mi->srch_window == ' ' ? ' ' : $mi->srch_window;
+$mi->display_setup_button = !isset($mi->display_setup_button) ? ' ' : $mi->display_setup_button;
+$mi->show_cate = !isset($mi->show_cate) ? ' ' : $mi->show_cate;
+
+$mi->write_btn = !isset($mi->write_btn) ? ' ' : $mi->write_btn;
+$mi->subject_cut_size = !isset($mi->subject_cut_size) || $mi->subject_cut_size == '-1' ? null : $mi->subject_cut_size;
+
+$mi->rd_board_style = !isset($mi->rd_board_style) ? null : $mi->rd_board_style;
+$mi->rd_css = !isset($mi->rd_css) ? null : $mi->rd_css;
+$mi->rd_tl_css = !isset($mi->rd_tl_css) ? null : $mi->rd_tl_css;
+
+$mi->rd_cate = !isset($mi->rd_cate) ? ' ' : $mi->rd_cate;
+$mi->rd_nick = !isset($mi->rd_nick) ? ' ' : $mi->rd_nick;
+$mi->rd_date = !isset($mi->rd_date) ? ' ' : $mi->rd_date;
+$mi->rd_profile = !isset($mi->rd_profile) ? ' ' : $mi->rd_profile;
+$mi->rd_link = !isset($mi->rd_link) ? ' ' : $mi->rd_link;
+$mi->rd_info = !isset($mi->rd_info) ? ' ' : $mi->rd_info;
+$mi->rd_view = !isset($mi->rd_view) ? ' ' : $mi->rd_view;
+$mi->rd_vote = !isset($mi->rd_vote) ? ' ' : $mi->rd_vote;
+$mi->rd_cmt = !isset($mi->rd_cmt) ? ' ' : $mi->rd_cmt;
+$mi->srch_btm = !isset($mi->srch_btm) ? ' ' : $mi->srch_btm;
+$mi->write_btm_btn = !isset($mi->write_btm_btn) ? ' ' : $mi->write_btm_btn;
+$mi->cmt_this_btn = !isset($mi->cmt_this_btn) ? ' ' : $mi->cmt_this_btn;
+$mi->cmt_vote = !isset($mi->cmt_vote) ? ' ' : $mi->cmt_vote;
 
 if(!isset($_COOKIE['cookie_viewer_with'])){
     $_COOKIE['cookie_viewer_with'] = null;
@@ -164,7 +229,7 @@ if(!isset($listStyle)){
 <link rel="stylesheet" href="<?php echo X2B_URL ?>/common/js/plugins/ui/jquery-ui.min.css?ver=<?php echo X2B_VERSION ?>" type='text/css' media='all' />
 
 <style data-id="bdCss">
-<?php if($mi->font): ?>
+<?php if(isset($mi->font)): ?>
 .bd,.bd input,.bd textarea,.bd select,.bd button,.bd table{font-family:<?php if($mi->font=='ng'):?>'Segoe UI',Meiryo,'나눔고딕',NanumGothic,ng,<?php elseif($mi->font=='window_font'): ?>'Segoe UI',Meiryo,'맑은 고딕','Malgun Gothic',<?php elseif($mi->font=='tahoma'): ?>Tahoma,'돋움',Dotum,<?php endif ?>'돋움',Dotum,Helvetica,'Apple SD Gothic Neo',sans-serif}
     <?php if($mi->font=='tahoma'): ?>
     .bd .ngeb{font-family:'돋움',Dotum,Helvetica,'Apple SD Gothic Neo',sans-serif}
@@ -195,7 +260,7 @@ if(!isset($listStyle)){
 .ribbon_v .ribbon{width:<?php echo $mi->ribbon_size?>px;height:<?php echo $mi->ribbon_size?>px;background:url(<?php echo $mi->ribbon_img?>);border:0;-webkit-box-shadow:none;box-shadow:none}
 <?php endif ?>
 /* <block cond="$mi->ribbon_style"> */
-<?php if($mi->ribbon_style): ?>
+<?php if(isset($mi->ribbon_style)): ?>
 .ribbon_v2 .ribbon{<?php if($mi->ribbon_align):?>right:auto;left:-1px;<?php endif ?>background-color:<?php echo $mi->ribbon_color?>;border-color:<?php echo $mi->ribbon_color?>;}
 <?php endif ?>
 /* <block cond="$mi->no_img"> */
@@ -207,19 +272,19 @@ if(!isset($listStyle)){
 .bd_zine.zine li:first-child,.bd_tb_lst.common_notice tr:first-child td{margin-top:2px;border-top:1px solid #DDD}
 <?php endif ?>
 /* <block cond="$mi->img_insert"> */
-<?php if($mi->img_insert): ?>
+<?php if($mi->img_insert != ' '): ?>
 .rd_gallery{text-align:<?php echo $mi->img_insert_align?>;<?php echo $mi->img_insert_css?>;}
 .rd_gallery img{width:<?php echo $mi->img_insert_width?>;height:<?php echo $mi->img_insert_height?>;<?php echo $mi->img_insert_img_css?>;}
 <?php endif ?>
 /* <!--@if($mi->cnb3_color)--> */
-<?php if($mi->cnb3_color): ?>
+<?php if(isset($mi->cnb3_color)): ?>
 .cnb3 .on>a,.cnb3 a:hover,.cnb3 a:focus{border-color:<?php echo $mi->shadow?>;background:#<?php echo $mi->color?>;}
 .cnb4 .on>a,.cnb4 a:hover,.cnb4 a:focus{border-color:#<?php echo $mi->color?>;color:#<?php echo $mi->color?>;}
 <?php endif ?>
 
 <!--// List Style -->
 /* <block cond="!$mi->zine_tx_color"> */
-<?php if(!$mi->zine_tx_color): ?>
+<?php if(!isset($mi->zine_tx_color)): ?>
 .bd_zine .info b,.bd_zine .info a{color:<?php echo $mi->shadow?>;}
 .bd_zine.card h3{color:#<?php echo $mi->color?>;}
 <?php endif ?>

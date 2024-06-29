@@ -27,6 +27,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\File\\file' ) ) {
 		protected $_s_allow_outlink        = 'Y';
 		protected $_s_allow_outlink_format = null;
 		protected $_s_allow_outlink_site   = null;
+		protected $_s_download_grant       = null;
 
 		function __construct() {}
 	}

@@ -126,7 +126,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentController' 
 			// remove XE's own tags from the contents
 			// $obj->comment_content = preg_replace('!<\!--(Before|After)(Document|Comment)\(([0-9]+),([0-9]+)\)-->!is', '', $obj->comment_content);
 
-			if ( wp_is_mobile() && $obj->use_editor != 'Y' ) {
+			if ( $obj->use_editor != 'Y' ) {  // wp_is_mobile() && 
 				if ( $obj->use_html != 'Y' ) {
 					$obj->content = htmlspecialchars( $obj->content, ENT_COMPAT | ENT_HTML401, 'UTF-8', false );
 				}

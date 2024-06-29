@@ -120,13 +120,13 @@ if($mi->default_style !='viewer'):
 			<a class="show_srch bubble" href="#" title="<?php echo __('about_search_info', X2B_DOMAIN) ?>"><b class="ico_16px search"></b><?php echo __('cmd_search', X2B_DOMAIN) ?></a>
 	<?php endif ?>
 	<?php if($mi->write_btn == ' ' || ($mi->write_btn!='N' && $grant->write_post)):?>	<!-- cond="!$mi->write_btn || ($mi->write_btn!='N' && $grant->write_document)"  -->
-			<a href="<?php echo x2b_get_url('act','dispBoardWrite','post_id','')?>"><b class="ico_16px write"></b><?php echo __('cmd_write', X2B_DOMAIN)?></a>
+			<a href="<?php echo x2b_get_url('cmd', X2B_CMD_VIEW_WRITE_POST, 'post_id', '', 'page', '')?>"><b class="ico_16px write"></b><?php echo __('cmd_write', X2B_DOMAIN)?></a>
 	<?php endif ?>
 	<?php if($mi->font_btn=='2'):?>	<!-- cond="$mi->font_btn=='2'"  -->
 			<span class="font_select"><a class="select tg_btn2" href="#" data-href=".bd_font_select"><b class="tx_ico_chk">T</b><?php echo __('lbl_font', X2B_DOMAIN) ?><i class="arrow down"></i></a></span>
 	<?php endif ?>
 	<?php if($grant->manager):?>	<!-- <block cond="$grant->manager"> -->
-			<a href="<?php echo x2b_get_url('act','dispBoardAdminBoardInfo')?>"><b class="ico_16px setup"></b><?php echo __('cmd_setup', X2B_DOMAIN)?></a>
+			<a href="<?php echo x2b_get_url('cmd', X2B_CMD_VIEW_WRITE_POST, 'post_id', '', 'page', '')?>"><b class="ico_16px setup"></b><?php echo __('cmd_setup', X2B_DOMAIN)?></a>
 			<a class="m_no" href="<?php echo x2b_get_url('','module','document','act','dispDocumentManageDocument')?>" onclick="popopen(this.href,'managePost');return false"><b class="tx_ico_chk">✔</b><?php echo __('cmd_manage_post', X2B_DOMAIN) ?></a>
 		<?php if($mi->default_style!='list'):?>	<!-- cond="$mi->default_style!='list'" -->
 			<input type="checkbox" onclick="XE.checkboxToggleAll({ doClick:true });" class="iCheck" title="Check All" />
@@ -444,6 +444,6 @@ else {
 	});
 	</script>
 	<?php endif?>
-	
+
 	<div class="x2board-default-poweredby">Powered by x2board</div>
 <?php endif?>

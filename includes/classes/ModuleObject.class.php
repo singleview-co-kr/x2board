@@ -75,6 +75,14 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\ModuleObject' ) ) {
 				$this->module_info->$s_key = $o_val;
 			}
 
+			if( ! $this->module_info->use_status ) {
+				$o_post_model = \X2board\Includes\get_model( 'post' );
+				$s_default_status = $o_post_model->get_default_status();
+				$this->module_info->use_status = array( $s_default_status => $s_default_status );
+			}
+
+			$this->module_info->use_anonymous = !$this->module_info->use_anonymous ? 'N' : $this->module_info->use_anonymous;
+
 			// set skin_vars
 			$this->skin_vars = (object) $o_rst->a_skin_vars;
 			unset( $o_rst );

@@ -25,7 +25,8 @@
 				<li id="comment_<?php echo $comment->comment_id?>" class="fdb_itm clear">
 			<?php endif?><!--@end-->
 					<!--// 프로필 -->
-					<?php if(!$mi->profile_img):?> <!-- <block cond="!$mi->profile_img"> -->
+					<?php 
+					if($mi->profile_img == ' '):?> <!-- <block cond="!$mi->profile_img"> -->
 					<!-- <img cond="$comment->getProfileImage()" class="profile img" src="{$comment->getProfileImage()}" alt="profile" /> -->
 					<span class="profile img no_img">?</span>
 					<?php endif?> <!-- </block> -->

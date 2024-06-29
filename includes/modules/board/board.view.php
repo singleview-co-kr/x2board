@@ -41,7 +41,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			}
 
 			$this->except_notice = $this->module_info->except_notice == 'N' ? FALSE : TRUE;
-
+			
 			/**
 			 * check the consultation function, if the user is admin then swich off consultation function
 			 * if the user is not logged, then disppear write post/write comment./ view post
@@ -59,7 +59,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 				$this->consultation = FALSE;
 			}
 
-			$o_post_model = \X2board\Includes\get_model('post');
 			$a_status = $this->_get_status_name_list();
 			if(isset($a_status['SECRET'])) {
 				$this->module_info->secret = 'Y';  // for notify_message checkbox on post/comment editor
@@ -73,16 +72,18 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			$a_user_input_field = $o_post_model->get_user_define_fields();
 			\X2board\Includes\Classes\Context::set('field', $a_user_input_field);
 			
+			$n_count_category = $o_post_model->get_category_count();
 			$b_category_activated = false;
 			$b_comment_activated = false;
 			foreach($a_user_input_field as $_ => $o_user_field ) {
-				if($o_user_field->type == 'category') {
+				if($o_user_field->type == 'category' && $n_count_category) {
 					$b_category_activated = true;
 				}
 				if($o_user_field->type == 'attach') {
 					$b_comment_activated = true;
 				}
 			}
+
 			unset($a_user_input_field);
 			\X2board\Includes\Classes\Context::set('use_category', $b_category_activated ? 'Y': 'N');
 			// set for comment attach feature
@@ -124,8 +125,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			 * the default skin is default
 			 **/
 			$s_template_path = sprintf("%sskins/%s/",$this->module_path, $this->module_info->skin);
-			if(!is_dir($s_template_path)||!$this->module_info->skin) {
-				$this->module_info->skin = 'default';
+			if(!is_dir($s_template_path)) {
+				$this->module_info->skin = 'sketchbook5';  // default
 				$s_template_path = sprintf("%sskins/%s/",$this->module_path, $this->module_info->skin);
 			}
 			$this->set_skin_path($s_template_path);

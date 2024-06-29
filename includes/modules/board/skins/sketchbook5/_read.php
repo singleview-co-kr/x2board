@@ -449,7 +449,7 @@ foreach( $post_list as $no => $o_post ) {
 					<img class="zbxe_widget_output" widget="socialxe_comment" skin="sketchbook5" colorset="<?php echo $mi->colorset ?>" post_id="<?php echo $post->post_id ?>" content_link="<?php echo x2b_get_url('','post_id',$post->post_id,'dummy','1')?>" content_title="<?php echo htmlspecialchars($post->get_title_text()) ?>" enter_send="N" <?php if($mi->auto_view_sub == ' '):?> auto_view_sub="Y" <?php endif ?> style="overflow:visible" />
 				<?php else:?><!--@else-->
 					<!--// Comment Write : Top -->
-					<?php if($post->allow_comment() && !$mi->cmt_wrt_position){ //  cond="$post->allowComment() && !$mi->cmt_wrt_position"
+					<?php if($post->allow_comment() && $mi->cmt_wrt_position == ' '){ //  cond="$post->allowComment() && !$mi->cmt_wrt_position"
 						include $skin_path_abs.'_comment_write.php'; //  <include target="_comment_write.html" />
 					} ?>
 					<!--// Comment List -->
@@ -480,7 +480,7 @@ foreach( $post_list as $no => $o_post ) {
 				<a class="btn_img no rd_next bubble no_bubble" href="#"><?php echo __('cmd_next', X2B_DOMAIN)?></a>
 			<?php endif ?> <!-- </block> -->
 			<?php if($mi->prev_next=='2' && !$post->is_notice()):?> <!-- cond="!$mi->write_btm_btn || ($mi->write_btm_btn!='N' && $grant->write_document)" -->
-				<a class="btn_img" href="<?php echo x2b_get_url('act','dispBoardWrite','post_id','')?>"><b class="ico_16px write"></b> <?php echo __('cmd_write', X2B_DOMAIN)?></a>
+				<a class="btn_img" href="<?php echo x2b_get_url('cmd', X2B_CMD_VIEW_WRITE_POST, 'post_id', '', 'page', '')?>"><b class="ico_16px write"></b> <?php echo __('cmd_write', X2B_DOMAIN)?></a>
 			<?php endif ?>
 		</div>
 	</div>

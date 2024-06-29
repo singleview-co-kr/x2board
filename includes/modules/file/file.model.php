@@ -213,6 +213,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\File\\fileModel' ) ) {
 			$o_default_config->allow_outlink        = $this->_s_allow_outlink;
 			$o_default_config->allow_outlink_format = $this->_s_allow_outlink_format;
 			$o_default_config->allow_outlink_site   = $this->_s_allow_outlink_site;
+			$o_default_config->download_grant   = $this->_s_download_grant;
 			return $o_default_config;
 		}
 
