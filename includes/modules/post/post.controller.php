@@ -171,9 +171,6 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 			$a_new_post['nick_name']      = sanitize_text_field( $obj->nick_name );
 			$a_new_post['title']          = sanitize_text_field( $obj->title );
 			$a_new_post['content']        = $obj->content;
-			$a_new_post['readed_count']   = 0;
-			$a_new_post['comment_count']  = 0;
-			$a_new_post['voted_count']    = 0;
 			$a_new_post['category_id']    = intval( $obj->category_id );
 			$a_new_post['is_notice']      = isset( $obj->is_notice ) ? sanitize_text_field( $obj->is_notice ) : 'N';
 			$a_new_post['update_order']   = intval( $obj->update_order );
@@ -183,11 +180,17 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 
 			$s_cur_datetime = date( 'Y-m-d H:i:s', current_time( 'timestamp' ) );
 			if ( $manual_inserted ) {  // $obj->regdate_dt is set if import
+				$a_new_post['readed_count']   = $obj->readed_count;
+				$a_new_post['comment_count']  = $obj->comment_count;
+				$a_new_post['voted_count']    = $obj->voted_count;
 				$a_new_post['regdate_dt']     = isset( $obj->regdate_dt ) ? $obj->regdate_dt : $s_cur_datetime;
 				$a_new_post['last_update_dt'] = isset( $obj->last_update_dt ) ? $obj->last_update_dt : $s_cur_datetime;
 				$a_new_post['ua']             = $obj->ua;
 				$a_new_post['ipaddress']      = $obj->ipaddress;
 			} else {
+				$a_new_post['readed_count']   = 0;
+				$a_new_post['comment_count']  = 0;
+				$a_new_post['voted_count']    = 0;
 				$a_new_post['last_update_dt'] = $a_new_post['regdate_dt'] = $s_cur_datetime;
 				// add user agent
 				$a_new_post['ua']        = wp_is_mobile() ? 'M' : 'P';

@@ -256,6 +256,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Import\\importAdminControlle
 				$o_cur_post->regdate_dt     = date( 'Y-m-d H:i:s', strtotime( $rec['regdate'] ) );
 				$o_cur_post->last_update_dt = date( 'Y-m-d H:i:s', strtotime( $rec['last_update'] ) );
 				$o_cur_post->readed_count   = isset( $rec['readed_count'] ) ? intval( $rec['readed_count'] ) : 0;
+				$o_cur_post->voted_count = 0;
 
 				if ( isset( $rec['comments'] ) ) {
 					$o_cur_post->comment_count = intval( $rec['comments']['@attributes']['count'] );
