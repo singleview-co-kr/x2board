@@ -118,6 +118,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Import\\importAdminControlle
 				$a_old_posts_from_board = $wpdb->get_results( "SELECT `post_id` FROM `{$wpdb->prefix}x2b_posts` WHERE `board_id`='{$this->_n_board_id}'" );
 
 				// wp posts 초기화
+				$a_wp_posts_to_delete_comment = array();
 				if ( count( $a_old_posts_from_board ) ) {
 					$a_old_post_list = array();
 					foreach ( $a_old_posts_from_board as $_ => $row ) {
@@ -169,22 +170,24 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Import\\importAdminControlle
 
 				echo '연속된 XML 덤프의 첫 파일이므로 원본 게시판의 카테고리 정보를 입력합니다.<BR>';
 				$a_cat_info = array();
-				foreach ( $array['posts']['categories']['category'] as $cat_idx => $cat_rec ) {
-					$n_xe_cat_id      = $cat_rec['@attributes']['sequence'];
-					$s_new_cat_name   = sanitize_text_field( $cat_rec['@value'] );
-					$xe_cat_parent_id = intval( $cat_rec['@attributes']['parent'] );
-					if ( $xe_cat_parent_id ) {
-						$n_cat_parent_id = $a_cat_info[ $xe_cat_parent_id ]['n_cat_id'];
-					} else {
-						$n_cat_parent_id = 0;
+				if( isset($array['posts']['categories']) ) {
+					foreach ( $array['posts']['categories']['category'] as $cat_idx => $cat_rec ) {
+						$n_xe_cat_id      = $cat_rec['@attributes']['sequence'];
+						$s_new_cat_name   = sanitize_text_field( $cat_rec['@value'] );
+						$xe_cat_parent_id = intval( $cat_rec['@attributes']['parent'] );
+						if ( $xe_cat_parent_id ) {
+							$n_cat_parent_id = $a_cat_info[ $xe_cat_parent_id ]['n_cat_id'];
+						} else {
+							$n_cat_parent_id = 0;
+						}
+						$n_new_cat_id               = $o_cat_admin_controller->create_new_category( $this->_n_board_id, $s_new_cat_name );
+						$a_cat_info[ $n_xe_cat_id ] = array(
+							'xe_cat_name'     => $s_new_cat_name,
+							'xe_parent_id'    => $cat_rec['@attributes']['parent'],
+							'n_cat_id'        => $n_new_cat_id,
+							'n_parent_cat_id' => $n_cat_parent_id,
+						);
 					}
-					$n_new_cat_id               = $o_cat_admin_controller->create_new_category( $this->_n_board_id, $s_new_cat_name );
-					$a_cat_info[ $n_xe_cat_id ] = array(
-						'xe_cat_name'     => $s_new_cat_name,
-						'xe_parent_id'    => $cat_rec['@attributes']['parent'],
-						'n_cat_id'        => $n_new_cat_id,
-						'n_parent_cat_id' => $n_cat_parent_id,
-					);
 				}
 
 				// serialized category to update structure

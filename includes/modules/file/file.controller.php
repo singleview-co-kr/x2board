@@ -189,10 +189,11 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\File\\fileController' ) ) {
 						if ( ! in_array( $uploaded_ext, $ext ) ) {
 							return $this->stop( __( 'msg_not_allowed_filetype', X2B_DOMAIN ) );
 						}
+						unset( $ext );
 					}
 
-					$allowed_filesize    = $config->allowed_filesize * 1024 * 1024;
-					$allowed_attach_size = $config->allowed_attach_size * 1024 * 1024;
+					$allowed_filesize    = $config->allowed_filesize * 1048576; // 1024 * 1024;
+					$allowed_attach_size = $config->allowed_attach_size * 1048576; // 1024 * 1024;
 					// An error appears if file size exceeds a limit
 					if ( $allowed_filesize < filesize( $file_info['tmp_name'] ) ) {
 						return new \X2board\Includes\Classes\BaseObject( -1, __( 'msg_exceeds_limit_size', X2B_DOMAIN ) );
@@ -262,7 +263,14 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\File\\fileController' ) ) {
 			if ( $manual_insert ) {
 				@copy( $file_info['tmp_name'], $filename );
 				if ( ! file_exists( $filename ) ) {
-					$filename = $s_path . $o_random->create_secure_salt( 32, 'hex' ) . '.' . $ext;
+					$a_path_parts = pathinfo($file_info['tmp_name']);
+					if( isset( $a_path_parts['extension'] ) ) {
+						$filename = $s_path . $o_random->create_secure_salt( 32, 'hex' ) . '.' . $a_path_parts['extension'];
+					}
+					else {
+						$filename = $s_path . $o_random->create_secure_salt( 32, 'hex' );
+					}
+					unset($a_path_parts);
 					@copy( $file_info['tmp_name'], $filename );
 				}
 			} elseif ( ! @move_uploaded_file( $file_info['tmp_name'], $filename ) ) {
