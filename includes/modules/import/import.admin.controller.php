@@ -351,15 +351,13 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Import\\importAdminControlle
 		private function _register_attachments( $n_upload_target_id, $a_attaches_from_xml ) {
 			echo 'register attaches to ' . $n_upload_target_id . '<BR>';
 			$o_file_controller = \X2board\Includes\get_controller( 'file' );
-			$file_info         = array();
-
+			$a_file_info       = array();
 			foreach ( $a_attaches_from_xml as $_ => $single_attach_info ) {
-				$file_info['tmp_name'] = $this->_s_wp_upload_base_dir . DIRECTORY_SEPARATOR . explode( '/files/', $single_attach_info['path'] )[1];
-				$file_info['name']     = $single_attach_info['filename'];
-				$o_file_controller->insert_file( $file_info, $this->_n_board_id, $n_upload_target_id, intval( $single_attach_info['download_count'] ), true );
+				$a_file_info['tmp_name'] = $this->_s_wp_upload_base_dir . DIRECTORY_SEPARATOR . explode( '/files/', $single_attach_info['path'] )[1];
+				$a_file_info['name']     = $single_attach_info['filename'];
+				$o_file_controller->insert_file( $a_file_info, $this->_n_board_id, $n_upload_target_id, intval( $single_attach_info['download_count'] ), true );
 			}
-			unset( $import_data );
-
+			unset( $a_file_info );
 			unset( $o_file_controller );
 		}
 

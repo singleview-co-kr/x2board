@@ -1014,7 +1014,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postItem' ) ) {
 			$is_tmp_file = false;
 			if ( ! $source_file ) {
 				$random = new \X2board\Includes\Classes\Security\Password();
-
+				$content = $this->get( 'content' );
 				preg_match_all( "!<img[^>]*src=(?:\"|\')([^\"\']*?)(?:\"|\')!is", $content, $matches, PREG_SET_ORDER );
 
 				foreach ( $matches as $target_image ) {
@@ -1044,6 +1044,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postItem' ) ) {
 					$is_tmp_file = true;
 					break;
 				}
+				unset($random);
 			}
 
 			$output_file = null;
