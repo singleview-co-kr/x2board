@@ -29,6 +29,16 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Category\\categoryAdminModel
 		}
 
 		/**
+		 * XE XML import용 카테고리 정보를 반환한다.
+		 */
+		public function get_linear_category_info($n_board_id) {
+			global $wpdb;
+			$a_results = $wpdb->get_results( "SELECT `category_id`, `title` FROM `{$wpdb->prefix}x2b_categories` WHERE `board_id`='{$n_board_id}' AND `deleted`='N' ORDER BY `list_order` ASC " );
+			$wpdb->flush();
+			return $a_results;
+		}
+
+		/**
 		 * WP 관리자 UX용 계층형 카테고리를 반환한다.
 		 * buildAdminTreeCategorySortableRow()
 		 */
@@ -43,7 +53,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Category\\categoryAdminModel
 		/**
 		 * DB의 메뉴 구조를 계층형으로 변환한다.
 		 */
-		function _construct_category_array() {
+		private function _construct_category_array() {
 			$n_board_id = esc_sql( $_GET['board_id'] );
 			global $wpdb;
 			$results = $wpdb->get_results( "SELECT `category_id`, `title`, `parent_id`, `post_count`, `is_default` FROM `{$wpdb->prefix}x2b_categories` WHERE `board_id`='{$n_board_id}' AND `deleted`='N' ORDER BY `list_order` ASC " );

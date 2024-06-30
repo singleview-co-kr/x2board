@@ -213,10 +213,15 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Import\\importAdminControlle
 			} else {
 				// retireve category
 				echo '연속된 XML 덤프의 후속 파일이므로 목표 게시판의 카테고리 정보를 호출합니다.<BR>';
+
+				require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'category' . DIRECTORY_SEPARATOR . 'category.admin.model.php';
+				$o_cat_admin_model = new \X2board\Includes\Modules\Category\categoryAdminModel();
+				$a_post_category = $o_cat_admin_model->get_linear_category_info($this->_n_board_id);
 				// arrange already registered category info
-				foreach ( $document_category as $category_id => $kb_tree_cat ) {
-					$a_linear_cat_info[ $kb_tree_cat->category_name ] = $category_id;
+				foreach ( $a_post_category as $_ => $o_category ) {
+					$a_linear_cat_info[ $o_category->title ] = intval($o_category->category_id);
 				}
+				unset($o_cat_admin_model);
 			}
 			unset( $array['posts']['categories']['category'] );
 			// $a_linear_cat_info = array('분류1' => 42, '분류1-1' => 43, '분류1-1-1' => 44,
