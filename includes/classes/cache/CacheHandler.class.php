@@ -243,7 +243,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\CacheHandler' ) ) {
 		 * @return string
 		 */
 		function getGroupKey( $keyGroupName, $key ) {
-			if ( ! $this->keyGroupVersions[ $keyGroupName ] ) {
+			if ( ! isset( $this->keyGroupVersions[ $keyGroupName ] ) ) {
 				$this->keyGroupVersions[ $keyGroupName ] = 1;
 				$this->handler->put( 'key_group_versions', $this->keyGroupVersions, 0 );
 			}
