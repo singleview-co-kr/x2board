@@ -32,6 +32,7 @@ if ( ! defined( 'X2B_CMD_ADMIN_VIEW_IDX' ) ) {
 	define( 'X2B_CMD_ADMIN_PROC_UPDATE_BOARD', 'x2b_proc_update_board' );
 	define( 'X2B_CMD_ADMIN_PROC_IMPORT_BOARD', 'x2b_proc_import_board' );
 	define( 'X2B_CMD_ADMIN_PROC_UPDATE_SEQ', 'x2b_proc_update_seq' );
+	define( 'X2B_CMD_ADMIN_PROC_UPDATE_GLOBAL_VARS', 'x2b_proc_update_global_vars' );
 	define( 'X2B_CMD_ADMIN_PROC_INSERT_CATEGORY', 'x2b_proc_insert_category' );  // ajax
 	define( 'X2B_CMD_ADMIN_PROC_MANAGE_CATEGORY', 'x2b_proc_manage_category' );  // ajax
 	define( 'X2B_CMD_ADMIN_PROC_REORDER_CATEGORY', 'x2b_proc_reorder_category' );  // ajax
@@ -109,6 +110,7 @@ function admin_init() {
 	add_action( 'admin_post_' . X2B_CMD_ADMIN_PROC_UPDATE_BOARD, 'X2board\Includes\Admin\proc_admin_board' );
 	add_action( 'admin_post_' . X2B_CMD_ADMIN_PROC_IMPORT_BOARD, 'X2board\Includes\Admin\proc_admin_board' );
 	add_action( 'admin_post_' . X2B_CMD_ADMIN_PROC_UPDATE_SEQ, 'X2board\Includes\Admin\proc_admin_board' );
+	add_action( 'admin_post_' . X2B_CMD_ADMIN_PROC_UPDATE_GLOBAL_VARS, 'X2board\Includes\Admin\proc_admin_board' );
 	add_action( 'wp_ajax_' . X2B_CMD_ADMIN_PROC_INSERT_CATEGORY, 'X2board\Includes\Admin\proc_admin_board' );  // ajax for sortable category UI
 	add_action( 'wp_ajax_' . X2B_CMD_ADMIN_PROC_MANAGE_CATEGORY, 'X2board\Includes\Admin\proc_admin_board' );  // ajax for sortable category UI
 	add_action( 'wp_ajax_' . X2B_CMD_ADMIN_PROC_REORDER_CATEGORY, 'X2board\Includes\Admin\proc_admin_board' );  // ajax for sortable category UI

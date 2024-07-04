@@ -27,94 +27,87 @@ function x2b_options_page() {
 	?>
 	<div class="wrap">
 		<?php include 'header.php'; ?>
-
-		<!-- <p>
-			<a class="x2b_button" href="<?php // echo admin_url( 'tools.php?page=x2b_tools_page' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>">
-				<?php // esc_html_e( 'Visit the Tools page', 'autoclose' ); ?>
-			</a>
-		<p> -->
-
 		<div id="poststuff">
-		<div id="post-body" class="metabox-holder columns-2">
-		<div id="post-body-content">
+			<div id="post-body" class="metabox-holder columns-2">
+				<div id="post-body-content">
 
-			<ul class="nav-tab-wrapper" style="padding:0">
-				<?php
-				foreach ( x2b_get_settings_sections() as $tab_id => $tab_name ) {
+					<ul class="nav-tab-wrapper" style="padding:0">
+						<?php
+						foreach ( x2b_get_settings_sections() as $tab_id => $tab_name ) {
 
-					$active = $active_tab === $tab_id ? ' ' : '';
+							$active = $active_tab === $tab_id ? ' ' : '';
 
-					echo '<li style="margin:0;"><a href="#' . esc_attr( $tab_id ) . '" title="' . esc_attr( $tab_name ) . '" class="nav-tab ' . sanitize_html_class( $active ) . '">';
-						echo esc_html( $tab_name );
-					echo '</a></li>';
+							echo '<li style="margin:0;"><a href="#' . esc_attr( $tab_id ) . '" title="' . esc_attr( $tab_name ) . '" class="nav-tab ' . sanitize_html_class( $active ) . '">';
+								echo esc_html( $tab_name );
+							echo '</a></li>';
 
-				}
-				?>
-			</ul>
+						}
+						?>
+					</ul>
 
-			<!-- <form method="post" action="options.php"> -->
-			<form id="x2b-setting-form" action="<?php echo admin_url( 'admin-post.php' ); ?>" method="post" enctype="multipart/form-data">
-	<?php
-	if ( $_GET['page'] == X2B_CMD_ADMIN_VIEW_BOARD_INSERT ) {
-		$s_action = X2B_CMD_ADMIN_PROC_INSERT_BOARD;
-	}
-	if ( $_GET['page'] == X2B_CMD_ADMIN_VIEW_BOARD_UPDATE ) {
-		$s_action = X2B_CMD_ADMIN_PROC_UPDATE_BOARD;
-	}
-	wp_nonce_field( $s_action );
-	?>
-					<input type="hidden" name="action" value="<?php echo $s_action; ?>">
-				<input type="hidden" name="board_id" value="<?php echo $_GET['board_id']; ?>">
+					<!-- <form method="post" action="options.php"> -->
+					<form id="x2b-setting-form" action="<?php echo admin_url( 'admin-post.php' ); ?>" method="post" enctype="multipart/form-data">
+			<?php
+			if ( $_GET['page'] == X2B_CMD_ADMIN_VIEW_BOARD_INSERT ) {
+				$s_action = X2B_CMD_ADMIN_PROC_INSERT_BOARD;
+			}
+			if ( $_GET['page'] == X2B_CMD_ADMIN_VIEW_BOARD_UPDATE ) {
+				$s_action = X2B_CMD_ADMIN_PROC_UPDATE_BOARD;
+			}
+			wp_nonce_field( $s_action );
+			?>
+							<input type="hidden" name="action" value="<?php echo $s_action; ?>">
+						<input type="hidden" name="board_id" value="<?php echo $_GET['board_id']; ?>">
 
-				<?php foreach ( x2b_get_settings_sections() as $tab_id => $tab_name ) : ?>
+						<?php foreach ( x2b_get_settings_sections() as $tab_id => $tab_name ) : ?>
 
-				<div id="<?php echo esc_attr( $tab_id ); ?>">
-					<table class="form-table">
-					<?php
-						do_settings_fields( 'x2board_settings_' . $tab_id, 'x2board_settings_' . $tab_id );
-					?>
-					</table>
-					<p>
-					<?php
-						// Default submit button.
-						submit_button(
-							__( 'cmd_save_change', X2B_DOMAIN ),
-							'primary',
-							'submit',
-							false
-						);
+						<div id="<?php echo esc_attr( $tab_id ); ?>">
+							<table class="form-table">
+							<?php
+								do_settings_fields( 'x2board_settings_' . $tab_id, 'x2board_settings_' . $tab_id );
+							?>
+							</table>
+							<p>
+							<?php
+								// Default submit button.
+								submit_button(
+									__( 'cmd_save_change', X2B_DOMAIN ),
+									'primary',
+									'submit',
+									false
+								);
 
-						echo '&nbsp;&nbsp;';
-						// Reset button.
-						$confirm = esc_js( __( 'msg_delete_board', X2B_DOMAIN ) );
-						submit_button(
-							__( 'cmd_delete_board', X2B_DOMAIN ),
-							'secondary',
-							'delete_board',
-							false,
-							array(
-								'onclick' => "return confirm('{$confirm}');",
-							)
-						);
-					?>
-					</p>
-				</div><!-- /#tab_id-->
+								echo '&nbsp;&nbsp;';
+								// Reset button.
+								$confirm = esc_js( __( 'msg_delete_board', X2B_DOMAIN ) );
+								submit_button(
+									__( 'cmd_delete_board', X2B_DOMAIN ),
+									'secondary',
+									'delete_board',
+									false,
+									array(
+										'onclick' => "return confirm('{$confirm}');",
+									)
+								);
+							?>
+							</p>
+						</div><!-- /#tab_id-->
 
-				<?php endforeach; ?>
+						<?php endforeach; ?>
 
-			</form>
+					</form>
 
-		</div><!-- /#post-body-content -->
+				</div><!-- /#post-body-content -->
 
-		<div id="postbox-container-1" class="postbox-container">
+				<div id="postbox-container-1" class="postbox-container">
 
-			<div id="side-sortables" class="meta-box-sortables ui-sortable">
-				<?php include_once X2B_PATH . 'includes'.DIRECTORY_SEPARATOR.'admin'.DIRECTORY_SEPARATOR.'tpl'.DIRECTORY_SEPARATOR.'sidebar.php'; ?>
-			</div><!-- /#side-sortables -->
+					<div id="side-sortables" class="meta-box-sortables ui-sortable">
+						<?php include_once X2B_PATH . 'includes'.DIRECTORY_SEPARATOR.'admin'.DIRECTORY_SEPARATOR.'tpl'.DIRECTORY_SEPARATOR.'sidebar.php'; ?>
+					</div><!-- /#side-sortables -->
 
-		</div><!-- /#postbox-container-1 -->
-		</div><!-- /#post-body -->
-		<br class="clear" />
+				</div><!-- /#postbox-container-1 -->
+			</div><!-- /#post-body -->
+			<br class="clear" />
 		</div><!-- /#poststuff -->
 
 	</div><!-- /.wrap -->

@@ -172,7 +172,7 @@ function launch_x2b( $s_cmd_type, $a_shortcode_args = null ) {
  * @return string After the filter has been processed
  */
 function filter_the_content( $content ) {
-	global $post; // , $wpdb, $wp_filters;
+	global $post;
 
 	// Track the number of times this function  is called.
 	static $filter_calls = 0;
@@ -180,10 +180,13 @@ function filter_the_content( $content ) {
 	if ( isset( $post->post_content ) && is_page( $post->ID ) && ! post_password_required() ) {
 		if ( $post->post_content === X2B_PAGE_IDENTIFIER ) {
 			launch_x2b( 'view' );
-			$content = str_replace( X2B_PAGE_IDENTIFIER, '', $content ); // return $content . board_builder(array('id'=>$board_id));
+			$content = str_replace( X2B_PAGE_IDENTIFIER, '', $content );
 		}
 	}
-	return $content.'<div class="'.X2B_DOMAIN.'-default-poweredby">Powered by '.X2B_DOMAIN.'</div>';
+	if( get_option( X2B_ENDORSE_PLUGIN ) == 'Y' ) {
+		return $content.'<div class="'.X2B_DOMAIN.'-default-poweredby"><a href="//singleview.co.kr">Powered by '.X2B_DOMAIN.'</a></div>';
+	}
+	return $content;
 }
 
 /**

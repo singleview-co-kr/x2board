@@ -36,6 +36,7 @@ if ( !defined( 'X2B_SKIN_VAR_IDENTIFIER' ) ) {
 if ( !defined( 'X2B_REWRITE_OPTION_TITLE' ) ) {
     define('X2B_REWRITE_OPTION_TITLE', X2B_DOMAIN.'_settings_rewrite');
     define('X2B_IFRAME_WHITELIST', X2B_DOMAIN.'_iframe_whitelist');
+    define('X2B_ENDORSE_PLUGIN', X2B_DOMAIN.'_endorse_plugin');
 }
 
 if ( !defined( 'X2B__FILE__' ) ) {

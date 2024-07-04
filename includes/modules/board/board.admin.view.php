@@ -82,6 +82,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 		 * Display the board control panel UX
 		 **/
 		public function disp_control_panel() {
+			$b_agree_endorse_plugin = false;
+			if( get_option( X2B_ENDORSE_PLUGIN ) == 'Y' ) {
+				$b_agree_endorse_plugin = true;
+			}
 			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . 'control_panel.php';
 		}
 

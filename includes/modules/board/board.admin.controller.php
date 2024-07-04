@@ -42,7 +42,21 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 				$o_import_admin->set_x2b_sequence($_POST['x2b_sequence_max_id']);
 				unset($o_import_admin);
 			}
-			wp_redirect(admin_url('admin.php?page=x2b_disp_board_import'));
+			wp_redirect(admin_url('admin.php?page='.X2B_CMD_ADMIN_VIEW_BOARD_IMPORT));
+		}
+
+		/**
+		 * @brief update global configuration
+		 **/
+		public function proc_update_global_vars() {
+			check_admin_referer( X2B_CMD_ADMIN_PROC_UPDATE_GLOBAL_VARS );  // check nounce
+			if( isset( $_POST['x2board_endorse_plugin'] ) && $_POST['x2board_endorse_plugin'] == 'Y' ) {
+				update_option( X2B_ENDORSE_PLUGIN, 'Y' );
+			}
+			else {
+				delete_option( X2B_ENDORSE_PLUGIN);
+			}
+			wp_redirect(admin_url('admin.php?page='.X2B_CMD_ADMIN_VIEW_CP));
 		}
 
 		/**
@@ -104,7 +118,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 				// delete WP page
 				wp_delete_post(intval($_POST['board_id']));
 			}
-			wp_redirect(admin_url('admin.php?page=x2b_disp_board_list'));
+			wp_redirect(admin_url('admin.php?page='.X2B_CMD_ADMIN_VIEW_BOARD_LIST));
 		}
 
 		/**
@@ -214,7 +228,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 				}
 			}
 			update_option( X2B_REWRITE_OPTION_TITLE, $a_board_rewrite_settings );
-			wp_redirect(admin_url('admin.php?page=x2b_disp_board_update&board_id=' . $n_board_id ));
+			wp_redirect(admin_url('admin.php?page='.X2B_CMD_ADMIN_VIEW_BOARD_UPDATE.'&board_id=' . $n_board_id ));
 		}
 
 		/**
