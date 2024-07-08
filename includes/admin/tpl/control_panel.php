@@ -18,8 +18,8 @@
 					<input type="hidden" name="action" value="<?php echo X2B_CMD_ADMIN_PROC_UPDATE_GLOBAL_VARS; ?>">
 					<ul id="x2board-dashboard-options">
 						<li id="x2boardsupport_plugin">
-							<h4><?php echo __( 'lbl_support_plugin', X2B_DOMAIN )?></h4>
-							<p><?php echo __( 'desc_support_plugin', X2B_DOMAIN )?></p>
+							<h4><?php echo __( 'lbl_endorse_plugin', X2B_DOMAIN )?></h4>
+							<p><?php echo __( 'desc_endorse_plugin', X2B_DOMAIN )?></p>
 							<p>
 							<?php
 							$s_checked = $b_agree_endorse_plugin ? 'checked' : '';

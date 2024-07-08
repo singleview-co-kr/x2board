@@ -253,6 +253,12 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 		 * @brief display the board insert form
 		 **/
 		public function disp_board_insert() {
+			// validate chosen timezone ID
+			if( !in_array(wp_timezone_string(), timezone_identifiers_list()) ) {
+				echo( sprintf( __( 'msg_invalid_timezone', X2B_DOMAIN ), wp_timezone_string() ) );
+				wp_die( sprintf( __( 'desc_choose_valid_timezone', X2B_DOMAIN ), get_admin_url() ) );
+            }
+			
 			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'FileHandler.class.php';
 			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . 'settings-page.php';
 			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . 'default-settings.php';
