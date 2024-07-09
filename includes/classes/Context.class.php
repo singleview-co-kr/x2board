@@ -195,7 +195,8 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\Context' ) ) {
 		 * @return void
 		 */
 		private function _set_request_argument() {
-			if ( ! count( $_REQUEST ) ) {
+			// nginx loads nothing to $_REQUEST initally, apache loads 'woocommerce-login-nonce', 'save-account-details-nonce' etc initially
+			if ( strpos( $_SERVER['SERVER_SOFTWARE'], 'nginx' ) === false && ! count( $_REQUEST ) ) {
 				return;
 			}
 			$requestMethod = $this->get_request_method();
