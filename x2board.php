@@ -54,11 +54,6 @@ if ( !defined( 'X2B_ALL_USERS' ) ) {  // for grant privileges
     define('X2B_CUSTOMIZE', 'roles');
 }
 
-// to avoic Fatal error: Uncaught Error: Undefined constant "FS_CHMOD_FILE"
-if ( !defined( 'FS_CHMOD_FILE' ) ) {
-    define('FS_CHMOD_FILE', (0664 & ~ umask()));
-}
-
 /*
  *----------------------------------------------------------------------------
  * Guest Service Functionality

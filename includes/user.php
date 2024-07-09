@@ -11,6 +11,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;  // Exit if accessed directly.
 }
 
+// to avoid Fatal error: Uncaught Error: Undefined constant "FS_CHMOD_FILE"
+if ( ! defined( 'FS_CHMOD_FILE' ) ) {
+	define( 'FS_CHMOD_FILE', ( 0664 & ~ umask() ) );
+}
+
 if ( ! defined( 'X2B_CMD_VIEW_LIST' ) ) {
 	// define GET view cmd
 	define( 'X2B_CMD_VIEW_LIST', 'view_list' );
