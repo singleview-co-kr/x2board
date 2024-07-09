@@ -14,7 +14,7 @@
 	<?php endif?>
 
 	<ul class="fdb_lst_ul {$mi->fdb_hide}">
-		<?php foreach($post->get_comments() as $key => $comment): ?><!-- <block loop="$oDocument->getComments()=>$key,$comment"> -->
+		<?php foreach($post->get_comments() as $key => $comment): ?>
 			<?php if($comment->get('depth')): ?><!--@if($comment->get('depth'))-->
 				<li id="comment_<?php echo $comment->comment_id?>" class="fdb_itm clear re bg<?php echo $comment->get('depth')%2?>" style="margin-left:<?php echo (($comment->get('depth')-1)%10+1)*2?>%">
 					<i class="fa fa-share fa-flip-vertical re"></i>
