@@ -101,6 +101,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\Context' ) ) {
 		public function init( $s_cmd_type ) {
 			$this->set_request_method( '' );
 			$this->_set_request_argument();
+            $this->_set_custom_rewrite_rule();
 
 			$o_logged_info           = wp_get_current_user();
 			$o_logged_info->is_admin = current_user_can( 'manage_options' ) ? 'Y' : 'N';
@@ -195,8 +196,9 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\Context' ) ) {
 		 * @return void
 		 */
 		private function _set_request_argument() {
-			// nginx loads nothing to $_REQUEST initally, apache loads 'woocommerce-login-nonce', 'save-account-details-nonce' etc initially
-			if ( strpos( $_SERVER['SERVER_SOFTWARE'], 'nginx' ) === false && ! count( $_REQUEST ) ) {
+			// nginx loads nothing to $_REQUEST initally
+            // apache loads 'woocommerce-login-nonce', 'save-account-details-nonce' etc initially
+			if ( ! count( $_REQUEST ) ) {
 				return;
 			}
 			$requestMethod = $this->get_request_method();
@@ -222,7 +224,15 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\Context' ) ) {
 
 				$this->set( $key, $val, $set_to_vars );
 			}
-			// check rewrite conf for pretty post URL
+		}
+
+        /**
+		 * check custom rewrite rule
+		 *
+		 * @return void
+		 */
+		private function _set_custom_rewrite_rule() {
+            // check rewrite conf for pretty post URL
 			$a_board_rewrite_settings = get_option( X2B_REWRITE_OPTION_TITLE );
 			if ( isset( $a_board_rewrite_settings[ $this->get( 'board_id' ) ] ) ) {
 				$set_to_vars = true;
@@ -232,7 +242,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\Context' ) ) {
 				$this->set( 'use_rewrite', 'Y', $set_to_vars );
 			}
 			unset( $a_board_rewrite_settings );
-		}
+        }
 
 		/**
 		 * pretty uri를  command query로 재설정함
