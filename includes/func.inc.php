@@ -179,8 +179,11 @@ function filter_the_content( $content ) {
 	++$filter_calls;
 	if ( isset( $post->post_content ) && is_page( $post->ID ) && ! post_password_required() ) {
 		if ( $post->post_content === X2B_PAGE_IDENTIFIER ) {
+            $content = str_replace( X2B_PAGE_IDENTIFIER, '', $content );
+            // enforce board position
+            ob_start();
 			launch_x2b( 'view' );
-			$content = str_replace( X2B_PAGE_IDENTIFIER, '', $content );
+            $content .= ob_get_clean();
 		}
 	}
 	if( get_option( X2B_ENDORSE_PLUGIN ) == 'Y' ) {
