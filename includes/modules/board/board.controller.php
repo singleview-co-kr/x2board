@@ -18,7 +18,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 
 	class boardController extends board {
 
-		private $_s_wp_post_guid = null;
+		private $_s_page_permlink = null;
 
 		/**
 		 * @brief initialization
@@ -30,7 +30,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 			if ( is_null( $o_post ) ) {
 				wp_die( __( 'msg_error_board_controller_init', X2B_DOMAIN ) );
 			}
-			$this->_s_wp_post_guid = $o_post->guid;
+            $this->_s_page_permlink = site_url() . '/' . urlencode( urldecode( $o_post->post_name ) );
 			unset( $o_post );
 			// end - define redirect url root
 
@@ -50,7 +50,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 					$this->$s_cmd();
 					break;
 				default:
-					$this->add( 's_wp_redirect_url', $this->_s_wp_post_guid . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_invalid_request' );
+					$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_invalid_request' );
 					return;
 			}
 		}
@@ -133,7 +133,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 		private function _proc_write_post() {
 			// check grant
 			if ( ! $this->grant->write_post ) {
-				$this->add( 's_wp_redirect_url', $this->_s_wp_post_guid . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_not_permitted' );
+				$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_not_permitted' );
 				return;
 			}
 
@@ -154,7 +154,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 				// 'is_secret',
 			);
 			if ( is_null( $obj->board_id ) || intval( $obj->board_id ) <= 0 ) {
-				$this->add( 's_wp_redirect_url', $this->_s_wp_post_guid . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_invalid_request' );
+				$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_invalid_request' );
 				return;
 			}
 
@@ -253,7 +253,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 			// update the post if it is existed
 			if ( $is_update ) {
 				if ( ! $o_post->is_granted() ) {
-					$this->add( 's_wp_redirect_url', $this->_s_wp_post_guid . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_not_permitted' );
+					$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_not_permitted' );
 					return;
 				}
 
@@ -263,7 +263,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 				}
 
 				if ( $this->module_info->protect_content == 'Y' && $o_post->get( 'comment_count' ) > 0 && $this->grant->manager == false ) {
-					$this->add( 's_wp_redirect_url', $this->_s_wp_post_guid . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_protected_content' );
+					$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_protected_content' );
 					return;
 				}
 
@@ -306,9 +306,9 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 				// }
 			}
 			if ( ! $output->to_bool() ) {  // if there is an error
-				$this->add( 's_wp_redirect_url', $this->_s_wp_post_guid . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=' . $output->getMessage() );
+				$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=' . $output->getMessage() );
 			} else { // if s_wp_redirect_url is not added, automatically redirect to home_url
-				$this->add( 's_wp_redirect_url', $this->_s_wp_post_guid . '?' . X2B_CMD_VIEW_POST . '/' . $output->get( 'post_id' ) );
+				$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?' . X2B_CMD_VIEW_POST . '/' . $output->get( 'post_id' ) );
 			}
 		}
 
@@ -319,7 +319,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 		private function _proc_write_comment() {
 			// check grant
 			if ( ! $this->grant->write_comment ) {
-				$this->add( 's_wp_redirect_url', $this->_s_wp_post_guid . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_not_permitted' );
+				$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_not_permitted' );
 				return;
 			}
 			$o_logged_info = \X2board\Includes\Classes\Context::get( 'logged_info' );
@@ -366,14 +366,14 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 			$o_post_model = \X2board\Includes\get_model( 'post' );
 			$o_post       = $o_post_model->get_post( $obj->parent_post_id );
 			if ( ! $o_post->is_exists() ) {
-				$this->add( 's_wp_redirect_url', $this->_s_wp_post_guid . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_not_found' );
+				$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_not_found' );
 				return;
 			}
 			unset( $o_post_model );
 
 			// check if new comment is allowed
 			if ( ! $o_post->is_enable_comment() ) {
-				$this->add( 's_wp_redirect_url', $this->_s_wp_post_guid . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_comment_not_allowed' );
+				$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_comment_not_allowed' );
 				return;
 			}
 
@@ -415,7 +415,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 				if ( $obj->parent_comment_id ) {  // parent_comment_id is existed
 					$o_parent_comment = $o_comment_model->get_comment( $obj->parent_comment_id );
 					if ( ! $o_parent_comment->comment_id ) {
-						$this->add( 's_wp_redirect_url', $this->_s_wp_post_guid . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_invalid_request' );
+						$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_invalid_request' );
 						return;
 					}
 					$output = $o_comment_controller->insert_comment( $obj, $bAnonymous );
@@ -424,19 +424,19 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 				}
 			} else {  // update the comment if it is not existed
 				if ( ! $o_comment->is_granted() ) {  // check the grant
-					$this->add( 's_wp_redirect_url', $this->_s_wp_post_guid . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_not_permitted' );
+					$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_not_permitted' );
 					return;
 				}
 				$output = $o_comment_controller->update_comment( $obj, $this->grant->manager );
 			}
 
 			if ( ! $output->to_bool() ) {
-				$this->add( 's_wp_redirect_url', $this->_s_wp_post_guid . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=' . $output->getMessage() );
+				$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=' . $output->getMessage() );
 				return;
 			}
 
 			// if s_wp_redirect_url is not added, automatically redirect to home_url
-			$this->add( 's_wp_redirect_url', $this->_s_wp_post_guid . '?' . X2B_CMD_VIEW_POST . '/' . $obj->parent_post_id . '#comment_id-' . $obj->comment_id );
+			$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?' . X2B_CMD_VIEW_POST . '/' . $obj->parent_post_id . '#comment_id-' . $obj->comment_id );
 		}
 
 		/**
@@ -449,7 +449,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 
 			// if the post_id is not existed
 			if ( ! $n_post_id ) {
-				$this->add( 's_wp_redirect_url', $this->_s_wp_post_guid . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_invalid_post' );
+				$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_invalid_post' );
 				return;
 			}
 
@@ -458,7 +458,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 			unset( $o_post_model );
 			// check protect content
 			if ( $this->module_info->protect_content == 'Y' && $o_post->get( 'comment_count' ) > 0 && $this->grant->manager == false ) {
-				$this->add( 's_wp_redirect_url', $this->_s_wp_post_guid . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_protected_content' );
+				$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_protected_content' );
 				return;
 			}
 
@@ -470,13 +470,13 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 			unset( $o_post_controller );
 			if ( ! $output->to_bool() ) {
 				unset( $output );
-				$this->add( 's_wp_redirect_url', $this->_s_wp_post_guid . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=' . $output->getMessage() );
+				$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=' . $output->getMessage() );
 				return;
 			}
 			unset( $output );
 
 			// if s_wp_redirect_url is not added, automatically redirect to home_url
-			$this->add( 's_wp_redirect_url', $this->_s_wp_post_guid . '?' . X2B_CMD_VIEW_POST . '/p/' . \X2board\Includes\Classes\Context::get( 'page' ) );
+			$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?' . X2B_CMD_VIEW_POST . '/p/' . \X2board\Includes\Classes\Context::get( 'page' ) );
 		}
 
 		/**
@@ -487,7 +487,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 			// get the comment_id
 			$n_comment_id = \X2board\Includes\Classes\Context::get( 'comment_id' );
 			if ( ! $n_comment_id ) {
-				$this->add( 's_wp_redirect_url', $this->_s_wp_post_guid . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_invalid_request' );
+				$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_invalid_request' );
 				return;
 			}
 			// generate comment controller object
@@ -496,10 +496,10 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 
 			unset( $o_comment_controller );
 			if ( ! $output->to_bool() ) {
-				$this->add( 's_wp_redirect_url', $this->_s_wp_post_guid . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=' . $output->getMessage() );
+				$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=' . $output->getMessage() );
 				return;
 			}
-			$this->add( 's_wp_redirect_url', $this->_s_wp_post_guid . '?' . X2B_CMD_VIEW_POST . '/' . $output->get( 'post_id' ) );
+			$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?' . X2B_CMD_VIEW_POST . '/' . $output->get( 'post_id' ) );
 		}
 
 		/**
@@ -519,35 +519,35 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 				$o_comment       = $o_comment_model->get_comment( $n_comment_id );
 				unset( $o_comment_model );
 				if ( ! $o_comment->is_exists() ) {
-					$this->add( 's_wp_redirect_url', $this->_s_wp_post_guid . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_invalid_request' );
+					$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_invalid_request' );
 					return;
 				}
 
 				// compare the comment password and the user input password
 				if ( ! $o_member_model->validate_password( $o_comment->get( 'password' ), $s_password ) ) {
-					$this->add( 's_wp_redirect_url', $this->_s_wp_post_guid . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_invalid_password' );
+					$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_invalid_password' );
 					return;
 				}
 				$o_comment->set_grant();
 				unset( $o_comment );
-				$this->add( 's_wp_redirect_url', $this->_s_wp_post_guid . '?cmd=' . X2B_CMD_VIEW_MODIFY_COMMENT . '&post_id=' . $n_post_id . '&comment_id=' . $n_comment_id );
+				$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MODIFY_COMMENT . '&post_id=' . $n_post_id . '&comment_id=' . $n_comment_id );
 			} else {  // get the post information
 				$o_post_model = \X2board\Includes\get_model( 'post' );
 				$o_post       = $o_post_model->get_post( $n_post_id );
 				unset( $o_post_model );
 				if ( ! $o_post->is_exists() ) {
-					$this->add( 's_wp_redirect_url', $this->_s_wp_post_guid . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_invalid_request' );
+					$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_invalid_request' );
 					return;
 				}
 
 				// compare the post password and the user input password
 				if ( ! $o_member_model->validate_password( $o_post->get( 'password' ), $s_password ) ) {
-					$this->add( 's_wp_redirect_url', $this->_s_wp_post_guid . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_invalid_password' );
+					$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_invalid_password' );
 					return;
 				}
 				$o_post->set_grant();
 				unset( $o_post );
-				$this->add( 's_wp_redirect_url', $this->_s_wp_post_guid . '?' . X2B_CMD_VIEW_MODIFY_POST . '/' . $n_post_id );
+				$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?' . X2B_CMD_VIEW_MODIFY_POST . '/' . $n_post_id );
 			}
 			unset( $o_member_model );
 		}
