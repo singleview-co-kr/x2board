@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: x2board\n"
-"POT-Creation-Date: 2024-07-09 07:19+0900\n"
-"PO-Revision-Date: 2024-07-09 07:29+0900\n"
+"POT-Creation-Date: 2024-07-12 07:02+0900\n"
+"PO-Revision-Date: 2024-07-12 07:07+0900\n"
 "Last-Translator: singleviewcokr <singleviewcokr@gmail.com>\n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -401,6 +401,9 @@ msgstr "User define field"
 #: includes/admin/tpl/default-settings.php:326
 msgid "name_board_list_fields"
 msgstr "List fields"
+
+msgid "msg_fs_chmod_file_undefined"
+msgstr "FS_CHMOD_FILE in wp-config.php is undefined on Linux environment"
 
 #: includes/admin/tpl/default-settings.php:355
 msgid "name_board_grant_access"
@@ -834,7 +837,7 @@ msgstr "Wordpress reviews"
 msgid "lbl_github"
 msgstr "Github repository"
 
-#: includes/classes/Context.class.php:672
+#: includes/classes/Context.class.php:683
 msgid "msg_undefined_locale"
 msgstr "Unknown locale"
 
@@ -1200,21 +1203,21 @@ msgstr "Summary of the post"
 msgid "desc_user_define_field_comment_status"
 msgstr "Comment status of the post"
 
-#: includes/func.inc.php:207 includes/func.inc.php:214
+#: includes/func.inc.php:210 includes/func.inc.php:217
 msgid "msg_invalid_board_id"
 msgstr "warning from %s! you requested invalid board_id via shortcode"
 
-#: includes/func.inc.php:796
+#: includes/func.inc.php:799
 msgid "msg_security_warning_embed"
 msgstr ""
 "Due to security issues, the embed cannot be viewed using the administrator "
 "ID. To check, log in with a different ID"
 
-#: includes/func.inc.php:911
+#: includes/func.inc.php:914
 msgid "lbl_mins_ago"
 msgstr "%d mins ago"
 
-#: includes/func.inc.php:912
+#: includes/func.inc.php:915
 msgid "lbl_hrs_ago"
 msgstr "%d hrs ago"
 
@@ -1268,11 +1271,33 @@ msgstr "Anonymous"
 msgid "msg_secret_post"
 msgstr "This is secret post"
 
+#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:52
+#: includes/modules/file/wp_admin_class/wp_latest_files.php:64
+#: includes/modules/post/wp_admin_class/wp_latest_posts.php:49
+msgid "cmd_delete"
+msgstr "Delete"
+
+#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:166
+#: includes/modules/file/wp_admin_class/wp_latest_files.php:181
+#: includes/modules/post/wp_admin_class/wp_latest_posts.php:170
+msgid "lbl_installed_wp_page"
+msgstr "Board installed WP page name"
+
+#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:167
+msgid "lbl_comment"
+msgstr "Comment"
+
 #: includes/modules/comment/wp_admin_class/wp_latest_comments.php:169
 #: includes/modules/file/wp_admin_class/wp_latest_files.php:185
 #: includes/modules/post/wp_admin_class/wp_latest_posts.php:174
 msgid "lbl_ipaddress"
 msgstr "IP address"
+
+#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:170
+#: includes/modules/file/wp_admin_class/wp_latest_files.php:186
+#: includes/modules/post/wp_admin_class/wp_latest_posts.php:175
+msgid "lbl_create_date"
+msgstr "Created date"
 
 #: includes/modules/comment/wp_admin_class/wp_latest_comments.php:171
 #: includes/modules/file/wp_admin_class/wp_latest_files.php:187
@@ -1401,15 +1426,13 @@ msgstr ""
 msgid "lbl_readed_count"
 msgstr "Readed count"
 
-#: includes/modules/board/board.admin.view.php:258
-msgid "msg_invalid_timezone"
-msgstr "%1$s is not a valie timezone ID for x2board"
+#~ msgid "msg_invalid_timezone"
+#~ msgstr "%1$s is not a valie timezone ID for x2board"
 
-#: includes/modules/board/board.admin.view.php:259
-msgid "desc_choose_valid_timezone"
-msgstr ""
-"Please visit <a href=\"%1$soptions-general.php\">Settings Generals page</a> "
-"and choose valid timezone ID like Asia/Seoul"
+#~ msgid "desc_choose_valid_timezone"
+#~ msgstr ""
+#~ "Please visit <a href=\"%1$soptions-general.php\">Settings Generals page</"
+#~ "a> and choose valid timezone ID like Asia/Seoul"
 
 #~ msgid "msg_not_available"
 #~ msgstr "Not available"

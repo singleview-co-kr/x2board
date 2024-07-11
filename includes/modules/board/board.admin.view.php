@@ -23,6 +23,12 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 				wp_die(__('msg_no_permission', X2B_DOMAIN));
 			}
 			unset($o_current_user);
+			// to avoid Fatal error: Uncaught Error: Undefined constant "FS_CHMOD_FILE" on linux
+			if (strtoupper(substr(PHP_OS, 0, 5)) === 'LINUX') {
+				if ( ! defined( 'FS_CHMOD_FILE' ) ) {
+					wp_die(__('msg_fs_chmod_file_undefined', X2B_DOMAIN));
+				}
+			}
 		}
 		
 		/**

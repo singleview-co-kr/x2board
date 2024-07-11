@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: x2board\n"
-"POT-Creation-Date: 2024-07-09 07:13+0900\n"
-"PO-Revision-Date: 2024-07-09 07:26+0900\n"
+"POT-Creation-Date: 2024-07-12 07:01+0900\n"
+"PO-Revision-Date: 2024-07-12 07:05+0900\n"
 "Last-Translator: singleviewcokr <singleviewcokr@gmail.com>\n"
 "Language-Team: \n"
 "Language: ko_KR\n"
@@ -848,7 +848,7 @@ msgstr "워드프레스 후기"
 msgid "lbl_github"
 msgstr "깃헙 저장소"
 
-#: includes/classes/Context.class.php:672
+#: includes/classes/Context.class.php:683
 msgid "msg_undefined_locale"
 msgstr "정의되지 않은 로케일입니다"
 
@@ -1217,21 +1217,21 @@ msgstr "게시글 요약"
 msgid "desc_user_define_field_comment_status"
 msgstr "댓글 가능 여부"
 
-#: includes/func.inc.php:207 includes/func.inc.php:214
+#: includes/func.inc.php:210 includes/func.inc.php:217
 msgid "msg_invalid_board_id"
 msgstr "%s 경고! shortcode를 통해서 유효하지 않은 board_id를 요청했습니다"
 
-#: includes/func.inc.php:796
+#: includes/func.inc.php:799
 msgid "msg_security_warning_embed"
 msgstr ""
 "보안 문제로 관리자 아이디로는 embed를 볼 수 없습니다. 확인하려면 다른 아이"
 "디로 접속하세요"
 
-#: includes/func.inc.php:911
+#: includes/func.inc.php:914
 msgid "lbl_mins_ago"
 msgstr "%d분 전"
 
-#: includes/func.inc.php:912
+#: includes/func.inc.php:915
 msgid "lbl_hrs_ago"
 msgstr "%d시간 전"
 
@@ -1297,11 +1297,16 @@ msgstr "설정 초기화"
 msgid "lbl_field_introduction"
 msgstr "필드 소개"
 
-#: includes/modules/board/board.admin.view.php:258
+#: includes/modules/board/board.admin.view.php:29
+msgid "msg_fs_chmod_file_undefined"
+msgstr ""
+"Linux 환경이지만 wp-config.php에서 FS_CHMOD_FILE를 확인할 수 없습니다"
+
+#: includes/modules/board/board.admin.view.php:264
 msgid "msg_invalid_timezone"
 msgstr "%1$s은(는) x2board에게 유효하지 않은 timezone ID입니다"
 
-#: includes/modules/board/board.admin.view.php:259
+#: includes/modules/board/board.admin.view.php:265
 msgid "desc_choose_valid_timezone"
 msgstr ""
 "<a href=\"%1$soptions-general.php\">설정 > 일반 페이지</a>에 방문하셔서 "
