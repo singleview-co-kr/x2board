@@ -99,7 +99,7 @@ function x2b_load_settings( $board_id ) {
 	// load textdomain for skin_vars
 	$s_board_skin = isset( $a_board_settings['board_skin'] ) ? $a_board_settings['board_skin'] : 'default';
 	// third parameter should be relative path to WP_PLUGIN_DIR
-	load_plugin_textdomain( X2B_DOMAIN, false, X2B_DOMAIN . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'board' . DIRECTORY_SEPARATOR . 'skins' . DIRECTORY_SEPARATOR . $s_board_skin . DIRECTORY_SEPARATOR . 'lang' );
+	load_plugin_textdomain( X2B_DOMAIN, false, X2B_DOMAIN . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . X2B_MODULES_NAME . DIRECTORY_SEPARATOR . 'board' . DIRECTORY_SEPARATOR . 'skins' . DIRECTORY_SEPARATOR . $s_board_skin . DIRECTORY_SEPARATOR . 'lang' );
 
 	$o_rst->b_ok             = true;
 	$o_rst->a_board_settings = $a_board_settings;

@@ -56,7 +56,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\ModuleHandler' ) ) {
 		 * */
 		public static function auto_load_modules() {
 			$a_valid_types      = array( 'view', 'controller', 'model', 'class' );
-			$s_modules_path_abs = X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'modules';
+			$s_modules_path_abs = X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . X2B_MODULES_NAME;
 
 			$a_requested_modules = array();
 			$a_modules           = \X2board\Includes\Classes\FileHandler::read_dir( $s_modules_path_abs );
@@ -225,7 +225,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\ModuleHandler' ) ) {
 		 * @return string path of the module
 		 * */
 		private static function _get_module_path( $module ) {
-			return './includes/modules/' . $module . '/';
+			return './includes/' . X2B_MODULES_NAME . '/' . $module . '/';
 		}
 
 		/**

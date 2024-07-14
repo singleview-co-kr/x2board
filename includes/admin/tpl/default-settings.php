@@ -733,7 +733,7 @@ function x2b_settings_skin_vars() {
 	);
 
 	if ( $A_X2B_ADMIN_BOARD_SETTINGS && isset( $A_X2B_ADMIN_BOARD_SETTINGS['board_skin'] ) ) {
-		$s_skin_vars_path = X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'board' . DIRECTORY_SEPARATOR . 'skins' . DIRECTORY_SEPARATOR . $A_X2B_ADMIN_BOARD_SETTINGS['board_skin']  . DIRECTORY_SEPARATOR . 'skin_vars.php';
+		$s_skin_vars_path = X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . X2B_MODULES_NAME . DIRECTORY_SEPARATOR . 'board' . DIRECTORY_SEPARATOR . 'skins' . DIRECTORY_SEPARATOR . $A_X2B_ADMIN_BOARD_SETTINGS['board_skin']  . DIRECTORY_SEPARATOR . 'skin_vars.php';
 		if ( file_exists( $s_skin_vars_path ) ) {
 			require_once $s_skin_vars_path;
 			$a_tmp_settings = array(
@@ -767,7 +767,7 @@ function x2b_settings_skin_vars() {
  * @return array skins options.
  */
 function x2b_get_board_skins() {
-	$s_skin_path_abs = X2B_PATH . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'board' . DIRECTORY_SEPARATOR . 'skins';
+	$s_skin_path_abs = X2B_PATH . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . X2B_MODULES_NAME . DIRECTORY_SEPARATOR . 'board' . DIRECTORY_SEPARATOR . 'skins';
 	$a_skins         = \X2board\Includes\Classes\FileHandler::read_dir( $s_skin_path_abs );
 
 	$a_skin_info = array();
@@ -792,7 +792,7 @@ function x2b_get_board_skins() {
  */
 function x2b_get_editors() {
 
-	$s_skin_path_abs = X2B_PATH . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'editor' . DIRECTORY_SEPARATOR . 'skins';
+	$s_skin_path_abs = X2B_PATH . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . X2B_MODULES_NAME . DIRECTORY_SEPARATOR . 'editor' . DIRECTORY_SEPARATOR . 'skins';
 	$a_skins         = \X2board\Includes\Classes\FileHandler::read_dir( $s_skin_path_abs );
 
 	$a_skin_info = array();
@@ -816,7 +816,7 @@ function x2b_get_editors() {
  * @return array Style options.
  */
 function x2b_get_content_styles() {
-	$s_style_path_abs = X2B_PATH . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'editor' . DIRECTORY_SEPARATOR . 'styles';
+	$s_style_path_abs = X2B_PATH . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . X2B_MODULES_NAME . DIRECTORY_SEPARATOR . 'editor' . DIRECTORY_SEPARATOR . 'styles';
 	$a_styles         = \X2board\Includes\Classes\FileHandler::read_dir( $s_style_path_abs );
 
 	$a_style_info = array();

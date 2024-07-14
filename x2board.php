@@ -44,6 +44,7 @@ if ( !defined( 'X2B__FILE__' ) ) {
     define('X2B_PLUGIN_BASE', plugin_basename(X2B__FILE__));
     define('X2B_PATH', plugin_dir_path(X2B__FILE__));
     define('X2B_URL', plugins_url('/', X2B__FILE__));
+    define('X2B_MODULES_NAME', 'x2b_modules');
 }
 
 if ( !defined( 'X2B_ALL_USERS' ) ) {  // for grant privileges
@@ -69,7 +70,7 @@ if ( !is_admin() || !defined( 'WP_CLI' ) ) {
  *----------------------------------------------------------------------------
  */
 if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
-	require_once X2B_PATH . 'includes/admin/admin.php';
-    require_once X2B_PATH . 'includes/modules/board/board.admin.view.php';
-	require_once X2B_PATH . 'includes/modules/board/board.admin.controller.php';
+	require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'admin.php';
+    require_once X2B_PATH . 'includes'  . DIRECTORY_SEPARATOR . X2B_MODULES_NAME . DIRECTORY_SEPARATOR . 'board' . DIRECTORY_SEPARATOR . 'board.admin.view.php';
+	require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . X2B_MODULES_NAME . DIRECTORY_SEPARATOR . 'board' . DIRECTORY_SEPARATOR . 'board.admin.controller.php';
 } // End if.
