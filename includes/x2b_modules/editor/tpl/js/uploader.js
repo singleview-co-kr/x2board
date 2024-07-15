@@ -48,7 +48,7 @@ var uploadAutosaveChecker = false;
 		$span   = $('<span id="dummy'+id+'" />').insertAfter($button);
 
 		settings = {
-			flash_url   : request_uri + 'x2b_modules/editor/tpl/images/SWFUpload.swf',
+			flash_url   : request_uri + x2board_path.modules_path_name + '/editor/tpl/images/SWFUpload.swf',
 			upload_url  : request_uri + 'index.php',
 			post_params : {
 				mid : current_mid,
@@ -351,7 +351,7 @@ function previewFiles(event, file_srl) {
 	match    = filename.match(/\.(?:(flv)|(swf)|(wmv|avi|mpe?g|as[fx]|mp3)|(jpe?g|png|gif))$/i);
 
 	if(fileinfo.direct_download != 'Y' || !match) {
-		html = '<img src="'+request_uri+'x2b_modules/editor/tpl/images/files.gif" border="0" width="100%" height="100%" />';
+		html = '<img src="'+request_uri+ x2board_path.modules_path_name + '/editor/tpl/images/files.gif" border="0" width="100%" height="100%" />';
 	} else if(match[1]) { // flash video file
 		html = '<embed src="'+request_uri+'common/img/flvplayer.swf?autoStart=false&file='+uploaded_filename+'" width="100%" height="100%" type="application/x-shockwave-flash" />';
 	} else if(match[2]) { // shockwave flash file
@@ -429,7 +429,7 @@ function insertUploadedFile(editorSequence) {
 				text.push(temp_code);
 			} else {
 				// 이미지외의 경우는 multimedia_link 컴포넌트 연결
-				text.push("<img src=\"common/img/blank.gif\" editor_component=\"multimedia_link\" multimedia_src=\""+file.download_url+"\" width=\"400\" height=\"320\" style=\"display:block;width:400px;height:320px;border:2px dotted #4371B9;background:url(./x2b_modules/editor/components/multimedia_link/tpl/multimedia_link_component.gif) no-repeat center;\" auto_start=\"false\" alt=\"\" />");
+				text.push("<img src=\"common/img/blank.gif\" editor_component=\"multimedia_link\" multimedia_src=\""+file.download_url+"\" width=\"400\" height=\"320\" style=\"display:block;width:400px;height:320px;border:2px dotted #4371B9;background:url(./" + x2board_path.modules_path_name + "/editor/components/multimedia_link/tpl/multimedia_link_component.gif) no-repeat center;\" auto_start=\"false\" alt=\"\" />");
 			}
 
 		} else {

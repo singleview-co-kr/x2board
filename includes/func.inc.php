@@ -101,6 +101,7 @@ function enqueue_user_scripts() {
 		'nonce'           => wp_create_nonce( X2B_AJAX_SECURITY ),
 	);
 	wp_localize_script( X2B_JS_HANDLER_USER, X2B_DOMAIN . '_ajax_info', $a_ajax_info );
+	unset($a_ajax_info);
 
 	// 번역 등록
 	$a_localize = array(
@@ -108,6 +109,14 @@ function enqueue_user_scripts() {
 		'lbl_content'  => __( 'lbl_content', X2B_DOMAIN ),
 	);
 	wp_localize_script( X2B_JS_HANDLER_USER, X2B_DOMAIN . '_locale', $a_localize );
+	unset($a_localize);
+
+	// 경로 등록
+	$a_path = array(
+		'modules_path_name' => X2B_MODULES_NAME,
+	);
+	wp_localize_script( X2B_JS_HANDLER_USER, X2B_DOMAIN . '_path', $a_path );
+	unset($a_path);
 }
 
 /**

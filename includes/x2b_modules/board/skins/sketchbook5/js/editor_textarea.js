@@ -8,8 +8,8 @@ function frmSubmit(){
 			var type = jQuery(this).find('button').attr('data-type');
 			if(type=='img'){
 				a = a+'<p><img src="'+jQuery(this).find('button').attr('data-file')+'" alt="'+jQuery(this).find('button').attr('title')+'" /></p>';
-				a = a.replace('/x2b_modules/board/skins/sketchbook5/','');
-				a = a.replace('/x2b_modules/board/m.skins/sketchbook5/','');
+				a = a.replace(x2board_path.modules_path_name + '/board/skins/sketchbook5/','');
+				a = a.replace(x2board_path.modules_path_name + '/board/m.skins/sketchbook5/','');
 			} else if(type=='music'){
 				a = a+'<div><audio src="'+jQuery(this).find('button').attr('data-file')+'" controls="controls">Your browser does not support this file type. You can download <a href="'+jQuery(this).find('button').attr('data-dnld')+'" style="text-decoration:underline">'+jQuery(this).find('small').text()+'</a> and play it!</audio></div>';
 			} else if(type=='media'){

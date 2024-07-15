@@ -20,7 +20,7 @@ CKEDITOR.plugins.add('xe_component', {
 
 			editor.ui.addButton( component_name, {
 				label: component_title,
-				icon : request_uri + 'plugins/x2board/includes/x2b_modules/editor/components/' + component_name + '/component_icon.gif',
+				icon : request_uri + 'plugins/x2board/includes/' + x2board_path.modules_path_name + '/editor/components/' + component_name + '/component_icon.gif',
 				command: 'openXeComponent_' + component_name,
 				toolbar: 'xecomponent'
 			} );

@@ -288,7 +288,7 @@ function board(bdObj){
 			if(bd.find('form>div.wysiwyg').length){
 				if($('#re_cmt').length) editorStartTextarea(2,'content','comment_srl');
 			} else {
-				$.getScript("x2b_modules/editor/tpl/js/editor_common.min.js",function(){
+				$.getScript(x2board_path.modules_path_name + "/editor/tpl/js/editor_common.min.js",function(){
 					if($('#re_cmt').length) editorStartTextarea(2,'content','comment_srl');
 					var cmtWrt = bd.find('form.cmt_wrt textarea');
 					if(bd.find('form.bd_wrt_main textarea').length){
@@ -421,7 +421,7 @@ function board(bdObj){
 				if(bd.find('form>div.wysiwyg').length){
 					editorStartTextarea(2,'content','comment_srl');
 				} else {
-					jQuery.getScript(s_plugin_base_url + "includes/x2b_modules/editor/tpl/js/editor_common.min.js",function(){
+					jQuery.getScript(s_plugin_base_url + "includes/" + x2board_path.modules_path_name + "/editor/tpl/js/editor_common.min.js",function(){
 						editorStartTextarea(2,'content','comment_srl');
 						var cmtWrt = bd.find('form.cmt_wrt textarea');
 						if(default_style=='blog'){
