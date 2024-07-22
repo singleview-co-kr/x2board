@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: x2board\n"
-"POT-Creation-Date: 2024-07-12 07:02+0900\n"
-"PO-Revision-Date: 2024-07-12 07:07+0900\n"
+"POT-Creation-Date: 2024-07-21 11:42+0900\n"
+"PO-Revision-Date: 2024-07-21 11:52+0900\n"
 "Last-Translator: singleviewcokr <singleviewcokr@gmail.com>\n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -15,17 +15,60 @@ msgstr ""
 "X-Poedit-Basepath: ../..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
-"X-Poedit-SearchPathExcluded-0: common\n"
-"X-Poedit-SearchPathExcluded-1: includes/modules/board\n"
+"X-Poedit-SearchPathExcluded-0: common/jquery.fileupload\n"
+"X-Poedit-SearchPathExcluded-1: common/js\n"
+"X-Poedit-SearchPathExcluded-2: common/language\n"
+"X-Poedit-SearchPathExcluded-3: common/xeicon\n"
+"X-Poedit-SearchPathExcluded-4: includes/x2b_modules/board/skins\n"
+
+#: common/tpl/manage_post.php:5
+msgid "msg_no_post"
+msgstr "No post"
+
+#: common/tpl/manage_post.php:13
+msgid "lbl_manage_post"
+msgstr "Manage posts"
+
+#: common/tpl/manage_post.php:17
+msgid "lbl_selected_post_count"
+msgstr "No of post selected"
+
+#: common/tpl/manage_post.php:29
+msgid "lbl_target_board"
+msgstr "Target board"
+
+#: common/tpl/manage_post.php:33 common/tpl/manage_post.php:94
+msgid "msg_select_board"
+msgstr "Please select board"
+
+#: common/tpl/manage_post.php:42
+#: includes/classes/user_define_fields/UserDefineFields.class.php:82
+msgid "lbl_category"
+msgstr "Category"
+
+#: common/tpl/manage_post.php:57
+#: includes/x2b_modules/comment/wp_admin_class/wp_latest_comments.php:52
+#: includes/x2b_modules/file/wp_admin_class/wp_latest_files.php:64
+#: includes/x2b_modules/post/wp_admin_class/wp_latest_posts.php:49
+msgid "cmd_delete"
+msgstr "Delete"
+
+#: common/tpl/manage_post.php:60
+msgid "cmd_move"
+msgstr "Move"
+
+#: common/tpl/manage_post.php:103 common/tpl/manage_post.php:138
+msgid "msg_select_post"
+msgstr "Please select post"
 
 #: includes/admin/admin.php:56
 msgid "lbl_title_content"
 msgstr "title + content"
 
 #: includes/admin/admin.php:57
-#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:168
-#: includes/modules/file/wp_admin_class/wp_latest_files.php:184
-#: includes/modules/post/wp_admin_class/wp_latest_posts.php:172
+#: includes/x2b_modules/comment/wp_admin_class/wp_latest_comments.php:168
+#: includes/x2b_modules/file/wp_admin_class/wp_latest_files.php:184
+#: includes/x2b_modules/post/wp_admin_class/wp_latest_posts.php:172
 msgid "lbl_nick_name"
 msgstr "nickname"
 
@@ -166,6 +209,7 @@ msgid "cmd_latest_file"
 msgstr "Latest files"
 
 #: includes/admin/tpl/default-settings.php:51
+#: includes/x2b_modules/board/wp_admin_class/wp_board_list.php:81
 msgid "name_x2board_title"
 msgstr "Board title"
 
@@ -401,9 +445,6 @@ msgstr "User define field"
 #: includes/admin/tpl/default-settings.php:326
 msgid "name_board_list_fields"
 msgstr "List fields"
-
-msgid "msg_fs_chmod_file_undefined"
-msgstr "FS_CHMOD_FILE in wp-config.php is undefined on Linux environment"
 
 #: includes/admin/tpl/default-settings.php:355
 msgid "name_board_grant_access"
@@ -776,8 +817,8 @@ msgid "lbl_update_category"
 msgstr "Updating category"
 
 #: includes/admin/tpl/settings-page.php:526
-#: includes/modules/category/category.admin.controller.php:276
-#: includes/modules/category/category.admin.model.php:121
+#: includes/x2b_modules/category/category.admin.controller.php:276
+#: includes/x2b_modules/category/category.admin.model.php:121
 msgid "lbl_default_category"
 msgstr "Default category"
 
@@ -785,6 +826,7 @@ msgstr "Default category"
 #: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:96
 #: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:102
 #: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:145
+#: includes/x2b_modules/board/board.admin.model.php:309
 msgid "cmd_remove"
 msgstr "Remove"
 
@@ -842,26 +884,33 @@ msgid "msg_undefined_locale"
 msgstr "Unknown locale"
 
 #: includes/classes/ModuleObject.class.php:60
+#: includes/x2b_modules/board/board.model.php:56
 msgid "msg_invalid_configuration"
 msgstr "Invalid configuration"
 
 #: includes/classes/ModuleObject.class.php:98
-#: includes/modules/comment/comment.controller.php:120
-#: includes/modules/comment/comment.controller.php:378
-#: includes/modules/comment/comment.controller.php:540
-#: includes/modules/comment/comment.controller.php:618
-#: includes/modules/file/file.controller.php:507
-#: includes/modules/post/post.controller.php:83
-#: includes/modules/post/post.controller.php:93
-#: includes/modules/post/post.controller.php:616
+#: includes/x2b_modules/board/board.view.php:293
+#: includes/x2b_modules/board/board.view.php:498
+#: includes/x2b_modules/board/board.view.php:550
+#: includes/x2b_modules/board/board.view.php:587
+#: includes/x2b_modules/comment/comment.controller.php:120
+#: includes/x2b_modules/comment/comment.controller.php:378
+#: includes/x2b_modules/comment/comment.controller.php:540
+#: includes/x2b_modules/comment/comment.controller.php:618
+#: includes/x2b_modules/file/file.controller.php:507
+#: includes/x2b_modules/post/post.controller.php:83
+#: includes/x2b_modules/post/post.controller.php:93
+#: includes/x2b_modules/post/post.controller.php:616
+#: includes/x2b_modules/post/post.controller.php:1031
 msgid "msg_not_permitted"
 msgstr "Your request is not permitted"
 
-#: includes/classes/ModuleObject.class.php:204
+#: includes/classes/ModuleObject.class.php:205
+#: includes/x2b_modules/board/board.model.php:133
 msgid "msg_invalid_grant_code"
 msgstr "Invalid grant code"
 
-#: includes/classes/ModuleObject.class.php:287
+#: includes/classes/ModuleObject.class.php:288
 msgid "msg_file_not_exists"
 msgstr "File: %s is not existed"
 
@@ -931,7 +980,7 @@ msgstr "css class"
 #: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:209
 #: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:197
 #: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:438
-#: includes/func.inc.php:107
+#: includes/func.inc.php:117
 msgid "lbl_required"
 msgstr "Required"
 
@@ -982,6 +1031,7 @@ msgid "lbl_printing_code"
 msgstr ""
 
 #: includes/classes/user_define_fields/GuestUserDefineFields.class.php:602
+#: includes/x2b_modules/board/board.controller.php:149
 msgid "lbl_select_category"
 msgstr "Select category"
 
@@ -1021,7 +1071,7 @@ msgid "cmd_select"
 msgstr "Please select"
 
 #: includes/classes/user_define_fields/UserDefineFields.class.php:32
-#: includes/modules/post/wp_admin_class/wp_latest_posts.php:171
+#: includes/x2b_modules/post/wp_admin_class/wp_latest_posts.php:171
 msgid "lbl_title"
 msgstr "Title"
 
@@ -1038,16 +1088,12 @@ msgstr "Option of the post"
 msgid "desc_user_define_field_option"
 msgstr "This is the option settings box for the post"
 
-#: includes/classes/user_define_fields/UserDefineFields.class.php:82
-msgid "lbl_category"
-msgstr "Category"
-
 #: includes/classes/user_define_fields/UserDefineFields.class.php:91
 msgid "desc_user_define_field_category"
 msgstr "This is the classification of the post"
 
 #: includes/classes/user_define_fields/UserDefineFields.class.php:105
-#: includes/func.inc.php:108
+#: includes/func.inc.php:118
 msgid "lbl_content"
 msgstr "Main text"
 
@@ -1203,236 +1249,327 @@ msgstr "Summary of the post"
 msgid "desc_user_define_field_comment_status"
 msgstr "Comment status of the post"
 
-#: includes/func.inc.php:210 includes/func.inc.php:217
+#: includes/func.inc.php:228 includes/func.inc.php:235
 msgid "msg_invalid_board_id"
 msgstr "warning from %s! you requested invalid board_id via shortcode"
 
-#: includes/func.inc.php:799
+#: includes/func.inc.php:818
 msgid "msg_security_warning_embed"
 msgstr ""
 "Due to security issues, the embed cannot be viewed using the administrator "
 "ID. To check, log in with a different ID"
 
-#: includes/func.inc.php:914
+#: includes/func.inc.php:933
 msgid "lbl_mins_ago"
 msgstr "%d mins ago"
 
-#: includes/func.inc.php:915
+#: includes/func.inc.php:934
 msgid "lbl_hrs_ago"
 msgstr "%d hrs ago"
 
-#: includes/modules/category/category.admin.controller.php:31
-#: includes/modules/category/category.admin.model.php:26
-#: includes/modules/file/file.controller.php:253
-#: includes/modules/post/post.admin.model.php:34
+#: includes/x2b_modules/board/board.admin.controller.php:28
+#: includes/x2b_modules/board/board.admin.controller.php:318
+#: includes/x2b_modules/board/board.admin.model.php:32
+#: includes/x2b_modules/board/board.admin.view.php:23
+#: includes/x2b_modules/category/category.admin.controller.php:31
+#: includes/x2b_modules/category/category.admin.model.php:26
+#: includes/x2b_modules/file/file.controller.php:253
+#: includes/x2b_modules/post/post.admin.model.php:34
 msgid "msg_no_permission"
 msgstr "You do not have permission"
 
-#: includes/modules/comment/comment.controller.php:42
-#: includes/modules/comment/comment.controller.php:45
-#: includes/modules/comment/comment.controller.php:81
-#: includes/modules/comment/comment.controller.php:100
-#: includes/modules/comment/comment.controller.php:114
-#: includes/modules/comment/comment.controller.php:353
-#: includes/modules/comment/comment.controller.php:356
-#: includes/modules/comment/comment.controller.php:611
-#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:66
-#: includes/modules/file/file.controller.php:648
-#: includes/modules/file/wp_admin_class/wp_latest_files.php:78
-#: includes/modules/post/post.controller.php:61
-#: includes/modules/post/post.controller.php:64
-#: includes/modules/post/post.controller.php:153
-#: includes/modules/post/post.controller.php:277
-#: includes/modules/post/post.controller.php:362
-#: includes/modules/post/post.controller.php:365
-#: includes/modules/post/post.controller.php:370
-#: includes/modules/post/post.controller.php:964
-#: includes/modules/post/post.model.php:504
-#: includes/modules/post/wp_admin_class/wp_latest_posts.php:63
-msgid "msg_invalid_request"
-msgstr "Your request is invalid"
+#: includes/x2b_modules/board/board.admin.controller.php:74
+msgid "msg_invalid_target_board"
+msgstr "Please select the board to import"
 
-#: includes/modules/comment/comment.controller.php:97
-#: includes/modules/post/post.controller.php:608
-#: includes/modules/post/post.controller.php:612
-msgid "msg_invalid_post"
-msgstr "Invalid post"
+#: includes/x2b_modules/board/board.admin.controller.php:87
+msgid "msg_import_succeeded"
+msgstr "Import has been succeeded"
 
-#: includes/modules/comment/comment.controller.php:637
-msgid "fail_to_delete_children_comment"
-msgstr "Failed to delete belonged comments"
+#: includes/x2b_modules/board/board.admin.controller.php:90
+msgid "msg_invalid_xml_file"
+msgstr "Invalid XML file"
 
-#: includes/modules/comment/comment.item.php:140
-msgid "lbl_no_name"
-msgstr "Anonymous"
-
-#: includes/modules/comment/comment.item.php:231
-#: includes/modules/post/post.item.php:451
-msgid "msg_secret_post"
-msgstr "This is secret post"
-
-#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:52
-#: includes/modules/file/wp_admin_class/wp_latest_files.php:64
-#: includes/modules/post/wp_admin_class/wp_latest_posts.php:49
-msgid "cmd_delete"
-msgstr "Delete"
-
-#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:166
-#: includes/modules/file/wp_admin_class/wp_latest_files.php:181
-#: includes/modules/post/wp_admin_class/wp_latest_posts.php:170
-msgid "lbl_installed_wp_page"
-msgstr "Board installed WP page name"
-
-#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:167
-msgid "lbl_comment"
-msgstr "Comment"
-
-#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:169
-#: includes/modules/file/wp_admin_class/wp_latest_files.php:185
-#: includes/modules/post/wp_admin_class/wp_latest_posts.php:174
-msgid "lbl_ipaddress"
-msgstr "IP address"
-
-#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:170
-#: includes/modules/file/wp_admin_class/wp_latest_files.php:186
-#: includes/modules/post/wp_admin_class/wp_latest_posts.php:175
-msgid "lbl_create_date"
-msgstr "Created date"
-
-#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:171
-#: includes/modules/file/wp_admin_class/wp_latest_files.php:187
-#: includes/modules/post/wp_admin_class/wp_latest_posts.php:176
-msgid "lbl_status"
-msgstr "Status"
-
-#: includes/modules/comment/wp_admin_class/wp_latest_comments.php:188
-#: includes/modules/file/wp_admin_class/wp_latest_files.php:230
-#: includes/modules/post/wp_admin_class/wp_latest_posts.php:193
-msgid "lbl_"
-msgstr ""
-
-#: includes/modules/editor/editor.view.php:95
-#: includes/modules/editor/editor.view.php:141
-msgid "msg_type_what_you_think"
-msgstr "Type what you think"
-
-#: includes/modules/file/file.class.php:19
-msgid "lbl_valid"
-msgstr "Valid"
-
-#: includes/modules/file/file.class.php:20
-msgid "lbl_pending"
-msgstr "Pending"
-
-#: includes/modules/file/file.controller.php:190
-msgid "msg_not_allowed_filetype"
-msgstr "Your file extension is forbidden"
-
-#: includes/modules/file/file.controller.php:199
-#: includes/modules/file/file.controller.php:207
-msgid "msg_exceeds_limit_size"
-msgstr "Appending file size limit exceeded"
-
-#: includes/modules/file/file.controller.php:259
-#: includes/modules/file/file.controller.php:279
+#: includes/x2b_modules/board/board.admin.controller.php:94
+#: includes/x2b_modules/board/board.admin.controller.php:327
+#: includes/x2b_modules/file/file.controller.php:259
+#: includes/x2b_modules/file/file.controller.php:279
 msgid "msg_upload_file_failed"
 msgstr "Failed to upload the file"
 
-#: includes/modules/file/file.controller.php:522
-#: includes/modules/file/file.controller.php:643
-#: includes/modules/file/file.controller.php:680
-msgid "msg_file_not_found"
-msgstr "Failed to find the file"
+#: includes/x2b_modules/board/board.admin.model.php:229
+msgid "about_list_field_configuration"
+msgstr "List field is unavailable for some skin"
 
-#: includes/modules/file/file.controller.php:527
-#: includes/modules/file/file.controller.php:594
-msgid "msg_not_permitted_download"
-msgstr "You do not have download permission"
-
-#: includes/modules/file/file.controller.php:578
-msgid "msg_not_allowed_outlink"
-msgstr "You can not download from external link"
-
-#: includes/modules/file/file.model.php:39
-msgid "lbl_allowed_attach_size"
-msgstr "Attachment file size limit per post"
-
-#: includes/modules/file/file.model.php:42
-msgid "lbl_allowed_filesize"
-msgstr "Size limit per file"
-
-#: includes/modules/file/file.model.php:44
-msgid "lbl_allowed_filetypes"
-msgstr "Allowed file exensions"
-
-#: includes/modules/file/wp_admin_class/wp_latest_files.php:182
-msgid "lbl_filename"
-msgstr "Filename"
-
-#: includes/modules/file/wp_admin_class/wp_latest_files.php:183
-msgid "lbl_filesize"
-msgstr "File sze"
-
-#: includes/modules/post/post.admin.model.php:91
+#: includes/x2b_modules/board/board.admin.model.php:231
+#: includes/x2b_modules/post/post.admin.model.php:91
 msgid "lbl_available_user_define_fields"
-msgstr "Available user define fields"
+msgstr "Available user defined field"
 
-#: includes/modules/post/post.admin.model.php:95
-msgid "lbl_basic_user_define_field"
-msgstr "Basic user define fields"
+#: includes/x2b_modules/board/board.admin.model.php:235
+msgid "lbl_unlisted_field"
+msgstr "Hidden field from the list"
 
-#: includes/modules/post/post.admin.model.php:105
-msgid "lbl_extended_user_define_field"
-msgstr "Extended user define fields"
+#: includes/x2b_modules/board/board.admin.model.php:247
+msgid "lbl_listed_fields"
+msgstr "Displaying field on the list"
 
-#: includes/modules/post/post.admin.model.php:121
-msgid "lbl_activated_input_fields"
-msgstr "User define fields presentation"
-
-#: includes/modules/post/post.admin.model.php:122
+#: includes/x2b_modules/board/board.admin.model.php:248
+#: includes/x2b_modules/post/post.admin.model.php:122
 msgid "lbl_drag_from_left"
 msgstr "Drag from the left section to display on the list"
 
-#: includes/modules/post/post.admin.model.php:126
+#: includes/x2b_modules/board/board.admin.model.php:252
+#: includes/x2b_modules/post/post.admin.model.php:126
 msgid "cmd_reset_configuration"
 msgstr "Reset configuration"
 
-#: includes/modules/post/post.class.php:24
-msgid "lbl_public"
-msgstr "Public"
+#: includes/x2b_modules/board/board.admin.model.php:282
+#: includes/x2b_modules/board/board.admin.model.php:317
+msgid "lbl_field_introduction"
+msgstr "Field introduction"
 
-#: includes/modules/post/post.class.php:25
-msgid "lbl_secret"
-msgstr "Secret"
+#: includes/x2b_modules/board/board.admin.view.php:29
+msgid "msg_fs_chmod_file_undefined"
+msgstr "FS_CHMOD_FILE in wp-config.php is undefined on Linux environment"
 
-#: includes/modules/post/post.controller.php:135
-#: includes/modules/post/post.controller.php:465
+#: includes/x2b_modules/board/board.admin.view.php:264
+msgid "msg_invalid_timezone"
+msgstr "%1$s is not a valie timezone ID for x2board"
+
+#: includes/x2b_modules/board/board.admin.view.php:265
+msgid "desc_choose_valid_timezone"
+msgstr ""
+"Please visit <a href=\"%1$soptions-general.php\">Settings Generals page</a> "
+"and choose valid timezone ID like Asia/Seoul"
+
+#: includes/x2b_modules/board/board.controller.php:31
+msgid "msg_error_board_controller_init"
+msgstr "Weird error occured from boardController::init()"
+
+#: includes/x2b_modules/board/board.controller.php:117
+#: includes/x2b_modules/board/board.view.php:264
+#: includes/x2b_modules/board/board.view.php:558
+#: includes/x2b_modules/board/board.view.php:596
+#: includes/x2b_modules/board/board.view.php:607
+#: includes/x2b_modules/board/board.view.php:697
+#: includes/x2b_modules/comment/comment.controller.php:42
+#: includes/x2b_modules/comment/comment.controller.php:45
+#: includes/x2b_modules/comment/comment.controller.php:81
+#: includes/x2b_modules/comment/comment.controller.php:100
+#: includes/x2b_modules/comment/comment.controller.php:114
+#: includes/x2b_modules/comment/comment.controller.php:353
+#: includes/x2b_modules/comment/comment.controller.php:356
+#: includes/x2b_modules/comment/comment.controller.php:611
+#: includes/x2b_modules/comment/wp_admin_class/wp_latest_comments.php:66
+#: includes/x2b_modules/file/file.controller.php:648
+#: includes/x2b_modules/file/wp_admin_class/wp_latest_files.php:78
+#: includes/x2b_modules/post/post.controller.php:61
+#: includes/x2b_modules/post/post.controller.php:64
+#: includes/x2b_modules/post/post.controller.php:153
+#: includes/x2b_modules/post/post.controller.php:277
+#: includes/x2b_modules/post/post.controller.php:362
+#: includes/x2b_modules/post/post.controller.php:365
+#: includes/x2b_modules/post/post.controller.php:370
+#: includes/x2b_modules/post/post.controller.php:1241
+#: includes/x2b_modules/post/post.model.php:554
+#: includes/x2b_modules/post/wp_admin_class/wp_latest_posts.php:63
+msgid "msg_invalid_request"
+msgstr "Your request is invalid"
+
+#: includes/x2b_modules/board/board.controller.php:252
+#: includes/x2b_modules/post/post.controller.php:135
+#: includes/x2b_modules/post/post.controller.php:465
 msgid "lbl_untitled"
 msgstr "Untitled"
 
-#: includes/modules/post/post.controller.php:253
+#: includes/x2b_modules/board/board.controller.php:281
+msgid "lbl_anonymous"
+msgstr "Anonymous"
+
+#: includes/x2b_modules/board/board.view.php:206
+#: includes/x2b_modules/comment/wp_admin_class/wp_latest_comments.php:188
+#: includes/x2b_modules/file/wp_admin_class/wp_latest_files.php:230
+#: includes/x2b_modules/post/wp_admin_class/wp_latest_posts.php:193
+msgid "lbl_"
+msgstr ""
+
+#: includes/x2b_modules/board/board.view.php:282
+msgid "msg_not_founded"
+msgstr "Failed to find"
+
+#: includes/x2b_modules/board/board.view.php:306
+#: includes/x2b_modules/comment/comment.item.php:231
+#: includes/x2b_modules/post/post.item.php:451
+msgid "msg_secret_post"
+msgstr "This is secret post"
+
+#: includes/x2b_modules/board/board.view.php:511
+msgid "msg_protect_content"
+msgstr "Protected post"
+
+#: includes/x2b_modules/board/board.view.php:563
+msgid "msg_not_allow_comment"
+msgstr "Disallowed comment"
+
+#: includes/x2b_modules/board/wp_admin_class/wp_board_list.php:80
+#: includes/x2b_modules/comment/wp_admin_class/wp_latest_comments.php:166
+#: includes/x2b_modules/file/wp_admin_class/wp_latest_files.php:181
+#: includes/x2b_modules/post/wp_admin_class/wp_latest_posts.php:170
+msgid "lbl_installed_wp_page"
+msgstr "Board installed WP page name"
+
+#: includes/x2b_modules/board/wp_admin_class/wp_board_list.php:82
+#: includes/x2b_modules/comment/wp_admin_class/wp_latest_comments.php:170
+#: includes/x2b_modules/file/wp_admin_class/wp_latest_files.php:186
+#: includes/x2b_modules/post/wp_admin_class/wp_latest_posts.php:175
+msgid "lbl_create_date"
+msgstr "Created date"
+
+#: includes/x2b_modules/board/wp_admin_class/wp_board_list.php:93
+msgid "lbl_visit_page"
+msgstr "Visit page"
+
+#: includes/x2b_modules/board/wp_admin_class/wp_board_list.php:96
+msgid "lbl_configure_board"
+msgstr "Configure the board"
+
+#: includes/x2b_modules/comment/comment.controller.php:97
+#: includes/x2b_modules/post/post.controller.php:608
+#: includes/x2b_modules/post/post.controller.php:612
+msgid "msg_invalid_post"
+msgstr "Invalid post"
+
+#: includes/x2b_modules/comment/comment.controller.php:637
+msgid "fail_to_delete_children_comment"
+msgstr "Failed to delete belonged comments"
+
+#: includes/x2b_modules/comment/comment.item.php:140
+msgid "lbl_no_name"
+msgstr "Anonymous"
+
+#: includes/x2b_modules/comment/wp_admin_class/wp_latest_comments.php:167
+msgid "lbl_comment"
+msgstr "Comment"
+
+#: includes/x2b_modules/comment/wp_admin_class/wp_latest_comments.php:169
+#: includes/x2b_modules/file/wp_admin_class/wp_latest_files.php:185
+#: includes/x2b_modules/post/wp_admin_class/wp_latest_posts.php:174
+msgid "lbl_ipaddress"
+msgstr "IP address"
+
+#: includes/x2b_modules/comment/wp_admin_class/wp_latest_comments.php:171
+#: includes/x2b_modules/file/wp_admin_class/wp_latest_files.php:187
+#: includes/x2b_modules/post/wp_admin_class/wp_latest_posts.php:176
+msgid "lbl_status"
+msgstr "Status"
+
+#: includes/x2b_modules/editor/editor.view.php:95
+#: includes/x2b_modules/editor/editor.view.php:141
+msgid "msg_type_what_you_think"
+msgstr "Type what you think"
+
+#: includes/x2b_modules/file/file.class.php:19
+msgid "lbl_valid"
+msgstr "Valid"
+
+#: includes/x2b_modules/file/file.class.php:20
+msgid "lbl_pending"
+msgstr "Pending"
+
+#: includes/x2b_modules/file/file.controller.php:190
+msgid "msg_not_allowed_filetype"
+msgstr "Your file extension is forbidden"
+
+#: includes/x2b_modules/file/file.controller.php:199
+#: includes/x2b_modules/file/file.controller.php:207
+msgid "msg_exceeds_limit_size"
+msgstr "Appending file size limit exceeded"
+
+#: includes/x2b_modules/file/file.controller.php:522
+#: includes/x2b_modules/file/file.controller.php:643
+#: includes/x2b_modules/file/file.controller.php:680
+msgid "msg_file_not_found"
+msgstr "Failed to find the file"
+
+#: includes/x2b_modules/file/file.controller.php:527
+#: includes/x2b_modules/file/file.controller.php:594
+msgid "msg_not_permitted_download"
+msgstr "You do not have download permission"
+
+#: includes/x2b_modules/file/file.controller.php:578
+msgid "msg_not_allowed_outlink"
+msgstr "You can not download from external link"
+
+#: includes/x2b_modules/file/file.model.php:39
+msgid "lbl_allowed_attach_size"
+msgstr "Attachment file size limit per post"
+
+#: includes/x2b_modules/file/file.model.php:42
+msgid "lbl_allowed_filesize"
+msgstr "Size limit per file"
+
+#: includes/x2b_modules/file/file.model.php:44
+msgid "lbl_allowed_filetypes"
+msgstr "Allowed file exensions"
+
+#: includes/x2b_modules/file/wp_admin_class/wp_latest_files.php:182
+msgid "lbl_filename"
+msgstr "Filename"
+
+#: includes/x2b_modules/file/wp_admin_class/wp_latest_files.php:183
+msgid "lbl_filesize"
+msgstr "File sze"
+
+#: includes/x2b_modules/post/post.admin.model.php:95
+msgid "lbl_basic_user_define_field"
+msgstr "Basic user define fields"
+
+#: includes/x2b_modules/post/post.admin.model.php:105
+msgid "lbl_extended_user_define_field"
+msgstr "Extended user define fields"
+
+#: includes/x2b_modules/post/post.admin.model.php:121
+msgid "lbl_activated_input_fields"
+msgstr "User define fields presentation"
+
+#: includes/x2b_modules/post/post.class.php:24
+msgid "lbl_public"
+msgstr "Public"
+
+#: includes/x2b_modules/post/post.class.php:25
+msgid "lbl_secret"
+msgstr "Secret"
+
+#: includes/x2b_modules/post/post.controller.php:253
 msgid "msg_wp_post_registration_failed"
 msgstr "Failed to register WP post"
 
-#: includes/modules/post/post.controller.php:502
+#: includes/x2b_modules/post/post.controller.php:502
 msgid "msg_wp_post_update_failed"
 msgstr "Failed to update WP post"
 
-#: includes/modules/post/post.model.php:968
+#: includes/x2b_modules/post/post.controller.php:1053
+#: includes/x2b_modules/post/post.controller.php:1057
+#: includes/x2b_modules/post/post.controller.php:1110
+#: includes/x2b_modules/post/post.controller.php:1174
+#: includes/x2b_modules/post/post.controller.php:1181
+#: includes/x2b_modules/post/post.controller.php:1204
+#: includes/x2b_modules/post/post.controller.php:1209
+msgid "msg_move_failed"
+msgstr "Failed to move"
+
+#: includes/x2b_modules/post/post.controller.php:1068
+msgid "msg_delete_failed"
+msgstr "Failed to delete"
+
+#: includes/x2b_modules/post/post.model.php:1018
 msgid "opt_"
 msgstr ""
 
-#: includes/modules/post/wp_admin_class/wp_latest_posts.php:173
+#: includes/x2b_modules/post/wp_admin_class/wp_latest_posts.php:173
 msgid "lbl_readed_count"
 msgstr "Readed count"
-
-#~ msgid "msg_invalid_timezone"
-#~ msgstr "%1$s is not a valie timezone ID for x2board"
-
-#~ msgid "desc_choose_valid_timezone"
-#~ msgstr ""
-#~ "Please visit <a href=\"%1$soptions-general.php\">Settings Generals page</"
-#~ "a> and choose valid timezone ID like Asia/Seoul"
 
 #~ msgid "msg_not_available"
 #~ msgstr "Not available"

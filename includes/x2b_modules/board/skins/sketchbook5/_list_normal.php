@@ -48,7 +48,7 @@ else{
 		<?php endif ?>		
 	<?php endforeach ?> <!-- </block> -->
 	<?php if($grant->manager): ?>	<!-- cond="$grant->manager"  -->
-			<th scope="col" class="m_no"><span><input type="checkbox" onclick="XE.checkboxToggleAll({ doClick:true });" class="iCheck" title="Check All" /></span></th>
+			<th scope="col" class="m_no"><span><input type="checkbox" onclick="checkboxToggleAll({ doClick:true });" class="iCheck" id="to1ggle_all_post" title="Check All" /></span></th>
 	<?php endif ?>					
 		</tr>
 	</thead>
@@ -116,7 +116,7 @@ else{
 			<?php endif ?>
 		<?php endforeach ?>	<!-- </block> -->
 		<?php if($grant->manager): ?><!-- cond="$grant->manager"  -->
-			<td class="check m_no"><input type="checkbox" name="cart" value="<?php echo $post->post_id?>" class="iCheck" title="Check This Article" onclick="doAddDocumentCart(this)" <?php if($post->is_carted()): ?>checked="checked" <?php endif?> /></td>
+			<td class="check m_no"><input type="checkbox" name="cart" value="<?php echo $post->post_id?>" class="iCheck" title="Check This Article" onclick="doAddPostCart(this)" <?php if($post->is_carted()): ?>checked="checked" <?php endif?> /></td>
 		<?php endif ?>	
 		</tr>
 	<?php endforeach ?>
@@ -213,7 +213,7 @@ else{
 			<?php endif ?>
 		<?php endforeach ?>	<!-- </block> -->
 		<?php if($grant->manager): ?>	<!-- cond="$grant->manager"  -->
-			<td class="check m_no"><input type="checkbox" name="cart" value="<?php echo $post->post_id?>" class="iCheck" title="Check This Article" onclick="doAddDocumentCart(this)" <?php if($post->is_carted()): ?>checked="checked" <?php endif?> /></td>
+			<td class="check m_no"><input type="checkbox" name="cart" value="<?php echo $post->post_id?>" class="iCheck" title="Check This Article" onclick="doAddPostCart(this)" <?php if($post->is_carted()): ?>checked="checked" <?php endif?> /></td>
 		<?php endif ?>
 		</tr>
 	<?php endforeach ?>

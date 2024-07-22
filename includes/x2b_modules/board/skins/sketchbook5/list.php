@@ -71,10 +71,6 @@ if($mi->default_style !='viewer'):
 	
 	<!--// 헤더 -->
 	<div class="bd_hd <?php if($post->is_exists()):?> v2<?php endif ?> clear">
-		<?php if(false) { //$mi->breadcrumb=='Y') {
-			// include $skin_path_abs.'_breadcrumb.php';
-		}?>
-
 		<!--// 폰트 버튼 -->
 <?php if($mi->font_btn!='N'):?>
 		<div class="bd_font m_no fr" <?php if($post->is_exists() || $mi->font_btn=='2'):?> style="display:none" <?php endif ?>>
@@ -337,7 +333,7 @@ else {
 					<?php endif ?>
 					<?php if($grant->manager):?><!-- <block cond="$grant->manager"> -->
 						<a class="btn_img" href="<?php echo admin_url('admin.php?page=x2b_disp_board_update&board_id='.$board_id);?>"><i class="ico_16px setup"></i> <?php echo __('cmd_setup', X2B_DOMAIN)?></a>
-						<a class="btn_img" id='btn_control_panel'><i class="tx_ico_chk">✔</i> <?php echo __('cmd_manage_post', X2B_DOMAIN)?></a> 	<!-- onclick="popopen(this.href,'manageDocument');return false" -->
+						<a class="btn_img" id='btn_manage_post' href="<?php echo x2b_get_url('module','post','cmd', X2B_CMD_VIEW_MANAGE_POST, 'post_id', '', 'page', '')?>"><i class="tx_ico_chk">✔</i> <?php echo __('cmd_manage_post', X2B_DOMAIN)?></a>
 					<?php endif?><!-- </block> -->
 				</div>
 			</div>
@@ -415,32 +411,14 @@ else {
 
 	<?php include $skin_path_abs.'_footer.php';?>
 
-	<?php if($grant->manager ):
-		//&& $board->isTreeCategoryActive()):?>
-	<!-- 게시판 관리 기능 시작 -->
-	<div clas1s="x2board-control" id='panel_control' style="margin-top:12px; display:none;">
-		<button type="button" id='btn_move_category' data-board-id='<?php echo $board_id?>' class="x2board-default-button-small"><?php echo __('Move Category to', X2B_DOMAIN)?></button>
-		<select name="target_category">
-			<option value=""><?php echo __('lbl_select_category', X2B_DOMAIN)?></option>
-			<?//php foreach($board->getCategoryList() as $cat_id=>$option_val):?>
-				<option value="<? // echo $cat_id?>">
-				<?// echo str_repeat("&nbsp;&nbsp;",$option_val->depth)?> <?// echo $option_val->category_name?> (<? // echo $option_val->document_count?>)
-				</option>
-			<?//php endforeach?>
-		</select>
-	</div>
-	<!-- 게시판 관리 기능 끝 -->
+	<?php if($grant->manager ): ?>
 	<script>
-	var bToggled = false;
-	jQuery('#btn_control_panel').click(function() {
-		jQuery('#panel_control').slideToggle('slow', function() {
-			if( !bToggled ) {
-				bToggled = true;
-			}
-			else {
-				bToggled = false;
-			}
-		});
+	jQuery('#btn_manage_post').click(function() {
+		let n_width = 500;
+		let n_height = 550;
+		let s_href = jQuery(this).attr('href');
+		window.open(s_href, 'x2board_manage_post', 'top='+(screen.availHeight*0.5-n_height*0.5)+',left='+(screen.availWidth*0.5-n_width*0.5)+',width='+n_width+',height='+n_height);
+		return false;
 	});
 	</script>
 	<?php endif?>

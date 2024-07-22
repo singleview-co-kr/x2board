@@ -951,6 +951,283 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 			}
 			return $str_head . $str_body . $str_tail;
 		}
+
+		/**
+		 * Saved in the session when an administrator selects a post
+		 *
+		 * @return void|BaseObject
+		 * procDocumentAddCart
+		 */
+		public function add_cart_post_ajax() {
+			// Get post_ids
+			$a_post_ids = explode( ',', \X2board\Includes\Classes\Context::get( 'post_ids' ) );
+			if ( ! count( $a_post_ids ) ) {
+				return;
+			}
+
+			// Get board_id of posts
+			global $wpdb;
+			$s_query = 'SELECT `board_id`, `post_id` FROM ' . $wpdb->prefix . 'x2b_posts WHERE `post_id` in (' . implode( ',', $a_post_ids ) . ')';
+			if ( $wpdb->query( $s_query ) === false ) {
+				return new \X2board\Includes\Classes\BaseObject( -1, $wpdb->last_error );
+			} else {
+				$a_result = $wpdb->get_results( $s_query );
+				$wpdb->flush();
+			}
+			unset( $a_post_ids );
+
+			$a_post_ids = array();
+			foreach ( $a_result as $_ => $val ) {
+				$a_post_ids[ $val->board_id ][] = $val->post_id;
+			}
+			if ( ! $a_post_ids || ! count( $a_post_ids ) ) {
+				return new \X2board\Includes\Classes\BaseObject();
+			}
+			// Check if each of board administrators exists. Top-level administator will have a permission to modify every post of all boars.(Even to modify temporarily saved or trashed posts)
+			$o_board_model = \X2board\Includes\get_model( 'board' );
+			$a_board_id  = array_keys( $a_post_ids );
+			$o_logged_info = \X2board\Includes\Classes\Context::get( 'logged_info' );
+
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . 'default-settings.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . 'register-settings.php';
+			for ( $i = 0;$i < count( $a_board_id );$i++ ) {
+				$n_board_id  = $a_board_id[ $i ];
+				if ( $o_logged_info->is_admin != 'Y' ) {
+					$o_grant = $o_board_model->get_grant( $n_board_id, $o_logged_info );
+					if ( ! $o_grant->manager ) {
+						unset( $a_post_ids[ $n_board_id ] );
+						continue;
+					}
+				}
+			}
+			unset($o_logged_info);
+			if ( ! count( $a_post_ids ) ) {
+				return new \X2board\Includes\Classes\BaseObject();
+			}
+			foreach ( $a_post_ids as $n_board_id => $a_post ) {
+				$cnt = count( $a_post );
+				for ( $i = 0;$i < $cnt;$i++ ) {
+					$n_post_id = (int) trim( $a_post[ $i ] );
+					if ( ! $a_post_ids ) {
+						continue;
+					}
+					if ( isset($_SESSION['x2b_post_management'][ $n_post_id ] )) {
+						unset( $_SESSION['x2b_post_management'][ $n_post_id ] );
+					} else {
+						$_SESSION['x2b_post_management'][ $n_post_id ] = true;
+					}
+				}
+			}
+		}
+
+		/**
+		 * Move/ Delete the post in the seession
+		 * @return void|BaseObject
+		 * procDocumentManageCheckedDocument()
+		 */
+		public function manage_carted_post_ajax() {
+			@set_time_limit(0);
+			if ( !\X2board\Includes\Classes\Context::get( 'is_logged' ) ) {
+				return new \X2board\Includes\Classes\BaseObject(-1, __( 'msg_not_permitted', X2B_DOMAIN ) );
+			}
+
+			$s_carted_post_id = \X2board\Includes\Classes\Context::get('carted_post_id');
+			$a_carted_post_id = ( ! is_array( $s_carted_post_id ) ) ? explode( '|@|', $s_carted_post_id ) : $s_carted_post_id;
+			array_map(function ($value) { return (int)$value; }, $a_carted_post_id);
+
+			$o_post_model = \X2board\Includes\get_model( 'post' );
+			foreach( $a_carted_post_id as $n_post_id ) {
+				$o_post = $o_post_model->get_post( $n_post_id );
+				if( ! $o_post->is_granted() ) {
+					return $this->stop('msg_not_permitted');
+				}
+				unset($o_post);
+			}
+			unset( $o_post_model );
+
+			$s_mode = \X2board\Includes\Classes\Context::get('mode');
+			if( $s_mode == 'move' ) {
+				$n_target_category_id = \X2board\Includes\Classes\Context::get('target_category_id');
+				$n_target_board_id = \X2board\Includes\Classes\Context::get('board_id');
+				if( ! $n_target_board_id ) {
+					return new \X2board\Includes\Classes\BaseObject( -1, __( 'msg_move_failed', X2B_DOMAIN ) );
+				}
+				$output = $this->_move_post( $a_carted_post_id, $n_target_board_id, $n_target_category_id );
+				if(!$output->to_bool()) {
+					return new \X2board\Includes\Classes\BaseObject( -1, __( 'msg_move_failed', X2B_DOMAIN ) );
+				}
+
+				// $this->_update_wp_post()  // need to execute?
+
+				$s_msg_code = 'success_moved';
+			}
+			else if( $s_mode =='delete' ) {
+				foreach( $a_carted_post_id as $_ => $n_post_id ) {
+					$output = $this->delete_post( $n_post_id, true );
+					if( ! $output->to_bool() ) {
+						return new \X2board\Includes\Classes\BaseObject(-1, __( 'msg_delete_failed', X2B_DOMAIN ) );
+					}
+				}
+				$s_msg_code = 'success_deleted';
+			}
+			/*else if($type == 'copy') {
+				if(!$module_srl) return new BaseObject(-1, 'msg_move_failed');
+				$output = $oDocumentAdminController->copyDocumentModule($document_srl_list, $module_srl, $category_srl);
+				if(!$output->toBool()) return new BaseObject(-1, 'msg_move_failed');
+				$msg_code = 'success_copied';
+			}
+			else if($type == 'trash') {
+				$args = new stdClass();
+				$args->description = $message_content;
+				$oDB = &DB::getInstance();
+				$oDB->begin();
+				for($i=0;$i<$document_srl_count;$i++) {
+					$args->document_srl = $document_srl_list[$i];
+					$output = $this->moveDocumentToTrash($args);
+					if(!$output || !$output->toBool()) return new BaseObject(-1, 'msg_trash_failed');
+				}
+				$oDB->commit();
+				$msg_code = 'success_trashed';
+			}
+			else if($type == 'cancelDeclare') {
+				$args->document_srl = $document_srl_list;
+				$output = executeQuery('document.deleteDeclaredDocuments', $args);
+				$msg_code = 'success_declare_canceled';
+			}*/
+			$_SESSION['x2b_post_management'] = array();
+		}
+
+		/**
+		 * move a specific post to a board or category
+		 * @param array $post_id_list
+		 * @param int $board_id
+		 * @param int $category_id
+		 * @return BaseObject
+		 * moveDocumentModule($document_srl_list, $module_srl, $category_srl)
+		 */
+		private function _move_post($a_carted_post_id, $n_target_board_id, $n_target_category_id)	{
+			if( ! count( $a_carted_post_id ) ) {
+				return new \X2board\Includes\Classes\BaseObject( -1, __( 'msg_move_failed', X2B_DOMAIN ) );
+			}
+
+			$o_post_model = \X2board\Includes\get_model( 'post' );
+			$o_category_controller = \X2board\Includes\get_controller( 'category' );
+			$o_file_controller = \X2board\Includes\get_controller( 'file' );
+			for( $i = count( $a_carted_post_id ) - 1; $i >= 0; $i-- ) {
+				$n_post_id = $a_carted_post_id[ $i ];
+				$o_post = $o_post_model->get_post( $n_post_id );
+				if( ! $o_post->is_exists() ) {
+					continue;
+				}
+
+				$n_source_category_id = $o_post->get( 'category_id' );
+				// unset($obj);
+				// $obj = $o_post->getObjectVars();
+
+				// ISSUE https://github.com/xpressengine/xe-core/issues/32
+				// $args_doc_origin->document_srl = $n_post_id;
+				// $output_ori = executeQuery('document.getDocument', $args_doc_origin, array('content'));
+				// $obj->content = $output_ori->data->content;
+
+				// Move the attached file if the target board is different
+				if( $n_target_board_id != $o_post->board_id && $o_post->has_uploaded_files() ) {
+					$a_file = $o_post->get_uploaded_files();
+					if( is_array( $a_file ) && count( $a_file ) ) {
+						foreach( $a_file as $o_single_file ) {
+							$a_file_info = array();
+							$a_file_info['tmp_name'] = $o_single_file->uploaded_filename;
+							$a_file_info['name'] = $o_single_file->source_filename;
+							$o_inserted_file = $o_file_controller->insert_file( $a_file_info, $n_target_board_id, $o_post->post_id, $o_single_file->download_count, true );
+							unset( $a_file_info );
+							if( ! $o_inserted_file->to_bool() ) {
+								return $o_inserted_file;
+							}
+
+							if( $o_inserted_file && $o_inserted_file->to_bool() ) {
+								// for image/video files
+								if( $o_single_file->direct_download == 'Y' ) {
+									// $source_filename = substr( $o_single_file->uploaded_filename, 2 );
+									// $target_filename = substr( $o_inserted_file->get( 'uploaded_filename' ), 2 );
+									// $o_post->content = str_replace( $source_filename, $target_filename, $o_post->content );
+									// For binary files
+								}
+								else {
+									// $o_post->content = str_replace( 'file_id='.$o_single_file->file_id, 'file_id='.$o_inserted_file->get('file_id'), $o_post->content );
+									// $o_post->content = str_replace( 'sid='.$o_single_file->sid, 'sid='.$o_inserted_file->get('sid'), $o_post->content );
+								}
+							}
+							unset( $o_inserted_file );
+							// Delete an old file
+							$o_file_controller->delete_file( $o_single_file );
+						}
+					}
+					// Set the all files to be valid
+					$o_file_controller->set_files_valid($o_post->post_id);
+					unset($a_file);
+				}
+
+				global $wpdb;
+				$query = "UPDATE `{$wpdb->prefix}x2b_posts` SET `board_id`='" . esc_sql( intval( $n_target_board_id ) ) . "',
+									`category_id`='" . esc_sql( intval( $n_target_category_id ) ) . "'
+									WHERE `post_id`='" . esc_sql( intval( $n_post_id ) ) . "'";
+				if ( $wpdb->query( $query ) === false ) {
+					return new \X2board\Includes\Classes\BaseObject( -1, __( 'msg_move_failed', X2B_DOMAIN ) );
+				}
+
+				//Move a board of the extra vars
+				$query = "UPDATE `{$wpdb->prefix}x2b_user_define_vars` SET `board_id`='" . esc_sql( intval( $n_target_board_id ) ) . "'
+						WHERE `post_id`='" . esc_sql( intval( $n_post_id ) ) . "'";
+				if ( $wpdb->query( $query ) === false ) {
+					return new \X2board\Includes\Classes\BaseObject( -1, __( 'msg_move_failed', X2B_DOMAIN ) );
+				}
+
+				// update category count for an each board
+				if($n_source_category_id != $n_target_category_id) {
+					if($n_source_category_id) {
+						$o_category_controller->set_board_id( $o_post->get('board_id') );
+						$o_category_controller->update_category_count( $n_source_category_id );
+					}
+					if($n_target_category_id) {
+						$o_category_controller->set_board_id( $n_target_board_id );
+						$o_category_controller->update_category_count( $n_target_category_id );
+					}
+				}
+			}
+			unset( $o_post_model );
+			unset( $o_category_controller );
+			unset( $o_file_controller );
+
+			// move the comment
+			$query = "UPDATE `{$wpdb->prefix}x2b_comments` SET `board_id`='" . esc_sql( intval( $n_target_board_id ) ) . "'
+						WHERE `parent_post_id` in (" . implode( ',', $a_carted_post_id) . ")";
+			if ( $wpdb->query( $query ) === false ) {
+				return new \X2board\Includes\Classes\BaseObject( -1, __( 'msg_move_failed', X2B_DOMAIN ) );
+			}
+			$query = "UPDATE `{$wpdb->prefix}x2b_comments_list` SET `board_id`='" . esc_sql( intval( $n_target_board_id ) ) . "'
+						WHERE `parent_post_id` in (" . implode( ',', $a_carted_post_id) . ")";
+			if ( $wpdb->query( $query ) === false ) {
+				return new \X2board\Includes\Classes\BaseObject( -1, __( 'msg_move_failed', X2B_DOMAIN ) );
+			}
+
+			// move Tags
+			// $query = "UPDATE `{$wpdb->prefix}x2b_tags` SET `board_id`='" . esc_sql( intval( $n_target_board_id ) ) . "'
+			// 			WHERE `parent_post_id` in (" . implode( ',', $a_carted_post_id) . ")";
+			// if ( $wpdb->query( $query ) === false ) {
+			// 	return new \X2board\Includes\Classes\BaseObject( -1, __( 'msg_move_failed', X2B_DOMAIN ) );
+			// }
+
+			// remove from cache
+			$o_cache_handler = \X2board\Includes\Classes\CacheHandler::getInstance( 'object' );
+			if($o_cache_handler->isSupport()) {
+				foreach($a_carted_post_id as $n_post_id) {
+					$s_cache_key = 'post_item:' . \X2board\Includes\get_numbering_path( $n_post_id ) . $n_post_id;
+					$o_cache_handler->delete( $s_cache_key );
+				}
+			}
+			unset($o_cache_handler);
+			return new \X2board\Includes\Classes\BaseObject();
+		}
+
 		/**
 		 * Secure personal private from an extra variable of the documents
 		 * secureDocumentExtraVars($nModuleSrl, $nVarIdx, $sBeginYyyymmdd, $sEndYyyymmdd)

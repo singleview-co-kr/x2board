@@ -162,6 +162,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 				case X2B_CMD_VIEW_MODIFY_COMMENT:
 				case X2B_CMD_VIEW_REPLY_COMMENT:
 				case X2B_CMD_VIEW_DELETE_COMMENT:
+				case X2B_CMD_VIEW_MANAGE_POST:
 					$s_cmd = '_'.$s_cmd;
 					$this->$s_cmd();
 					break;
@@ -738,7 +739,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 		 * @brief display the delete comment form
 		 * dispBoardDeleteComment()
 		 **/
-		public function _view_delete_comment() {
+		private function _view_delete_comment() {
 			// check grant
 			if(!$this->grant->write_comment) {
 				return $this->_disp_message('msg_not_permitted');
@@ -852,6 +853,44 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 				echo '<input type="hidden" name="'.$s_field_name.'" value="'.$s_field_value.'">' . "\n";
 			}
 			unset($a_header);
+		}
+
+		/**
+		 * @brief display post manage popup
+		 **/
+		private function _view_manage_post() {
+			if( ! $this->grant->is_admin ) {
+				return;
+			}
+			$a_post_id = array();
+			$a_flag_list = $_SESSION['x2b_post_management'];
+			if( count( $a_flag_list ) ) {
+				foreach( $a_flag_list as $key => $val ) {
+					if( ! is_bool( $val ) ) {
+						continue;
+					}
+					$a_post_id[] = $key;
+				}
+			}
+			if( count( $a_post_id ) ) {
+				$o_post_model = \X2board\Includes\get_model( 'post' );
+				$a_post = $o_post_model->get_posts( $a_post_id, $this->grant->is_admin );
+				unset( $o_post_model );
+			}
+			else {
+				$a_post = array();
+			}
+			\X2board\Includes\Classes\Context::set( 'post_list', $a_post );
+
+			$o_board_model = \X2board\Includes\get_model( 'board' );
+			$a_board_list = $o_board_model->get_board_list();
+			unset($o_board_model);
+			\X2board\Includes\Classes\Context::set( 'board_list', $a_board_list );
+
+			
+			$this->set_skin_path( X2B_PATH . DIRECTORY_SEPARATOR . 'common'. DIRECTORY_SEPARATOR . 'tpl' );
+			// setup the skin file
+			echo $this->render_skin_file( 'manage_post' );
 		}
 
 		/**

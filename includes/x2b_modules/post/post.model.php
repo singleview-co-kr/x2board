@@ -268,6 +268,56 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postModel' ) ) {
 		}
 
 		/**
+		 * Bringing multiple posts (or paging)
+		 *
+		 * @param array|string $a_post_id
+		 * @param bool         $is_admin
+		 * @param bool         $load_extra_vars
+		 * @param array        $columnList
+		 * @return array value type is documentItem
+		 * function getDocuments($a_post_id, $is_admin = false, $load_extra_vars=true, $columnList = array())
+		 */
+		public function get_posts( $a_post_id, $is_admin = false ) {
+			// Get board_id of posts
+			global $wpdb;
+			$s_query = 'SELECT * FROM ' . $wpdb->prefix . 'x2b_posts WHERE `post_id` in (' . implode( ',', $a_post_id ) . ')';
+			if ( $wpdb->query( $s_query ) === false ) {
+				return new \X2board\Includes\Classes\BaseObject( -1, $wpdb->last_error );
+			} else {
+				$a_post_list = $wpdb->get_results( $s_query );
+				$wpdb->flush();
+			}
+
+			global $G_X2B_CACHE;
+			$a_result = array();
+			foreach ( $a_post_list as $_ => $o_post ) {
+				$n_post_id = $o_post->post_id;
+				if ( ! $n_post_id ) {
+					continue;
+				}
+
+				if ( ! isset( $G_X2B_CACHE['POST_LIST'][ $n_post_id ] ) ) {
+					$o_post_item = null;
+					$o_post_item = new \X2board\Includes\Modules\Post\postItem();
+					$o_post_item->set_attr( $o_post, false );
+					if ( $is_admin ) {
+						$o_post_item->set_grant();
+					}
+					$G_X2B_CACHE['POST_LIST'][ $n_post_id ] = $o_post_item;
+				}
+				$a_result[ $o_post->post_id ] = $G_X2B_CACHE['POST_LIST'][ $n_post_id ];
+			}
+			// if($load_extra_vars) $this->setToAllDocumentExtraVars();
+			$a_post = array();
+			if ( count( $a_result ) ) {
+				foreach ( $a_result as $n_post_id => $val ) {
+					$a_post[ $n_post_id ] = $G_X2B_CACHE['POST_LIST'][ $n_post_id ];
+				}
+			}
+			return $a_post;
+		}
+
+		/**
 		 * 게시판 사용자 포스트 작성 화면용 필드 정뵤 반환
 		 *
 		 * @return array

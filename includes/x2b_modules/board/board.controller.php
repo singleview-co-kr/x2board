@@ -46,6 +46,8 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 				case X2B_CMD_PROC_AJAX_FILE_DELETE:
 				case X2B_CMD_PROC_DOWNLOAD_FILE:
 				case X2B_CMD_PROC_OUTPUT_FILE:
+				case X2B_CMD_PROC_AJAX_POST_ADD_CART:
+				case X2B_CMD_PROC_AJAX_MANAGE_POST:
 					$s_cmd = '_' . $s_cmd;
 					$this->$s_cmd();
 					break;
@@ -117,6 +119,57 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 				);
 			}
 			wp_send_json( array( 'result' => 'success' ) );
+		}
+
+		/**
+		 * @brief request cart post via ajax
+		 **/
+		private function _proc_ajax_post_add_cart() {
+			check_ajax_referer( X2B_AJAX_SECURITY, 'security' );
+			$o_post_controller = \X2board\Includes\get_controller( 'post' );
+			$o_post_controller->add_cart_post_ajax();
+			unset( $o_post_controller );
+			wp_send_json( array( 'result' => 'success' ) );
+		}
+
+		/**
+		 * @brief cart post ajax
+		 **/
+		private function _proc_ajax_manage_post() {
+			check_ajax_referer( X2B_AJAX_SECURITY, 'security' );
+			$s_mode = \X2board\Includes\Classes\Context::get( 'mode' );
+			$n_board_id = intval( \X2board\Includes\Classes\Context::get( 'board_id' ) );
+			if( $s_mode == 'get_category_by_board_id' ) {
+				$o_category_model = \X2board\Includes\get_model( 'category' );
+				$o_category_model->set_board_id( $n_board_id );
+				$a_linear_category = $o_category_model->build_linear_category();
+				unset( $o_category_model );
+				$a_buff = array();
+				if( count( $a_linear_category ) ) {
+					$a_buff[] = '<option value="">' . __( 'lbl_select_category', X2B_DOMAIN ) . '</option>';
+					foreach ( $a_linear_category as $cat_id => $option_val ) {
+						$a_buff[] = '<option value="' . $cat_id . '">' . str_repeat( '&nbsp;&nbsp;', $option_val->depth ) . $option_val->title . '</option>';
+					}
+				}
+				unset( $a_linear_category );
+				wp_send_json(
+					array(
+						'result'   => 'success',
+						'category' => $a_buff,
+					)
+				);
+				unset( $a_buff );
+			}
+			else {
+				$o_post_controller = \X2board\Includes\get_controller( 'post' );
+				$o_post_controller->manage_carted_post_ajax();
+				unset( $o_post_controller );
+				wp_send_json(
+					array(
+						'result'   => 'success',
+					)
+				);
+			}
 		}
 
 		/**
