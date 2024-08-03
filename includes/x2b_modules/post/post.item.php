@@ -218,7 +218,8 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postItem' ) ) {
 			$b_new = false;
 			if ( $this->post_id ) {
 				$n_expiration_sec = 86400; // 60*60*24
-				if ( $n_expiration_sec > 1 && ( current_time( 'timestamp' ) - strtotime( $this->regdate_dt ) ) <= $n_expiration_sec ) {
+				// pass true in a second parameter to tell it to use the GMT offset.
+				if ( $n_expiration_sec > 1 && ( current_time( 'timestamp', true ) - strtotime( $this->regdate_dt ) ) <= $n_expiration_sec ) {
 					$b_new = true;
 				}
 			}

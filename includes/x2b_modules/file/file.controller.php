@@ -291,7 +291,8 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\File\\fileController' ) ) {
 			$a_new_file['file_size']         = @filesize( $filename );
 			$a_new_file['author']            = $logged_info->ID;
 			$a_new_file['sid']               = $o_random->create_secure_salt( 32, 'hex' );
-			$a_new_file['regdate']           = date( 'Y-m-d H:i:s', current_time( 'timestamp' ) );
+			// pass true in a second parameter to tell it to use the GMT offset.
+			$a_new_file['regdate']           = date( 'Y-m-d H:i:s', current_time( 'timestamp', true ) );
 			$a_new_file['ipaddress']         = \X2board\Includes\get_remote_ip();
 
 			global $wpdb;

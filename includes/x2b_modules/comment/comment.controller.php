@@ -135,7 +135,8 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentController' 
 			}
 
 			if ( ! isset( $obj->regdate_dt ) ) {
-				$obj->regdate_dt = date( 'Y-m-d H:i:s', current_time( 'timestamp' ) ); // date("YmdHis");
+				// pass true in a second parameter to tell it to use the GMT offset.
+				$obj->regdate_dt = date( 'Y-m-d H:i:s', current_time( 'timestamp', true ) );
 			}
 
 			// remove iframe and script if not a top administrator on the session.
@@ -421,7 +422,8 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentController' 
 
 			// Update
 			if ( ! isset( $obj->last_update_dt ) ) {
-				$obj->last_update_dt = date( 'Y-m-d H:i:s', current_time( 'timestamp' ) ); // date("YmdHis");
+				// pass true in a second parameter to tell it to use the GMT offset.
+				$obj->last_update_dt = date( 'Y-m-d H:i:s', current_time( 'timestamp', true ) );
 			}
 
 			// sanitize other user input fields, $obj->content has been sanitized enough

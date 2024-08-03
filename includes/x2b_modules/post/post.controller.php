@@ -177,8 +177,9 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 			$a_new_post['list_order']     = intval( $obj->list_order );
 			$a_new_post['status']         = sanitize_text_field( $obj->status );
 			$a_new_post['comment_status'] = sanitize_text_field( $obj->comment_status );
-
-			$s_cur_datetime = date( 'Y-m-d H:i:s', current_time( 'timestamp' ) );
+			
+			// pass true in a second parameter to tell it to use the GMT offset.
+			$s_cur_datetime = date( 'Y-m-d H:i:s', current_time( 'timestamp', true ) );
 			if ( $manual_inserted ) {  // $obj->regdate_dt is set if import
 				$a_new_post['readed_count']   = $obj->readed_count;
 				$a_new_post['comment_count']  = $obj->comment_count;
@@ -862,7 +863,8 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 				unset( $o_cache_handler );
 			}
 			$a_param['comment_count']  = $comment_count;
-			$a_param['last_update_dt'] = date( 'Y-m-d H:i:s', current_time( 'timestamp' ) );
+			// pass true in a second parameter to tell it to use the GMT offset.
+			$a_param['last_update_dt'] = date( 'Y-m-d H:i:s', current_time( 'timestamp', true ) );
 
 			$a_set = array();
 			foreach ( $a_param as $key => $value ) {

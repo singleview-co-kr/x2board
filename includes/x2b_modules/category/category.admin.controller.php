@@ -47,6 +47,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Category\\categoryAdminContr
 			$a_new_cat['category_id']    = \X2board\Includes\get_next_sequence();
 			$a_new_cat['board_id']       = esc_sql( $n_board_id );
 			$a_new_cat['title']          = esc_sql( $new_cat_name );
+			// blank second parameter to ingnore to use the GMT offset.
 			$a_new_cat['regdate_dt']     = date( 'YmdHis', current_time( 'timestamp' ) );
 			$a_new_cat['last_update_dt'] = $a_new_cat['regdate_dt'];
 			$result                      = $wpdb->insert( "{$wpdb->prefix}x2b_categories", $a_new_cat );
@@ -184,6 +185,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Category\\categoryAdminContr
 					$a_data['parent_id']      = $value['parent_id'] ? $value['parent_id'] : 0;
 					$a_data['list_order']     = $list_order;
 					$a_data['is_default']     = $value['is_default'];
+					// blank second parameter to ingnore to use the GMT offset.
 					$a_data['last_update_dt'] = date( 'YmdHis', current_time( 'timestamp' ) );
 					$result                   = $wpdb->update(
 						"{$wpdb->prefix}x2b_categories",
