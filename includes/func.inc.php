@@ -939,7 +939,7 @@ function get_time_gap( $date, $format = 'Y.m.d' ) {
 	if ( $gap < 3600 ) { // 60 * 60
 		$buff = sprintf( $lang_time_gap['mins'], (int) ( $gap / 60 ) + 1 );
 	} elseif ( $gap < 7200 ) {  // 60 * 60 * 2
-		$buff = sprintf( $lang_time_gap['hour'], (int) ( $gap / 60 / 60 ) + 1 );
+		$buff = sprintf( $lang_time_gap['hours'], (int) ( $gap / 60 / 60 ) + 1 );
 	}
 	// elseif($gap < 60 * 60 * 24) {
 	// $buff = sprintf($lang_time_gap['hours'], (int) ($gap / 60 / 60) + 1);
