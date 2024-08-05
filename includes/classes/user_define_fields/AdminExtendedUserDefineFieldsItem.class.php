@@ -159,7 +159,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\AdminExtendedUserDefineField
 									</div>
 								</div>';
 				}
-				if ( ! empty( $this->_a_roles ) ) {
+				if ( ! is_null( $this->_a_roles ) ) {
 					$s_html .= '<div class="attr-row">
 									<label class="attr-name">' . __( 'msg_whom_to_show', X2B_DOMAIN ) . '</label>
 									<div class="attr-value">

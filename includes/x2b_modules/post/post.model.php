@@ -486,22 +486,20 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postModel' ) ) {
 
 			// Expand unspecified variables article about a current visitor to the extension of the language code, the search variable
 			$a_rst = $this->get_post_user_define_vars_from_DB( $post_ids );
-
 			$extra_vars = array();
 			if ( $a_rst !== false && $a_rst ) {
 				foreach ( $a_rst as $_ => $o_val ) {
 					if ( ! isset( $o_val->value ) ) {
 						continue;
 					}
-					if ( ! isset( $extra_vars[ $o_val->board_id ][ $o_val->post_id ][ $o_val->var_idx ][0] ) ) {
-						$extra_vars[ $o_val->board_id ][ $o_val->post_id ][ $o_val->var_idx ][0] = trim( $o_val->value );
+					if ( ! isset( $extra_vars[ $o_val->board_id ][ $o_val->post_id ][ $o_val->eid ][0] ) ) {
+						$extra_vars[ $o_val->board_id ][ $o_val->post_id ][ $o_val->eid ][0] = trim( $o_val->value );
 					}
-					$o_val->lang_code = 'ko';
-					$extra_vars[ $o_val->post_id ][ $o_val->var_idx ][ $o_val->lang_code ] = trim( $o_val->value );
+					$extra_vars[ $o_val->post_id ][ $o_val->eid ][ 'ko' ] = trim( $o_val->value );
 				}
 			}
 
-			$user_lang_code = 'ko';
+			$user_lang_code = $post_lang_code = 'ko';
 			for ( $i = 0, $c = count( $post_ids );$i < $c;$i++ ) {
 				$n_post_id = $post_ids[ $i ];
 				unset( $vars );
@@ -513,13 +511,12 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postModel' ) ) {
 
 				if ( isset( $extra_vars[ $n_post_id ] ) ) {
 					$vars           = $extra_vars[ $n_post_id ];  // user define field의 실제 입력값 추출
-					$post_lang_code = 'ko';
 					// Expand the variable processing
 					if ( count( $extra_keys ) ) {
-						foreach ( $extra_keys as $n_idx => $key ) {
-							$extra_keys[ $n_idx ] = clone($key);
-							if ( isset( $vars[ $n_idx ] ) ) {
-								$val = $vars[ $n_idx ];
+						foreach ( $extra_keys as $_ => $key ) {
+							$extra_keys[ $key->eid ] = clone($key);
+							if ( isset( $vars[ $key->eid ] ) ) {
+								$val = $vars[ $key->eid ];
 								if ( isset( $val[ $user_lang_code ] ) ) {
 									$v = $val[ $user_lang_code ];
 								} elseif ( isset( $val[ $post_lang_code ] ) ) {
@@ -530,15 +527,11 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postModel' ) ) {
 							} else {
 								$v = null;
 							}
-							$extra_keys[ $n_idx ]->value = $v;
+							$extra_keys[ $key->eid ]->value = $v;
 						}
 					}
 				}
-
-				unset( $evars );
-				$evars = new \X2board\Includes\Classes\GuestUserDefineFields(); // $n_board_id);
-				$evars->set_user_define_keys_2_display( $extra_keys );
-				$G_X2B_CACHE['EXTRA_VARS'][ $n_post_id ] = $evars->get_user_define_vars();
+				$G_X2B_CACHE['EXTRA_VARS'][ $n_post_id ] = $extra_keys;
 			}
 		}
 

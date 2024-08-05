@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: x2board\n"
-"POT-Creation-Date: 2024-07-21 11:41+0900\n"
-"PO-Revision-Date: 2024-07-21 11:42+0900\n"
+"POT-Creation-Date: 2024-08-05 17:40+0900\n"
+"PO-Revision-Date: 2024-08-05 17:41+0900\n"
 "Last-Translator: singleviewcokr <singleviewcokr@gmail.com>\n"
 "Language-Team: \n"
 "Language: ko_KR\n"
@@ -149,6 +149,7 @@ msgstr ""
 
 #: includes/admin/tpl/board_list.php:23 includes/admin/tpl/latest_list.php:29
 #: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:431
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:884
 msgid "lbl_search"
 msgstr "검색"
 
@@ -829,7 +830,7 @@ msgid "lbl_update_category"
 msgstr "수정 카테고리"
 
 #: includes/admin/tpl/settings-page.php:526
-#: includes/x2b_modules/category/category.admin.controller.php:276
+#: includes/x2b_modules/category/category.admin.controller.php:278
 #: includes/x2b_modules/category/category.admin.model.php:121
 msgid "lbl_default_category"
 msgstr "기본 선택 카테고리"
@@ -901,19 +902,19 @@ msgid "msg_invalid_configuration"
 msgstr "게시판 설정에 문제가 있습니다"
 
 #: includes/classes/ModuleObject.class.php:98
-#: includes/x2b_modules/board/board.view.php:293
+#: includes/x2b_modules/board/board.view.php:292
 #: includes/x2b_modules/board/board.view.php:498
 #: includes/x2b_modules/board/board.view.php:550
 #: includes/x2b_modules/board/board.view.php:587
 #: includes/x2b_modules/comment/comment.controller.php:120
-#: includes/x2b_modules/comment/comment.controller.php:378
-#: includes/x2b_modules/comment/comment.controller.php:540
-#: includes/x2b_modules/comment/comment.controller.php:618
-#: includes/x2b_modules/file/file.controller.php:507
+#: includes/x2b_modules/comment/comment.controller.php:379
+#: includes/x2b_modules/comment/comment.controller.php:542
+#: includes/x2b_modules/comment/comment.controller.php:620
+#: includes/x2b_modules/file/file.controller.php:508
 #: includes/x2b_modules/post/post.controller.php:83
 #: includes/x2b_modules/post/post.controller.php:93
-#: includes/x2b_modules/post/post.controller.php:616
-#: includes/x2b_modules/post/post.controller.php:1031
+#: includes/x2b_modules/post/post.controller.php:625
+#: includes/x2b_modules/post/post.controller.php:1041
 msgid "msg_not_permitted"
 msgstr "권한이 없습니다"
 
@@ -1002,7 +1003,7 @@ msgid "lbl_hiding"
 msgstr "숨김"
 
 #: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:138
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:678
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:696
 msgid "lbl_notice"
 msgstr "공지사항"
 
@@ -1029,7 +1030,7 @@ msgid "lbl_allow_notice"
 msgstr "공지사항 허용"
 
 #: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:328
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:695
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:713
 msgid "lbl_allow_comment"
 msgstr "댓글 허용"
 
@@ -1041,43 +1042,63 @@ msgstr "플레이스홀더"
 msgid "lbl_printing_code"
 msgstr ""
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:602
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:543
+msgid "desc_privacy_secured"
+msgstr "개인 정보 보호를 위해 숨김"
+
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:620
 #: includes/x2b_modules/board/board.controller.php:149
 msgid "lbl_select_category"
 msgstr "카테고리 선택"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:637
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:639
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:655
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:657
 msgid "lbl_writer"
 msgstr "글쓴이"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:643
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:661
 msgid "lbl_password"
 msgstr "비밀번호"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:674
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:692
 msgid "lbl_title_bold"
 msgstr "제목 굵게"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:696
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:714
 msgid "lbl_disallow_commentt"
 msgstr "댓글 금지"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:718
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:736
 #: includes/classes/user_define_fields/UserDefineFields.class.php:357
 msgid "lbl_email_address"
 msgstr "이메일 주소"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:800
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:818
 #: includes/classes/user_define_fields/UserDefineFields.class.php:135
 msgid "lbl_tag"
 msgstr "태그"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:803
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:821
 msgid "about_tag"
 msgstr "태그 : 쉼표(,)를 이용하여 복수 등록"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:886
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:883
+msgid "lbl_kr_zipcode"
+msgstr "한국 우편번호"
+
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:887
+msgid "lbl_address"
+msgstr "주소"
+
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:890
+msgid "lbl_address_detail"
+msgstr "상세 주소"
+
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:893
+msgid "lbl_address_extra"
+msgstr "참고 항목"
+
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:941
 msgid "cmd_select"
 msgstr "선택하세요"
 
@@ -1209,12 +1230,12 @@ msgid "desc_user_define_field_email_address"
 msgstr "사용자 정의 이메일 주소 필드입니다"
 
 #: includes/classes/user_define_fields/UserDefineFields.class.php:377
-msgid "lbl_zip_address"
-msgstr "사용자 정의 우편 주소"
+msgid "lbl_kr_zip"
+msgstr "한국 우편 주소"
 
 #: includes/classes/user_define_fields/UserDefineFields.class.php:390
-msgid "desc_user_define_field_zip_address"
-msgstr "사용자 정의 우편 주소 필드입니다"
+msgid "desc_user_define_field_kr_zip"
+msgstr "사용자 정의 한국 우편 주소 필드입니다"
 
 #: includes/classes/user_define_fields/UserDefineListFields.class.php:39
 msgid "desc_user_define_field_no"
@@ -1264,17 +1285,17 @@ msgstr "댓글 가능 여부"
 msgid "msg_invalid_board_id"
 msgstr "%s 경고! shortcode를 통해서 유효하지 않은 board_id를 요청했습니다"
 
-#: includes/func.inc.php:818
+#: includes/func.inc.php:817
 msgid "msg_security_warning_embed"
 msgstr ""
 "보안 문제로 관리자 아이디로는 embed를 볼 수 없습니다. 확인하려면 다른 아이"
 "디로 접속하세요"
 
-#: includes/func.inc.php:933
+#: includes/func.inc.php:932
 msgid "lbl_mins_ago"
 msgstr "%d분 전"
 
-#: includes/func.inc.php:934
+#: includes/func.inc.php:933
 msgid "lbl_hrs_ago"
 msgstr "%d시간 전"
 
@@ -1360,7 +1381,7 @@ msgid "msg_error_board_controller_init"
 msgstr "boardController::init()에서 알 수 없는 오류가 발생했습니다"
 
 #: includes/x2b_modules/board/board.controller.php:117
-#: includes/x2b_modules/board/board.view.php:264
+#: includes/x2b_modules/board/board.view.php:263
 #: includes/x2b_modules/board/board.view.php:558
 #: includes/x2b_modules/board/board.view.php:596
 #: includes/x2b_modules/board/board.view.php:607
@@ -1370,28 +1391,28 @@ msgstr "boardController::init()에서 알 수 없는 오류가 발생했습니�
 #: includes/x2b_modules/comment/comment.controller.php:81
 #: includes/x2b_modules/comment/comment.controller.php:100
 #: includes/x2b_modules/comment/comment.controller.php:114
-#: includes/x2b_modules/comment/comment.controller.php:353
-#: includes/x2b_modules/comment/comment.controller.php:356
-#: includes/x2b_modules/comment/comment.controller.php:611
+#: includes/x2b_modules/comment/comment.controller.php:354
+#: includes/x2b_modules/comment/comment.controller.php:357
+#: includes/x2b_modules/comment/comment.controller.php:613
 #: includes/x2b_modules/comment/wp_admin_class/wp_latest_comments.php:66
-#: includes/x2b_modules/file/file.controller.php:648
+#: includes/x2b_modules/file/file.controller.php:649
 #: includes/x2b_modules/file/wp_admin_class/wp_latest_files.php:78
 #: includes/x2b_modules/post/post.controller.php:61
 #: includes/x2b_modules/post/post.controller.php:64
 #: includes/x2b_modules/post/post.controller.php:153
-#: includes/x2b_modules/post/post.controller.php:277
-#: includes/x2b_modules/post/post.controller.php:362
-#: includes/x2b_modules/post/post.controller.php:365
-#: includes/x2b_modules/post/post.controller.php:370
-#: includes/x2b_modules/post/post.controller.php:1241
-#: includes/x2b_modules/post/post.model.php:554
+#: includes/x2b_modules/post/post.controller.php:299
+#: includes/x2b_modules/post/post.controller.php:384
+#: includes/x2b_modules/post/post.controller.php:387
+#: includes/x2b_modules/post/post.controller.php:392
+#: includes/x2b_modules/post/post.controller.php:1251
+#: includes/x2b_modules/post/post.model.php:547
 #: includes/x2b_modules/post/wp_admin_class/wp_latest_posts.php:63
 msgid "msg_invalid_request"
 msgstr "잘못된 접근입니다"
 
 #: includes/x2b_modules/board/board.controller.php:252
 #: includes/x2b_modules/post/post.controller.php:135
-#: includes/x2b_modules/post/post.controller.php:465
+#: includes/x2b_modules/post/post.controller.php:487
 msgid "lbl_untitled"
 msgstr "제목 없음"
 
@@ -1406,13 +1427,13 @@ msgstr "익명"
 msgid "lbl_"
 msgstr ""
 
-#: includes/x2b_modules/board/board.view.php:282
+#: includes/x2b_modules/board/board.view.php:281
 msgid "msg_not_founded"
 msgstr "찾을 수 없습니다"
 
-#: includes/x2b_modules/board/board.view.php:306
+#: includes/x2b_modules/board/board.view.php:305
 #: includes/x2b_modules/comment/comment.item.php:231
-#: includes/x2b_modules/post/post.item.php:451
+#: includes/x2b_modules/post/post.item.php:452
 msgid "msg_secret_post"
 msgstr "비밀글입니다"
 
@@ -1447,12 +1468,12 @@ msgid "lbl_configure_board"
 msgstr "게시판 설정하기"
 
 #: includes/x2b_modules/comment/comment.controller.php:97
-#: includes/x2b_modules/post/post.controller.php:608
-#: includes/x2b_modules/post/post.controller.php:612
+#: includes/x2b_modules/post/post.controller.php:617
+#: includes/x2b_modules/post/post.controller.php:621
 msgid "msg_invalid_post"
 msgstr "잘못된 게시글입니다"
 
-#: includes/x2b_modules/comment/comment.controller.php:637
+#: includes/x2b_modules/comment/comment.controller.php:639
 msgid "fail_to_delete_children_comment"
 msgstr "대댓글을 삭제하지 못했습니다"
 
@@ -1498,18 +1519,18 @@ msgstr "금지된 첨부 파일 유형입니다"
 msgid "msg_exceeds_limit_size"
 msgstr "첨부 파일 용량 한도를 초과했습니다"
 
-#: includes/x2b_modules/file/file.controller.php:522
-#: includes/x2b_modules/file/file.controller.php:643
-#: includes/x2b_modules/file/file.controller.php:680
+#: includes/x2b_modules/file/file.controller.php:523
+#: includes/x2b_modules/file/file.controller.php:644
+#: includes/x2b_modules/file/file.controller.php:681
 msgid "msg_file_not_found"
 msgstr "파일을 찾을 수 없습니다"
 
-#: includes/x2b_modules/file/file.controller.php:527
-#: includes/x2b_modules/file/file.controller.php:594
+#: includes/x2b_modules/file/file.controller.php:528
+#: includes/x2b_modules/file/file.controller.php:595
 msgid "msg_not_permitted_download"
 msgstr "다운로드 권한이 없습니다"
 
-#: includes/x2b_modules/file/file.controller.php:578
+#: includes/x2b_modules/file/file.controller.php:579
 msgid "msg_not_allowed_outlink"
 msgstr "외부링크에서 다운로드할 수 없습니다"
 
@@ -1553,35 +1574,40 @@ msgstr "공개"
 msgid "lbl_secret"
 msgstr "비밀"
 
-#: includes/x2b_modules/post/post.controller.php:253
+#: includes/x2b_modules/post/post.controller.php:240
 msgid "msg_wp_post_registration_failed"
 msgstr "워드프레스 포스트 등록 실패했습니다"
 
-#: includes/x2b_modules/post/post.controller.php:502
+#: includes/x2b_modules/post/post.controller.php:524
 msgid "msg_wp_post_update_failed"
 msgstr "워드프레스 포스트 수정 실패했습니다"
 
-#: includes/x2b_modules/post/post.controller.php:1053
-#: includes/x2b_modules/post/post.controller.php:1057
-#: includes/x2b_modules/post/post.controller.php:1110
-#: includes/x2b_modules/post/post.controller.php:1174
-#: includes/x2b_modules/post/post.controller.php:1181
-#: includes/x2b_modules/post/post.controller.php:1204
-#: includes/x2b_modules/post/post.controller.php:1209
+#: includes/x2b_modules/post/post.controller.php:1063
+#: includes/x2b_modules/post/post.controller.php:1067
+#: includes/x2b_modules/post/post.controller.php:1120
+#: includes/x2b_modules/post/post.controller.php:1184
+#: includes/x2b_modules/post/post.controller.php:1191
+#: includes/x2b_modules/post/post.controller.php:1214
+#: includes/x2b_modules/post/post.controller.php:1219
 msgid "msg_move_failed"
 msgstr "게시글 이동을 실패했습니다"
 
-#: includes/x2b_modules/post/post.controller.php:1068
+#: includes/x2b_modules/post/post.controller.php:1078
 msgid "msg_delete_failed"
 msgstr "게시글 삭제를 실패했습니다"
 
-#: includes/x2b_modules/post/post.model.php:1018
+#: includes/x2b_modules/post/post.model.php:1011
 msgid "opt_"
 msgstr ""
 
 #: includes/x2b_modules/post/wp_admin_class/wp_latest_posts.php:173
 msgid "lbl_readed_count"
 msgstr "조회 수"
+
+#, fuzzy
+#~| msgid "lbl_ipaddress"
+#~ msgid "lbl_address_3"
+#~ msgstr "IP 주소"
 
 #, fuzzy
 #~| msgid "name_select_target_board"

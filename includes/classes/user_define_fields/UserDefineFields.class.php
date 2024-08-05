@@ -179,7 +179,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineFields' ) ) {
 					'description'     => '', // admin's memo
 					'introduction'    => __( 'desc_user_define_field_text_hidden', X2B_DOMAIN ), // admin's memo
 					'required'        => '',
-					'show_document'   => '',
+					// 'show_document'   => '',
 					'hidden'          => '',
 					'close_button'    => 'yes',
 					'display_on_list' => true,
@@ -199,7 +199,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineFields' ) ) {
 					'description'     => '', // admin's memo
 					'introduction'    => __( 'desc_user_define_field_selectbox', X2B_DOMAIN ), // admin's memo
 					'required'        => '',
-					'show_document'   => '',
+					// 'show_document'   => '',
 					'close_button'    => 'yes',
 					'display_on_list' => true,
 				),
@@ -218,7 +218,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineFields' ) ) {
 					'description'     => '', // admin's memo
 					'introduction'    => __( 'desc_user_define_field_radio_button', X2B_DOMAIN ), // admin's memo
 					'required'        => '',
-					'show_document'   => '',
+					// 'show_document'   => '',
 					'close_button'    => 'yes',
 					'display_on_list' => true,
 				),
@@ -236,7 +236,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineFields' ) ) {
 					'description'     => '', // admin's memo
 					'introduction'    => __( 'desc_user_define_field_checkbox', X2B_DOMAIN ), // admin's memo
 					'required'        => '',
-					'show_document'   => '',
+					// 'show_document'   => '',
 					'close_button'    => 'yes',
 					'display_on_list' => true,
 				),
@@ -253,7 +253,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineFields' ) ) {
 					'default_value'   => '',
 					'placeholder'     => '',
 					'required'        => '',
-					'show_document'   => '',
+					// 'show_document'   => '',
 					'description'     => '', // admin's memo
 					'introduction'    => __( 'desc_user_define_field_textarea', X2B_DOMAIN ), // admin's memo
 					'close_button'    => 'yes',
@@ -272,7 +272,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineFields' ) ) {
 					'default_value'   => '',
 					'placeholder'     => '',
 					'required'        => '',
-					'show_document'   => '',
+					// 'show_document'   => '',
 					'description'     => '', // admin's memo
 					'introduction'    => __( 'desc_user_define_field_wp_editor', X2B_DOMAIN ), // admin's memo
 					'close_button'    => 'yes',
@@ -289,7 +289,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineFields' ) ) {
 					'permission'      => '',
 					'roles'           => array(),
 					'default_value'   => '',
-					'show_document'   => '',
+					// 'show_document'   => '',
 					'description'     => '', // admin's memo
 					'introduction'    => __( 'desc_user_define_field_html', X2B_DOMAIN ), // admin's memo
 					'close_button'    => 'yes',
@@ -307,7 +307,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineFields' ) ) {
 					'permission'      => '',
 					'roles'           => array(),
 					'default_value'   => '',
-					'show_document'   => '',
+					// 'show_document'   => '',
 					'description'     => '', // admin's memo
 					'introduction'    => __( 'desc_user_define_field_shortcode', X2B_DOMAIN ), // admin's memo
 					'close_button'    => 'yes',
@@ -327,7 +327,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineFields' ) ) {
 					'default_value'   => '',
 					'placeholder'     => '',
 					'required'        => '',
-					'show_document'   => '',
+					// 'show_document'   => '',
 					'description'     => '', // admin's memo
 					'introduction'    => __( 'desc_user_define_field_date_select', X2B_DOMAIN ), // admin's memo
 					'close_button'    => 'yes',
@@ -346,7 +346,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineFields' ) ) {
 					'default_value'   => '',
 					'placeholder'     => '',
 					'required'        => '',
-					'show_document'   => '',
+					// 'show_document'   => '',
 					'description'     => '', // admin's memo
 					'introduction'    => __( 'desc_user_define_field_time_select', X2B_DOMAIN ), // admin's memo
 					'close_button'    => 'yes',
@@ -365,29 +365,29 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineFields' ) ) {
 					'default_value'   => '',
 					'placeholder'     => '',
 					'required'        => '',
-					'show_document'   => '',
+					// 'show_document'   => '',
 					'description'     => '', // admin's memo
 					'introduction'    => __( 'desc_user_define_field_email_address', X2B_DOMAIN ), // admin's memo
 					'hidden'          => '',
 					'close_button'    => 'yes',
 					'display_on_list' => true,
 				),
-				'address'   => array(
-					'field_type'      => 'address',
-					'field_label'     => __( 'lbl_zip_address', X2B_DOMAIN ),
+				'kr_zip'   => array(
+					'field_type'      => 'kr_zip',
+					'field_label'     => __( 'lbl_kr_zip', X2B_DOMAIN ),
 					'field_name'      => '',
-					'class'           => 'x2board-attr-address',
+					'class'           => 'x2board-attr-krzip',
 					'custom_class'    => '',
 					'meta_key'        => '',
 					'search'          => 'N',
-					'permission'      => '',
+					'permission'      => 'all',
 					'roles'           => array(),
 					'default_value'   => '',
 					'placeholder'     => '',
 					'required'        => '',
-					'show_document'   => '',
+					// 'show_document'   => null,
 					'description'     => '', // admin's memo
-					'introduction'    => __( 'desc_user_define_field_zip_address', X2B_DOMAIN ), // admin's memo
+					'introduction'    => __( 'desc_user_define_field_kr_zip', X2B_DOMAIN ), // admin's memo
 					'close_button'    => 'yes',
 					'display_on_list' => false,
 				),
@@ -402,7 +402,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineFields' ) ) {
 					'roles' => array(),
 					'default_value' => '',
 					'description' => '', // admin's memo
-					'show_document' => '',
+					// 'show_document' => '',
 					'close_button' => 'yes',
 					'display_on_list' => true
 				)

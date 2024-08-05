@@ -216,21 +216,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 			unset( $a_insert_key );
 			unset( $a_insert_data );
 
-			// Insert all extended user defined variables if the post successfully inserted.
-			$o_post_model                  = \X2board\Includes\get_model( 'post' );
-			$a_user_define_extended_fields = $o_post_model->get_user_define_extended_fields( $a_new_post['board_id'] );
-			unset( $o_post_model );
-
-			// do not store default field into tbl::x2b_user_define_vars
-			if ( count( $a_user_define_extended_fields ) ) {
-				foreach ( $a_user_define_extended_fields as $idx => $o_user_define_item ) {
-					$o_user_input_value = \X2board\Includes\Classes\Context::get( $o_user_define_item->eid );
-					if ( $o_user_input_value == null ) {
-						continue;
-					}
-					$this->_insert_user_defined_value( $a_new_post['board_id'], $a_new_post['post_id'], $idx, $o_user_input_value, $o_user_define_item->eid );
-				}
-			}
+			$this->_get_user_define_extended_fields( $a_new_post['board_id'], $a_new_post['post_id'] );
 
 			// Update the category if the category_id exists.
 			if ( $obj->category_id ) {
@@ -262,7 +248,42 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 		}
 
 		/**
-		 * Insert extra vaiable to the documents table
+		 * Insert all extended user defined variables if the post successfully inserted.
+		 *
+		 * @param int    $n_board_id
+		 * @param int    $n_post_id
+		 * @return void
+		 */
+		private function _get_user_define_extended_fields( $n_board_id, $n_post_id ) {
+			$o_post_model                  = \X2board\Includes\get_model( 'post' );
+			$a_user_define_extended_fields = $o_post_model->get_user_define_extended_fields( $n_board_id );
+			unset( $o_post_model );
+
+			// do not store default field into tbl::x2b_user_define_vars
+			if ( count( $a_user_define_extended_fields ) ) {
+				foreach ( $a_user_define_extended_fields as $idx => $o_user_define_item ) {
+					if( $o_user_define_item->type == 'kr_zip' ) {
+						$s_krzip_code = esc_sql( \X2board\Includes\Classes\Context::get( $o_user_define_item->eid . '_krzip' ) );
+						$s_krzip_addr_1 = esc_sql( \X2board\Includes\Classes\Context::get( $o_user_define_item->eid . '_address_1' ) );
+						$s_krzip_addr_2 = esc_sql( \X2board\Includes\Classes\Context::get( $o_user_define_item->eid . '_address_2' ) );
+						$s_krzip_addr_3 = esc_sql( \X2board\Includes\Classes\Context::get( $o_user_define_item->eid . '_address_3' ) );
+						$o_user_input_value = $s_krzip_code . '|@|' . $s_krzip_addr_1 . '|@|' . $s_krzip_addr_2 . '|@|' . $s_krzip_addr_3;
+					}
+					else {
+						$o_user_input_value = \X2board\Includes\Classes\Context::get( $o_user_define_item->eid );
+					}
+
+					if ( $o_user_input_value == null ) {
+						continue;
+					}
+					$this->_insert_user_defined_value( $n_board_id, $n_post_id, $idx, $o_user_input_value, $o_user_define_item->eid );
+				}
+			}
+			unset( $a_user_define_extended_fields );
+		}
+
+		/**
+		 * Insert extra vaiable to the post table
 		 * insertDocumentExtraVar($module_srl, $document_srl, $var_idx, $value, $eid = null, $lang_code = '')
 		 *
 		 * @param int    $n_board_id
@@ -507,21 +528,8 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 			// Remove all extended user defined variables
 			$this->_delete_extended_user_defined_vars_all( $a_new_post['board_id'], $a_new_post['post_id'] );
 
-			// store all extended user defined variables
-			$o_post_model                  = \X2board\Includes\get_model( 'post' );
-			$a_user_define_extended_fields = $o_post_model->get_user_define_extended_fields( $a_new_post['board_id'] );
-			unset( $o_post_model );
+			$this->_get_user_define_extended_fields( $a_new_post['board_id'], $a_new_post['post_id'] );
 
-			// do not store default field into tbl::x2b_user_define_vars
-			if ( count( $a_user_define_extended_fields ) ) {
-				foreach ( $a_user_define_extended_fields as $idx => $o_user_define_item ) {
-					$o_user_input_value = \X2board\Includes\Classes\Context::get( $o_user_define_item->eid );
-					if ( $o_user_input_value == null ) {
-						continue;
-					}
-					$this->_insert_user_defined_value( $a_new_post['board_id'], $a_new_post['post_id'], $idx, $o_user_input_value, $o_user_define_item->eid );
-				}
-			}
 			$o_file_controller = \X2board\Includes\get_controller( 'file' );
 			$o_file_controller->set_files_valid( $a_new_post['post_id'] );
 			unset( $o_file_controller );
@@ -1231,7 +1239,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 		}
 
 		/**
-		 * Secure personal private from an extra variable of the documents
+		 * Secure personal private from an extra variable of the post
 		 * secureDocumentExtraVars($nModuleSrl, $nVarIdx, $sBeginYyyymmdd, $sEndYyyymmdd)
 		 *
 		 * @param int $module_srl

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: x2board\n"
-"POT-Creation-Date: 2024-07-21 11:42+0900\n"
-"PO-Revision-Date: 2024-07-21 11:52+0900\n"
+"POT-Creation-Date: 2024-08-05 17:42+0900\n"
+"PO-Revision-Date: 2024-08-05 17:44+0900\n"
 "Last-Translator: singleviewcokr <singleviewcokr@gmail.com>\n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -152,6 +152,7 @@ msgstr ""
 
 #: includes/admin/tpl/board_list.php:23 includes/admin/tpl/latest_list.php:29
 #: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:431
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:884
 msgid "lbl_search"
 msgstr "Search"
 
@@ -817,7 +818,7 @@ msgid "lbl_update_category"
 msgstr "Updating category"
 
 #: includes/admin/tpl/settings-page.php:526
-#: includes/x2b_modules/category/category.admin.controller.php:276
+#: includes/x2b_modules/category/category.admin.controller.php:278
 #: includes/x2b_modules/category/category.admin.model.php:121
 msgid "lbl_default_category"
 msgstr "Default category"
@@ -889,19 +890,19 @@ msgid "msg_invalid_configuration"
 msgstr "Invalid configuration"
 
 #: includes/classes/ModuleObject.class.php:98
-#: includes/x2b_modules/board/board.view.php:293
+#: includes/x2b_modules/board/board.view.php:292
 #: includes/x2b_modules/board/board.view.php:498
 #: includes/x2b_modules/board/board.view.php:550
 #: includes/x2b_modules/board/board.view.php:587
 #: includes/x2b_modules/comment/comment.controller.php:120
-#: includes/x2b_modules/comment/comment.controller.php:378
-#: includes/x2b_modules/comment/comment.controller.php:540
-#: includes/x2b_modules/comment/comment.controller.php:618
-#: includes/x2b_modules/file/file.controller.php:507
+#: includes/x2b_modules/comment/comment.controller.php:379
+#: includes/x2b_modules/comment/comment.controller.php:542
+#: includes/x2b_modules/comment/comment.controller.php:620
+#: includes/x2b_modules/file/file.controller.php:508
 #: includes/x2b_modules/post/post.controller.php:83
 #: includes/x2b_modules/post/post.controller.php:93
-#: includes/x2b_modules/post/post.controller.php:616
-#: includes/x2b_modules/post/post.controller.php:1031
+#: includes/x2b_modules/post/post.controller.php:625
+#: includes/x2b_modules/post/post.controller.php:1041
 msgid "msg_not_permitted"
 msgstr "Your request is not permitted"
 
@@ -991,7 +992,7 @@ msgid "lbl_hiding"
 msgstr "Hiding"
 
 #: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:138
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:678
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:696
 msgid "lbl_notice"
 msgstr "Notice"
 
@@ -1018,7 +1019,7 @@ msgid "lbl_allow_notice"
 msgstr "Allow notice"
 
 #: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:328
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:695
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:713
 msgid "lbl_allow_comment"
 msgstr "Allow comment"
 
@@ -1030,43 +1031,63 @@ msgstr "Placeholder"
 msgid "lbl_printing_code"
 msgstr ""
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:602
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:543
+msgid "desc_privacy_secured"
+msgstr "Veiled to secure privacy"
+
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:620
 #: includes/x2b_modules/board/board.controller.php:149
 msgid "lbl_select_category"
 msgstr "Select category"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:637
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:639
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:655
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:657
 msgid "lbl_writer"
 msgstr "Writer"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:643
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:661
 msgid "lbl_password"
 msgstr "Password"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:674
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:692
 msgid "lbl_title_bold"
 msgstr "Bold title"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:696
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:714
 msgid "lbl_disallow_commentt"
 msgstr "Forbid comment"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:718
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:736
 #: includes/classes/user_define_fields/UserDefineFields.class.php:357
 msgid "lbl_email_address"
 msgstr "Email"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:800
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:818
 #: includes/classes/user_define_fields/UserDefineFields.class.php:135
 msgid "lbl_tag"
 msgstr "Tag"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:803
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:821
 msgid "about_tag"
 msgstr "Tag: Multiple registration using comma (,)"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:886
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:883
+msgid "lbl_kr_zipcode"
+msgstr "Korea postal zipcode"
+
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:887
+msgid "lbl_address"
+msgstr "Address"
+
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:890
+msgid "lbl_address_detail"
+msgstr "Detail address"
+
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:893
+msgid "lbl_address_extra"
+msgstr "Extra address"
+
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:941
 msgid "cmd_select"
 msgstr "Please select"
 
@@ -1198,12 +1219,12 @@ msgid "desc_user_define_field_email_address"
 msgstr "This is a custom email field"
 
 #: includes/classes/user_define_fields/UserDefineFields.class.php:377
-msgid "lbl_zip_address"
-msgstr "Zip address"
+msgid "lbl_kr_zip"
+msgstr "Korea zip address"
 
 #: includes/classes/user_define_fields/UserDefineFields.class.php:390
-msgid "desc_user_define_field_zip_address"
-msgstr "This is a custom zip address field"
+msgid "desc_user_define_field_kr_zip"
+msgstr "This is a custom Korean zip address field"
 
 #: includes/classes/user_define_fields/UserDefineListFields.class.php:39
 msgid "desc_user_define_field_no"
@@ -1253,17 +1274,17 @@ msgstr "Comment status of the post"
 msgid "msg_invalid_board_id"
 msgstr "warning from %s! you requested invalid board_id via shortcode"
 
-#: includes/func.inc.php:818
+#: includes/func.inc.php:817
 msgid "msg_security_warning_embed"
 msgstr ""
 "Due to security issues, the embed cannot be viewed using the administrator "
 "ID. To check, log in with a different ID"
 
-#: includes/func.inc.php:933
+#: includes/func.inc.php:932
 msgid "lbl_mins_ago"
 msgstr "%d mins ago"
 
-#: includes/func.inc.php:934
+#: includes/func.inc.php:933
 msgid "lbl_hrs_ago"
 msgstr "%d hrs ago"
 
@@ -1348,7 +1369,7 @@ msgid "msg_error_board_controller_init"
 msgstr "Weird error occured from boardController::init()"
 
 #: includes/x2b_modules/board/board.controller.php:117
-#: includes/x2b_modules/board/board.view.php:264
+#: includes/x2b_modules/board/board.view.php:263
 #: includes/x2b_modules/board/board.view.php:558
 #: includes/x2b_modules/board/board.view.php:596
 #: includes/x2b_modules/board/board.view.php:607
@@ -1358,28 +1379,28 @@ msgstr "Weird error occured from boardController::init()"
 #: includes/x2b_modules/comment/comment.controller.php:81
 #: includes/x2b_modules/comment/comment.controller.php:100
 #: includes/x2b_modules/comment/comment.controller.php:114
-#: includes/x2b_modules/comment/comment.controller.php:353
-#: includes/x2b_modules/comment/comment.controller.php:356
-#: includes/x2b_modules/comment/comment.controller.php:611
+#: includes/x2b_modules/comment/comment.controller.php:354
+#: includes/x2b_modules/comment/comment.controller.php:357
+#: includes/x2b_modules/comment/comment.controller.php:613
 #: includes/x2b_modules/comment/wp_admin_class/wp_latest_comments.php:66
-#: includes/x2b_modules/file/file.controller.php:648
+#: includes/x2b_modules/file/file.controller.php:649
 #: includes/x2b_modules/file/wp_admin_class/wp_latest_files.php:78
 #: includes/x2b_modules/post/post.controller.php:61
 #: includes/x2b_modules/post/post.controller.php:64
 #: includes/x2b_modules/post/post.controller.php:153
-#: includes/x2b_modules/post/post.controller.php:277
-#: includes/x2b_modules/post/post.controller.php:362
-#: includes/x2b_modules/post/post.controller.php:365
-#: includes/x2b_modules/post/post.controller.php:370
-#: includes/x2b_modules/post/post.controller.php:1241
-#: includes/x2b_modules/post/post.model.php:554
+#: includes/x2b_modules/post/post.controller.php:299
+#: includes/x2b_modules/post/post.controller.php:384
+#: includes/x2b_modules/post/post.controller.php:387
+#: includes/x2b_modules/post/post.controller.php:392
+#: includes/x2b_modules/post/post.controller.php:1251
+#: includes/x2b_modules/post/post.model.php:547
 #: includes/x2b_modules/post/wp_admin_class/wp_latest_posts.php:63
 msgid "msg_invalid_request"
 msgstr "Your request is invalid"
 
 #: includes/x2b_modules/board/board.controller.php:252
 #: includes/x2b_modules/post/post.controller.php:135
-#: includes/x2b_modules/post/post.controller.php:465
+#: includes/x2b_modules/post/post.controller.php:487
 msgid "lbl_untitled"
 msgstr "Untitled"
 
@@ -1394,13 +1415,13 @@ msgstr "Anonymous"
 msgid "lbl_"
 msgstr ""
 
-#: includes/x2b_modules/board/board.view.php:282
+#: includes/x2b_modules/board/board.view.php:281
 msgid "msg_not_founded"
 msgstr "Failed to find"
 
-#: includes/x2b_modules/board/board.view.php:306
+#: includes/x2b_modules/board/board.view.php:305
 #: includes/x2b_modules/comment/comment.item.php:231
-#: includes/x2b_modules/post/post.item.php:451
+#: includes/x2b_modules/post/post.item.php:452
 msgid "msg_secret_post"
 msgstr "This is secret post"
 
@@ -1435,12 +1456,12 @@ msgid "lbl_configure_board"
 msgstr "Configure the board"
 
 #: includes/x2b_modules/comment/comment.controller.php:97
-#: includes/x2b_modules/post/post.controller.php:608
-#: includes/x2b_modules/post/post.controller.php:612
+#: includes/x2b_modules/post/post.controller.php:617
+#: includes/x2b_modules/post/post.controller.php:621
 msgid "msg_invalid_post"
 msgstr "Invalid post"
 
-#: includes/x2b_modules/comment/comment.controller.php:637
+#: includes/x2b_modules/comment/comment.controller.php:639
 msgid "fail_to_delete_children_comment"
 msgstr "Failed to delete belonged comments"
 
@@ -1486,18 +1507,18 @@ msgstr "Your file extension is forbidden"
 msgid "msg_exceeds_limit_size"
 msgstr "Appending file size limit exceeded"
 
-#: includes/x2b_modules/file/file.controller.php:522
-#: includes/x2b_modules/file/file.controller.php:643
-#: includes/x2b_modules/file/file.controller.php:680
+#: includes/x2b_modules/file/file.controller.php:523
+#: includes/x2b_modules/file/file.controller.php:644
+#: includes/x2b_modules/file/file.controller.php:681
 msgid "msg_file_not_found"
 msgstr "Failed to find the file"
 
-#: includes/x2b_modules/file/file.controller.php:527
-#: includes/x2b_modules/file/file.controller.php:594
+#: includes/x2b_modules/file/file.controller.php:528
+#: includes/x2b_modules/file/file.controller.php:595
 msgid "msg_not_permitted_download"
 msgstr "You do not have download permission"
 
-#: includes/x2b_modules/file/file.controller.php:578
+#: includes/x2b_modules/file/file.controller.php:579
 msgid "msg_not_allowed_outlink"
 msgstr "You can not download from external link"
 
@@ -1541,29 +1562,29 @@ msgstr "Public"
 msgid "lbl_secret"
 msgstr "Secret"
 
-#: includes/x2b_modules/post/post.controller.php:253
+#: includes/x2b_modules/post/post.controller.php:240
 msgid "msg_wp_post_registration_failed"
 msgstr "Failed to register WP post"
 
-#: includes/x2b_modules/post/post.controller.php:502
+#: includes/x2b_modules/post/post.controller.php:524
 msgid "msg_wp_post_update_failed"
 msgstr "Failed to update WP post"
 
-#: includes/x2b_modules/post/post.controller.php:1053
-#: includes/x2b_modules/post/post.controller.php:1057
-#: includes/x2b_modules/post/post.controller.php:1110
-#: includes/x2b_modules/post/post.controller.php:1174
-#: includes/x2b_modules/post/post.controller.php:1181
-#: includes/x2b_modules/post/post.controller.php:1204
-#: includes/x2b_modules/post/post.controller.php:1209
+#: includes/x2b_modules/post/post.controller.php:1063
+#: includes/x2b_modules/post/post.controller.php:1067
+#: includes/x2b_modules/post/post.controller.php:1120
+#: includes/x2b_modules/post/post.controller.php:1184
+#: includes/x2b_modules/post/post.controller.php:1191
+#: includes/x2b_modules/post/post.controller.php:1214
+#: includes/x2b_modules/post/post.controller.php:1219
 msgid "msg_move_failed"
 msgstr "Failed to move"
 
-#: includes/x2b_modules/post/post.controller.php:1068
+#: includes/x2b_modules/post/post.controller.php:1078
 msgid "msg_delete_failed"
 msgstr "Failed to delete"
 
-#: includes/x2b_modules/post/post.model.php:1018
+#: includes/x2b_modules/post/post.model.php:1011
 msgid "opt_"
 msgstr ""
 

@@ -256,7 +256,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			 **/
 			if($n_post_id) {
 				$o_post = $o_post_model->get_post($n_post_id, false, true);
-
 				// if the post is existed
 				if($o_post->is_exists()) { // if($o_post->isExists())
 					// if the board is not consistent with wp page ID, always remember board_id is WP page ID
@@ -311,6 +310,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 
 			// setup the post oject on context
 			\X2board\Includes\Classes\Context::set('post', $o_post);
+			unset($o_post);
 		}
 
 		/**

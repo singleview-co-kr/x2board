@@ -112,10 +112,11 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\GuestUserDefineFields' ) ) {
 			if ( ! is_array( $a_user_define_field ) || count( $a_user_define_field ) < 1 ) {
 				return;
 			}
-			foreach ( $a_user_define_field as $val ) {
+			foreach ( $a_user_define_field as $s_field_type => $val ) {
 				$s_old_val                 = isset( $val->value ) ? $val->value : null;
 				$obj                       = new UserDefineItemForGuest( $val->board_id, $val->idx, $val->name, $val->type, $val->default, $val->desc, $val->is_required, $val->search, $s_old_val, $val->eid );
-				$this->_a_key[ $val->idx ] = $obj;
+				$this->_a_key[ $val->eid ] = $obj;
+				unset($obj);
 			}
 		}
 
@@ -148,6 +149,12 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\GuestUserDefineFields' ) ) {
 				$o_misc_info->s_placeholder       = isset( $a_kb_field['placeholder'] ) ? $a_kb_field['placeholder'] : null;
 				$o_misc_info->s_default_css_class = isset( $a_kb_field['class'] ) ? $a_kb_field['class'] : null;
 				$o_misc_info->s_permission        = isset( $a_kb_field['permission'] ) ? $a_kb_field['permission'] : null;
+				if( $o_misc_info->s_permission == 'roles' ) {
+					$o_misc_info->a_permission_role = $a_kb_field['roles'];
+				}
+				else {
+					$o_misc_info->a_permission_role = null;
+				}
 
 				if ( isset( $a_kb_field['notice_permission'] ) ) {
 					$o_misc_info->b_email_permission = isset( $a_kb_field['email_permission'] ) && $a_kb_field['email_permission'] == 'allow' ? true : false;
@@ -164,7 +171,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\GuestUserDefineFields' ) ) {
 				$o_misc_info->a_row                      = isset( $a_kb_field['row'] ) ? $a_kb_field['row'] : null;
 				$o_user_define_key                       = new UserDefineItemForGuest(
 					$this->_n_board_id,
-					$n_idx++,
+					$n_idx,
 					$a_kb_field['field_name'],
 					$a_kb_field['field_type'],
 					$s_default_value,
@@ -175,7 +182,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\GuestUserDefineFields' ) ) {
 					$a_kb_field['meta_key'],
 					$o_misc_info
 				);
-				$this->_a_key[ $n_idx ]                  = $o_user_define_key;
+				$this->_a_key[ $a_kb_field['meta_key'] ]                  = $o_user_define_key;
 			}
 		}
 	}
@@ -280,6 +287,8 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 		 */
 		var $permission = null;
 
+		var $role = null;
+
 		/**
 		 * Permission
 		 *
@@ -363,7 +372,6 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 			$this->search      = $search;
 			$this->value       = $value;
 			$this->eid         = $eid;
-
 			if ( $o_misc_info ) {
 				if ( $o_misc_info->s_placeholder ) {
 					$this->placeholder = $o_misc_info->s_placeholder;
@@ -394,6 +402,10 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 
 				if ( $o_misc_info->a_row ) {
 					$this->row = $o_misc_info->a_row;
+				}
+
+				if ( $o_misc_info->a_permission_role ) {
+					$this->role = $o_misc_info->a_permission_role;
 				}
 			}
 		}
@@ -520,10 +532,15 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 					}
 					return $value;
 				case 'kr_zip':
-					if ( is_array( $value ) ) {
-						return implode( ' ', $value );
+					$o_the_field = \X2board\Includes\Classes\Context::get('field')[$this->eid];
+					if ( $this->_is_this_accessible( $o_the_field->permission, $o_the_field->role ) ) {
+						unset($o_the_field);
+						if ( is_array( $value ) ) {
+							return implode( ' ', $value );
+						}
+						return $value;
 					}
-					return $value;
+					return __( 'desc_privacy_secured', X2B_DOMAIN );
 				// case 'text' :
 				default:
 					return $value;
@@ -844,6 +861,43 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 						}
 					break;*/
 				// extended user define fields
+				case "kr_zip" :
+					// 카카오 도로명 주소 검색
+					wp_enqueue_script('daum-postcode', '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js', array(), NULL, true);
+					wp_register_script('x2board-kakao-kr-zipcode', X2B_URL . 'includes/' . X2B_MODULES_NAME . '/board/tpl/js/field-kr-zip.js', array('jquery', 'daum-postcode'), X2B_VERSION, true);
+					wp_enqueue_script('x2board-kakao-kr-zipcode');
+
+					$a_value = $o_post->$s_meta_key ? explode( '|@|', esc_attr( $o_post->$s_meta_key ) ) : array( 0 => null, 1 => null, 2 => null );
+
+					$buff[] = '<div class="x2board-attr-row ' .$s_default_class . ' meta-key-'. $s_meta_key .' ' . $s_required . '">';
+					if ( $s_required ) {
+						$s_tmp_required = '<span class="attr-required-text">*</span>';
+					} else {
+						$s_tmp_required = null;
+					}
+
+					$buff[] = 	'<label class="attr-name" for="'. $s_meta_key .'"><span class="field-name">' . $s_name . '</span> ' . $s_tmp_required . '</label>';
+					$buff[] = 		'<div class="attr-value">';
+					$buff[] = 			'<div class="x2board-row-kr-zip">';
+					$buff[] = 				'<input type="text" id="' . $s_meta_key . '_krzip" class="x2board-krzip" name="' . $s_meta_key . '_krzip" value="' . $a_value[0] . '" placeholder="'. __( 'lbl_kr_zipcode', X2B_DOMAIN ) . '" READONLY style="width:160px;">';
+					$buff[] = 				'<button type="button" class="x2board-default-button-small x2board-krzip-search-button" onclick="x2board_kr_zipcode_search(\'' . $s_meta_key . '_krzip\', \'' . $s_meta_key . '_address_1\', \'' . $s_meta_key . '_address_2\', \'' . $s_meta_key . '_address_3\')">' . __( 'lbl_search', X2B_DOMAIN ) . '</button>';
+					$buff[] = 			'</div>';
+					$buff[] = 			'<div class="x2board-row-address-1">';
+					$buff[] = 				'<input type="text" id="' . $s_meta_key . '_address_1" class="x2board-address-1" name="' . $s_meta_key . '_address_1" value="' . $a_value[1] . '" placeholder="' . __( 'lbl_address', X2B_DOMAIN ) . '" READONLY>';
+					$buff[] = 			'</div>';
+					$buff[] = 			'<div class="x2board-row-address-2">';
+					$buff[] = 				'<input type="text" id="' . $s_meta_key . '_address_2" class="x2board-address-2" name="' . $s_meta_key . '_address_2" value="' . $a_value[2] . '" placeholder="' . __( 'lbl_address_detail', X2B_DOMAIN ) . '">';
+					$buff[] = 			'</div>';
+					$buff[] = 			'<div class="x2board-row-address-3">';
+					$buff[] = 				'<input type="text" id="' . $s_meta_key . '_address_3" class="x2board-address-3" name="' . $s_meta_key . '_address_3" value="' . $a_value[3] . '" placeholder="' . __( 'lbl_address_extra', X2B_DOMAIN ) . '" READONLY>';
+					$buff[] = 			'</div>';
+					unset( $a_value );
+					if( isset($field['description'] ) && $field[ 'description' ] ) {
+						$buff[] = 		'<div class="description">'. esc_html($field['description']) . '</div>';
+					}
+					$buff[] = 		'</div>';
+					$buff[] = 	'</div>';
+					break;
 				case 'text':
 					if ( isset( $field['hidden'] ) && $field['hidden'] ) {
 						$s_value = $o_post->{$s_meta_key} ? esc_attr( $o_post->{$s_meta_key} ) : $s_default_value;
@@ -912,7 +966,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 					}
 					break;
 				default:
-					var_dump( $type );
+					error_log(print_r('field type ' + $type + ' is not defined.', true));
 			}
 			unset( $o_post );
 			if ( $this->desc ) {
@@ -923,10 +977,11 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 
 		/**
 		 *
-		 * @param
+		 * @param string  $s_permission_label  all - no restriction, author - logged in user, roles - select from defined wp roles
+		 * @param string  $a_wp_role  array defined wp roles
 		 * @return
 		 */
-		private function _is_this_accessible( $permission = null, $roles = null ) {
+		private function _is_this_accessible( $s_permission_label = null, $a_wp_role = null ) {
 			$o_logged_info = \X2board\Includes\Classes\Context::get( 'logged_info' );
 			if ( $o_logged_info->is_admin == 'Y' ) {  // allow everything to an admin
 				unset( $o_logged_info );
@@ -938,14 +993,14 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 				return true;
 			}
 			unset( $o_grant );
-			switch ( $permission ) {
+			switch ( $s_permission_label ) {
 				case 'all':
 					return true;
 				case 'author':
 					return is_user_logged_in() ? true : false;
 				case 'roles':
 					if ( is_user_logged_in() ) {
-						if ( array_intersect( $roles, (array) $o_logged_info->roles ) ) {
+						if ( array_intersect( $a_wp_role, (array) $o_logged_info->roles ) ) {
 							unset( $o_logged_info );
 							return true;
 						}
