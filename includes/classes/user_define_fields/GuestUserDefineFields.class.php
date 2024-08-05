@@ -867,7 +867,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 					wp_register_script('x2board-kakao-kr-zipcode', X2B_URL . 'includes/' . X2B_MODULES_NAME . '/board/tpl/js/field-kr-zip.js', array('jquery', 'daum-postcode'), X2B_VERSION, true);
 					wp_enqueue_script('x2board-kakao-kr-zipcode');
 
-					$a_value = $o_post->$s_meta_key ? explode( '|@|', esc_attr( $o_post->$s_meta_key ) ) : array( 0 => null, 1 => null, 2 => null );
+					$a_value = $o_post->$s_meta_key ? explode( '|@|', esc_attr( $o_post->$s_meta_key ) ) : array( 0 => null, 1 => null, 2 => null, 3 => null );
 
 					$buff[] = '<div class="x2board-attr-row ' .$s_default_class . ' meta-key-'. $s_meta_key .' ' . $s_required . '">';
 					if ( $s_required ) {
