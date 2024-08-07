@@ -226,7 +226,7 @@ dbDelta(
 `lang_code` varchar(10) NOT NULL,
 `value` longtext DEFAULT NULL,
 `eid` varchar(40) DEFAULT NULL,
-UNIQUE KEY `unique_extra_vars` (`board_id`,`post_id`,`var_idx`),
-KEY `idx_post_list_order` (`post_id`,`board_id`,`var_idx`)
+UNIQUE KEY `unique_extra_vars` (`board_id`,`post_id`,`eid`),
+KEY `idx_post_list_order` (`post_id`,`board_id`,`eid`)
 ) {$charset_collate};"
 );

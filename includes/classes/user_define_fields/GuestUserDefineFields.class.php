@@ -541,7 +541,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 						return $value;
 					}
 					return __( 'desc_privacy_secured', X2B_DOMAIN );
-				// case 'text' :
+				case 'text':
 				default:
 					return $value;
 			}
@@ -966,7 +966,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 					}
 					break;
 				default:
-					error_log(print_r('field type ' + $type + ' is not defined.', true));
+					error_log(print_r('field type ' . $type . ' is not defined.', true));
 			}
 			unset( $o_post );
 			if ( $this->desc ) {

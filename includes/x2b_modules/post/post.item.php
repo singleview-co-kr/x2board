@@ -644,7 +644,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postItem' ) ) {
 			$a_ignore_field_type = array_keys( $a_default_fields );
 			unset( $a_default_fields );
 			$a_user_define_extended_fields = array();
-			foreach ( $inserted_extra_vars as $n_seq => $o_field ) {
+			foreach ( $inserted_extra_vars as $s_eid => $o_field ) {				
 				$field_type = ( isset( $o_field->type ) && $o_field->type ) ? $o_field->type : '';
 				if ( in_array( $field_type, $a_ignore_field_type ) ) { // ignore default fields
 					continue;
