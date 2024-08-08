@@ -261,7 +261,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 
 			// do not store default field into tbl::x2b_user_define_vars
 			if ( count( $a_user_define_extended_fields ) ) {
-				foreach ( $a_user_define_extended_fields as $idx => $o_user_define_item ) {
+				foreach ( $a_user_define_extended_fields as $s_eid => $o_user_define_item ) {
 					if( $o_user_define_item->type == 'kr_zip' ) {
 						$s_krzip_code = esc_sql( \X2board\Includes\Classes\Context::get( $o_user_define_item->eid . '_krzip' ) );
 						$s_krzip_addr_1 = esc_sql( \X2board\Includes\Classes\Context::get( $o_user_define_item->eid . '_address_1' ) );
@@ -276,7 +276,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 					if ( $o_user_input_value == null ) {
 						continue;
 					}
-					$this->_insert_user_defined_value( $n_board_id, $n_post_id, $idx, $o_user_input_value, $o_user_define_item->eid );
+					$this->_insert_user_defined_value( $n_board_id, $n_post_id, $o_user_input_value, $o_user_define_item->eid );
 				}
 			}
 			unset( $a_user_define_extended_fields );
@@ -288,14 +288,13 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 		 *
 		 * @param int    $n_board_id
 		 * @param int    $n_post_id
-		 * @param int    $var_idx
 		 * @param mixed  $value
 		 * @param int    $eid
 		 * @param string $lang_code
 		 * @return BaseObject|void
 		 */
-		private function _insert_user_defined_value( $n_board_id, $n_post_id, $var_idx, $o_user_input_value, $eid = null, $lang_code = '' ) {
-			if ( ! $n_board_id || ! $n_post_id || ! $var_idx || ! isset( $o_user_input_value ) ) {
+		private function _insert_user_defined_value( $n_board_id, $n_post_id, $o_user_input_value, $eid = null, $lang_code = '' ) {
+			if ( ! $n_board_id || ! $n_post_id || ! isset( $o_user_input_value ) ) {
 				return new \X2board\Includes\Classes\BaseObject( -1, __( 'msg_invalid_request', X2B_DOMAIN ) . '1' );
 			}
 
@@ -308,7 +307,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 			$a_new_field              = array();
 			$a_new_field['board_id']  = $n_board_id;
 			$a_new_field['post_id']   = $n_post_id;
-			$a_new_field['var_idx']   = $var_idx;
+			// $a_new_field['var_idx']   = $var_idx;
 			$a_new_field['value']     = $value;
 			$a_new_field['lang_code'] = '';
 			$a_new_field['eid']       = $eid;

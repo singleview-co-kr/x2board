@@ -222,7 +222,6 @@ dbDelta(
 	"CREATE TABLE `{$wpdb->prefix}x2b_user_define_vars` (
 `board_id` bigint(11) NOT NULL,
 `post_id` bigint(11) NOT NULL,
-`var_idx` bigint(11) NOT NULL,
 `lang_code` varchar(10) NOT NULL,
 `value` longtext DEFAULT NULL,
 `eid` varchar(40) DEFAULT NULL,

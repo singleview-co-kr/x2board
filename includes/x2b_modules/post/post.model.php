@@ -446,9 +446,6 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postModel' ) ) {
 				$this->_set_to_all_post_extra_vars();
 			}
 			if ( isset( $G_X2B_CACHE['EXTRA_VARS'][ $n_post_id ] ) ) {
-				if ( is_array( $G_X2B_CACHE['EXTRA_VARS'][ $n_post_id ] ) ) {
-					ksort( $G_X2B_CACHE['EXTRA_VARS'][ $n_post_id ] );
-				}
 				return $G_X2B_CACHE['EXTRA_VARS'][ $n_post_id ];
 			}
 			return null;
@@ -548,7 +545,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postModel' ) ) {
 			}
 			global $wpdb;
 			$s_tables = '`' . $wpdb->prefix . 'x2b_user_define_vars`';
-			$s_where  = '`board_id` >= -1 and `post_id` in (' . implode( ',', $a_post_id ) . ') and `var_idx` >= -2';
+			$s_where  = '`post_id` in (' . implode( ',', $a_post_id ) . ')';
 			$a_temp   = $wpdb->get_results( "SELECT * FROM {$s_tables} WHERE {$s_where}" );
 			if ( $a_temp === null ) {
 				wp_die( $wpdb->last_error );
