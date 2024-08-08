@@ -182,7 +182,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\AdminUserDefineFieldsItem' )
 												<!-- <p class="description">일부 스킨에서는 적용되지 않습니다.</p> -->
 											</div>
 										</div>';*/
-			} elseif ( $this->_s_field_type == 'address' ) {
+			} elseif ( $this->_s_field_type == 'kr_zip' ) {
 				$s_html .= '<div class="attr-row">
 											<div class="description">※ ' . __( 'about_user_defined_address_field', X2B_DOMAIN ) . '</div>
 										</div>';
