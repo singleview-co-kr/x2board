@@ -169,6 +169,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\GuestUserDefineFields' ) ) {
 				$o_misc_info->s_allow_comment_permission = isset( $a_kb_field['allow_comment_permission'] ) ? $a_kb_field['allow_comment_permission'] : null;
 				$o_misc_info->a_allow_comment            = isset( $a_kb_field['allow_comment'] ) ? $a_kb_field['allow_comment'] : null;
 				$o_misc_info->a_row                      = isset( $a_kb_field['row'] ) ? $a_kb_field['row'] : null;
+				$o_misc_info->s_term                      = isset( $a_kb_field['term'] ) ? $a_kb_field['term'] : null;
 				$o_user_define_key                       = new UserDefineItemForGuest(
 					$this->_n_board_id,
 					$n_idx,
@@ -332,6 +333,13 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 		var $row = null;
 
 		/**
+		 * plain text for terms and conditions
+		 *
+		 * @var string
+		 */
+		var $term = null;
+
+		/**
 		 * Constructor
 		 *
 		 * @param int      $board_id Sequence of board
@@ -407,6 +415,12 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 				if ( $o_misc_info->a_permission_role ) {
 					$this->role = $o_misc_info->a_permission_role;
 				}
+
+				if ( $o_misc_info->s_term ) {
+					$this->term = $o_misc_info->s_term;
+				}
+
+				
 			}
 		}
 
@@ -569,7 +583,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 				// default fields
 				case 'title':
 					$s_name  = strlen( $s_name ) ? $s_name : __( $this->type, X2B_DOMAIN );
-					$buff[]  = '<div class="x2board-attr-row ' . $s_default_class . ' required">';
+					$buff[]  = '<div class="' . X2B_DOMAIN . '-attr-row ' . $s_default_class . ' required">';
 					$buff[]  = '<label class="attr-name" for="' . $s_meta_key . '"><span class="field-name">' . $s_name . '</span> <span class="attr-required-text">*</span></label>';
 					$buff[]  = '<div class="attr-value">';
 					$s_value = $o_post->title ? esc_attr( $o_post->title ) : $s_default_value;
@@ -611,10 +625,10 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 						break;
 					}
 					$s_name        = strlen( $s_name ) ? $s_name : __( $this->type, X2B_DOMAIN );
-					$buff[]        = '<div class="x2board-attr-row ' . $s_default_class . ' ' . $s_required . '">';
+					$buff[]        = '<div class="' . X2B_DOMAIN . '-attr-row ' . $s_default_class . ' ' . $s_required . '">';
 					$buff[]        = '<label class="attr-name" for="' . $s_meta_key . '"><span class="field-name">' . $s_name . '</span></label>';
 					$buff[]        = '<div class="attr-value">';
-					$buff[]        = '<div class="x2board-tree-category-wrap">';
+					$buff[]        = '<div class="' . X2B_DOMAIN . '-tree-category-wrap">';
 					$buff[]        = '<select id="category_id" name="category_id" class="category">';
 					$buff[]        = '<option value="">' . __( 'lbl_select_category', X2B_DOMAIN ) . '</option>';
 					$category_list = $this->_get_post_category_list();
@@ -650,13 +664,13 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 					// 비로그인 입력 -->
 					$buff[] = '<div class="edit_opt">';
 					if ( ! is_user_logged_in() ) {
-						$buff[] = '<div class="x2board-attr-row">';
+						$buff[] = '<div class="' . X2B_DOMAIN . '-attr-row">';
 						$buff[] = '<label class="attr-name" for="nick_name"><span class="field-name">' . __( 'lbl_writer', X2B_DOMAIN ) . '</span></label>';
 						$buff[] = '<div class="attr-value">';
 						$buff[] = '<input type="text" name="nick_name" id="nick_name" value="' . $o_post->get_nick_name() . '" placeholder="' . __( 'lbl_writer', X2B_DOMAIN ) . '" required/>';
 						$buff[] = '</div>';
 						$buff[] = '</div>';
-						$buff[] = '<div class="x2board-attr-row">';
+						$buff[] = '<div class="' . X2B_DOMAIN . '-attr-row">';
 						$buff[] = '<label class="attr-name" for="password"><span class="field-name">' . __( 'lbl_password', X2B_DOMAIN ) . '</span></label>';
 						$buff[] = '<div class="attr-value">';
 						$buff[] = '<input type="text" name="password" id="password" required/>';
@@ -673,7 +687,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 				case 'option':  // 글쓰기 옵션 체크
 					$s_name = strlen( $s_name ) ? $s_name : __( $this->type, X2B_DOMAIN );
 					if ( $this->_is_this_accessible( $this->notice_permission, $this->notice ) ) {
-						$buff[] = '<div class="x2board-attr-row ' . $s_default_class . '">';
+						$buff[] = '<div class="' . X2B_DOMAIN . '-attr-row ' . $s_default_class . '">';
 						$buff[] = '<label class="attr-name" for="' . $s_meta_key . '"><span class="field-name">' . $s_name . '</span></label>';
 						$buff[] = '<div class="attr-value">';
 						// wp_enqueue_script('x2board-jpicker', X2B_URL . 'common/js/plugins/ui.colorpicker/jpicker-1.1.6.min.js', array(), X2B_VERSION, true);
@@ -706,7 +720,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 							$s_disallow_checked = 'checked="checked"';
 						}
 						unset( $o_comment_class );
-						$buff[] = '<div class="x2board-attr-row ' . $s_default_class . '">';
+						$buff[] = '<div class="' . X2B_DOMAIN . '-attr-row ' . $s_default_class . '">';
 						$buff[] = '<label class="attr-name" for="' . $s_meta_key . '"><span class="field-name">' . $s_name . '</span></label>';
 						$buff[] = '<div class="attr-value">';
 						$buff[] = '<label class="attr-value-option"><input name="allow_comment" id="allow_comment[Y]" type="radio" value="Y" ' . $s_allow_checked . '>' . __( 'lbl_allow_comment', X2B_DOMAIN ) . '</label>';
@@ -714,7 +728,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 						$buff[] = '</div>';
 					}
 
-					$buff[]      = '<div class="x2board-attr-row ' . $s_default_class . '">';
+					$buff[]      = '<div class="' . X2B_DOMAIN . '-attr-row ' . $s_default_class . '">';
 					$buff[]      = '<label class="attr-name" for="' . $s_meta_key . '"><span class="field-name">' . $s_name . '</span></label>';
 					$buff[]      = '<div class="attr-value">';
 					$status_list = \X2board\Includes\Classes\Context::get( 'status_list' );
@@ -729,7 +743,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 
 					if ( ! is_user_logged_in() ) {
 						if ( $this->email_permission ) {
-							$buff[] = '<div class="x2board-attr-row ' . $s_default_class . '">';
+							$buff[] = '<div class="' . X2B_DOMAIN . '-attr-row ' . $s_default_class . '">';
 							$buff[] = '<label class="attr-name" for="' . $s_meta_key . '"><span class="field-name">' . $s_name . '</span></label>';
 							$buff[] = '<div class="attr-value">';
 							$buff[] = '<input type="text" name="email_address" id="email_address" value="' . htmlspecialchars( $o_post->get( 'email_address' ) ) . '" placeholder="' . __( 'lbl_email_address', X2B_DOMAIN ) . '" />';
@@ -813,7 +827,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 					break;
 				case 'tag':
 					$s_name  = strlen( $s_name ) ? $s_name : __( $this->type, X2B_DOMAIN );
-					$buff[]  = '<div class="x2board-attr-row ' . $s_default_class . ' required">';
+					$buff[]  = '<div class="' . X2B_DOMAIN . '-attr-row ' . $s_default_class . ' required">';
 					$buff[]  = '<label class="attr-name" for="tags">' . __( 'lbl_tag', X2B_DOMAIN ) . '</label>';
 					$buff[]  = '<div class="attr-value">';
 					$s_value = $o_post->get( 'tags' ) ? esc_attr( htmlspecialchars( $post->get( 'tags' ) ) ) : null;
@@ -861,15 +875,25 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 						}
 					break;*/
 				// extended user define fields
+				case 'term_agree':
+					$s_checked = $o_post->$s_meta_key == 'Y' ? 'checked="checked"' : null;
+					$buff[] = '<div class="' . X2B_DOMAIN . '-attr-row ' . X2B_DOMAIN . '-attr-textarea meta-key-' . $s_meta_key . '">';
+					$buff[] = 	'<label class="attr-name" for="' . $s_meta_key . '"><span class="field-name">' . __( 'lbl_term_condition', X2B_DOMAIN ) . '</span></label>';
+					$buff[] = 	'<div class="attr-value">';
+					$buff[] = 		'<textarea name="" rows="4" cols="42" readonly>' . esc_attr( $this->term ) . '</textarea>';
+					$buff[] = 		'<font size="2"><input type="checkbox" name="' . $s_meta_key . '" id="' . $s_meta_key . '" value="Y" class="radio" required ' . $s_checked . '>' . __( 'lbl_agree', X2B_DOMAIN ) . '</font>';
+					$buff[] = 	'</div>';
+					$buff[] = '</div>';
+					break;
 				case "kr_zip" :
 					// 카카오 도로명 주소 검색
 					wp_enqueue_script('daum-postcode', '//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js', array(), NULL, true);
-					wp_register_script('x2board-kakao-kr-zipcode', X2B_URL . 'includes/' . X2B_MODULES_NAME . '/board/tpl/js/field-kr-zip.js', array('jquery', 'daum-postcode'), X2B_VERSION, true);
-					wp_enqueue_script('x2board-kakao-kr-zipcode');
+					wp_register_script( X2B_DOMAIN . '-kakao-kr-zipcode', X2B_URL . 'includes/' . X2B_MODULES_NAME . '/board/tpl/js/field-kr-zip.js', array('jquery', 'daum-postcode' ), X2B_VERSION, true );
+					wp_enqueue_script( X2B_DOMAIN . '-kakao-kr-zipcode' );
 
 					$a_value = $o_post->$s_meta_key ? explode( '|@|', esc_attr( $o_post->$s_meta_key ) ) : array( 0 => null, 1 => null, 2 => null, 3 => null );
 
-					$buff[] = '<div class="x2board-attr-row ' .$s_default_class . ' meta-key-'. $s_meta_key .' ' . $s_required . '">';
+					$buff[] = '<div class="' . X2B_DOMAIN . '-attr-row ' .$s_default_class . ' meta-key-'. $s_meta_key .' ' . $s_required . '">';
 					if ( $s_required ) {
 						$s_tmp_required = '<span class="attr-required-text">*</span>';
 					} else {
@@ -878,18 +902,18 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 
 					$buff[] = 	'<label class="attr-name" for="'. $s_meta_key .'"><span class="field-name">' . $s_name . '</span> ' . $s_tmp_required . '</label>';
 					$buff[] = 		'<div class="attr-value">';
-					$buff[] = 			'<div class="x2board-row-kr-zip">';
-					$buff[] = 				'<input type="text" id="' . $s_meta_key . '_krzip" class="x2board-krzip" name="' . $s_meta_key . '_krzip" value="' . $a_value[0] . '" placeholder="'. __( 'lbl_kr_zipcode', X2B_DOMAIN ) . '" READONLY style="width:160px;">';
-					$buff[] = 				'<button type="button" class="x2board-default-button-small x2board-krzip-search-button" onclick="x2board_kr_zipcode_search(\'' . $s_meta_key . '_krzip\', \'' . $s_meta_key . '_address_1\', \'' . $s_meta_key . '_address_2\', \'' . $s_meta_key . '_address_3\')">' . __( 'lbl_search', X2B_DOMAIN ) . '</button>';
+					$buff[] = 			'<div class="' . X2B_DOMAIN . '-row-kr-zip">';
+					$buff[] = 				'<input type="text" id="' . $s_meta_key . '_krzip" class="' . X2B_DOMAIN . '-krzip" name="' . $s_meta_key . '_krzip" value="' . $a_value[0] . '" placeholder="'. __( 'lbl_kr_zipcode', X2B_DOMAIN ) . '" READONLY style="width:160px;">';
+					$buff[] = 				'<button type="button" class="' . X2B_DOMAIN . '-default-button-small ' . X2B_DOMAIN . '-krzip-search-button" onclick="x2board_kr_zipcode_search(\'' . $s_meta_key . '_krzip\', \'' . $s_meta_key . '_address_1\', \'' . $s_meta_key . '_address_2\', \'' . $s_meta_key . '_address_3\')">' . __( 'lbl_search', X2B_DOMAIN ) . '</button>';
 					$buff[] = 			'</div>';
-					$buff[] = 			'<div class="x2board-row-address-1">';
-					$buff[] = 				'<input type="text" id="' . $s_meta_key . '_address_1" class="x2board-address-1" name="' . $s_meta_key . '_address_1" value="' . $a_value[1] . '" placeholder="' . __( 'lbl_address', X2B_DOMAIN ) . '" READONLY>';
+					$buff[] = 			'<div class="' . X2B_DOMAIN . '-row-address-1">';
+					$buff[] = 				'<input type="text" id="' . $s_meta_key . '_address_1" class="' . X2B_DOMAIN . '-address-1" name="' . $s_meta_key . '_address_1" value="' . $a_value[1] . '" placeholder="' . __( 'lbl_address', X2B_DOMAIN ) . '" READONLY>';
 					$buff[] = 			'</div>';
-					$buff[] = 			'<div class="x2board-row-address-2">';
-					$buff[] = 				'<input type="text" id="' . $s_meta_key . '_address_2" class="x2board-address-2" name="' . $s_meta_key . '_address_2" value="' . $a_value[2] . '" placeholder="' . __( 'lbl_address_detail', X2B_DOMAIN ) . '">';
+					$buff[] = 			'<div class="' . X2B_DOMAIN . '-row-address-2">';
+					$buff[] = 				'<input type="text" id="' . $s_meta_key . '_address_2" class="' . X2B_DOMAIN . '-address-2" name="' . $s_meta_key . '_address_2" value="' . $a_value[2] . '" placeholder="' . __( 'lbl_address_detail', X2B_DOMAIN ) . '">';
 					$buff[] = 			'</div>';
-					$buff[] = 			'<div class="x2board-row-address-3">';
-					$buff[] = 				'<input type="text" id="' . $s_meta_key . '_address_3" class="x2board-address-3" name="' . $s_meta_key . '_address_3" value="' . $a_value[3] . '" placeholder="' . __( 'lbl_address_extra', X2B_DOMAIN ) . '" READONLY>';
+					$buff[] = 			'<div class="' . X2B_DOMAIN . '-row-address-3">';
+					$buff[] = 				'<input type="text" id="' . $s_meta_key . '_address_3" class="' . X2B_DOMAIN . '-address-3" name="' . $s_meta_key . '_address_3" value="' . $a_value[3] . '" placeholder="' . __( 'lbl_address_extra', X2B_DOMAIN ) . '" READONLY>';
 					$buff[] = 			'</div>';
 					unset( $a_value );
 					if( isset($field['description'] ) && $field[ 'description' ] ) {
@@ -903,7 +927,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 						$s_value = $o_post->{$s_meta_key} ? esc_attr( $o_post->{$s_meta_key} ) : $s_default_value;
 						$buff[]  = '<input type="hidden" id="' . $s_meta_key . '" class="' . $s_required . '" name="' . $s_meta_key . '" value="' . $s_value . '">';
 					} else {
-						$buff[] = '<div class="x2board-attr-row ' . $s_default_class . ' meta-key-' . $s_meta_key . ' ' . $s_custom_class . ' ' . $s_required . '">';
+						$buff[] = '<div class="' . X2B_DOMAIN . '-attr-row ' . $s_default_class . ' meta-key-' . $s_meta_key . ' ' . $s_custom_class . ' ' . $s_required . '">';
 						if ( $s_required ) {
 							$s_tmp_required = '<span class="attr-required-text">*</span>';
 						} else {
@@ -928,7 +952,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 				case 'select':
 					$has_default_values = true;
 					if ( $has_default_values ) {
-						$buff[] = '<div class="x2board-attr-row ' . $s_default_class . ' meta-key-' . $s_meta_key . ' ' . $s_custom_class . ' ' . $s_required . '">';
+						$buff[] = '<div class="' . X2B_DOMAIN . '-attr-row ' . $s_default_class . ' meta-key-' . $s_meta_key . ' ' . $s_custom_class . ' ' . $s_required . '">';
 						if ( $s_required ) {
 							$s_tmp_required = '<span class="attr-required-text">*</span>';
 						} else {

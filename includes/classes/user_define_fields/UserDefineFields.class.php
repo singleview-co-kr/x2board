@@ -24,7 +24,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineFields' ) ) {
 		 * @return void
 		 */
 		public function __construct() {
-			$this->_a_multiline_fields = array( 'html', 'shortcode' );
+			$this->_a_multiline_fields = array( 'html', 'shortcode', 'term_agree' );
 
 			$this->_a_default_fields = array(
 				'title'    => array(
@@ -278,6 +278,24 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineFields' ) ) {
 					'close_button'    => 'yes',
 					'display_on_list' => false,
 				),
+				'term_agree'      => array(
+					'field_type'      => 'term_agree',
+					'field_label'     => __( 'lbl_term_agree', X2B_DOMAIN ),
+					'field_name'      => '',
+					'class'           => 'x2board-attr-term-agree',
+					'custom_class'    => '',
+					'meta_key'        => '',
+					'search'          => null,
+					'permission'      => '',
+					'roles'           => array(),
+					'default_value'   => '',
+					// 'show_document'   => '',
+					'description'     => '', // admin's memo
+					'introduction'    => __( 'desc_user_define_field_term_agree', X2B_DOMAIN ), // admin's memo
+					'close_button'    => 'yes',
+					'display_on_list' => false,
+					'term'            => '',
+				),
 				'html'      => array(
 					'field_type'      => 'html',
 					'field_label'     => __( 'lbl_html', X2B_DOMAIN ),
@@ -285,7 +303,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineFields' ) ) {
 					'class'           => 'x2board-attr-html',
 					'custom_class'    => '',
 					'meta_key'        => '',
-					'search'          => 'N',
+					'search'          => null,
 					'permission'      => '',
 					'roles'           => array(),
 					'default_value'   => '',

@@ -47,6 +47,8 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\AdminUserDefineFieldsItem' )
 		protected $_s_custom_class  = null;
 		protected $_s_show_document = null;
 
+		protected $_s_term = null;
+
 		/**
 		 * Constructor
 		 *
@@ -115,6 +117,10 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\AdminUserDefineFieldsItem' )
 			}
 			if ( isset( $a_single_field['show_document'] ) ) {
 				$this->_s_show_document = $a_single_field['show_document'];
+			}
+
+			if ( isset( $a_single_field['term'] ) ) {
+				$this->_s_term = $a_single_field['term'];
 			}
 		}
 
@@ -381,6 +387,15 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\AdminUserDefineFieldsItem' )
 											</div>';
 				}
 				$s_html .= '</div>';
+			}
+			if ( $this->_s_field_type == 'term_agree' ) {
+				$s_html .= '<div class="attr-row">';
+				$s_html .= 		'<label class="attr-name" for="' . $this->_s_meta_key . '">' . __( 'lbl_term_condition', X2B_DOMAIN ) . '</label>';
+				$s_html .= 		'<div class="attr-value">';
+				$s_html .= 			'	<textarea id="' . esc_attr( $this->_s_meta_key ) . '_term" name="fields[' . esc_attr( $this->_s_meta_key ) . '][term]" class="field_data term" rows="5">' . $this->_s_term . '</textarea>';
+				$s_html .= 		'</div>';
+				$s_html .= 		'<div class="description">※ ' . __( 'desc_term_condition', X2B_DOMAIN ) . '</div>';
+				$s_html .= 	'</div>';
 			}
 			if ( isset( $this->_s_placeholder ) ) {
 				$s_html .= '<div class="attr-row">

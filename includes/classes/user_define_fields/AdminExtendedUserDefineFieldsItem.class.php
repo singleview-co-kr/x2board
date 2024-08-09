@@ -79,7 +79,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\AdminExtendedUserDefineField
 		/**
 		 * Returns a form based on its type
 		 *
-		 * @return string Returns a widget html.
+		 * @return string Returns a widget html for unchosen fields.
 		 */
 		public function get_widget_html() {
 			$s_html  = null;
