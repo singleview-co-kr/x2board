@@ -280,7 +280,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineFields' ) ) {
 				),
 				'term_agree'      => array(
 					'field_type'      => 'term_agree',
-					'field_label'     => __( 'lbl_term_agree', X2B_DOMAIN ),
+					'field_label'     => __( 'lbl_term_condition', X2B_DOMAIN ),
 					'field_name'      => '',
 					'class'           => 'x2board-attr-term-agree',
 					'custom_class'    => '',

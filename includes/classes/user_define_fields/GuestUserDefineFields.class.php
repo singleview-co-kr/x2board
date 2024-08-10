@@ -878,7 +878,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 				case 'term_agree':
 					$s_checked = $o_post->$s_meta_key == 'Y' ? 'checked="checked"' : null;
 					$buff[] = '<div class="' . X2B_DOMAIN . '-attr-row ' . X2B_DOMAIN . '-attr-textarea meta-key-' . $s_meta_key . '">';
-					$buff[] = 	'<label class="attr-name" for="' . $s_meta_key . '"><span class="field-name">' . __( 'lbl_term_condition', X2B_DOMAIN ) . '</span></label>';
+					$buff[] = 	'<label class="attr-name" for="' . $s_meta_key . '"><span class="field-name">' . $s_name . '</span></label>';
 					$buff[] = 	'<div class="attr-value">';
 					$buff[] = 		'<textarea name="" rows="4" cols="42" readonly>' . esc_attr( $this->term ) . '</textarea>';
 					$buff[] = 		'<font size="2"><input type="checkbox" name="' . $s_meta_key . '" id="' . $s_meta_key . '" value="Y" class="radio" required ' . $s_checked . '>' . __( 'lbl_agree', X2B_DOMAIN ) . '</font>';
@@ -893,6 +893,9 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 
 					$a_value = $o_post->$s_meta_key ? explode( '|@|', esc_attr( $o_post->$s_meta_key ) ) : array( 0 => null, 1 => null, 2 => null, 3 => null );
 
+					$buff[] = '<style>';
+					$buff[] = 'div.' . X2B_DOMAIN . '_kr_zip_hidden_fields { display: none; }';
+					$buff[] = '</style>';
 					$buff[] = '<div class="' . X2B_DOMAIN . '-attr-row ' .$s_default_class . ' meta-key-'. $s_meta_key .' ' . $s_required . '">';
 					if ( $s_required ) {
 						$s_tmp_required = '<span class="attr-required-text">*</span>';
@@ -906,14 +909,16 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 					$buff[] = 				'<input type="text" id="' . $s_meta_key . '_krzip" class="' . X2B_DOMAIN . '-krzip" name="' . $s_meta_key . '_krzip" value="' . $a_value[0] . '" placeholder="'. __( 'lbl_kr_zipcode', X2B_DOMAIN ) . '" READONLY style="width:160px;">';
 					$buff[] = 				'<button type="button" class="' . X2B_DOMAIN . '-default-button-small ' . X2B_DOMAIN . '-krzip-search-button" onclick="x2board_kr_zipcode_search(\'' . $s_meta_key . '_krzip\', \'' . $s_meta_key . '_address_1\', \'' . $s_meta_key . '_address_2\', \'' . $s_meta_key . '_address_3\')">' . __( 'lbl_search', X2B_DOMAIN ) . '</button>';
 					$buff[] = 			'</div>';
-					$buff[] = 			'<div class="' . X2B_DOMAIN . '-row-address-1">';
-					$buff[] = 				'<input type="text" id="' . $s_meta_key . '_address_1" class="' . X2B_DOMAIN . '-address-1" name="' . $s_meta_key . '_address_1" value="' . $a_value[1] . '" placeholder="' . __( 'lbl_address', X2B_DOMAIN ) . '" READONLY>';
-					$buff[] = 			'</div>';
-					$buff[] = 			'<div class="' . X2B_DOMAIN . '-row-address-2">';
-					$buff[] = 				'<input type="text" id="' . $s_meta_key . '_address_2" class="' . X2B_DOMAIN . '-address-2" name="' . $s_meta_key . '_address_2" value="' . $a_value[2] . '" placeholder="' . __( 'lbl_address_detail', X2B_DOMAIN ) . '">';
-					$buff[] = 			'</div>';
-					$buff[] = 			'<div class="' . X2B_DOMAIN . '-row-address-3">';
-					$buff[] = 				'<input type="text" id="' . $s_meta_key . '_address_3" class="' . X2B_DOMAIN . '-address-3" name="' . $s_meta_key . '_address_3" value="' . $a_value[3] . '" placeholder="' . __( 'lbl_address_extra', X2B_DOMAIN ) . '" READONLY>';
+					$buff[] = 			'<div class="' . X2B_DOMAIN . '_kr_zip_hidden_fields">';
+					$buff[] = 				'<div class="' . X2B_DOMAIN . '-row-address-1">';
+					$buff[] = 					'<input type="text" id="' . $s_meta_key . '_address_1" class="' . X2B_DOMAIN . '-address-1" name="' . $s_meta_key . '_address_1" value="' . $a_value[1] . '" placeholder="' . __( 'lbl_address', X2B_DOMAIN ) . '" READONLY>';
+					$buff[] =	 			'</div>';
+					$buff[] = 				'<div class="' . X2B_DOMAIN . '-row-address-2">';
+					$buff[] = 					'<input type="text" id="' . $s_meta_key . '_address_2" class="' . X2B_DOMAIN . '-address-2" name="' . $s_meta_key . '_address_2" value="' . $a_value[2] . '" placeholder="' . __( 'lbl_address_detail', X2B_DOMAIN ) . '">';
+					$buff[] = 				'</div>';
+					$buff[] = 				'<div class="' . X2B_DOMAIN . '-row-address-3">';
+					$buff[] = 					'<input type="text" id="' . $s_meta_key . '_address_3" class="' . X2B_DOMAIN . '-address-3" name="' . $s_meta_key . '_address_3" value="' . $a_value[3] . '" placeholder="' . __( 'lbl_address_extra', X2B_DOMAIN ) . '" READONLY>';
+					$buff[] = 				'</div>';
 					$buff[] = 			'</div>';
 					unset( $a_value );
 					if( isset($field['description'] ) && $field[ 'description' ] ) {

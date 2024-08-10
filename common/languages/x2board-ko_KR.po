@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: x2board\n"
-"POT-Creation-Date: 2024-08-05 17:40+0900\n"
-"PO-Revision-Date: 2024-08-05 17:41+0900\n"
+"POT-Creation-Date: 2024-08-10 09:04+0900\n"
+"PO-Revision-Date: 2024-08-10 09:19+0900\n"
 "Last-Translator: singleviewcokr <singleviewcokr@gmail.com>\n"
 "Language-Team: \n"
 "Language: ko_KR\n"
@@ -148,8 +148,8 @@ msgstr ""
 "/wp-content/uploads/attach/binaries"
 
 #: includes/admin/tpl/board_list.php:23 includes/admin/tpl/latest_list.php:29
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:431
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:884
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:446
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:907
 msgid "lbl_search"
 msgstr "검색"
 
@@ -693,12 +693,12 @@ msgstr ""
 "일 제외)"
 
 #: includes/admin/tpl/default-settings.php:679
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:298
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:304
 msgid "opt_allow"
 msgstr "허용"
 
 #: includes/admin/tpl/default-settings.php:680
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:300
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:306
 msgid "opt_disallow"
 msgstr "금지"
 
@@ -742,9 +742,9 @@ msgstr "$skin_vars->var_id 형식으로 스킨 변수값을 호출할 수 있습
 #: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:167
 #: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:122
 #: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:141
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:271
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:310
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:332
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:277
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:316
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:338
 msgid "opt_role_all_users"
 msgstr "모든 사용자"
 
@@ -752,9 +752,9 @@ msgstr "모든 사용자"
 #: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:168
 #: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:123
 #: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:143
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:273
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:312
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:334
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:279
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:318
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:340
 msgid "opt_role_loggedin_users"
 msgstr "로그인 사용자"
 
@@ -766,9 +766,9 @@ msgstr "관리자만"
 #: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:169
 #: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:124
 #: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:145
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:275
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:314
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:336
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:281
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:320
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:342
 msgid "opt_role_customize"
 msgstr "선택 그룹 사용자"
 
@@ -838,7 +838,7 @@ msgstr "기본 선택 카테고리"
 #: includes/admin/tpl/settings-page.php:528
 #: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:96
 #: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:102
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:145
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:151
 #: includes/x2b_modules/board/board.admin.model.php:309
 msgid "cmd_remove"
 msgstr "삭제"
@@ -913,8 +913,8 @@ msgstr "게시판 설정에 문제가 있습니다"
 #: includes/x2b_modules/file/file.controller.php:508
 #: includes/x2b_modules/post/post.controller.php:83
 #: includes/x2b_modules/post/post.controller.php:93
-#: includes/x2b_modules/post/post.controller.php:625
-#: includes/x2b_modules/post/post.controller.php:1041
+#: includes/x2b_modules/post/post.controller.php:624
+#: includes/x2b_modules/post/post.controller.php:1040
 msgid "msg_not_permitted"
 msgstr "권한이 없습니다"
 
@@ -930,175 +930,189 @@ msgstr "%s 파일이 없습니다"
 #: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:104
 #: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:128
 #: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:112
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:193
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:199
 msgid "lbl_field_label"
 msgstr "필드 표시 명칭"
 
 #: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:108
 #: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:132
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:201
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:207
 msgid "lbl_meta_key"
 msgstr "고유 식별값"
 
 #: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:110
 #: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:134
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:205
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:211
 msgid "about_meta_key"
 msgstr "공란이면 자동 지정됩니다. 저장 후에는 변경할 수 없습니다"
 
 #: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:124
 #: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:213
 #: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:204
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:445
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:460
 msgid "lbl_display_on_content"
 msgstr "본문에 표시"
 
 #: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:141
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:215
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:246
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:221
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:252
 msgid "lbl_label"
 msgstr "필드 표시 명칭"
 
 #: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:153
 #: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:182
 #: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:160
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:229
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:258
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:351
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:235
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:264
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:357
 msgid "lbl_default_value"
 msgstr "기본값"
 
 #: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:156
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:233
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:239
 msgid "cmd_reset"
 msgstr "초기화"
 
 #: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:164
 #: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:119
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:266
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:272
 msgid "msg_whom_to_show"
 msgstr "표시할 대상"
 
 #: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:194
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:393
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:408
 msgid "lbl_description"
 msgstr "설명"
 
 #: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:202
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:401
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:416
 msgid "lbl_css_class"
 msgstr "css 클래스"
 
 #: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:209
 #: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:197
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:438
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:453
 #: includes/func.inc.php:117
 msgid "lbl_required"
 msgstr "필수"
 
 #: includes/classes/user_define_fields/AdminExtendedUserDefineFieldsItem.class.php:218
 #: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:211
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:453
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:468
 msgid "lbl_hiding"
 msgstr "숨김"
 
 #: includes/classes/user_define_fields/AdminUnchosenDefaultUserDefineFieldsItem.class.php:138
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:696
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:709
 msgid "lbl_notice"
 msgstr "공지사항"
 
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:161
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:167
 msgid "msg_title_is_mandatory"
 msgstr "제목은 필수 항목입니다"
 
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:166
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:172
 msgid "about_user_defined_file_appending_field"
 msgstr "[추가설정] 탭에서 첨부 파일 규칙을 설정합니다"
 
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:187
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:193
 msgid "about_user_defined_address_field"
 msgstr ""
 "개인 정보는 관리자에게 항상 표시되고 게스트 본인에게는 일정 시간만 표시됩니"
 "다"
 
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:294
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:300
 msgid "msg_allow_email_input_for_guest"
 msgstr "게스트 방문자에게 이메일 입력 허용"
 
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:306
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:312
 msgid "lbl_allow_notice"
 msgstr "공지사항 허용"
 
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:328
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:713
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:334
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:726
 msgid "lbl_allow_comment"
 msgstr "댓글 허용"
 
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:387
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:393
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:881
+msgid "lbl_term_condition"
+msgstr "이용 약관 & 동의"
+
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:397
+#: includes/classes/user_define_fields/UserDefineFields.class.php:294
+msgid "desc_user_define_field_term_agree"
+msgstr "사용자가 동의해야 하는 이용 약관을 입력하세요."
+
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:402
 msgid "lbl_placeholder"
 msgstr "플레이스홀더"
 
-#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:407
+#: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:422
 msgid "lbl_printing_code"
 msgstr ""
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:543
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:557
 msgid "desc_privacy_secured"
 msgstr "개인 정보 보호를 위해 숨김"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:620
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:633
 #: includes/x2b_modules/board/board.controller.php:149
 msgid "lbl_select_category"
 msgstr "카테고리 선택"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:655
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:657
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:668
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:670
 msgid "lbl_writer"
 msgstr "글쓴이"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:661
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:674
 msgid "lbl_password"
 msgstr "비밀번호"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:692
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:705
 msgid "lbl_title_bold"
 msgstr "제목 굵게"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:714
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:727
 msgid "lbl_disallow_commentt"
 msgstr "댓글 금지"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:736
-#: includes/classes/user_define_fields/UserDefineFields.class.php:357
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:749
+#: includes/classes/user_define_fields/UserDefineFields.class.php:375
 msgid "lbl_email_address"
 msgstr "이메일 주소"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:818
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:831
 #: includes/classes/user_define_fields/UserDefineFields.class.php:135
 msgid "lbl_tag"
 msgstr "태그"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:821
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:834
 msgid "about_tag"
 msgstr "태그 : 쉼표(,)를 이용하여 복수 등록"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:883
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:884
+msgid "lbl_agree"
+msgstr "동의"
+
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:906
 msgid "lbl_kr_zipcode"
 msgstr "한국 우편번호"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:887
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:910
 msgid "lbl_address"
-msgstr "주소"
+msgstr "도로명 주소"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:890
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:913
 msgid "lbl_address_detail"
 msgstr "상세 주소"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:893
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:916
 msgid "lbl_address_extra"
 msgstr "참고 항목"
 
-#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:941
+#: includes/classes/user_define_fields/GuestUserDefineFields.class.php:964
 msgid "cmd_select"
 msgstr "선택하세요"
 
@@ -1194,46 +1208,50 @@ msgid "desc_user_define_field_wp_editor"
 msgstr "사용자 정의 워드프레스 편집기 필드입니다"
 
 #: includes/classes/user_define_fields/UserDefineFields.class.php:283
+msgid "lbl_term_agree"
+msgstr "동의"
+
+#: includes/classes/user_define_fields/UserDefineFields.class.php:301
 msgid "lbl_html"
 msgstr "html"
 
-#: includes/classes/user_define_fields/UserDefineFields.class.php:294
+#: includes/classes/user_define_fields/UserDefineFields.class.php:312
 msgid "desc_user_define_field_html"
 msgstr "사용자 정의 HTML 필드입니다"
 
-#: includes/classes/user_define_fields/UserDefineFields.class.php:301
+#: includes/classes/user_define_fields/UserDefineFields.class.php:319
 msgid "lbl_shortcode"
 msgstr "워드프레스 숏코드"
 
-#: includes/classes/user_define_fields/UserDefineFields.class.php:312
+#: includes/classes/user_define_fields/UserDefineFields.class.php:330
 msgid "desc_user_define_field_shortcode"
 msgstr "사용자 정의 워드프레스 숏코드 필드입니다"
 
-#: includes/classes/user_define_fields/UserDefineFields.class.php:319
+#: includes/classes/user_define_fields/UserDefineFields.class.php:337
 msgid "lbl_date_select"
 msgstr "날짜 선택"
 
-#: includes/classes/user_define_fields/UserDefineFields.class.php:332
+#: includes/classes/user_define_fields/UserDefineFields.class.php:350
 msgid "desc_user_define_field_date_select"
 msgstr "사용자 정의 날짜 선택 필드입니다"
 
-#: includes/classes/user_define_fields/UserDefineFields.class.php:338
+#: includes/classes/user_define_fields/UserDefineFields.class.php:356
 msgid "lbl_time_select"
 msgstr "시간 선택"
 
-#: includes/classes/user_define_fields/UserDefineFields.class.php:351
+#: includes/classes/user_define_fields/UserDefineFields.class.php:369
 msgid "desc_user_define_field_time_select"
 msgstr "사용자 정의 시간 선택 필드입니다"
 
-#: includes/classes/user_define_fields/UserDefineFields.class.php:370
+#: includes/classes/user_define_fields/UserDefineFields.class.php:388
 msgid "desc_user_define_field_email_address"
 msgstr "사용자 정의 이메일 주소 필드입니다"
 
-#: includes/classes/user_define_fields/UserDefineFields.class.php:377
+#: includes/classes/user_define_fields/UserDefineFields.class.php:395
 msgid "lbl_kr_zip"
 msgstr "한국 우편 주소"
 
-#: includes/classes/user_define_fields/UserDefineFields.class.php:390
+#: includes/classes/user_define_fields/UserDefineFields.class.php:408
 msgid "desc_user_define_field_kr_zip"
 msgstr "사용자 정의 한국 우편 주소 필드입니다"
 
@@ -1400,19 +1418,19 @@ msgstr "boardController::init()에서 알 수 없는 오류가 발생했습니�
 #: includes/x2b_modules/post/post.controller.php:61
 #: includes/x2b_modules/post/post.controller.php:64
 #: includes/x2b_modules/post/post.controller.php:153
-#: includes/x2b_modules/post/post.controller.php:299
-#: includes/x2b_modules/post/post.controller.php:384
-#: includes/x2b_modules/post/post.controller.php:387
-#: includes/x2b_modules/post/post.controller.php:392
-#: includes/x2b_modules/post/post.controller.php:1251
-#: includes/x2b_modules/post/post.model.php:547
+#: includes/x2b_modules/post/post.controller.php:298
+#: includes/x2b_modules/post/post.controller.php:383
+#: includes/x2b_modules/post/post.controller.php:386
+#: includes/x2b_modules/post/post.controller.php:391
+#: includes/x2b_modules/post/post.controller.php:1250
+#: includes/x2b_modules/post/post.model.php:544
 #: includes/x2b_modules/post/wp_admin_class/wp_latest_posts.php:63
 msgid "msg_invalid_request"
 msgstr "잘못된 접근입니다"
 
 #: includes/x2b_modules/board/board.controller.php:252
 #: includes/x2b_modules/post/post.controller.php:135
-#: includes/x2b_modules/post/post.controller.php:487
+#: includes/x2b_modules/post/post.controller.php:486
 msgid "lbl_untitled"
 msgstr "제목 없음"
 
@@ -1468,8 +1486,8 @@ msgid "lbl_configure_board"
 msgstr "게시판 설정하기"
 
 #: includes/x2b_modules/comment/comment.controller.php:97
-#: includes/x2b_modules/post/post.controller.php:617
-#: includes/x2b_modules/post/post.controller.php:621
+#: includes/x2b_modules/post/post.controller.php:616
+#: includes/x2b_modules/post/post.controller.php:620
 msgid "msg_invalid_post"
 msgstr "잘못된 게시글입니다"
 
@@ -1578,31 +1596,34 @@ msgstr "비밀"
 msgid "msg_wp_post_registration_failed"
 msgstr "워드프레스 포스트 등록 실패했습니다"
 
-#: includes/x2b_modules/post/post.controller.php:524
+#: includes/x2b_modules/post/post.controller.php:523
 msgid "msg_wp_post_update_failed"
 msgstr "워드프레스 포스트 수정 실패했습니다"
 
-#: includes/x2b_modules/post/post.controller.php:1063
-#: includes/x2b_modules/post/post.controller.php:1067
-#: includes/x2b_modules/post/post.controller.php:1120
-#: includes/x2b_modules/post/post.controller.php:1184
-#: includes/x2b_modules/post/post.controller.php:1191
-#: includes/x2b_modules/post/post.controller.php:1214
-#: includes/x2b_modules/post/post.controller.php:1219
+#: includes/x2b_modules/post/post.controller.php:1062
+#: includes/x2b_modules/post/post.controller.php:1066
+#: includes/x2b_modules/post/post.controller.php:1119
+#: includes/x2b_modules/post/post.controller.php:1183
+#: includes/x2b_modules/post/post.controller.php:1190
+#: includes/x2b_modules/post/post.controller.php:1213
+#: includes/x2b_modules/post/post.controller.php:1218
 msgid "msg_move_failed"
 msgstr "게시글 이동을 실패했습니다"
 
-#: includes/x2b_modules/post/post.controller.php:1078
+#: includes/x2b_modules/post/post.controller.php:1077
 msgid "msg_delete_failed"
 msgstr "게시글 삭제를 실패했습니다"
 
-#: includes/x2b_modules/post/post.model.php:1011
+#: includes/x2b_modules/post/post.model.php:1008
 msgid "opt_"
 msgstr ""
 
 #: includes/x2b_modules/post/wp_admin_class/wp_latest_posts.php:173
 msgid "lbl_readed_count"
 msgstr "조회 수"
+
+#~ msgid "desc_term_condition"
+#~ msgstr "사용자 동의가 필요하면, 이용 약관을 입력하세요."
 
 #, fuzzy
 #~| msgid "lbl_ipaddress"

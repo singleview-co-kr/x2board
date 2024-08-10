@@ -394,7 +394,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\AdminUserDefineFieldsItem' )
 				$s_html .= 		'<div class="attr-value">';
 				$s_html .= 			'	<textarea id="' . esc_attr( $this->_s_meta_key ) . '_term" name="fields[' . esc_attr( $this->_s_meta_key ) . '][term]" class="field_data term" rows="5">' . $this->_s_term . '</textarea>';
 				$s_html .= 		'</div>';
-				$s_html .= 		'<div class="description">※ ' . __( 'desc_term_condition', X2B_DOMAIN ) . '</div>';
+				$s_html .= 		'<div class="description">※ ' . __( 'desc_user_define_field_term_agree', X2B_DOMAIN ) . '</div>';
 				$s_html .= 	'</div>';
 			}
 			if ( isset( $this->_s_placeholder ) ) {

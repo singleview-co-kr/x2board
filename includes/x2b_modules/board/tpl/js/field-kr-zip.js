@@ -48,6 +48,7 @@ function x2board_kr_zipcode_search(postcode, address_1, address_2, address_3){
 			setTimeout(function(){
 				jQuery('#'+address_2).focus();
 			});
+			jQuery(".x2board_kr_zip_hidden_fields").show();
 		}
 	}).open({
 		left: (screen.availWidth-width)*0.5,
