@@ -92,7 +92,7 @@
 							<a class="comment_<?php echo $comment->comment_id?> m_no" href="#popup_menu_area" onclick="return false"><i class="fa fa-ellipsis-h"></i><?php echo __('cmd_comment_do', X2B_DOMAIN)?></a>
 						<?php endif ?>
 						<?php if($comment->is_granted() || !$comment->get('comment_author')): ?><!-- <block cond="$comment->isGranted() || !$comment->get('comment_author')"> -->
-							<a href="<?php echo x2b_get_url('cmd', X2B_CMD_VIEW_MODIFY_COMMENT, 'comment_id',$comment->comment_id)?>"><i class="fa fa-pencil"></i><?php echo __('cmd_modify', X2B_DOMAIN)?></a>
+							<a href="<?php echo x2b_get_url('cmd', X2B_CMD_VIEW_MODIFY_COMMENT, 'comment_id',$comment->comment_id)?>"><i class="fa fa-edit"></i><?php echo __('cmd_modify', X2B_DOMAIN)?></a>
 							<a href="<?php echo x2b_get_url('cmd', X2B_CMD_VIEW_DELETE_COMMENT, 'comment_id',$comment->comment_id)?>"><i class="fa fa-eraser"></i><?php echo __('cmd_delete', X2B_DOMAIN)?></a>
 						<?php endif ?><!-- </block> -->
 						<?php if($post->allow_comment() ): ?><!-- cond="$oDocument->allowComment()"  -->
