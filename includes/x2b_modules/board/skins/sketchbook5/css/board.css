@@ -103,7 +103,7 @@
 
 /* Header */
 .bd_hd{padding:3px 0 15px}
-.small_lst_btn .bd_hd{padding-right:82px}
+/* .small_lst_btn .bd_hd{padding-right:82px} */
 .small_lst_btn.select_lst_cloud .bd_hd{padding-right:105px}
 /* Breadcrumb */
 .bd_bc{font-size:11px;color:#999}
