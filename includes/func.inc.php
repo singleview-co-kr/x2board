@@ -922,6 +922,7 @@ function cut_str( $string, $cut_size = 0, $tail = '...' ) {
  * @param string $date Time value in format of YYYYMMDDHHIISS
  * @param string $format If gap is within a day, returns this format.
  * @return string
+ * function getTimeGap($date, $format = 'Y.m.d')
  */
 function get_time_gap( $date, $format = 'Y.m.d' ) {
 	// traslate yyyy-mm-dd hh:ii:ss' into 'yyyymmddhhiiss'

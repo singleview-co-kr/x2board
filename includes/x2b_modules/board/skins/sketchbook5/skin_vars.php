@@ -332,17 +332,17 @@ $settings = array(
             'N'       => __( 'skin_opt_display_no', X2B_DOMAIN ), // 표시 안함
         ),
     ),
-    // 'notice_style'               => array(
-    //     'id'      => 'notice_style',
-    //     'name'    => __( '공지 출력 형식', X2B_DOMAIN ),
-    //     'desc'    => __( "공지의 출력형식을 결정합니다. 모든 목록형태에서 동일한 공지의 출력이 필요한 경우 사용됩니다.", X2B_DOMAIN ),
-    //     'type'    => 'radio',
-    //     'default' => ' ',
-    //     'options' => array(
-    //         ' '      => __( '선택된 목록 유형과 같은 방식(기본)', X2B_DOMAIN ),
-    //         '2'       => __( '모든 목록 유형에서 동일한 한 줄 공지 형식', X2B_DOMAIN ),
-    //     ),
-    // ),
+    'notice_style'               => array(
+        'id'      => 'notice_style',
+        'name'    => __( '공지 출력 형식', X2B_DOMAIN ),
+        'desc'    => __( "공지의 출력형식을 결정합니다. 모든 목록형태에서 동일한 공지의 출력이 필요한 경우 사용됩니다.", X2B_DOMAIN ),
+        'type'    => 'radio',
+        'default' => ' ',
+        'options' => array(
+            ' '      => __( '선택된 목록 유형과 같은 방식(기본)', X2B_DOMAIN ),
+            '2'       => __( '모든 목록 유형에서 동일한 한 줄 공지 형식', X2B_DOMAIN ),
+        ),
+    ),
     'subject_cut_size'					=> array(
         'id'      => 'subject_cut_size',
         'name'    => __( 'skin_name_subject_cut_size', X2B_DOMAIN ), // 제목 글자 수
@@ -967,17 +967,17 @@ $settings = array(
     //     'type'    => 'header',
     //     'options' => false,
     // ),
-    // 'faq_style'               => array(
-    //     'id'      => 'faq_style',
-    //     'name'    => __( "스타일 프리셋", X2B_DOMAIN ),
-    //     'desc'    => __( "FAQ 게시판의 스타일을 설정합니다. '공식 FAQ모듈 스타일'은 공식 FAQ모듈과 유사한 스타일로 변형시킵니다.", X2B_DOMAIN ),
-    //     'type'    => 'radio',
-    //     'default' => ' ',
-    //     'options' => array(
-    //         ' '      => __( '기본값(기본)', X2B_DOMAIN ),
-    //         'faq_official'       => __( "공식 FAQ모듈 스타일", X2B_DOMAIN ),
-    //     ),
-    // ),
+    'faq_style'               => array(
+        'id'      => 'faq_style',
+        'name'    => __( "스타일 프리셋", X2B_DOMAIN ),
+        'desc'    => __( "FAQ 게시판의 스타일을 설정합니다. '공식 FAQ모듈 스타일'은 공식 FAQ모듈과 유사한 스타일로 변형시킵니다.", X2B_DOMAIN ),
+        'type'    => 'radio',
+        'default' => ' ',
+        'options' => array(
+            ' '      => __( '기본값(기본)', X2B_DOMAIN ),
+            'faq_official'       => __( "공식 FAQ모듈 스타일", X2B_DOMAIN ),
+        ),
+    ),
     // 'sketchbook5_setup_header10'					=> array(
     //     'id'      => 'sketchbook5_setup_header10',
     //     'desc'    => __( 'skin_desc_sketchbook5_setup_header10', X2B_DOMAIN ), // 블로그 형

@@ -69,20 +69,20 @@ if(wp_is_mobile()) {
 	if($mi->to_sns!='N') $mi->to_sns = 3;
 }
 
-$mi->default_style = null;
+// $mi->default_style = null;
 if(isset($listStyle)) {
     if($listStyle=='list') { 
         $mi->default_style = 'list';
     }
-    elseif($listStyle=='gallery') {
-        $mi->default_style = 'gallery';
-    }
-    elseif($listStyle=='guest') {
-        $mi->default_style = 'guest';
-    }
     elseif($listStyle=='faq') {
         $mi->default_style = 'faq';
     }
+    // elseif($listStyle=='gallery') {
+    //     $mi->default_style = 'gallery';
+    // }
+    // elseif($listStyle=='guest') {
+    //     $mi->default_style = 'guest';
+    // }
     // elseif($listStyle=='webzine') {
     //     $mi->default_style = 'webzine';
     // }
@@ -100,12 +100,12 @@ elseif(!in_array($mi->default_style,array('list','gallery','guest','faq'))) {  /
     $mi->default_style = 'list';
 }
 
-if(wp_is_mobile()) {
-    // <load target="../../../../common/js/jquery.min.js" index="-100006" />
-    // <load target="../../../../common/js/xe.min.js" index="-100006" />
-    // <load target="../../../../common/js/x.min.js" index="-100006" />
-    // <load target="../../tpl/js/board.js" />    
-}
+// if(wp_is_mobile()) {
+//     <load target="../../../../common/js/jquery.min.js" index="-100006" />
+//     <load target="../../../../common/js/xe.min.js" index="-100006" />
+//     <load target="../../../../common/js/x.min.js" index="-100006" />
+//     <load target="../../tpl/js/board.js" />
+// }
 
 // <load target="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" />
 // wp_enqueue_style('x2board-sketchbook5-fontawsome', "https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css", array(), X2B_VERSION, 'all');

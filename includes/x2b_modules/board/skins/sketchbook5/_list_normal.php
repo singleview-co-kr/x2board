@@ -185,7 +185,7 @@ else{
 				<td class="author" ><span><a href="#popup_menu_area" class="member_<?php echo $post->get('post_author')?>" onclick="return false"><?php echo $post->get_nick_name()?></a></span></td>
 			<?php endif ?>
 			<?php if($val->var_type=='regdate_dt'): ?> <!-- cond="$val->type=='regdate'"  -->
-				<td class="time" title="<?php echo x2b_get_time_gap($post->get('regdate'), "H:i")?>"><?php echo $post->get_regdate('Y.m.d')?></td>
+				<td class="time" title="<?php echo x2b_get_time_gap($post->get('regdate_dt'), "H:i")?>"><?php echo $post->get_regdate('Y.m.d')?></td>
 			<?php endif ?>
 			<?php if($val->var_type=='last_update_dt'): ?> <!-- cond="$val->type=='last_update'" -->
 				<td class="time last_update m_no"><?php echo x2b_zdate($post->get('last_update_dt'),'Y.m.d')?></td>

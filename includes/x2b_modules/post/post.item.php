@@ -827,7 +827,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postItem' ) ) {
 		 * @return
 		 */
 		public function get_permanent_url() {
-			return esc_url( \X2board\Includes\Classes\Context::get_url( 'cmd', X2B_CMD_VIEW_POST, 'post_id', $this->_n_wp_post_id ) );
+			return x2b_get_url( 'cmd', X2B_CMD_VIEW_POST, 'post_id', $this->_n_wp_post_id );
 		}
 
 		/**

@@ -123,7 +123,7 @@ if($mi->default_style !='viewer'):
 	<?php endif ?>
 	<?php if($grant->manager):?>	<!-- <block cond="$grant->manager"> -->
 			<a href="<?php echo x2b_get_url('cmd', X2B_CMD_VIEW_WRITE_POST, 'post_id', '', 'page', '')?>"><b class="ico_16px setup"></b><?php echo __('cmd_setup', X2B_DOMAIN)?></a>
-			<a class="m_no" href="<?php echo x2b_get_url('','module','document','act','dispDocumentManageDocument')?>" onclick="popopen(this.href,'managePost');return false"><b class="tx_ico_chk">✔</b><?php echo __('cmd_manage_post', X2B_DOMAIN) ?></a>
+			<a class="m_no" href="<?php echo x2b_get_url('module','post','cmd', X2B_CMD_VIEW_MANAGE_POST, 'post_id', '', 'page', '')?>" onclick="popopen(this.href,'managePost');return false"><b class="tx_ico_chk">✔</b><?php echo __('cmd_manage_post', X2B_DOMAIN) ?>11</a>
 		<?php if($mi->default_style!='list'):?>	<!-- cond="$mi->default_style!='list'" -->
 			<input type="checkbox" onclick="XE.checkboxToggleAll({ doClick:true });" class="iCheck" title="Check All" />
 		<?php endif ?>			
@@ -333,7 +333,7 @@ else {
 					<?php endif ?>
 					<?php if($grant->manager):?><!-- <block cond="$grant->manager"> -->
 						<a class="btn_img" href="<?php echo admin_url('admin.php?page=x2b_disp_board_update&board_id='.$board_id);?>"><i class="ico_16px setup"></i> <?php echo __('cmd_setup', X2B_DOMAIN)?></a>
-						<a class="btn_img" id='btn_manage_post' href="<?php echo x2b_get_url('module','post','cmd', X2B_CMD_VIEW_MANAGE_POST, 'post_id', '', 'page', '')?>"><i class="tx_ico_chk">✔</i> <?php echo __('cmd_manage_post', X2B_DOMAIN)?></a>
+						<a class="btn_img" id='btn_manage_post' href="<?php echo x2b_get_url('module','post','cmd', X2B_CMD_VIEW_MANAGE_POST, 'post_id', '', 'page', '')?>" onclick="popopen(this.href,'managePost');return false"><i class="tx_ico_chk">✔</i> <?php echo __('cmd_manage_post', X2B_DOMAIN)?></a>
 					<?php endif?><!-- </block> -->
 				</div>
 			</div>
