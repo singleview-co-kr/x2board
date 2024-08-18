@@ -5,6 +5,9 @@
  * @author  https://singleview.co.kr/
  * @version 0.0.1
  */
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;  // Exit if accessed directly.
+}
 
 /**
  * same with func.inc.php::get_url()
