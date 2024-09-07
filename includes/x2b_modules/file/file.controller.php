@@ -343,7 +343,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\File\\fileController' ) ) {
 				exit();
 			}
 
-			$upload_target_id = $_SESSION['x2b_upload_info'][ $editor_sequence ]->upload_target_id;
+			// $upload_target_id = $_SESSION['x2b_upload_info'][ $editor_sequence ]->upload_target_id;
 
 			$logged_info  = \X2board\Includes\Classes\Context::get( 'logged_info' );
 			$o_file_model = \X2board\Includes\get_model( 'file' );
