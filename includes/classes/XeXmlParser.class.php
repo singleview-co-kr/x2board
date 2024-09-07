@@ -19,6 +19,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( ! class_exists( '\\X2board\\Includes\\Classes\\Xml_Node_' ) ) {
 	class Xml_Node_ {
+		// php8 compatible
+		public $node_name;
+		public $attrs;
+		public $body;
+		public $isnaver;
+		public $desc;
+		public $pattern;
+		public $domain;
+		public $iframe;
 
 		/** In PHP5 this will silence E_STRICT warnings
 		 * for undeclared properties.
