@@ -785,14 +785,15 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			$a_header = array();
 			$a_header['board_id'] = \X2board\Includes\Classes\Context::get('board_id');
 			$o_post = \X2board\Includes\Classes\Context::get('post');
-			$a_header['post_id'] = $o_post->post_id;
 			if($o_post->post_id) {  // update a old post
 				$a_header['cmd'] = X2B_CMD_PROC_MODIFY_POST;
 				$a_header['content'] = htmlspecialchars($o_post->content);
+				$a_header['post_id'] = $o_post->post_id;
 			}
 			else { // write a new post
 				$a_header['cmd'] = X2B_CMD_PROC_WRITE_POST; 
 				$a_header['content'] = null;
+				$a_header['post_id'] = \X2board\Includes\get_next_sequence();
 			}
 			unset($o_post);
 
