@@ -20,6 +20,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postAdminModel' ) ) {
 	require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'user_define_fields' . DIRECTORY_SEPARATOR . 'AdminUserDefineFields.class.php';
 
 	class postAdminModel {
+		public  $a_user_define_fields = null;
 		private $_a_unchosen_user_default_fields = array();
 		private $_a_user_define_fields           = array();
 		private $_a_extended_fields              = array();
