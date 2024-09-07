@@ -99,6 +99,9 @@ function enqueue_user_scripts() {
 	if ( current_user_can( 'manage_options' ) ) {
 		wp_enqueue_script( X2B_JS_HANDLER_USER, X2B_URL . 'common/js/admin_script.js', array( 'jquery' ), X2B_VERSION, true );
 	}
+	else {
+		wp_enqueue_script( X2B_JS_HANDLER_USER, X2B_URL . 'common/js/guest_script.js', array( 'jquery' ), X2B_VERSION, true );
+	}
 
 	$a_ajax_info = array(
 		'url'               => admin_url( 'admin-ajax.php' ),
