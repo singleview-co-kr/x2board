@@ -17,6 +17,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( ! class_exists( '\\X2board\\Includes\\Classes\\ModuleObject' ) ) {
 
 	class ModuleObject extends BaseObject {
+		// php8 compatible
+		public $grant;
+
 		var $module               = null; // < Class name of Xe Module that is identified by mid
 		public $module_info       = null; // < an object containing the module information
 		var $module_path          = null; // < a path to directory where module source code resides

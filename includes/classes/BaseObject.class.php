@@ -38,6 +38,13 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\BaseObject' ) ) {
 		 */
 		var $variables = array();
 
+		// php8 compatible
+		public $data;
+		public $page_navigation;
+		public $page;
+		public $total_count;
+		public $total_page;
+
 		/**
 		 * Constructor
 		 *

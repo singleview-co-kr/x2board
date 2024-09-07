@@ -309,7 +309,7 @@ else {
 							<span class="btn_img itx_wrp">
 								<button type="submit" onclick="jQuery(this).parents('form.bd_srch_btm').submit();return false;" class="ico_16px search">Search</button>
 								<label for="bd_srch_btm_itx_<?php echo $board_id ?>"><?php echo __('cmd_search', X2B_DOMAIN)?></label>
-								<input type="text" name="search_keyword" id="bd_srch_btm_itx_<?php echo $board_id ?>" class="bd_srch_btm_itx srch_itx" value="<?php echo htmlspecialchars($search_keyword)?>" />
+								<input type="text" name="search_keyword" id="bd_srch_btm_itx_<?php echo $board_id ?>" class="bd_srch_btm_itx srch_itx" value="<?php echo htmlspecialchars((string)$search_keyword)?>" />
 							</span>
 							<span class="btn_img select">
 								<select name="search_target">
@@ -354,7 +354,7 @@ else {
 		<fieldset>
 		<legend class="blind">Board Pagination</legend>
 		<input type="hidden" name="category" value="<?php echo sanitize_key($category) ?>" />
-		<input type="hidden" name="search_keyword" value="<?php echo htmlspecialchars($search_keyword)?>" />
+		<input type="hidden" name="search_keyword" value="<?php echo htmlspecialchars((string)$search_keyword)?>" />
 		<input type="hidden" name="search_target" value="<?php echo sanitize_key($search_target) ?>" />
 		<input type="hidden" name="listStyle" value="<?php echo $mi->default_style ?>" />
 		

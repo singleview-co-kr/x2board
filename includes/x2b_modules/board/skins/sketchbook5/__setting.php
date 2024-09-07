@@ -69,7 +69,7 @@ if(wp_is_mobile()) {
 	if($mi->to_sns!='N') $mi->to_sns = 3;
 }
 
-// $mi->default_style = null;
+$mi->default_style = null;
 if(isset($listStyle)) {
     if($listStyle=='list') { 
         $mi->default_style = 'list';

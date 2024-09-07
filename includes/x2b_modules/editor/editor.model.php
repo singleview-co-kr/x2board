@@ -199,7 +199,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Editor\\editorModel' ) ) {
 			\X2board\Includes\Classes\Context::set( 'content_style_url', '/wp-content' . $s_content_style_url );
 
 			// Default font setting
-			\X2board\Includes\Classes\Context::set( 'content_font', addslashes( $option->content_font ) );
+			\X2board\Includes\Classes\Context::set( 'content_font', addslashes( (string)$option->content_font ) );
 			\X2board\Includes\Classes\Context::set( 'content_font_size', $option->content_font_size );
 
 			// Option setting to allow auto-save

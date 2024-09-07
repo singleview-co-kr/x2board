@@ -789,7 +789,7 @@ function get_wp_post_id_by_x2b_post_id( $n_x2b_post_id ) {
 function get_script_path() {
 	static $s_url = null;
 	if ( $s_url == null ) {
-		$script_path = filter_var( $_SERVER['SCRIPT_NAME'], FILTER_SANITIZE_STRING );
+		$script_path = filter_var( $_SERVER['SCRIPT_NAME'], FILTER_UNSAFE_RAW );
 		$s_url       = str_ireplace( '/tools/', '/', preg_replace( '/index.php.*/i', '', str_replace( '\\', '/', $script_path ) ) );
 	}
 	return $s_url;

@@ -38,6 +38,8 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\Context' ) ) {
 		 */
 		public $get_vars = null;
 
+		public $request_method = null;
+
 		/**
 		 * Pattern for request vars check
 		 *
@@ -163,7 +165,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\Context' ) ) {
 				$o_controller->set_module_info( intval( $_POST['board_id'] ) );
 				unset( $o_controller );
 			} else {  // begin of view mode //////////////////////
-				$s_cmd        = self::get( 'cmd' );
+				$s_cmd        = (string)self::get( 'cmd' );
 				$s_cmd_prefix = substr( $s_cmd, 0, 4 );
 				if ( $s_cmd_prefix === '' || $s_cmd_prefix === 'view' ) {  // load view
 					// pretty url is for view only
@@ -586,7 +588,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\Context' ) ) {
 			// arrange args_list
 			for ( $i = 0, $c = count( (array) $args_list ); $i < $c; $i += 2 ) {
 				$key = $args_list[ $i ];
-				$val = trim( $args_list[ $i + 1 ] );
+				$val = trim( (string)$args_list[ $i + 1 ] );
 				// If value is not set, remove the key
 				if ( $key != 'cmd' ) {  // keep cmd set always
 					if ( ! isset( $val ) || ! strlen( $val ) ) {

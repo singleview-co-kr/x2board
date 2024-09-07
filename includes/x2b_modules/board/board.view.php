@@ -18,6 +18,13 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 	class boardView extends board {
 		var $listConfig;
 		var $columnList;
+		
+		// php8 compatible
+		public $grant;
+		public $except_notice;
+		public $page_count;
+		public $search_list_count;
+		public $list_count;
 
 		private $_default_fields = array();
 		private $_extends_fields = array();

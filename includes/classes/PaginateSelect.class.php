@@ -20,6 +20,10 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\PaginateSelect' ) ) {
 
 	class PaginateSelect {
 
+		// php8 compatible
+		public $act_dbclass_finish;
+		public $act_dbclass_start;
+
 		/**
 		 * valid query type
 		 *

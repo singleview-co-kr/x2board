@@ -46,6 +46,9 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postItem' ) ) {
 		 */
 		private $_o_fileSystemDirect = null;
 
+		// php8 compatible
+		public $grant_cache;
+
 		/**
 		 * Constructor
 		 *
@@ -389,7 +392,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postItem' ) ) {
 			$title = $this->get_title_text( $cut_size, $tail );
 
 			$attrs = array();
-			$this->add( 'title_color', trim( $this->get( 'title_color' ) ) );
+			$this->add( 'title_color', trim( (string)$this->get( 'title_color' ) ) );
 			if ( $this->get( 'title_bold' ) == 'Y' ) {
 				$attrs[] = 'font-weight:bold;';
 			}
@@ -644,7 +647,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postItem' ) ) {
 			$a_ignore_field_type = array_keys( $a_default_fields );
 			unset( $a_default_fields );
 			$a_user_define_extended_fields = array();
-			foreach ( $inserted_extra_vars as $s_eid => $o_field ) {				
+			foreach ( (array)$inserted_extra_vars as $s_eid => $o_field ) {				
 				$field_type = ( isset( $o_field->type ) && $o_field->type ) ? $o_field->type : '';
 				if ( in_array( $field_type, $a_ignore_field_type ) ) { // ignore default fields
 					continue;

@@ -19,7 +19,7 @@
 				</span>
 			</td>
 			<td class="itx_wrp">
-				<input type="text" name="search_keyword" value="<?php echo htmlspecialchars($search_keyword)?>" class="itx srch_itx" />
+				<input type="text" name="search_keyword" value="<?php echo htmlspecialchars((string)$search_keyword)?>" class="itx srch_itx" />
 			</td>
 			<td>
 				<button type="submit" onclick="jQuery(this).parents('form').submit();return false" class="bd_btn"><?php echo __('cmd_search', X2B_DOMAIN)?></button>

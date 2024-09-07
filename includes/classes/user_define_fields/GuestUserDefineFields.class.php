@@ -442,7 +442,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 		 * @return string Returns a converted value
 		 */
 		private function _getTypeValue( $type, $value ) {
-			$value = trim( $value );
+			$value = trim( (string)$value );
 			if ( ! isset( $value ) ) {
 				return;
 			}
