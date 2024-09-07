@@ -236,7 +236,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postItem' ) ) {
 		 * @return
 		 */
 		public function get_nick_name() {
-			return htmlspecialchars( $this->get( 'nick_name' ), ENT_COMPAT | ENT_HTML401, 'UTF-8', false );
+			return htmlspecialchars( (string)$this->get( 'nick_name' ), ENT_COMPAT | ENT_HTML401, 'UTF-8', false );
 		}
 
 		/**
