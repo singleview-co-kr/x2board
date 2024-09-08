@@ -429,6 +429,18 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineFields' ) ) {
 		}
 
 		/**
+		 * 기본 필드 정보 반환
+		 *
+		 * @return _a_default_fields
+		 */
+		public function get_default_field_info_by_field_type( $s_field_type ) {
+			if ( isset( $this->_a_default_fields[ $s_field_type ] ) ) {
+				return $this->_a_default_fields[ $s_field_type ];
+			}
+			return null;
+		}
+
+		/**
 		 * 번역된 필드의 레이블을 반환한다.
 		 *
 		 * @return bool

@@ -680,9 +680,11 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 					$buff[] = '</div>';
 					break;
 				case 'attach':
-					$o_editor_view = \X2board\Includes\get_view( 'editor' );
-					$buff[]        = $o_editor_view->get_attach_ux_html( $o_post->get_uploaded_files() );
-					unset( $o_editor_view );
+					if ( $this->_is_this_accessible( $this->permission, $this->role ) ) {
+						$o_editor_view = \X2board\Includes\get_view( 'editor' );
+						$buff[]        = $o_editor_view->get_attach_ux_html( $o_post->get_uploaded_files() );
+						unset( $o_editor_view );
+					}
 					break;
 				case 'option':  // 글쓰기 옵션 체크
 					$s_name = strlen( $s_name ) ? $s_name : __( $this->type, X2B_DOMAIN );
@@ -1002,6 +1004,16 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 				$buff[] = '<p>' . htmlspecialchars( $this->desc, ENT_COMPAT | ENT_HTML401, 'UTF-8', false ) . '</p>';
 			}
 			return join( PHP_EOL, $buff );
+		}
+
+		/**
+		 *
+		 * @param string  $s_permission_label  all - no restriction, author - logged in user, roles - select from defined wp roles
+		 * @param string  $a_wp_role  array defined wp roles
+		 * @return
+		 */
+		public function check_accessible( $s_permission_label = null, $a_wp_role = null ) {
+			return $this->_is_this_accessible( $s_permission_label, $a_wp_role ); 
 		}
 
 		/**

@@ -55,6 +55,34 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\File\\fileController' ) ) {
 		}
 
 		/**
+		 * check upload delete appending file permission
+		 *
+		 * @return void
+		 */
+		private function _check_attach_permission( $n_board_id ) {
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'user_define_fields' . DIRECTORY_SEPARATOR . 'UserDefineFields.class.php';
+			$o_post_user_define_fields = new \X2board\Includes\Classes\UserDefineFields;
+			$o_attach_field_info = $o_post_user_define_fields->get_default_field_info_by_field_type( 'attach' );
+			unset( $o_post_user_define_fields );
+
+			global $wpdb;
+			$o_rst = $wpdb->get_row("SELECT `json_param` FROM `{$wpdb->prefix}x2b_user_define_keys` WHERE `board_id` = '{$n_board_id}' AND `var_type` ='{$o_attach_field_info['field_type']}'");
+			unset( $o_attach_field_info );
+			$a_extra_param = unserialize( $o_rst->json_param );
+			unset( $o_rst );
+
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'user_define_fields' . DIRECTORY_SEPARATOR . 'GuestUserDefineFields.class.php';
+			$o_user_define_item_for_guest = new \X2board\Includes\Classes\UserDefineItemForGuest(
+				null, null, null, null, null, null, null, null, null, null, null
+			);
+
+			$b_accessible = $o_user_define_item_for_guest->check_accessible( $a_extra_param['permission'], $a_extra_param['roles']);
+			unset( $o_user_define_item_for_guest );
+			unset( $a_extra_param );
+			return $b_accessible;
+		}
+
+		/**
 		 * Upload attachments in the editor
 		 *
 		 * Determine the upload target srl from editor_sequence and uploadTargetSrl variables.
@@ -87,11 +115,29 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\File\\fileController' ) ) {
 				}
 			}
 
-			$n_board_id = intval( \X2board\Includes\Classes\Context::get( 'board_id' ) );
+			$a_uploaded_file_info = array(
+				'is_success'          => false,
+				'file_id'             => null,
+				'thumbnail_abs_url'   => null,
+				'file_type'           => null,
+				'file_size'           => null,
+				'reserved_comment_id' => null,
+				'error'               => null,  // for ajax uploading error msg
+			);
 
-			// Exit a session if there is neither upload permission nor information
+			$n_board_id = intval( \X2board\Includes\Classes\Context::get( 'board_id' ) );
+			// deny if not allowed
+			if ( ! $this->_check_attach_permission( $n_board_id ) ) {
+				// $upload_attach_files['file_id'] = 1;
+				$upload_attach_files['error'] = __('msg_not_permitted', X2B_DOMAIN);
+				return $upload_attach_files;
+			}
+
+			// deny if there is neither upload permission nor information
 			if ( ! $_SESSION['x2b_upload_info'][ $editor_sequence ]->enabled ) {
-				exit();
+				// $upload_attach_files['file_id'] = 1;
+				$upload_attach_files['error'] = __('msg_upload_file_failed', X2B_DOMAIN);
+				return $upload_attach_files;
 			}
 			// Extract from session information if upload_target_id is not specified
 			if ( ! $upload_target_id ) {
@@ -114,16 +160,16 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\File\\fileController' ) ) {
 			// }
 
 			if ( $output->error != '0' ) {
-				$this->stop( $output->message );
+				$upload_attach_files['error'] = $output->message;
+				return $upload_attach_files;
 			}
 
-			$a_uploaded_file_info                        = array();
+			$a_uploaded_file_info['is_success']          = true;
 			$a_uploaded_file_info['file_id']             = $output->get( 'file_id' );
 			$a_uploaded_file_info['thumbnail_abs_url']   = $s_download_url;
 			$a_uploaded_file_info['file_type']           = $output->get( 'file_type' );
 			$a_uploaded_file_info['file_size']           = $output->get( 'file_size' );
 			$a_uploaded_file_info['reserved_comment_id'] = $upload_target_id;
-			$a_uploaded_file_info['error']               = '';  // for ajax uploading error msg
 
 			$upload_attach_files   = array();  // reserved for multiple upload
 			$upload_attach_files[] = $a_uploaded_file_info;
@@ -163,6 +209,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\File\\fileController' ) ) {
 		 * @return BaseObject
 		 */
 		public function insert_file( $file_info, $n_board_id, $upload_target_id, $download_count = 0, $manual_insert = false ) {
+			global $wpdb;
 			// A workaround for Firefox upload bug
 			if ( preg_match( '/^=\?UTF-8\?B\?(.+)\?=$/i', $file_info['name'], $match ) ) {
 				$file_info['name'] = base64_decode( strtr( $match[1], ':', '/' ) );
@@ -173,15 +220,15 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\File\\fileController' ) ) {
 			if ( ! $manual_insert ) {
 				// Get the file configurations
 				if ( $logged_info->is_admin != 'Y' ) {
-					$config = $o_file_model->getFileConfig( $module_srl );
+					$o_current_module_info = \X2board\Includes\Classes\Context::get( 'current_module_info' );
 
 					// check file type
-					if ( isset( $config->allowed_filetypes ) && $config->allowed_filetypes !== '*.*' ) {
-						$filetypes = explode( ';', $config->allowed_filetypes );
+					if ( isset( $o_current_module_info->file_allowed_filetypes ) && $o_current_module_info->file_allowed_filetypes !== '*.*' ) {
+						$filetypes = explode( ',', $o_current_module_info->file_allowed_filetypes );
 						$ext       = array();
 						foreach ( $filetypes as $item ) {
-							$item  = explode( '.', $item );
-							$ext[] = strtolower( $item[1] );
+							// $item  = explode( '.', $item );
+							$ext[] = strtolower( trim($item) );
 						}
 						$uploaded_ext = explode( '.', $file_info['name'] );
 						$uploaded_ext = strtolower( array_pop( $uploaded_ext ) );
@@ -192,17 +239,16 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\File\\fileController' ) ) {
 						unset( $ext );
 					}
 
-					$allowed_filesize    = $config->allowed_filesize * 1048576; // 1024 * 1024;
-					$allowed_attach_size = $config->allowed_attach_size * 1048576; // 1024 * 1024;
+					$allowed_filesize    = $o_current_module_info->file_allowed_filesize_mb * 1048576; // 1024 * 1024;
+					$allowed_attach_size = $o_current_module_info->file_allowed_attach_size_mb * 1048576; // 1024 * 1024;
+					unset( $o_current_module_info );
 					// An error appears if file size exceeds a limit
 					if ( $allowed_filesize < filesize( $file_info['tmp_name'] ) ) {
 						return new \X2board\Includes\Classes\BaseObject( -1, __( 'msg_exceeds_limit_size', X2B_DOMAIN ) );
 					}
 					// Get total file size of all attachements (from DB)
-					$size_args                   = new \stdClass();
-					$size_args->upload_target_id = $upload_target_id;
-					$output                      = executeQuery( 'file.getAttachedFileSize', $size_args );
-					$attached_size               = (int) $output->data->attached_size + filesize( $file_info['tmp_name'] );
+					$o_file_info   = $wpdb->get_row("SELECT sum(`file_size`) as `attached_size` FROM `{$wpdb->prefix}x2b_files` WHERE `upload_target_id` = $upload_target_id");
+					$attached_size = intval( $o_file_info->attached_size ) + filesize( $file_info['tmp_name'] );
 					if ( $attached_size > $allowed_attach_size ) {
 						return new \X2board\Includes\Classes\BaseObject( -1, __( 'msg_exceeds_limit_size', X2B_DOMAIN ) );
 					}
@@ -294,8 +340,8 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\File\\fileController' ) ) {
 			// pass true in a second parameter to tell it to use the GMT offset.
 			$a_new_file['regdate']           = date( 'Y-m-d H:i:s', current_time( 'timestamp', true ) );
 			$a_new_file['ipaddress']         = \X2board\Includes\get_remote_ip();
+			unset( $logged_info );
 
-			global $wpdb;
 			$result = $wpdb->insert( "{$wpdb->prefix}x2b_files", $a_new_file );
 			if ( $result < 0 || $result === false ) {
 				unset( $a_new_file );

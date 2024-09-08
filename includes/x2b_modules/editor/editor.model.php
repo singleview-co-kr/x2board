@@ -60,7 +60,6 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Editor\\editorModel' ) ) {
 			$o_config->sel_editor_colorset = null;
 
 			$o_current_module_info = \X2board\Includes\Classes\Context::get( 'current_module_info' );
-
 			$o_config->enable_default_component_grant = $o_current_module_info->enable_default_component_grant != -1 ? $o_current_module_info->enable_default_component_grant : null; // 기본 컴포넌트 사용 권한  $o_editor_config->enable_default_component_grant;
 			$o_config->enable_component_grant         = $o_current_module_info->enable_component_grant != -1 ? $o_current_module_info->enable_component_grant : null; // 확장 컴포넌트 사용 권한 $o_editor_config->enable_component_grant;
 
@@ -95,19 +94,19 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Editor\\editorModel' ) ) {
 			$option->content_font_size = $o_config->content_font_size;
 			$option->colorset          = $o_config->sel_editor_colorset;
 			// Permission check for file upload
-			$option->allow_fileupload = false;
-			if ( $logged_info->is_admin == 'Y' ) {
-				$option->allow_fileupload = true;
-			} elseif ( count( (array) $o_config->upload_file_grant ) ) {
-				foreach ( $group_list as $s_group_name => $_ ) {  // $group_list = Array(  [administrator] => 1 )
-					if ( isset( $o_config->upload_file_grant[ $s_group_name ] ) && $o_config->upload_file_grant[ $s_group_name ] ) {
-						$option->allow_fileupload = true;
-						break;
-					}
-				}
-			} else {
-				$option->allow_fileupload = true;
-			}
+			// $option->allow_fileupload = false;
+			// if ( $logged_info->is_admin == 'Y' ) {
+			// 	$option->allow_fileupload = true;
+			// } elseif ( count( (array) $o_config->upload_file_grant ) ) {
+			// 	foreach ( $group_list as $s_group_name => $_ ) {  // $group_list = Array(  [administrator] => 1 )
+			// 		if ( isset( $o_config->upload_file_grant[ $s_group_name ] ) && $o_config->upload_file_grant[ $s_group_name ] ) {
+			// 			$option->allow_fileupload = true;
+			// 			break;
+			// 		}
+			// 	}
+			// } else {
+			// 	$option->allow_fileupload = true;
+			// }
 			// Permission check for using default components
 			$option->enable_default_component = false;
 			if ( $logged_info->is_admin == 'Y' ) {
@@ -179,11 +178,12 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Editor\\editorModel' ) ) {
 			/**
 			 * Editor's default options
 			 */
-			if ( ! $option->allow_fileupload ) {
-				$allow_fileupload = false;
-			} else {
-				$allow_fileupload = true;
-			}
+			// if ( ! $option->allow_fileupload ) {
+			// 	$allow_fileupload = false;
+			// } else {
+			// 	$allow_fileupload = true;
+			// }
+
 			// content_style setting
 			if ( ! $option->content_style ) {
 				$option->content_style = 'ckeditor_light';
@@ -286,7 +286,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Editor\\editorModel' ) ) {
 			 * Upload setting by using configuration of the file module internally
 			 */
 			$files_count = 0;
-			if ( $allow_fileupload ) {
+			// if ( $allow_fileupload ) {
 				$oFileModel = \X2board\Includes\get_model( 'file' );
 				// Get upload configuration to set on SWFUploader
 				$file_config                      = $oFileModel->get_upload_config();
@@ -306,7 +306,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Editor\\editorModel' ) ) {
 					$files_count = $oFileModel->get_files_count( $upload_target_id );
 				}
 				unset( $oFileModel );
-			}
+			// }
 			// \X2board\Includes\Classes\Context::set('files_count', (int)$files_count);
 
 			// \X2board\Includes\Classes\Context::set('allow_fileupload', $allow_fileupload);

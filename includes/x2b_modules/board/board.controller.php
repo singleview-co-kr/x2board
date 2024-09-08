@@ -93,9 +93,11 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 			$o_file_controller->init(); // to init related $_SESSION
 			$upload_attach_files = $o_file_controller->proc_file_upload();
 			unset( $o_file_controller );
+			$s_bool = $upload_attach_files[0]['is_success'] ? 'success' : 'fail';
+			unset( $upload_attach_files[0]['is_success'] );
 			wp_send_json(
 				array(
-					'result' => 'success',
+					'result' => $s_bool,
 					'files'  => $upload_attach_files,
 				)
 			);

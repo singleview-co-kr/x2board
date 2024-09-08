@@ -66,12 +66,17 @@ jQuery(function() {  // jquery.fileupload on document write screen
             data.context.find(".progress-bar").css("width", progress + "%");
         },
         done: function(e, data) {
+			if( data.result.result == 'fail' ){
+				data.context.remove();
+                alert(data.result.files.error);
+                return false;
+			}
             var res = data.result.files[0];
 			var file_id = res.file_id;
 			var thumbnail_abs_url = res.thumbnail_abs_url;
 			var file_type = res.file_type;
 			let n_reserved_comment_id = res.reserved_comment_id;
-            if (res.error !== "") {
+            if (res.error !== null) {
                 data.context.remove();
                 alert(res.error);
                 return false;
