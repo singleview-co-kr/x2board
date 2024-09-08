@@ -194,21 +194,36 @@ function launch_x2b( $s_cmd_type, $a_shortcode_args = null ) {
  */
 function filter_the_content( $content ) {
 	global $post;
-
 	// Track the number of times this function  is called.
-	static $filter_calls = 0;
-	++$filter_calls;
-	if ( isset( $post->post_content ) && is_page( $post->ID ) && ! post_password_required() ) {
-		if ( $post->post_content === X2B_PAGE_IDENTIFIER ) {
-            $content = str_replace( X2B_PAGE_IDENTIFIER, '', $content );
-            // enforce board position
-            ob_start();
-			launch_x2b( 'view' );
-            $content .= ob_get_clean();
+	// static $filter_calls = 0;
+	// ++$filter_calls;
+	$b_render_board = false;
+	$s_x2b_post_redirect_param = X2B_DOMAIN . '_post_redirect';
+	if( isset( $_GET[$s_x2b_post_redirect_param] ) ) {
+		$n_post_id = intval( $_GET[$s_x2b_post_redirect_param] );
+		global $wpdb;
+		$n_board_id = intval( $wpdb->get_var("SELECT `board_id` FROM `{$wpdb->prefix}x2b_posts` WHERE `post_id`='$n_post_id'") );
+		if ( $n_board_id ) {
+			$post = get_page($n_board_id);  // switch global variable $post to x2b-installed page
+			$_REQUEST['cmd'] = X2B_CMD_VIEW_POST;
+			$_REQUEST['post_id'] = $_GET['post_id'] = $n_post_id;
+			$b_render_board = true;
 		}
 	}
-	if( get_option( X2B_ENDORSE_PLUGIN ) == 'Y' ) {
-		return $content.'<div class="'.X2B_DOMAIN.'-default-poweredby"><a href="//singleview.co.kr">Powered by '.X2B_DOMAIN.'</a></div>';
+	elseif ( isset( $post->post_content ) && is_page( $post->ID ) && ! post_password_required() ) {
+		if ( $post->post_content === X2B_PAGE_IDENTIFIER ) {
+			// $content = str_replace( X2B_PAGE_IDENTIFIER, '', $content );
+			$b_render_board = true;
+		}
+	}
+	if( $b_render_board ) {  // enforce board position
+		unset($content);
+		ob_start();
+		launch_x2b( 'view' );
+		$content = ob_get_clean();
+		if( get_option( X2B_ENDORSE_PLUGIN ) == 'Y' ) {
+			return $content.'<div class="'.X2B_DOMAIN.'-default-poweredby"><a href="//singleview.co.kr">Powered by '.X2B_DOMAIN.'</a></div>';
+		}
 	}
 	return $content;
 }
