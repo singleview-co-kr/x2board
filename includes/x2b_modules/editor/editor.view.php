@@ -165,7 +165,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Editor\\editorView' ) ) {
 			wp_enqueue_script( 'x2board-fileupload-caller', X2B_URL . 'common/jquery.fileupload/file-upload.js', array( 'jquery' ), X2B_VERSION, true );
 			$n_editor_sequence = \X2board\Includes\Classes\Context::get( 'editor_sequence' ); // for appending file to a comment
 			$buff              = array();
-			$buff[]            = '<input type="file" name="files" id="file_software" class="file-upload" data-editor_call_id="' . $n_editor_sequence . '" data-maxfilecount="' . $n_file_max_attached_count . '" data-accpet_file_types="' . $s_accept_file_types . '" data-max_each_file_size_mb="' . $n_file_allowed_filesize_mb . '">';
+			$buff[]            = '<input type="file" name="files" id="file_software" class="file-upload" data-editor_call_id="' . $n_editor_sequence . '" data-maxfilecount="' . $n_file_max_attached_count . '" data-accept_file_types="' . $s_accept_file_types . '" data-max_each_file_size_mb="' . $n_file_allowed_filesize_mb . '">';
 			$buff[]            = '<ul class="file-list list-unstyled mb-0">';
 			foreach ( $a_appended_file as $_ => $o_file_value ) {
 				$buff[] = '<li class="file my-1 row">';

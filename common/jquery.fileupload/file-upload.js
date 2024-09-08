@@ -44,7 +44,7 @@ jQuery(function() {  // jquery.fileupload on document write screen
 				return false;
 			}
             // check file extension
-			const accpet_file_types = jQuery(this).data("accpet_file_types");
+			const accpet_file_types = jQuery(this).data("accept_file_types");
 			const re_accpet_file_types = new RegExp(accpet_file_types);  //  /(gif|jpe?g|png|pdf|doc|docx)$/i;
 			const re_file_info = /(?:\.([^.]+))?$/;
 			const file_ext = re_file_info.exec(data.files[0].name)[1];
