@@ -30,6 +30,29 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentItem' ) ) {
 		 */
 		var $columnList = array();
 
+		// ensure PHP 8.2 compatibility
+		public $board_id = null;
+		public $parent_post_id = null;
+		public $parent_comment_id = null;
+		public $wp_comment_id = null;
+		public $is_secret = null;
+		public $is_granted = null;
+		public $content = null;
+		public $voted_count = null;
+		public $blamed_count = null;
+		public $password = null;
+		public $nick_name = null;
+		public $comment_author = null;
+		public $email_address = null;
+		public $uploaded_count = null;
+		public $ipaddress = null;
+		public $list_order = null;
+		public $status = null;
+		public $ua = null;
+		public $regdate_dt = null;
+		public $last_update_dt = null;
+		public $depth = null;
+
 		/**
 		 * Constructor
 		 *
@@ -84,11 +107,11 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentItem' ) ) {
 			$this->adds( $attribute );
 
 			// define vars on the object for backward compatibility of skins
-			if ( count( (array) $attribute ) ) {
-				foreach ( $attribute as $key => $val ) {
-					$this->{$key} = $val;
-				}
-			}
+			// if ( count( (array) $attribute ) ) {
+			// 	foreach ( $attribute as $key => $val ) {
+			// 		$this->{$key} = $val;
+			// 	}
+			// }
 		}
 
 		/**
@@ -137,7 +160,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentItem' ) ) {
 		 * @return
 		 */
 		public function get_nick_name() {
-			$s_nick_name = strlen( $this->get( 'nick_name' ) ) > 0 ? $this->get( 'nick_name' ) : __( 'lbl_no_name', X2B_DOMAIN );
+			$s_nick_name = strlen( (string)$this->get( 'nick_name' ) ) > 0 ? $this->get( 'nick_name' ) : __( 'lbl_no_name', X2B_DOMAIN );
 			return \X2board\Includes\escape( $s_nick_name, false );
 		}
 
