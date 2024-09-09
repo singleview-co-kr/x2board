@@ -516,17 +516,17 @@ function x2b_settings_extra() {
 				'administrator' => 'mandatory',
 			),
 		),
-		'upload_file_grant'                             => array(
-			'id'        => 'upload_file_grant',
-			'name'      => __( 'name_upload_file_grant', X2B_DOMAIN ),
-			// 'desc'    => __( 'desc_upload_file_grant', X2B_DOMAIN ),
-			'type'      => 'multicheck',
-			'default'   => false,
-			'options'   => x2b_get_editable_roles(),
-			'mandatory' => array(
-				'administrator' => 'mandatory',
-			),
-		),
+		// 'upload_file_grant'                             => array(
+		// 	'id'        => 'upload_file_grant',
+		// 	'name'      => __( 'name_upload_file_grant', X2B_DOMAIN ),
+		// 	// 'desc'    => __( 'desc_upload_file_grant', X2B_DOMAIN ),
+		// 	'type'      => 'multicheck',
+		// 	'default'   => false,
+		// 	'options'   => x2b_get_editable_roles(),
+		// 	'mandatory' => array(
+		// 		'administrator' => 'mandatory',
+		// 	),
+		// ),
 		'comment_editor_setup_header'                   => array(
 			'id'      => 'comment_editor_setup_header',
 			'desc'    => __( 'desc_comment_editor_setup_header', X2B_DOMAIN ),
@@ -558,17 +558,17 @@ function x2b_settings_extra() {
 				'administrator' => 'mandatory',
 			),
 		),
-		'comment_upload_file_grant'                     => array(
-			'id'        => 'comment_upload_file_grant',
-			'name'      => __( 'name_comment_upload_file_grant', X2B_DOMAIN ),
-			// 'desc'    => __( 'desc_comment_upload_file_grant', X2B_DOMAIN ),
-			'type'      => 'multicheck',
-			'default'   => false,
-			'options'   => x2b_get_editable_roles(),
-			'mandatory' => array(
-				'administrator' => 'mandatory',
-			),
-		),
+		// 'comment_upload_file_grant'                     => array(
+		// 	'id'        => 'comment_upload_file_grant',
+		// 	'name'      => __( 'name_comment_upload_file_grant', X2B_DOMAIN ),
+		// 	// 'desc'    => __( 'desc_comment_upload_file_grant', X2B_DOMAIN ),
+		// 	'type'      => 'multicheck',
+		// 	'default'   => false,
+		// 	'options'   => x2b_get_editable_roles(),
+		// 	'mandatory' => array(
+		// 		'administrator' => 'mandatory',
+		// 	),
+		// ),
 		'common_editor_setup_header'                    => array(
 			'id'      => 'common_editor_setup_header',
 			'desc'    => __( 'desc_common_editor_setup_header', X2B_DOMAIN ),

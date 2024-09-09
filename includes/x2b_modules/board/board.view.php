@@ -94,7 +94,9 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 					unset($a_linear_category);
 				}
 				if($o_user_field->type == 'attach') {
-					$b_comment_activated = true;
+					if ( $this->_check_attach_permission( $o_user_field ) ) {
+						$b_comment_activated = true;
+					}
 				}
 			}
 			unset($a_user_input_field);
@@ -181,6 +183,22 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 					$this->_disp_content();
 					break;
 			}
+		}
+
+		/**
+		 * check upload delete appending file permission
+		 * refer to the \x2b_modules\file\file.controller.php::_check_attach_permission()
+		 * @return void
+		 */
+		private function _check_attach_permission( $o_user_field ) {
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'user_define_fields' . DIRECTORY_SEPARATOR . 'GuestUserDefineFields.class.php';
+			$o_user_define_item_for_guest = new \X2board\Includes\Classes\UserDefineItemForGuest(
+				null, null, null, null, null, null, null, null, null, null, null
+			);
+			$b_accessible = $o_user_define_item_for_guest->check_accessible( $o_user_field->permission, $o_user_field->role );
+			unset( $o_user_define_item_for_guest );
+			unset( $a_extra_param );
+			return $b_accessible;
 		}
 
 		/**

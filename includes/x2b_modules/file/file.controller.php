@@ -56,7 +56,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\File\\fileController' ) ) {
 
 		/**
 		 * check upload delete appending file permission
-		 *
+		 * refer to \x2b_modules\board\board.view.php::_check_attach_permission()
 		 * @return void
 		 */
 		private function _check_attach_permission( $n_board_id ) {

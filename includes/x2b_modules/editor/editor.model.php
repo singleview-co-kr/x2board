@@ -66,13 +66,13 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Editor\\editorModel' ) ) {
 			// Configurations listed according to a type
 			if ( $o_config->module_type == 'post' ) {
 				$o_config->editor_skin       = $o_current_module_info->post_editor_skin;
-				$o_config->upload_file_grant = $o_current_module_info->upload_file_grant;
+				// $o_config->upload_file_grant = $o_current_module_info->upload_file_grant;
 				$o_config->enable_html_grant = $o_current_module_info->enable_html_grant;
 				$o_config->editor_height     = $o_current_module_info->post_editor_height;
 				$o_config->enable_autosave   = $o_current_module_info->enable_autosave;
 			} else {
 				$o_config->editor_skin       = $o_current_module_info->comment_editor_skin;
-				$o_config->upload_file_grant = $o_current_module_info->comment_upload_file_grant;
+				// $o_config->upload_file_grant = $o_current_module_info->comment_upload_file_grant;
 				$o_config->enable_html_grant = $o_current_module_info->enable_comment_html_grant;
 				$o_config->editor_height     = $o_current_module_info->comment_editor_height;
 				$o_config->enable_autosave   = 'N';
