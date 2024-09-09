@@ -127,8 +127,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			$o_args = \X2board\Includes\Classes\Context::get_request_vars();
 			foreach($o_args as $name => $value) {
 				if(preg_match('/[0-9]+_cpage/', $name)) {
-					Context::set($name, '', TRUE);
-					Context::set($name, $value);
+					\X2board\Includes\Classes\Context::set($name, '', TRUE);
+					\X2board\Includes\Classes\Context::set($name, $value);
 				}
 			}
 			unset($o_args);
