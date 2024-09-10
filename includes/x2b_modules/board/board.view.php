@@ -378,7 +378,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 
 			// if the category is enabled, then get the category
 			if(\X2board\Includes\Classes\Context::get('use_category') == 'Y' ) {
-				$o_args->category_id = trim(urldecode(\X2board\Includes\Classes\Context::get('category')));
+				$o_args->category_id = trim(urldecode((string)\X2board\Includes\Classes\Context::get('category')));
 			}
 			else {
 				$o_args->category_id = null;
