@@ -14,7 +14,7 @@ if (! defined('ABSPATH') ) {
 /**
  * post search API
  * a_board_id
- * s_query -> blank separated string
+ * s_query -> blank or comma separated string
  * s_notice_mode -> notice_only, include_notice, exclude_notice(default)
  * a_select_column
  * n_posts_per_page
