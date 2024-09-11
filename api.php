@@ -119,41 +119,50 @@ function get_quick_search( $o_param = null )
     unset( $a_where_clause );
     // end - build where clause
     
-    // load db
-    $a_posts = $wpdb->get_results("SELECT {$s_select_column} FROM `{$wpdb->prefix}x2b_posts` WHERE {$s_where_clause} ORDER BY `list_order` DESC LIMIT $n_offset, $n_posts_per_page");
+    $s_select_query = "SELECT {$s_select_column} FROM `{$wpdb->prefix}x2b_posts` WHERE {$s_where_clause} ORDER BY `list_order` ASC LIMIT $n_offset, $n_posts_per_page";
 
-    // manipulate
-    $a_board_permalink[$n_board_id] = esc_url(site_url() . '/' . urlencode(urldecode(get_post($n_board_id)->post_name)));
-    $s_board_permalink = esc_url(site_url() . '/' . urlencode(urldecode(get_post($n_board_id)->post_name)));
-    
-    $n_subject_trim_length = isset($o_param->n_subject_trim_length) ? $o_param->n_subject_trim_length : 20;
-    $n_content_trim_length = isset($o_param->n_content_trim_length) ? $o_param->n_content_trim_length : 100;
-    $s_date_format = isset($o_param->s_date_format) ? $o_param->s_date_format : 'Y-m-d H:i:s';
-    $a_retrieved_post = array();
-    $a_category_info = array();
-    foreach( $a_posts as $o_rec ) {
-        $o_new_rec = new \stdClass();
-        $o_new_rec->title = wp_trim_words(strip_tags($o_rec->title), $n_subject_trim_length, '...');
-        $o_new_rec->content = wp_trim_words(strip_tags($o_rec->content), $n_content_trim_length, '...');
-        $o_new_rec->permalink = $s_board_permalink . '/' . $o_rec->post_id;
-        if(intval($o_rec->category_id) != 0 ) {
-            if( isset( $a_category_info[$o_rec->category_id] )) {
-                $s_category_title = $a_category_info[$o_rec->category_id];
+    $o_cache_handler = new \X2board\Includes\Classes\CacheFileDisk();
+    $o_cache_handler->set_storage_label( 'search' );
+    $o_cache_handler->set_cache_key( $s_select_query );
+    $a_retrieved_post = $o_cache_handler->get();
+    if( ! $a_retrieved_post ) {  // load db
+// error_log(print_r('load x2b db', true));
+        $a_posts = $wpdb->get_results( $s_select_query );
+        // manipulate
+        $a_board_permalink[$n_board_id] = esc_url(site_url() . '/' . urlencode(urldecode(get_post($n_board_id)->post_name)));
+        $s_board_permalink = esc_url(site_url() . '/' . urlencode(urldecode(get_post($n_board_id)->post_name)));
+        
+        $n_subject_trim_length = isset($o_param->n_subject_trim_length) ? $o_param->n_subject_trim_length : 20;
+        $n_content_trim_length = isset($o_param->n_content_trim_length) ? $o_param->n_content_trim_length : 100;
+        $s_date_format = isset($o_param->s_date_format) ? $o_param->s_date_format : 'Y-m-d H:i:s';
+        $a_retrieved_post = array();
+        $a_category_info = array();
+        foreach( $a_posts as $o_rec ) {
+            $o_new_rec = new \stdClass();
+            $o_new_rec->title = wp_trim_words(strip_tags($o_rec->title), $n_subject_trim_length, '...');
+            $o_new_rec->content = wp_trim_words(strip_tags($o_rec->content), $n_content_trim_length, '...');
+            $o_new_rec->permalink = $s_board_permalink . '/' . $o_rec->post_id;
+            if(intval($o_rec->category_id) != 0 ) {
+                if( isset( $a_category_info[$o_rec->category_id] )) {
+                    $s_category_title = $a_category_info[$o_rec->category_id];
+                }
+                else {
+                    $s_category_title = $wpdb->get_var("SELECT `title` FROM `{$wpdb->prefix}x2b_categories` WHERE `category_id` = $o_rec->category_id AND `deleted`='N'");
+                    $a_category_info[$o_rec->category_id] = $s_category_title;
+                }
             }
             else {
-                $s_category_title = $wpdb->get_var("SELECT `title` FROM `{$wpdb->prefix}x2b_categories` WHERE `category_id` = $o_rec->category_id AND `deleted`='N'");
-                $a_category_info[$o_rec->category_id] = $s_category_title;
+                $s_category_title = __('lbl_default_category', X2B_DOMAIN);
             }
+            $o_new_rec->category_title = $s_category_title;
+            $o_new_rec->readed_count = $o_rec->readed_count;
+            $o_new_rec->regdate  = date_format(date_create($o_rec->regdate_dt), $s_date_format);
+            $a_retrieved_post[] = $o_new_rec;
         }
-        else {
-            $s_category_title = __('lbl_default_category', X2B_DOMAIN);
-        }
-        $o_new_rec->category_title = $s_category_title;
-        $o_new_rec->readed_count = $o_rec->readed_count;
-        $o_new_rec->regdate  = date_format(date_create($o_rec->regdate_dt), $s_date_format);
-        $a_retrieved_post[] = $o_new_rec;
+        unset($a_posts);
+        unset($a_board_permalink);
+        $o_cache_handler->put( $a_retrieved_post );
     }
-    unset($a_posts);
-    unset($a_board_permalink);
+    unset( $o_cache_handler );
     return $a_retrieved_post;
 }
