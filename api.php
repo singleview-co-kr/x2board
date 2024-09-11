@@ -46,7 +46,6 @@ function get_quick_search( $o_param = null )
         return array();
     }
     // end - validate requested board_id
-
     $s_query = isset($o_param->s_query) ? $o_param->s_query : null;
     $s_query = $s_query == '' ? null : $s_query;  // convert '' to null
 
@@ -54,7 +53,6 @@ function get_quick_search( $o_param = null )
     $n_posts_per_page = isset($o_param->n_posts_per_page) ? $o_param->n_posts_per_page : 9;
     $n_cur_page = isset($o_param->n_cur_page) ? $o_param->n_cur_page : 1;
     $n_offset = ( $n_cur_page - 1 ) * $n_posts_per_page;
-
     // begin - build select column
     if( ! $a_select_column ) {
         $s_select_column = '`post_id`, `category_id`, `title`, `content`, `readed_count`, `regdate_dt`';
@@ -83,7 +81,10 @@ function get_quick_search( $o_param = null )
 
     $s_title_content_search = null;
     if( $s_query ) {  // avoid like search as possible
-        $a_query = explode(' ', $s_query);
+        $a_query = explode(' ', $s_query);  // default is blank separated
+        if( count( $a_query ) == 1 ) { // if comma separated
+            $a_query = explode( ',', $s_query );
+        }
         $a_title_content_search = array();
         foreach( $a_query as $s_single_query ) {
             if( strlen($s_single_query) > 0 ) {
