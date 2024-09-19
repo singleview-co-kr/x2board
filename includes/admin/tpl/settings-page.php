@@ -64,7 +64,8 @@ function x2b_options_page() {
 						<div id="<?php echo esc_attr( $tab_id ); ?>">
 							<table class="form-table">
 							<?php
-								do_settings_fields( 'x2board_settings_' . $tab_id, 'x2board_settings_' . $tab_id );
+								// call section and fields that is registered from \includes\admin\tpl\register-settings.php::x2b_register_settings()
+								do_settings_fields( X2B_DOMAIN . '_settings_' . $tab_id, X2B_DOMAIN . '_settings_' . $tab_id );
 							?>
 							</table>
 							<p>

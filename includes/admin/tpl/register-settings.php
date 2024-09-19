@@ -128,6 +128,7 @@ function x2b_register_settings() {
 	}
 	unset( $o_rst );
 
+	// will be executed in \includes\admin\tpl\settings-page.php::x2b_options_page()
 	foreach ( x2b_get_registered_settings() as $section => $settings ) {
 		add_settings_section(
 			X2B_DOMAIN . '_settings_' . $section, // ID used to identify this section and with which to register options, e.g. x2b_settings_general.
