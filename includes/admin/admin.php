@@ -87,13 +87,14 @@ function add_admin_pages_links() {
 	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page( null, X2B_ADMIN_PAGE_TITLE, null, 'manage_x2board', X2B_CMD_ADMIN_VIEW_LATEST_POST, 'X2board\Includes\Admin\disp_admin_board' );
 	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page( null, X2B_ADMIN_PAGE_TITLE, null, 'manage_x2board', X2B_CMD_ADMIN_VIEW_LATEST_COMMENT, 'X2board\Includes\Admin\disp_admin_board' );
 	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page( null, X2B_ADMIN_PAGE_TITLE, null, 'manage_x2board', X2B_CMD_ADMIN_VIEW_LATEST_FILE, 'X2board\Includes\Admin\disp_admin_board' );
-	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_options_page(
-		X2B_DOMAIN,
-		'quick board',
+	// add a menu into admin -> options
+	/*$A_X2B_ADMIN_SETTINGS_PAGE[] = add_options_page(
+		X2B_DOMAIN, 
+		'quick board',  // displaying label
 		'manage_x2board',
-		X2B_CMD_ADMIN_VIEW_BOARD_UPDATE,
+		X2B_CMD_ADMIN_VIEW_BOARD_LIST,
 		'X2board\Includes\Admin\disp_admin_board'
-	);
+	);*/
 }
 add_action( 'admin_menu', 'X2board\Includes\Admin\add_admin_pages_links', 99 );
 
