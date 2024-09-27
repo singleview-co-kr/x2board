@@ -78,7 +78,7 @@ function add_admin_pages_links() {
 	global $_wp_last_object_menu;
 	++$_wp_last_object_menu;
 	// visible admin page
-	add_menu_page( X2B_ADMIN_PAGE_TITLE, X2B_DOMAIN, 'manage_x2board', X2B_CMD_ADMIN_VIEW_IDX, 'X2board\Includes\Admin\disp_admin_board', 'dashicons-admin-post', $_wp_last_object_menu );
+	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_menu_page( X2B_ADMIN_PAGE_TITLE, X2B_DOMAIN, 'manage_x2board', X2B_CMD_ADMIN_VIEW_IDX, 'X2board\Includes\Admin\disp_admin_board', 'dashicons-admin-post', $_wp_last_object_menu );
 	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page( X2B_CMD_ADMIN_VIEW_IDX, X2B_ADMIN_PAGE_TITLE, __( 'cmd_create_board', X2B_DOMAIN ), 'manage_x2board', X2B_CMD_ADMIN_VIEW_BOARD_INSERT, 'X2board\Includes\Admin\disp_admin_board' );
 	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page( X2B_CMD_ADMIN_VIEW_IDX, X2B_ADMIN_PAGE_TITLE, __( 'cmd_board_list', X2B_DOMAIN ), 'manage_x2board', X2B_CMD_ADMIN_VIEW_BOARD_LIST, 'X2board\Includes\Admin\disp_admin_board' );
 	$A_X2B_ADMIN_SETTINGS_PAGE[] = add_submenu_page( X2B_CMD_ADMIN_VIEW_IDX, X2B_ADMIN_PAGE_TITLE, __( 'cmd_import_board', X2B_DOMAIN ), 'manage_x2board', X2B_CMD_ADMIN_VIEW_BOARD_IMPORT, 'X2board\Includes\Admin\disp_admin_board' );
@@ -193,8 +193,10 @@ function proc_admin_board() {
  */
 function footer( $footer_text ) {
 	global $A_X2B_ADMIN_SETTINGS_PAGE;
-	$current_screen = get_current_screen();
-	if ( in_array( $current_screen->id, $A_X2B_ADMIN_SETTINGS_PAGE, true ) ) {
+	$o_current_screen = get_current_screen();
+	$s_screen_id = $o_current_screen->id;
+	unset( $o_current_screen );
+	if ( in_array( $s_screen_id, $A_X2B_ADMIN_SETTINGS_PAGE, true ) ) {
 		$text = sprintf(
 			__( 'msg_thank_you_using_x2board', X2B_DOMAIN ),
 			'https://singleview.co.kr/x2board',
