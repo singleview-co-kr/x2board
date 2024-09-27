@@ -15,6 +15,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;  // Exit if accessed directly.
 }
 
+require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . X2B_MODULES_NAME . DIRECTORY_SEPARATOR . 'board' . DIRECTORY_SEPARATOR . 'board.admin.view.php';
+require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . X2B_MODULES_NAME . DIRECTORY_SEPARATOR . 'board' . DIRECTORY_SEPARATOR . 'board.admin.controller.php';
+
 if ( ! defined( 'X2B_CMD_ADMIN_VIEW_IDX' ) ) {
 	// define admin view cmd
 	define( 'X2B_CMD_ADMIN_VIEW_IDX', 'x2b_disp_idx' );

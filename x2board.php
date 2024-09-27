@@ -71,6 +71,4 @@ if ( !is_admin() || !defined( 'WP_CLI' ) ) {
  */
 if ( is_admin() || ( defined( 'WP_CLI' ) && WP_CLI ) ) {
 	require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'admin.php';
-    require_once X2B_PATH . 'includes'  . DIRECTORY_SEPARATOR . X2B_MODULES_NAME . DIRECTORY_SEPARATOR . 'board' . DIRECTORY_SEPARATOR . 'board.admin.view.php';
-	require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . X2B_MODULES_NAME . DIRECTORY_SEPARATOR . 'board' . DIRECTORY_SEPARATOR . 'board.admin.controller.php';
 } // End if.
