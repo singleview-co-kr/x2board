@@ -14,7 +14,7 @@ if ( ! defined( 'WPINC' ) ) {
 
 ?>
 <div class="postbox-container">
-	<div id="donatediv" class="postbox meta-box-sortables">
+	<!--div id="donatediv" class="postbox meta-box-sortables">
 		<h2 class='hndle'><span><?php echo __( 'cmd_support_singleview', X2B_DOMAIN ); ?></span></h3>
 			<div class="inside" style="text-align: center">
 				<div id="donate-form">
@@ -32,10 +32,8 @@ if ( ! defined( 'WPINC' ) ) {
 						<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
 					</form>
 				</div>
-				<!-- /#donate-form -->
 			</div>
-			<!-- /.inside -->
-	</div>
+	</div --->
 	<!-- /.postbox -->
 
 	<div id="qlinksdiv" class="postbox meta-box-sortables">
