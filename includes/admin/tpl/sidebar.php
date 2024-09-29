@@ -15,7 +15,7 @@ if ( ! defined( 'WPINC' ) ) {
 ?>
 <div class="postbox-container">
 	<div id="donatediv" class="postbox meta-box-sortables">
-		<h2 class='hndle'><span><?php echo __( 'cmd_support_x2board', X2B_DOMAIN ); ?></span></h3>
+		<h2 class='hndle'><span><?php echo __( 'cmd_support_singleview', X2B_DOMAIN ); ?></span></h3>
 			<div class="inside" style="text-align: center">
 				<div id="donate-form">
 					<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
@@ -44,27 +44,27 @@ if ( ! defined( 'WPINC' ) ) {
 				<div id="quick-links">
 					<ul>
 						<li>
-							<a href="https://singleview.co.kr/plugins/x2board/">
+							<a href="https://singleview.co.kr/plugins/x2board/" target='_new'>
 								<?php echo __( 'lbl_x2board_plugin_homepage', X2B_DOMAIN ); ?>
 							</a>
 						</li>
 						<li>
-							<a href="https://wordpress.org/plugins/x2board/faq/">
+							<a href="https://wordpress.org/plugins/x2board/faq/" target='_new'>
 								<?php echo __( 'lbl_wp_faq', X2B_DOMAIN ); ?>
 							</a>
 						</li>
 						<li>
-							<a href="http://wordpress.org/support/plugin/x2board">
+							<a href="http://wordpress.org/support/plugin/x2board" target='_new'>
 								<?php echo __( 'lbl_wp_support', X2B_DOMAIN ); ?>
 							</a>
 						</li>
 						<li>
-							<a href="https://wordpress.org/support/view/plugin-reviews/x2board">
+							<a href="https://wordpress.org/support/view/plugin-reviews/x2board" target='_new'>
 								<?php echo __( 'lbl_wp_reviews', X2B_DOMAIN ); ?>
 							</a>
 						</li>
 						<li>
-							<a href="https://github.com/">
+							<a href="https://github.com/singleview-co-kr/x2board-wp" target='_new'>
 								<?php echo __( 'lbl_github', X2B_DOMAIN ); ?>
 							</a>
 						</li>
