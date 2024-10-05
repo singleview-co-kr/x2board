@@ -44,7 +44,7 @@ if ( !defined( 'X2B__FILE__' ) ) {
     define('X2B_PLUGIN_BASE', plugin_basename(X2B__FILE__));
     define('X2B_PATH', plugin_dir_path(X2B__FILE__));
     define('X2B_URL', plugins_url('/', X2B__FILE__));
-    define('X2B_MODULES_NAME', 'x2b_modules');
+    define('X2B_MODULES_NAME', 'modules');
 }
 
 if ( !defined( 'X2B_ALL_USERS' ) ) {  // for grant privileges

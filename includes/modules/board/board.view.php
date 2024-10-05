@@ -187,7 +187,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 
 		/**
 		 * check upload delete appending file permission
-		 * refer to the \x2b_modules\file\file.controller.php::_check_attach_permission()
+		 * refer to the \modules\file\file.controller.php::_check_attach_permission()
 		 * @return void
 		 */
 		private function _check_attach_permission( $o_user_field ) {

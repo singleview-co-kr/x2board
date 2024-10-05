@@ -130,7 +130,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\ModuleObject' ) ) {
 
 		/**
 		 * @brief Return permission by using module info, xml info and member info
-		 * should be aligned with \includes\x2b_modules\board\board.model.php::get_grant()
+		 * should be aligned with \includes\modules\board\board.model.php::get_grant()
 		 */
 		private function _get_grant() {
 			$o_grant                    = new \stdClass();
