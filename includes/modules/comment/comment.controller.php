@@ -107,6 +107,10 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentController' 
 					$obj->nick_name      = htmlspecialchars_decode( $o_logged_info->display_name );
 					$obj->email_address  = $o_logged_info->user_email;
 				}
+				else {
+					$obj->comment_author = 0;
+					$obj->email_address  = null;
+				}
 			}
 
 			// error display if neither of log-in info and user name exist.
@@ -227,7 +231,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentController' 
 			$a_new_comment['parent_comment_id'] = intval( $obj->parent_comment_id );
 			$a_new_comment['comment_id']        = intval( $obj->comment_id );
 			$a_new_comment['password']          = $obj->password;
-			$a_new_comment['comment_author']    = intval( $obj->comment_author );
+			$a_new_comment['comment_author']    = $obj->comment_author;
 			$a_new_comment['email_address']     = sanitize_text_field( $obj->email_address );
 			$a_new_comment['nick_name']         = sanitize_text_field( $obj->nick_name );
 			$a_new_comment['status']            = intval( $obj->status );
@@ -523,7 +527,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentController' 
 		/**
 		 * Remove all comments of the post
 		 *
-		 * @param int $document_srl
+		 * @param int $n_post_id
 		 * do not execute $this->_delete_wp_comment() as wp_delete_post() deletes all belonged wp comments automatically
 		 * deleteComments($document_srl, $obj = NULL)
 		 * @return object
@@ -598,7 +602,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentController' 
 		 * Delete comment
 		 * deleteComment($comment_srl, $is_admin = FALSE, $isMoveToTrash = FALSE)
 		 *
-		 * @param int  $comment_srl
+		 * @param int  $n_comment_id
 		 * @param bool $is_admin
 		 * @param bool $isMoveToTrash
 		 * @return object
@@ -612,8 +616,6 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentController' 
 			if ( ! $o_comment->is_exists() || $o_comment->comment_id != $n_comment_id ) {
 				return new \X2board\Includes\Classes\BaseObject( -1, __( 'msg_invalid_request', X2B_DOMAIN ) );
 			}
-
-			$n_parent_post_id = $o_comment->parent_post_id;
 
 			// check if permission is granted
 			if ( ! $is_admin && ! $o_comment->is_granted() ) {
@@ -669,18 +671,17 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentController' 
 			}
 
 			// update the number of comments
-			$comment_count = $o_comment_model->get_comment_count( $n_parent_post_id );
+			$n_parent_post_id = $o_comment->get( 'parent_post_id' );
+			$n_comment_count = $o_comment_model->get_comment_count( $n_parent_post_id );
 			unset( $o_comment_model );
-			// only post is exists
-			if ( isset( $comment_count ) ) {
-				// create the controller object of the post
-				$o_post_controller = \X2board\Includes\get_controller( 'post' );
-				// update comment count of the article posting
-				$output = $o_post_controller->update_comment_count( $n_parent_post_id, $comment_count, null, false );
-				unset( $o_post_controller );
-				if ( ! $output->to_bool() ) {
-					return $output;
-				}
+			
+			// create the controller object of the post
+			$o_post_controller = \X2board\Includes\get_controller( 'post' );
+			// update comment count of the article posting
+			$output = $o_post_controller->update_comment_count( $n_parent_post_id, $n_comment_count, null, false );
+			unset( $o_post_controller );
+			if ( ! $output->to_bool() ) {
+				return $output;
 			}
 
 			if ( ! $isMoveToTrash ) {
