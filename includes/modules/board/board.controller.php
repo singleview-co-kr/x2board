@@ -548,13 +548,16 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 			// generate comment controller object
 			$o_comment_controller = \X2board\Includes\get_controller( 'comment' );
 			$output               = $o_comment_controller->delete_comment( $n_comment_id, $this->grant->manager );
-
 			unset( $o_comment_controller );
 			if ( ! $output->to_bool() ) {
 				$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=' . $output->getMessage() );
 				return;
 			}
-			$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?' . X2B_CMD_VIEW_POST . '/' . $output->get( 'post_id' ) );
+
+			$n_parent_post_id = $output->get( 'parent_post_id' );
+			unset( $output );
+			// if s_wp_redirect_url is not added, automatically redirect to home_url
+			$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?' . X2B_CMD_VIEW_POST . '/' . $n_parent_post_id );
 		}
 
 		/**

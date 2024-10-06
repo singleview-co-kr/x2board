@@ -700,7 +700,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentController' 
 			unset( $o_comment );
 
 			$output = new \X2board\Includes\Classes\BaseObject();
-			$output->add( 'post_id', $n_parent_post_id );
+			$output->add( 'parent_post_id', $n_parent_post_id );
 			return $output;
 		}
 
