@@ -107,8 +107,8 @@ add_action( 'admin_menu', 'X2board\Includes\Admin\add_admin_pages_links', 99 );
 function admin_init() {
 	// 관리자에게 manage_x2board 권한 추가
 	$admin_role = get_role( 'administrator' );
-	if ( ! $admin_role->has_cap( 'manage_x2board' ) ) {
-		$admin_role->add_cap( 'manage_x2board', true );
+	if ( ! $admin_role->has_cap( 'manage_' . X2B_DOMAIN ) ) {
+		$admin_role->add_cap( 'manage_' . X2B_DOMAIN, true );
 	}
 
 	add_action( 'admin_post_' . X2B_CMD_ADMIN_PROC_INSERT_BOARD, 'X2board\Includes\Admin\proc_admin_board' );

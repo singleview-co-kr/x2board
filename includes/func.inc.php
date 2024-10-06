@@ -968,3 +968,47 @@ function get_time_gap( $date, $format = 'Y.m.d' ) {
 	}
 	return $buff;
 }
+
+/**
+ * If new post or comment registered notify via slack
+ * this function depends on the 3rd-party plugin dorzki-notifications-to-slack
+ * @param object $o_cpt
+ */
+function notify_via_slack( $o_cpt ) {
+	if ( empty( $o_cpt ) || ! is_object( $o_cpt ) ) {
+		return false;
+	}
+	if ( ! in_array( $o_cpt->notify_type, [ 'post', 'comment' ] ) ) {
+		return false;
+	}
+
+	$s_channel = get_option( SLACK_NOTIFICATIONS_FIELD_PREFIX . 'default_channel' );
+	unset( $o_rst );
+
+	$s_message = __( ':memo: %1$s new %2$s *<%3$s|%4$s>*', 'dorzki-notifications-to-slack' );
+	$s_notify_target = $o_cpt->notify_type == 'post' ? 'post' : 'comment on';
+	$s_message = sprintf( $s_message, X2B_DOMAIN, $s_notify_target, $o_cpt->post_link, $o_cpt->title ) . PHP_EOL;
+	$s_message .= '----------- msg begins ---------------' . PHP_EOL;
+	$s_message .= strip_tags( $o_cpt->content ) . PHP_EOL;
+
+	$a_attachments = [
+		// [
+		// 	'title' => __( 'Content', X2B_DOMAIN ),
+		// 	'value' => clean_up_contents( $o_cpt->content, 300 ),
+		// 	'short' => true,
+		// ],
+	];
+
+	$o_slack_bot = \Slack_Notifications\Slack_Bot::get_instance();
+	$b_rst = $o_slack_bot->send_message(
+		$s_message,
+		$a_attachments,
+		[
+			'color'   => '#9b59b6',
+			'channel' => $s_channel,
+		]
+		);
+	unset( $a_attachments );
+	unset( $o_slack_bot );
+	return $b_rst;
+}

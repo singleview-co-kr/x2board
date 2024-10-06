@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: x2board\n"
 "POT-Creation-Date: 2024-08-10 09:04+0900\n"
-"PO-Revision-Date: 2024-09-29 13:37+0900\n"
+"PO-Revision-Date: 2024-10-06 12:01+0900\n"
 "Last-Translator: singleviewcokr <singleviewcokr@gmail.com>\n"
 "Language-Team: \n"
 "Language: ko_KR\n"
@@ -1621,6 +1621,24 @@ msgstr ""
 #: includes/modules/post/wp_admin_class/wp_latest_posts.php:173
 msgid "lbl_readed_count"
 msgstr "조회 수"
+
+#: includes/admin/tpl/default-settings.php:181
+msgid "name_board_notify_slack"
+msgstr "슬랙 메신저로 통보"
+
+#: includes/admin/tpl/default-settings.php:182
+msgid "desc_board_notify_slack"
+msgstr ""
+"Slack Notifications by dorzki 플러그인을 활성화하고 general 설정을 입력하"
+"면 게스트가 작성한 새글, 새 댓글을 통보합니다."
+
+#: includes/admin/tpl/default-settings.php:185
+msgid "opt_new_post"
+msgstr "새 글"
+
+#: includes/admin/tpl/default-settings.php:186
+msgid "opt_new_comment"
+msgstr "새 댓글"
 
 #~ msgid "desc_term_condition"
 #~ msgstr "사용자 동의가 필요하면, 이용 약관을 입력하세요."

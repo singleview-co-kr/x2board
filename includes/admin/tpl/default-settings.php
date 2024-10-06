@@ -176,6 +176,16 @@ function x2b_settings_general() {
 				'desc' => __( 'opt_desc', X2B_DOMAIN ),  // 내림차순
 			),
 		),
+		'board_notify_slack'    => array(
+			'id'          => 'board_notify_slack',
+			'name'        => __( 'name_board_notify_slack', X2B_DOMAIN ),
+			'desc'        => __( 'desc_board_notify_slack', X2B_DOMAIN ),
+			'type'        => 'multicheck',
+			'options'     => array(
+				'post'    => __( 'opt_new_post', X2B_DOMAIN ),
+				'comment' => __( 'opt_new_comment', X2B_DOMAIN ),
+			),
+		),
 		'board_except_notice'          => array(
 			'id'            => 'board_except_notice',
 			'name'          => __( 'name_board_except_notice', X2B_DOMAIN ),

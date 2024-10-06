@@ -305,6 +305,8 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 				$obj->status = $s_public_status;
 			}
 
+			// generate controller object of post module
+			$o_post_controller = \X2board\Includes\get_controller( 'post' );
 			// update the post if it is existed
 			if ( $is_update ) {
 				if ( ! $o_post->is_granted() ) {
@@ -327,44 +329,33 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 					$obj->title_color = $o_post->get( 'title_color' );
 					$obj->title_bold  = $o_post->get( 'title_bold' );
 				}
-
-				// generate controller object of post module
-				$o_post_controller = \X2board\Includes\get_controller( 'post' );
-				$output            = $o_post_controller->update_post( $o_post, $obj, true );
-				unset( $o_post_controller );
+				$output   = $o_post_controller->update_post( $o_post, $obj, true );
 				$msg_code = 'success_updated';
 			} else {  // insert a new post otherwise
-				$o_post_controller = \X2board\Includes\get_controller( 'post' );
-				$output            = $o_post_controller->insert_post( $obj );
-				unset( $o_post_controller );
-
-				$msg_code     = 'success_registed';
-				$obj->post_id = $output->get( 'post_id' );
-				// send an email to admin user
-				// if($output->to_bool() && $this->module_info->admin_mail) {
-					// $oModuleModel = getModel('module');
-					// $member_config = $oModuleModel->getModuleConfig('member');
-
-					// $oMail = new Mail();
-					// $oMail->setTitle($obj->title);
-					// $oMail->setContent( sprintf("From : <a href=\"%s\">%s</a><br/>\r\n%s", getFullUrl('','post_id',$obj->post_id), getFullUrl('','post_id',$obj->post_id), $obj->content));
-					// $oMail->setSender($obj->user_name ? $obj->user_name : 'anonymous', $obj->email_address ? $obj->email_address : $member_config->webmaster_email);
-
-					// $target_mail = explode(',',$this->module_info->admin_mail);
-					// for($i=0;$i<count($target_mail);$i++)
-					// {
-					// $email_address = trim($target_mail[$i]);
-					// if(!$email_address) continue;
-					// $oMail->setReceiptor($email_address, $email_address);
-					// $oMail->send();
-					// }
-				// }
+				$output   = $o_post_controller->insert_post( $obj );
+				$msg_code = 'success_registed';
+				// send a notification via slack when a guest write a new post
+				if( ! current_user_can( 'manage_' . X2B_DOMAIN ) ) {
+					// if( class_exists('\Slack_Notifications\Notifications\Notification_Type') ) {
+					if ( is_plugin_active( 'dorzki-notifications-to-slack/slack-notifications.php' ) ) {  // plugin is activated
+						if( isset( $this->module_info->notify_slack['post'] ) && $this->module_info->notify_slack['post'] == 'post' ) {
+							$obj->notify_type = 'post';
+							$obj->post_link = $this->_s_page_permlink . '?' . X2B_CMD_VIEW_POST . '/' . $output->get( 'post_id' );
+							do_action( X2B_DOMAIN . 'notify_new', $obj );
+						}
+					}
+				}
 			}
+			unset( $o_post );
+			unset( $obj );
+			unset( $o_post_controller );
+
 			if ( ! $output->to_bool() ) {  // if there is an error
 				$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=' . $output->getMessage() );
 			} else { // if s_wp_redirect_url is not added, automatically redirect to home_url
 				$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?' . X2B_CMD_VIEW_POST . '/' . $output->get( 'post_id' ) );
 			}
+			unset( $output );
 		}
 
 		/**
@@ -476,6 +467,19 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 					$output = $o_comment_controller->insert_comment( $obj, $bAnonymous );
 				} else {  // parent_comment_id is not existed
 					$output = $o_comment_controller->insert_comment( $obj, $bAnonymous );
+				}
+
+				// send a notification via slack when a guest write a new comment
+				if( ! current_user_can( 'manage_' . X2B_DOMAIN ) ) {
+					// if( class_exists('\Slack_Notifications\Notifications\Notification_Type') ) {
+					if ( is_plugin_active( 'dorzki-notifications-to-slack/slack-notifications.php' ) ) {  // plugin is activated
+						if( isset( $this->module_info->notify_slack['comment'] ) && $this->module_info->notify_slack['comment'] == 'comment' ) {
+							$obj->title = $o_post->get_title_text();
+							$obj->notify_type = 'comment';
+							$obj->post_link = $this->_s_page_permlink . '?' . X2B_CMD_VIEW_POST . '/' . $obj->parent_post_id . '#comment_id-' . $obj->comment_id ;
+							do_action( X2B_DOMAIN . 'notify_new', $obj );
+						}
+					}
 				}
 			} else {  // update the comment if it is not existed
 				if ( ! $o_comment->is_granted() ) {  // check the grant
