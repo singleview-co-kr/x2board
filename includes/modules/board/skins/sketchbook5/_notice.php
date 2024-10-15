@@ -1,3 +1,6 @@
+<?php if ( !defined( 'ABSPATH' ) ) {
+    exit;  // Exit if accessed directly.
+}?>
 <table class="bd_lst bd_tb_lst bd_tb common_notice">
 	<?php foreach( $notice_list as $no => $post ): ?>  <!-- loop="$notice_list=>$no,$document"  -->
 		<tr class="notice">

@@ -587,7 +587,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 
 				// compare the comment password and the user input password
 				if ( ! $o_member_model->validate_password( $o_comment->get( 'password' ), $s_password ) ) {
-					$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_invalid_password' );
+					$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_not_permitted' );
 					return;
 				}
 				$o_comment->set_grant();
@@ -604,7 +604,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 
 				// compare the post password and the user input password
 				if ( ! $o_member_model->validate_password( $o_post->get( 'password' ), $s_password ) ) {
-					$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_invalid_password' );
+					$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_not_permitted' );
 					return;
 				}
 				$o_post->set_grant();

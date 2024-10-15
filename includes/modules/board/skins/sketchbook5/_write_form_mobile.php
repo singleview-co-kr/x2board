@@ -5,7 +5,9 @@
 	문제
 	1. 파일이름에 작은따옴표가 들어가는 경우 에러
 -->
-<?php
+<?php if ( !defined( 'ABSPATH' ) ) {
+    exit;  // Exit if accessed directly.
+}
 // include_once('./modules/file/file.class.php');
 // include_once('./modules/file/file.controller.php');
 

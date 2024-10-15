@@ -1,4 +1,6 @@
-<?php
+<?php if ( !defined( 'ABSPATH' ) ) {
+    exit;  // Exit if accessed directly.
+}
 // var_dump($mi->zine_thumb_width,$mi->zine_thumb_height,$mi->zine_thumb_type);
 ?>
 

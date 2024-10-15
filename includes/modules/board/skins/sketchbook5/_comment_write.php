@@ -47,33 +47,18 @@
 		<?php endif ?>			
 		<div class="edit_opt clear" <?php if($mi->cmt_wrt!='editor'):?> style="display:none" <?php endif ?> >	<!-- |cond="$mi->cmt_wrt!='editor'" -->
 			<?php if(!$is_logged):?><!-- <block cond="!$is_logged"> -->
-				<div class="edit_opt">
-					<div class="x2board-attr-row">
-						<label class="attr-name" for="nick_name"><span class="field-name"><?php echo __('lbl_writer', X2B_DOMAIN)?></span></label>
-						<div class="attr-value">
-							<input type="text" name="nick_name" id="nick_name" value="" placeholder="<?php echo __('lbl_writer', X2B_DOMAIN)?>" required="">
-						</div>
-					</div>
-					<div class="x2board-attr-row">
-						<label class="attr-name" for="password"><span class="field-name"><?php echo __('lbl_password', X2B_DOMAIN)?></span></label>
-						<div class="attr-value">
-							<input type="text" name="password" id="password" required="">
-						</div>
-					</div>
+				<div class="edit_opt clear">
+					<span class="itx_wrp">
+						<label for="nick_name_<?php echo $post->post_id?>"><?php echo __('lbl_writer', X2B_DOMAIN)?></label>
+						<input type="text" name="nick_name" id="nick_name" class="itx m_h" required="required"/>
+					</span>
+					<span class="itx_wrp">
+						<label for="password_<?php echo $post->post_id?>"><?php echo __('lbl_password', X2B_DOMAIN)?></label>
+						<input type="password" name="password" id="password" class="itx m_h" required="required"/>
+					</span>
 				</div>
-				<!-- 
-				<span class="itx_wrp">
-					<label for="email_address_<?php //echo $post->post_id?>"><?php //echo __('lbl_email_address', X2B_DOMAIN)?></label>
-					<input type="text" name="email_address" id="email_address_<?php //echo $post->post_id?>" class="itx m_h" />
-				</span> -->
-				<!-- <span class="itx_wrp">
-					<label for="homepage_{$oDocument->document_srl}">{$lang->homepage}</label>
-					<input type="text" name="homepage" id="homepage_{$oDocument->document_srl}" class="itx m_h" />
-				</span> -->
 			<?php endif ?>	<!-- </block> -->
-			<?php if(!$is_logged):?><!-- cond="$mi->cmt_wrt=='editor'"  -->
-				<input type="submit" value="<?php echo __('cmd_submit', X2B_DOMAIN)?>" class="bd_btn fr" />
-			<?php endif ?>
+			
 			<div class="opt_chk">
 				<!-- <block cond="$is_logged">
 					<input type="checkbox" name="notify_message" value="Y" id="notify_message_<?php //echo $post->post_id?>"  checked="checked"|cond="@in_array('notify',$mi->wrt_opt)" />		
@@ -115,14 +100,6 @@
 							<label for="password"><?php echo __('lbl_password', X2B_DOMAIN)?></label>
 							<input type="password" name="password" id="password" class="itx n_p" required/>
 						</span>	
-						<span class="itx_wrp">
-							<label for="email_address"><?php echo __('lbl_email_address', X2B_DOMAIN)?></label>
-							<input type="text" name="email_address" id="email_address" class="itx m_h" />
-						</span>	
-						<!-- <span class="itx_wrp">
-							<label for="homepage">{$lang->homepage}</label>
-							<input type="text" name="homepage" id="homepage" class="itx m_h" />
-						</span> -->
 					<?php endif ?><!-- </block> -->
 					<input type="submit" value="<?php echo __('cmd_submit', X2B_DOMAIN)?>" class="bd_btn fr" />
 				</div>

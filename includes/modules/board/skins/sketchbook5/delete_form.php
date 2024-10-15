@@ -1,4 +1,8 @@
-<!-- <include target="_header.html" /> -->
+<?php if ( !defined( 'ABSPATH' ) ) {
+    exit;  // Exit if accessed directly.
+}?>
+
+<?php include $skin_path_abs.'__setting.php'; ?> <!-- <include target="_header.html" /> -->
 
 <?php if($oPost->is_exists()):?>
 <div class="context_data">

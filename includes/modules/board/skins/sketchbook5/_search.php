@@ -2,7 +2,7 @@
     exit;  // Exit if accessed directly.
 }?>
 
-<form action="<?php echo x2b_get_url()?>" method="get" onsubmit="return procFilter(this, search)" no-error-return-url="true">
+<form action="<?php echo x2b_get_url()?>" method="get" onsubmit="return procFilter(this, search)" no-error-return-url="true" style="margin-bottom: 0px;">
 	<input type="hidden" name="board_id" value="<?php echo $board_id?>" />
 	<input type="hidden" name="category" value="<?php echo $category?>" />
 	<table class="bd_tb">
@@ -14,7 +14,6 @@
 						<?php foreach($search_option as $key => $val): ?>
 							<option value="<?php echo $key?>" <?php if($search_target==$key): ?>selected="selected" <?php endif?>><?php echo $val?></option>
 						<?php endforeach ?>
-						
 					</select>
 				</span>
 			</td>

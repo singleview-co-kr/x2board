@@ -384,7 +384,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentController' 
 			}
 
 			if ( $obj->password ) {
-				$obj->password = \X2board\Includes\get_model( 'member' )->hashPassword( $obj->password );
+				$obj->password = \X2board\Includes\get_model( 'member' )->hash_password( $obj->password );
 			}
 
 			$logged_info = \X2board\Includes\Classes\Context::get( 'logged_info' );

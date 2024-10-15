@@ -1,4 +1,7 @@
-<?php
+<?php if ( !defined( 'ABSPATH' ) ) {
+    exit;  // Exit if accessed directly.
+}
+
 // <include target="_header.html" />
 include $skin_path_abs.'_header.php';
 // <load target="js/editor.js" type="body" />

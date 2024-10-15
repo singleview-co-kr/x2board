@@ -7,14 +7,15 @@
 .bd a{text-decoration:none;color:#333;transition:border-color .4s,box-shadow .4s,background .4s,color .4s,opacity .4s}
 .bd a:hover{text-decoration:underline;color:#000}
 .bd fieldset{margin:0;padding:0;border:0}
-.bd label,.bd button{cursor:pointer}
+.bd label,.bd button{cursor:pointer;color:#000;}
 .fl{float:left}
 .fr{float:right}
 .bd,.bd .clear{display:block;position:relative;clear:both;*zoom:1}
 .bd:after,.bd .clear:after{content:"";display:block;clear:both}
 .bd hr.clear{margin:0;border:0;*border:1px solid transparent;*margin:-.8em 0}
 .blind,.fontcheckWrp{overflow:hidden;position:absolute;top:0;left:0;width:0;height:0;padding:0;font-size:0;line-height:0}
-.bd_tb{width:100%;border-collapse:collapse}
+.bd_tb{width:100%;border-collapse:collapse;margin-bottom: 0px;}
+.bd_tb td{padding:0;}
 /* for bootstrap */
 .bd_font .select,.bd_cnb *,.bd .cTab *,.bd_zine.card,.bd_zine.card li,.bd_pg *,.bd .profile,.bd .rd_vote a,.tmb_wrp .ribbon *,.tmb_wrp,.bd_faq .mrk,.guest_itm_nav{-moz-box-sizing:content-box;-webkit-box-sizing:content-box;box-sizing:content-box}
 
@@ -27,7 +28,7 @@
 .bd_btn.blue{font-weight:700;color:#FFF;text-shadow:0 1px 0 #000;border-color:#669 !important;box-shadow:0 1px 1px rgba(0,0,0,.1);background:#55B url(../img/ie/btn_blue.gif) repeat-x;background:-webkit-gradient(linear,0% 0%,0% 100%,from(#77C),to(#55B));background:linear-gradient(to bottom,#77C 0%,#55B 100%)}
 .bd_btn:hover,.bd_btn:focus,.btn_img:hover,.btn_img:focus{border-color:#AAA;box-shadow:0 1px 4px rgba(0,0,0,.2)}
 .bd_btn[disabled=disabled]{box-shadow:none !important}
-.bd .itx,.bd select{display:inline-block;margin:0;padding:4px 6px;background:#FAFAFA;border-radius:3px;border:1px solid;border-color:#BBB #DDD #DDD #BBB;*display:inline;*zoom:1}
+.bd .itx,.bd select{display:inline-block;margin:0;padding:4px 6px;background:#FAFAFA;width:auto;border-radius:3px;border:1px solid;border-color:#BBB #DDD #DDD #BBB;*display:inline;*zoom:1}
 .bd .itx{height:28px}
 .bd .itx_wrp{position:relative}
 .bd .itx_wrp label{position:absolute;top:-1px;left:8px;*top:10px}
@@ -507,7 +508,7 @@
 .opt_chk label{margin:0 8px 0 0}
 .opt_chk input[type=radio],.opt_chk input[type=checkbox]{margin:0}
 .edit_opt .itx{width:22%;margin:4px 0}
-.edit_opt .bd_btn{margin:4px 0}
+.edit_opt .bd_btn{margin:4px 0;width:86px;height:28px;padding:0}
 .fdb_lst .opt_chk{margin:0 0 0 4px;font-size:11px}
 .sns_wrt,.bd_wrt .regist{position:relative;margin-top:12px;padding:12px 0;text-align:center;border-top:1px solid #CCC}
 .sns_wrt{padding:0;text-align:left}
@@ -552,7 +553,7 @@
 .context_message{text-align:center;border-top:2px solid #666}
 .context_message h1{font-size:1.3em;margin:1.6em}
 .context_message .btnArea{margin:20px;text-align:center}
-.context_message .bd_btn{min-width:92px;height:34px;margin:4px;font-size:14px}
+.context_message .bd_btn{min-width:92px;height:34px;margin:4px;font-size:14px;color:#000; padding:0px;}
 
 /* Extra Var */
 .et_vars{display:none;margin-bottom:20px}
@@ -576,6 +577,8 @@
 .exForm li{display:inline;list-style:none}
 .exForm input[type=radio],.exForm input[type=checkbox]{margin:0 4px 0 0;vertical-align:middle}
 .exForm li label{margin:0 15px 0 0;vertical-align:middle}
+
+ul.file-list {margin: 0;} /* appended file list box */
 
 /* List Style */
 .bd_lst{clear:both;margin:0;padding:0;list-style:none;*zoom:1}
