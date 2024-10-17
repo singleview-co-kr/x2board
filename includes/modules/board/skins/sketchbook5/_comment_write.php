@@ -42,21 +42,17 @@
 					<!-- <input type="hidden" id="htm_<?php //echo $post->post_id?>" value="n" /> -->
 					<textarea name="content" id="editor_<?php echo $post->post_id?>" cols="50" rows="4" required></textarea>
 				</div>
-				<input type="submit" value="<?php echo __('cmd_submit', X2B_DOMAIN)?>" class="bd_btn" />
+				<input type="submit" value="<?php echo __('cmd_submit', X2B_DOMAIN)?>" class="bd_btn" style="color: #444; background: #F3F3F3 repeat-x;"/>
 			</div>
 		<?php endif ?>			
 		<div class="edit_opt clear" <?php if($mi->cmt_wrt!='editor'):?> style="display:none" <?php endif ?> >	<!-- |cond="$mi->cmt_wrt!='editor'" -->
 			<?php if(!$is_logged):?><!-- <block cond="!$is_logged"> -->
-				<div class="edit_opt clear">
-					<span class="itx_wrp">
-						<label for="nick_name_<?php echo $post->post_id?>"><?php echo __('lbl_writer', X2B_DOMAIN)?></label>
-						<input type="text" name="nick_name" id="nick_name" class="itx m_h" required="required"/>
-					</span>
-					<span class="itx_wrp">
-						<label for="password_<?php echo $post->post_id?>"><?php echo __('lbl_password', X2B_DOMAIN)?></label>
-						<input type="password" name="password" id="password" class="itx m_h" required="required"/>
-					</span>
-				</div>
+				<span class="itx_wrp">
+					<input type="text" name="nick_name" id="nick_name_<?php echo $post->post_id?>" class="itx m_h" required="required" placeholder="<?php echo __('lbl_writer', X2B_DOMAIN)?>"/>
+				</span>
+				<span class="itx_wrp">
+					<input type="password" name="password" id="password_<?php echo $post->post_id?>" class="itx m_h" required="required" placeholder="<?php echo __('lbl_password', X2B_DOMAIN)?>"/>
+				</span>
 			<?php endif ?>	<!-- </block> -->
 			
 			<div class="opt_chk">
@@ -93,15 +89,13 @@
 				<div class="edit_opt">
 					<?php if(!$is_logged):?><!-- <block cond="!$is_logged"> -->
 						<span class="itx_wrp">
-							<label for="nick_name"><?php echo __('lbl_writer', X2B_DOMAIN)?></label>
-							<input type="text" name="nick_name" id="nick_name" class="itx n_p" required/>
+							<input type="text" name="nick_name" id="nick_name" class="itx n_p" required placeholder="<?php echo __('lbl_writer', X2B_DOMAIN)?>"/>
 						</span>
 						<span class="itx_wrp">
-							<label for="password"><?php echo __('lbl_password', X2B_DOMAIN)?></label>
-							<input type="password" name="password" id="password" class="itx n_p" required/>
+							<input type="password" name="password" id="password" class="itx n_p" required placeholder="<?php echo __('lbl_password', X2B_DOMAIN)?>"/>
 						</span>	
 					<?php endif ?><!-- </block> -->
-					<input type="submit" value="<?php echo __('cmd_submit', X2B_DOMAIN)?>" class="bd_btn fr" />
+					<input type="submit" value="<?php echo __('cmd_submit', X2B_DOMAIN)?>" class="bd_btn fr" style="color: #444; background: #F3F3F3 repeat-x;"/>
 				</div>
 				<span class="opt_chk">
 					<!-- <block cond="$is_logged">

@@ -255,22 +255,9 @@ var allowedFileTypes = '<?php if($grant->manager): ?>*.*<?php else: ?><?php echo
 			<?php endif ?>
 		</div>
 	<?php endif ?>
-</form>
-
-<?php if(false): ?>
-	<form id="FiledataWrp" name="form" action="./" method="POST" enctype="multipart/form-data" class="blind">
-		<input id="Filedata" type="file" name="Filedata" />
-	</form>
-	<!--// SocialXE -->
-	<!-- <div cond="$mi->cmt_wrt=='sns'" class="sns_wrt">
-		<p>※ <?php //echo __('allow_comment', X2B_DOMAIN)?></p>
-		<img class="zbxe_widget_output" widget="socialxe_info" colorset="{$mi->colorset}" skin="default"  />
-	</div> -->
-<?php endif ?>
-	<!--// Buttons -->
 	<div class="regist">
 		<!-- <button cond="$is_logged && !$oDocument->isExists() || $oDocument->get('status')=='TEMP'" type="button" onclick="doDocumentSave(this);" class="bd_btn temp">{$lang->cmd_temp_save}</button> -->
-        <input type="submit" id="frmSubmit" value="<?php //echo __('cmd_submit', X2B_DOMAIN)?>" class="bd_btn blue" onclick="frmSubmit();return false;" />
-		<button type="button" onclick="history.back();" class="bd_btn cancle"><?php //echo __('cmd_back', X2B_DOMAIN)?></button>
+        <input type="submit" id="frmSubmit" value="<?php echo __('cmd_submit', X2B_DOMAIN)?>" class="bd_btn blue" onclick="frmSubmit();return false;" />
+		<button type="button" onclick="history.back();" class="bd_btn cancle"><?php echo __('cmd_back', X2B_DOMAIN)?></button>
 	</div>
-</div>
+</form>

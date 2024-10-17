@@ -210,7 +210,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			 * check the access grant (all the grant has been set by the module object)
 			 **/
 			if(!$this->grant->access || !$this->grant->list) {
-				return $this->_disp_message('msg_not_permitted');
+				return $this->_disp_message( 'msg_not_permitted' );
 			}
 
 			$o_editor_view = \X2board\Includes\get_view('editor');
@@ -285,7 +285,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 				if($o_post->is_exists()) { // if($o_post->isExists())
 					// if the board is not consistent with wp page ID, always remember board_id is WP page ID
 					if(intval($o_post->get('board_id')) !== \X2board\Includes\Classes\Context::get('board_id') ) {
-						return $this->_disp_message( __('msg_invalid_request', X2B_DOMAIN) );
+						return $this->_disp_message( 'msg_invalid_request' );
 					}
 
 					// check the manage grant
@@ -520,7 +520,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 		private function _view_write_post() {
 			// check grant
 			if(!$this->grant->write_post) {
-				return $this->_disp_message( __('msg_not_permitted', X2B_DOMAIN) );
+				return $this->_disp_message( 'msg_not_permitted' );
 			}
 
 			// GET parameter post_id from request
@@ -572,7 +572,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 
 			// check grant
 			if(!$this->grant->write_comment) {
-				return $this->_disp_message(__('msg_not_permitted', X2B_DOMAIN));
+				return $this->_disp_message( 'msg_not_permitted' );
 			}
 
 			// get the post information
@@ -580,12 +580,12 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			$o_post = $o_post_model->get_post($n_post_id);
 			unset($o_post_model);
 			if(!$o_post->is_exists()) {
-				return $this->_disp_message(__('msg_invalid_request', X2B_DOMAIN));
+				return $this->_disp_message( 'msg_invalid_request' );
 			}
 
 			// Check allow comment
 			if(!$o_post->allow_comment()) {
-				return $this->_disp_message(__('msg_not_allow_comment', X2B_DOMAIN));
+				return $this->_disp_message( 'msg_not_allow_comment' );
 			}
 
 			// obtain the comment (create an empty comment post for comment_form usage)
@@ -609,7 +609,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 		private function _view_modify_comment() {
 			// check grant
 			if(!$this->grant->write_comment) {
-				return $this->_disp_message(__('msg_not_permitted', X2B_DOMAIN));
+				return $this->_disp_message( 'msg_not_permitted' );
 			}
 
 			// get the post_id and comment_id
@@ -629,7 +629,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			unset($o_comment_model);
 			// if the comment is not exited, alert an error message
 			if(!$o_comment->is_exists()) {
-				return $this->_disp_message(__('msg_invalid_request', X2B_DOMAIN));
+				return $this->_disp_message( 'msg_invalid_request' );
 			}
 
 			// if the comment is not granted, then back to the password input form
@@ -672,7 +672,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 		private function _view_delete_post() {
 			// check grant
 			if(!$this->grant->write_post) {
-				return $this->_disp_message('msg_not_permitted');
+				return $this->_disp_message( 'msg_not_permitted' );
 			}
 
 			// get the post_id from request
@@ -697,7 +697,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			}
 
 			if($this->module_info->protect_content=="Y" && $o_post->get('comment_count')>0 && $this->grant->manager==false) {
-				return $this->_disp_message('msg_protect_content');
+				return $this->_disp_message( 'msg_protect_content' );
 			}
 
 			\X2board\Includes\Classes\Context::set('oPost', $o_post);
@@ -712,7 +712,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 		private function _view_reply_comment() {
 			// check grant
 			if(!$this->grant->write_comment) {
-				return $this->_disp_message('msg_not_permitted');
+				return $this->_disp_message( 'msg_not_permitted' );
 			}
 
 			// get the parent comment ID
@@ -728,11 +728,11 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 
 			// if the comment is not existed, opoup an error message
 			if(!$o_source_comment->is_exists()) {
-				return $this->_disp_message('msg_invalid_request');
+				return $this->_disp_message( 'msg_invalid_request' );
 			}
 			if( \X2board\Includes\Classes\Context::get('post_id') && 
 				$o_source_comment->get('parent_post_id') != \X2board\Includes\Classes\Context::get('post_id')) {
-				return $this->_disp_message('msg_invalid_request');
+				return $this->_disp_message( 'msg_invalid_request' );
 			}
 
 			// Check allow comment
@@ -741,7 +741,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			unset($o_post_model);
 			if(!$o_post->allow_comment()) {
 				unset($o_post);
-				return $this->_disp_message('msg_not_allow_comment');
+				return $this->_disp_message( 'msg_not_allow_comment' );
 			}
 
 			// get the comment information
@@ -767,7 +767,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 		private function _view_delete_comment() {
 			// check grant
 			if(!$this->grant->write_comment) {
-				return $this->_disp_message('msg_not_permitted');
+				return $this->_disp_message( 'msg_not_permitted' );
 			}
 
 			// get the comment_srl to be deleted
@@ -923,8 +923,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 		 * @brief display board message
 		 **/
 		// function dispBoardMessage($s_msg) {
-		private function _disp_message($s_msg) {
-			\X2board\Includes\Classes\Context::set('message', $s_msg);
+		private function _disp_message( $s_msg ) {
+			\X2board\Includes\Classes\Context::set('message', __( $s_msg, X2B_DOMAIN ));
 			// setup the skin file
 			echo $this->render_skin_file('message');
 		}

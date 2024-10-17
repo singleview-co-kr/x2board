@@ -22,10 +22,11 @@
 /* Common */
 /* Form */
 .bd_btn,.bd textarea,.bd .itx,.bd select,.btn_img{-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box;transition:border .4s,background .4s;*zoom:1}
-.bd_btn,.btn_img{display:inline-block;position:relative;height:28px;margin:0;padding:4px 20px;background:#F3F3F3 url(../img/ie/btn.png) repeat-x;background:-webkit-gradient(linear,0% 0%,0% 100%,from(#FFF),to(#F3F3F3));background:linear-gradient(to bottom,#FFF 0%,#F3F3F3 100%);border:1px solid;border-color:#CCC #C6C6C6 #C3C3C3 #CCC;border-radius:3px;white-space:nowrap;cursor:pointer;text-decoration:none !important;text-align:center;text-shadow:0 1px 0 #FFF;box-shadow:inset 0 0 1px 1px #FFF,0 1px 1px rgba(0,0,0,.1);*display:inline;*zoom:1}
+.bd_btn,.bd_btn_login,.btn_img{display:inline-block;position:relative;height:28px;margin:0;padding:4px 20px;background:#F3F3F3 url(../img/ie/btn.png) repeat-x;background:-webkit-gradient(linear,0% 0%,0% 100%,from(#FFF),to(#F3F3F3));background:linear-gradient(to bottom,#FFF 0%,#F3F3F3 100%);border:1px solid;border-color:#CCC #C6C6C6 #C3C3C3 #CCC;border-radius:3px;white-space:nowrap;cursor:pointer;text-decoration:none !important;text-align:center;text-shadow:0 1px 0 #FFF;box-shadow:inset 0 0 1px 1px #FFF,0 1px 1px rgba(0,0,0,.1);*display:inline;*zoom:1}
 .btn_img{padding:4px 14px 4px 10px;font-size:11px;line-height:1.6;border-color:#CCC;background:#FCFCFC;letter-spacing:-1px;box-shadow:none}
 .btn_img.no{padding:4px 18px}
 .bd_btn.blue{font-weight:700;color:#FFF;text-shadow:0 1px 0 #000;border-color:#669 !important;box-shadow:0 1px 1px rgba(0,0,0,.1);background:#55B url(../img/ie/btn_blue.gif) repeat-x;background:-webkit-gradient(linear,0% 0%,0% 100%,from(#77C),to(#55B));background:linear-gradient(to bottom,#77C 0%,#55B 100%)}
+.bd_btn_login.blue{font-weight:700;color:#FFF;text-shadow:0 1px 0 #000;border-color:#669 !important;box-shadow:0 1px 1px rgba(0,0,0,.1);background:#55B url(../img/ie/btn_blue.gif) repeat-x;background:-webkit-gradient(linear,0% 0%,0% 100%,from(#77C),to(#55B));background:linear-gradient(to bottom,#77C 0%,#55B 100%)}
 .bd_btn:hover,.bd_btn:focus,.btn_img:hover,.btn_img:focus{border-color:#AAA;box-shadow:0 1px 4px rgba(0,0,0,.2)}
 .bd_btn[disabled=disabled]{box-shadow:none !important}
 .bd .itx,.bd select{display:inline-block;margin:0;padding:4px 6px;background:#FAFAFA;width:auto;border-radius:3px;border:1px solid;border-color:#BBB #DDD #DDD #BBB;*display:inline;*zoom:1}
@@ -513,7 +514,7 @@
 .sns_wrt,.bd_wrt .regist{position:relative;margin-top:12px;padding:12px 0;text-align:center;border-top:1px solid #CCC}
 .sns_wrt{padding:0;text-align:left}
 .bd_wrt .regist .bd_btn{height:34px}
-.bd_wrt .regist .blue{min-width:92px;margin-left:20px}
+.bd_wrt .regist .blue{min-width:92px;margin-left:20px; padding:0;}
 .bd_wrt .regist .cancle{position:absolute;right:0}
 .simple_wrt{position:relative;margin:0 60px;*zoom:1}
 .simple_wrt .profile{position:absolute;top:0;left:-60px}
@@ -554,6 +555,7 @@
 .context_message h1{font-size:1.3em;margin:1.6em}
 .context_message .btnArea{margin:20px;text-align:center}
 .context_message .bd_btn{min-width:92px;height:34px;margin:4px;font-size:14px;color:#000; padding:0px;}
+.context_message .bd_btn_login{min-width:92px;height:34px;margin:4px;font-size:14px;color:#000;}
 
 /* Extra Var */
 .et_vars{display:none;margin-bottom:20px}
@@ -577,8 +579,6 @@
 .exForm li{display:inline;list-style:none}
 .exForm input[type=radio],.exForm input[type=checkbox]{margin:0 4px 0 0;vertical-align:middle}
 .exForm li label{margin:0 15px 0 0;vertical-align:middle}
-
-ul.file-list {margin: 0;} /* appended file list box */
 
 /* List Style */
 .bd_lst{clear:both;margin:0;padding:0;list-style:none;*zoom:1}
@@ -871,6 +871,7 @@ body.viewer_blk{background:#222}
 /* android HD landscape */
 @media screen and (max-width:640px){
 .bd_btn,.btn_img,.bd .itx,.bd select{height:34px}
+.bd select{width:100%}
 .btn_img{padding:7px 14px 7px 10px;font-size:12px}
 .bd .itx,.bd .itx_wrp label{font-size:13px}
 .bd_srch_btm select,.bd_faq_srch select{height:24px !important}

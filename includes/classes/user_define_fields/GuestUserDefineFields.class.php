@@ -710,6 +710,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 						$buff[]    = '<input type="checkbox" name="is_notice" value="Y" id="is_notice" ' . $s_checked . ' />';
 						$buff[]    = '<label class="attr-value-option" for="is_notice">' . __( 'lbl_notice', X2B_DOMAIN ) . '</label>';
 						$buff[]    = '</div>';
+						$buff[]    = '</div>';
 					}
 
 					if ( $this->_is_this_accessible( $this->allow_comment_permission, $this->allow_comment ) ) {
@@ -728,20 +729,25 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 						$buff[] = '<label class="attr-value-option"><input name="allow_comment" id="allow_comment[Y]" type="radio" value="Y" ' . $s_allow_checked . '>' . __( 'lbl_allow_comment', X2B_DOMAIN ) . '</label>';
 						$buff[] = '<label class="attr-value-option"><input name="allow_comment" id="allow_comment[N]" type="radio" value="N" ' . $s_disallow_checked . '>' . __( 'lbl_disallow_commentt', X2B_DOMAIN ) . '</label>';
 						$buff[] = '</div>';
+						$buff[]    = '</div>';
 					}
-
-					$buff[]      = '<div class="' . X2B_DOMAIN . '-attr-row ' . $s_default_class . '">';
-					$buff[]      = '<label class="attr-name" for="' . $s_meta_key . '"><span class="field-name">' . $s_name . '</span></label>';
-					$buff[]      = '<div class="attr-value">';
 					$status_list = \X2board\Includes\Classes\Context::get( 'status_list' );
-					foreach ( $status_list as $key => $value ) {
-						$s_checked = $o_post->get( 'status' ) == $key ? 'checked="checked"' : null;
-						$buff[]    = '<input type="radio" name="status" value="' . $key . '" id="' . $key . '" ' . $s_checked . ' />';
-						$buff[]    = '<label for="' . $key . '">' . $value . '</label>';
+					if( count( $status_list ) == 1 ) {
+						$key = array_key_first($status_list);
+						$buff[] = '<input type="hidden" name="status" value="'.$key.'">';
+					} else {
+						$buff[]      = '<div class="' . X2B_DOMAIN . '-attr-row ' . $s_default_class . '">';
+						$buff[]      = '<label class="attr-name" for="' . $s_meta_key . '"><span class="field-name">' . $s_name . '</span></label>';
+						$buff[]      = '<div class="attr-value">';
+						foreach ( $status_list as $key => $value ) {
+							$s_checked = $o_post->get( 'status' ) == $key ? 'checked="checked"' : null;
+							$buff[]    = '<input type="radio" name="status" value="' . $key . '" id="' . $key . '" ' . $s_checked . ' />';
+							$buff[]    = '<label for="' . $key . '">' . $value . '</label>';
+						}
+						$buff[] = '</div>';
+						$buff[] = '</div>';
 					}
 					unset( $status_list );
-					$buff[] = '</div>';
-					$buff[] = '</div>';
 
 					if ( ! is_user_logged_in() ) {
 						if ( $this->email_permission ) {

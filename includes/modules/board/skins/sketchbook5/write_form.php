@@ -14,7 +14,7 @@ if(wp_is_mobile() && $mi->m_editor!=3) {  	// cond="wp_is_mobile() && $mi->m_edi
 
 <?php if(!wp_is_mobile() || $mi->m_editor==3): ?><!-- cond="!Mobile::isMobileCheckByAgent() || $mi->m_editor==3" -->
 	
-    <style>		
+    <style>
 a.x2board-default-button-small,
 input.x2board-default-button-small,
 button.x2board-default-button-small { position: relative; display: inline-block; zoom: 1; margin: 0; padding: 0 10px; width: auto; height: 28px; line-height: 28px; font-size: 14px; font-weight: normal; letter-spacing: normal; color: #545861 !important; background: #eaeaea !important; border: none; border-radius: 0; text-decoration: none !important; cursor: pointer; vertical-align: middle; text-shadow: none; box-shadow: none; transition-duration: 0.3s; box-sizing: content-box; }
@@ -180,6 +180,7 @@ button.x2board-default-button-medium:active { opacity: 0.7; }
 #x2board-default-editor .x2board-control .right { position: static; float: right; width: 50%; text-align: right; }
 /* #x2board-default-editor.confirm { margin: 100px auto; max-width: 590px; }
 #x2board-default-editor.confirm input[type=password] { width: 100%; box-sizing: border-box; } */
+ul.file-list {margin: 0;} /* appended file list box */
 	</style>
 
 	<div id="x2board-default-editor" class="bd">

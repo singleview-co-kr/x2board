@@ -94,6 +94,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\ModuleObject' ) ) {
 			$this->module_info->board_id = $n_board_id;
 			Context::set( 'current_module_info', $this->module_info );
 			Context::set( 'lang_type', get_locale() );
+			Context::set( 'is_member_registration', intval(get_option( 'users_can_register' )) == 0 ? false : true );
 
 			$o_grant = $this->_get_grant();
 			// display no permission if the current module doesn't have an access privilege
