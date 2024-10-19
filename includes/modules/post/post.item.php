@@ -681,7 +681,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postItem' ) ) {
 			$s_path = sprintf( '%s%s', X2B_URL, 'includes/' . X2B_MODULES_NAME . '/post/tpl/icons/' );
 			$buff   = array();
 			foreach ( $buffs as $key => $val ) {
-				$buff[] = sprintf( '<img src="%s%s.gif" alt="%s" title="%s" style="margin-right:2px;" />', $s_path, $val, $val, $val );
+				$buff[] = sprintf( '<img src="%s%s.gif" alt="%s" title="%s" style="margin-right:2px; display:inline" />', $s_path, $val, $val, $val );
 			}
 			return implode( '', $buff );
 		}
