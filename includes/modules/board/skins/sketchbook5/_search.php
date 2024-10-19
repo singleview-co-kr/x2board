@@ -9,7 +9,7 @@
 		<tr>
 			<td>
 				<span class="select itx">
-					<select name="search_target">
+					<select name="search_target" id='select_box_search_target'>
 						<!-- <option loop="$search_option=>$key,$val" value="{$key}" selected="selected"|cond="$search_target==$key">{$val}</option> -->
 						<?php foreach($search_option as $key => $val): ?>
 							<option value="<?php echo $key?>" <?php if($search_target==$key): ?>selected="selected" <?php endif?>><?php echo $val?></option>

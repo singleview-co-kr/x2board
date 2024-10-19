@@ -304,15 +304,15 @@ else {
 					<!--// 하단 검색창 -->
 					<?php if($mi->srch_btm!='N' && !wp_is_mobile()):?><!-- cond="$mi->srch_btm!='N' && !Mobile::isMobileCheckByAgent()"  -->
 						<form action="<?php echo x2b_get_url()?>" method="get" onsubmit="return procFilter(this, search)" class="bd_srch_btm<?php if($mi->srch_btm==2 || $search_keyword):?> on<?php endif ?>" no-error-return-url="true">
-							<input type="hidden" name="board_id" value="{$board_id}" />
-							<input type="hidden" name="category" value="{$category}" />
+							<input type="hidden" name="board_id" value="<?php echo $board_id ?>" />
+							<input type="hidden" name="category" value="<?php echo $category ?>" />
 							<span class="btn_img itx_wrp">
 								<button type="submit" onclick="jQuery(this).parents('form.bd_srch_btm').submit();return false;" class="ico_16px search">Search</button>
 								<label for="bd_srch_btm_itx_<?php echo $board_id ?>"><?php echo __('cmd_search', X2B_DOMAIN)?></label>
-								<input type="text" name="search_keyword" id="bd_srch_btm_itx_<?php echo $board_id ?>" class="bd_srch_btm_itx srch_itx" value="<?php echo htmlspecialchars((string)$search_keyword)?>" />
+								<input type="text" name="search_keyword" id="bd_srch_btm_itx_<?php echo $board_id ?>" class="bd_srch_btm_itx srch_itx" value="<?php echo htmlspecialchars((string)$search_keyword)?>" style='background:none'/>
 							</span>
 							<span class="btn_img select">
-								<select name="search_target">
+								<select name="search_target" style='height:18px;'>
 									<?php foreach($search_option as $key => $val):?><!-- loop="$search_option=>$key,$val"  -->
 										<option value="<?php echo $key ?>" <?php if($search_target==$key):?> selected="selected" <?php endif?>><?php echo $val ?></option>
 									<?php endforeach ?>

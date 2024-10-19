@@ -872,6 +872,7 @@ body.viewer_blk{background:#222}
 @media screen and (max-width:640px){
 .bd_btn,.btn_img,.bd .itx,.bd select{height:34px}
 .bd select{width:100%}
+#select_box_search_target{width: auto;}
 .btn_img{padding:7px 14px 7px 10px;font-size:12px}
 .bd .itx,.bd .itx_wrp label{font-size:13px}
 .bd_srch_btm select,.bd_faq_srch select{height:24px !important}
