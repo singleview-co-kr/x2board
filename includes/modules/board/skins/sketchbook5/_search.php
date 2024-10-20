@@ -22,11 +22,10 @@
 			</td>
 			<td>
 				<button type="submit" onclick="jQuery(this).parents('form').submit();return false" class="bd_btn"><?php echo __('cmd_search', X2B_DOMAIN)?></button>
-				<?php if(isset($last_division)): ?>  <!-- cond="$last_division"  -->
+				<?php if($last_division): ?>  <!-- cond="$last_division"  -->
 				<a class="bd_btn" href="<?php echo x2b_get_url('page',1,'post_id','','division',$last_division,'last_division','')?>"><?php echo __('cmd_search_next', X2B_DOMAIN)?></a>
 				<?php endif?>
 			</td>
 		</tr>
 	</table>
 </form>
-
