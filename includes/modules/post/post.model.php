@@ -80,8 +80,8 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postModel' ) ) {
 				// Query_id if you have a group by clause getDocumentListWithinTag getDocumentListWithinComment or used again to perform the query because
 				$groupByQuery = array(
 					'post.getPostListWithinComment'   => 1,
-					'post.getPostListWithinTag'       => 1,
 					'post.getPostListWithinExtraVars' => 1,
+					// 'post.getPostListWithinTag'       => 1,
 				);
 				if ( isset( $groupByQuery[ $query_id ] ) ) {
 					$group_args             = clone($args);
@@ -758,11 +758,6 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postModel' ) ) {
 						$s_field_search_clause = "( `title` like '%" . $search_keyword . "%' or `content` like '%" . $search_keyword . "%' )";
 						$use_division          = true;
 						break;
-					// case 'user_id' :
-					// if($search_keyword) $search_keyword = str_replace(' ','%',$search_keyword);
-					// $args->s_user_id = $search_keyword;
-					// $args->sort_index = 'documents.'.$args->sort_index;
-					// break;
 					// case 'user_name' :
 					case 'nick_name':
 					case 'email_address':
@@ -773,7 +768,25 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postModel' ) ) {
 						// $args->{"s_".$search_target} = $search_keyword;
 						$s_field_search_clause = '`' . $search_target . "` like '%" . $search_keyword . "%'";
 						break;
+					case 'comment':
+						$args->s_comment = $search_keyword;
+						$query_id        = 'post.getPostListWithinComment';
+						$use_division    = true;
+						break;
+					case 'tag':
+						if ( $search_keyword ) {
+							$search_keyword = str_replace( ' ', '%', $search_keyword );
+						}
+						$s_field_search_clause = "`tags` like '%" . $search_keyword . "%'";
+						$use_division          = true;
+						// $query_id   		   = 'post.getPostListWithinTag';
+						break;
 					/*
+					case 'user_id' :
+						if($search_keyword) $search_keyword = str_replace(' ','%',$search_keyword);
+						$args->s_user_id = $search_keyword;
+						$args->sort_index = 'documents.'.$args->sort_index;
+						break;
 					case 'is_notice' :
 						if($search_keyword=='N') {
 							$args->{"s_".$search_target} = 'N';
@@ -826,15 +839,6 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postModel' ) ) {
 					case 'ipaddress' :
 						$args->{"s_".$search_target} = $search_keyword;
 						break;*/
-					case 'comment':
-						$args->s_comment = $search_keyword;
-						$query_id        = 'post.getPostListWithinComment';
-						$use_division    = true;
-						break;
-					case 'tag':
-						$args->s_tags = str_replace( ' ', '%', $search_keyword );
-						$query_id     = 'post.getPostListWithinTag';
-						break;
 					// case 'extra_vars':
 					// $args->var_value = str_replace(' ', '%', $search_keyword);
 					// $query_id = 'document.getDocumentListWithinExtraVars';

@@ -143,6 +143,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 					}
 					$obj->content = nl2br( $obj->content );
 				}
+				$obj->tags = strip_tags( preg_replace( '/\s+/', '', $obj->tags ) );
 			}
 			// Remove iframe and script if not a top adminisrator in the session.
 			if ( $o_logged_info->is_admin != 'Y' ) {
@@ -192,6 +193,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 				$a_new_post['readed_count']   = 0;
 				$a_new_post['comment_count']  = 0;
 				$a_new_post['voted_count']    = 0;
+				$a_new_post['tags']           = $obj->tags;
 				$a_new_post['last_update_dt'] = $a_new_post['regdate_dt'] = $s_cur_datetime;
 				// add user agent
 				$a_new_post['ua']        = wp_is_mobile() ? 'M' : 'P';
@@ -501,6 +503,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 			if ( $o_logged_info->is_admin != 'Y' ) {
 				$o_new_obj->content = \X2board\Includes\remove_hack_tag( $o_new_obj->content );
 			}
+			$o_new_obj->tags = strip_tags( preg_replace( '/\s+/', '', $o_new_obj->tags ) );
 
 			// sanitize other user input fields, $o_new_obj->content has been sanitized enough
 			$a_new_post   = array();

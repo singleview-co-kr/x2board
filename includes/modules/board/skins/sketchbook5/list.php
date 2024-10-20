@@ -304,7 +304,6 @@ else {
 					<!--// 하단 검색창 -->
 					<?php if($mi->srch_btm!='N' && !wp_is_mobile()):?><!-- cond="$mi->srch_btm!='N' && !Mobile::isMobileCheckByAgent()"  -->
 						<form action="<?php echo x2b_get_url()?>" method="get" onsubmit="return procFilter(this, search)" class="bd_srch_btm<?php if($mi->srch_btm==2 || $search_keyword):?> on<?php endif ?>" no-error-return-url="true">
-							<input type="hidden" name="board_id" value="<?php echo $board_id ?>" />
 							<input type="hidden" name="category" value="<?php echo $category ?>" />
 							<span class="btn_img itx_wrp">
 								<button type="submit" onclick="jQuery(this).parents('form.bd_srch_btm').submit();return false;" class="ico_16px search">Search</button>

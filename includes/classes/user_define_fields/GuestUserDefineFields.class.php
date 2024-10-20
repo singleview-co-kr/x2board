@@ -838,7 +838,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 					$buff[]  = '<div class="' . X2B_DOMAIN . '-attr-row ' . $s_default_class . ' required">';
 					$buff[]  = '<label class="attr-name" for="tags">' . __( 'lbl_tag', X2B_DOMAIN ) . '</label>';
 					$buff[]  = '<div class="attr-value">';
-					$s_value = $o_post->get( 'tags' ) ? esc_attr( htmlspecialchars( $post->get( 'tags' ) ) ) : null;
+					$s_value = $o_post->get( 'tags' ) ? esc_attr( htmlspecialchars( $o_post->get( 'tags' ) ) ) : null;
 					$buff[]  = '<input type="text" name="tags" id="tags" placeholder="' . __( 'about_tag', X2B_DOMAIN ) . '" value="' . $s_value . '">';
 					$buff[]  = '</div>';
 					$buff[]  = '</div>';
