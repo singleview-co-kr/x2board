@@ -193,11 +193,11 @@ foreach($category_list as $key=>$val) {
 						<li class="cnbMore"><a href="#" class="bubble" title="<?php echo __('lbl_category', X2B_DOMAIN)?> <?php echo __('lbl_more', X2B_DOMAIN) ?>"><i class="fa<?php if($mi->cnb_open):?> fa-caret-up<?php else:?> fa-caret-down<?php endif?>"></i></a></li>
 		<?php foreach($cate_list as $key => $val): ?><!-- loop="$cate_list=>$key,$val"  -->
 						<li <?php if($category==$val->category_id): ?> class="on"<?php endif?>>
-							<a class="a1<?php if($category==$val->category_id):?> on<?php endif?>" href="<?php echo x2b_get_url('category',$val->category_id,'post_id','','page','')?>" title="<?php echo __('lbl_post_count', X2B_DOMAIN)?> <?php if(!$mi->cnb_count):?> <?php echo $val->post_count?> <?php endif?>" <?php if($val->color!='transparent'): ?>style="color:<?php echo $val->color?>" <?php endif?>><?php echo $val->title?> <?php if($mi->cnb_count): ?> <small>(<?php echo $val->post_count?>)</small><?php endif?></a>
+							<a class="a1<?php if($category==$val->category_id):?> on<?php endif?>" href="<?php echo x2b_get_url('category',$val->title,'post_id','','page','')?>" title="<?php echo __('lbl_post_count', X2B_DOMAIN)?> <?php if(!$mi->cnb_count):?> <?php echo $val->post_count?> <?php endif?>" <?php if($val->color!='transparent'): ?>style="color:<?php echo $val->color?>" <?php endif?>><?php echo $val->title?> <?php if($mi->cnb_count): ?> <small>(<?php echo $val->post_count?>)</small><?php endif?></a>
 			<?php if( count($val->children) ): ?>  <!-- cond="count($val->children)" -->
 							<ul class="wrp">
 				<?php foreach($val->children as $idx => $item): ?>	<!-- loop="$val->children=>$idx,$item" -->
-								<li class="li2<?php if($category==$item->category_id):?> on<?php endif?>"><a href="<?php echo x2b_get_url('category',$item->category_id,'post_id','','page','')?>" title="<?php echo __('lbl_post_count', X2B_DOMAIN)?> <?php if(!$mi->cnb_count):?> <?php echo $item->post_count?> <?php endif?>"  <?php if($val->color!='transparent'): ?>style="color:<?php echo $val->color?>" <?php endif?>><?php echo $item->title?> <?php if($mi->cnb_count): ?> <small>(<?php echo $val->post_count?>)</small><?php endif?></a></li>
+								<li class="li2<?php if($category==$item->category_id):?> on<?php endif?>"><a href="<?php echo x2b_get_url('category',$item->title,'post_id','','page','')?>" title="<?php echo __('lbl_post_count', X2B_DOMAIN)?> <?php if(!$mi->cnb_count):?> <?php echo $item->post_count?> <?php endif?>"  <?php if($val->color!='transparent'): ?>style="color:<?php echo $val->color?>" <?php endif?>><?php echo $item->title?> <?php if($mi->cnb_count): ?> <small>(<?php echo $val->post_count?>)</small><?php endif?></a></li>
 				<?php endforeach ?>
 							</ul>
 			<?php endif ?>
@@ -304,7 +304,7 @@ else {
 					<!--// 하단 검색창 -->
 					<?php if($mi->srch_btm!='N' && !wp_is_mobile()):?><!-- cond="$mi->srch_btm!='N' && !Mobile::isMobileCheckByAgent()"  -->
 						<form action="<?php echo x2b_get_url()?>" method="get" onsubmit="return procFilter(this, search)" class="bd_srch_btm<?php if($mi->srch_btm==2 || $search_keyword):?> on<?php endif ?>" no-error-return-url="true">
-							<input type="hidden" name="category" value="<?php echo $category ?>" />
+							<input type="hidden" name="category" value="<?php echo htmlspecialchars($category) ?>" />
 							<span class="btn_img itx_wrp">
 								<button type="submit" onclick="jQuery(this).parents('form.bd_srch_btm').submit();return false;" class="ico_16px search">Search</button>
 								<label for="bd_srch_btm_itx_<?php echo $board_id ?>"><?php echo __('cmd_search', X2B_DOMAIN)?></label>
@@ -352,7 +352,7 @@ else {
 	<form action="<?php echo x2b_get_url('cmd', '', 'post_id', '')?>" method="get" class="bd_pg clear">
 		<fieldset>
 		<legend class="blind">Board Pagination</legend>
-		<input type="hidden" name="category" value="<?php echo sanitize_key($category) ?>" />
+		<input type="hidden" name="category" value="<?php echo htmlspecialchars($category) ?>" />
 		<input type="hidden" name="search_keyword" value="<?php echo htmlspecialchars((string)$search_keyword)?>" />
 		<input type="hidden" name="search_target" value="<?php echo sanitize_key($search_target) ?>" />
 		<input type="hidden" name="listStyle" value="<?php echo $mi->default_style ?>" />
