@@ -188,6 +188,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Category\\categoryModel' ) )
 				$obj->color       = $val['color'];
 				$obj->post_count  = $val['post_count'];
 				$obj->group_ids   = $val['group_ids'];
+				$obj->is_default  = $val['is_default'];
 				$obj->depth       = $depth;
 				$obj->child_count = 0;
 				$obj->children    = array();

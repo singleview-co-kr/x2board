@@ -169,7 +169,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\GuestUserDefineFields' ) ) {
 				$o_misc_info->s_allow_comment_permission = isset( $a_kb_field['allow_comment_permission'] ) ? $a_kb_field['allow_comment_permission'] : null;
 				$o_misc_info->a_allow_comment            = isset( $a_kb_field['allow_comment'] ) ? $a_kb_field['allow_comment'] : null;
 				$o_misc_info->a_row                      = isset( $a_kb_field['row'] ) ? $a_kb_field['row'] : null;
-				$o_misc_info->s_term                      = isset( $a_kb_field['term'] ) ? $a_kb_field['term'] : null;
+				$o_misc_info->s_term                     = isset( $a_kb_field['term'] ) ? $a_kb_field['term'] : null;
 				$o_user_define_key                       = new UserDefineItemForGuest(
 					$this->_n_board_id,
 					$n_idx,
@@ -624,6 +624,9 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 					if( \X2board\Includes\Classes\Context::get( 'use_category' ) != 'Y' ) {
 						break;
 					}
+					if ( ! $this->_is_this_accessible( $this->permission, $this->role ) ) {
+						break;
+					}
 					$s_name        = strlen( $s_name ) ? $s_name : __( $this->type, X2B_DOMAIN );
 					$buff[]        = '<div class="' . X2B_DOMAIN . '-attr-row ' . $s_default_class . ' ' . $s_required . '">';
 					$buff[]        = '<label class="attr-name" for="' . $s_meta_key . '"><span class="field-name">' . $s_name . '</span></label>';
@@ -917,7 +920,14 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 					$buff[] = 				'<input type="text" id="' . $s_meta_key . '_krzip" class="' . X2B_DOMAIN . '-krzip" name="' . $s_meta_key . '_krzip" value="' . $a_value[0] . '" placeholder="'. __( 'lbl_kr_zipcode', X2B_DOMAIN ) . '" READONLY style="width:160px;">';
 					$buff[] = 				'<button type="button" class="' . X2B_DOMAIN . '-default-button-small ' . X2B_DOMAIN . '-krzip-search-button" onclick="x2board_kr_zipcode_search(\'' . $s_meta_key . '_krzip\', \'' . $s_meta_key . '_address_1\', \'' . $s_meta_key . '_address_2\', \'' . $s_meta_key . '_address_3\')">' . __( 'lbl_search', X2B_DOMAIN ) . '</button>';
 					$buff[] = 			'</div>';
-					$buff[] = 			'<div class="' . X2B_DOMAIN . '_kr_zip_hidden_fields">';
+
+					$s_class_name = X2B_DOMAIN . '_kr_zip';
+					if( ! $o_post->$s_meta_key ) {
+						$s_class_name .= '_hidden';
+					}
+					$s_class_name .= '_fields';
+
+					$buff[] = 			'<div class="' . $s_class_name . '">';
 					$buff[] = 				'<div class="' . X2B_DOMAIN . '-row-address-1">';
 					$buff[] = 					'<input type="text" id="' . $s_meta_key . '_address_1" class="' . X2B_DOMAIN . '-address-1" name="' . $s_meta_key . '_address_1" value="' . $a_value[1] . '" placeholder="' . __( 'lbl_address', X2B_DOMAIN ) . '" READONLY>';
 					$buff[] =	 			'</div>';

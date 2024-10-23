@@ -83,20 +83,30 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 				return new \X2board\Includes\Classes\BaseObject( -1, __( 'msg_not_permitted', X2B_DOMAIN ) );
 			}
 
+			$o_category_model = \X2board\Includes\get_model( 'category' );
+			$o_category_model->set_board_id( \X2board\Includes\Classes\Context::get( 'board_id' ) );
+			$a_linear_category = $o_category_model->build_linear_category();
+			unset( $o_category_model );
 			// Set to 0 if the category_id doesn't exist
 			if ( $obj->category_id ) {
-				$o_category_model = \X2board\Includes\get_model( 'category' );
-				$o_category_model->set_board_id( \X2board\Includes\Classes\Context::get( 'board_id' ) );
-				$a_linear_category = $o_category_model->build_linear_category();
-				unset( $o_category_model );
 				if ( count( $a_linear_category ) > 0 && ! $a_linear_category[ $obj->category_id ]->grant ) {
+					unset( $a_linear_category );
 					return new \X2board\Includes\Classes\BaseObject( -1, __( 'msg_not_permitted', X2B_DOMAIN ) );
 				}
 				if ( count( $a_linear_category ) > 0 && ! $a_linear_category[ $obj->category_id ] ) {
 					$obj->category_id = 0;
 				}
-				unset( $a_linear_category );
+			} else {
+				$obj->category_id = 0;
+				foreach ( $a_linear_category as $n_key => $o_val ) {
+					if( $o_val->is_default == 'Y' ) {
+						$obj->category_id = $n_key;
+						break;
+					}
+				}
 			}
+			unset( $a_linear_category );
+
 			// Set the read counts and update order.
 			// if(!$obj->readed_count) {
 			// $obj->readed_count = 0;
