@@ -546,9 +546,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 					}
 					return $value;
 				case 'kr_zip':
-					$o_the_field = \X2board\Includes\Classes\Context::get('field')[$this->eid];
-					if ( $this->_is_this_accessible( $o_the_field->permission, $o_the_field->role ) ) {
-						unset($o_the_field);
+					if( \X2board\Includes\Classes\Context::get( 'post' )->is_granted() ) {
 						if ( is_array( $value ) ) {
 							return implode( ' ', $value );
 						}
@@ -917,7 +915,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 					$buff[] = 	'<label class="attr-name" for="'. $s_meta_key .'"><span class="field-name">' . $s_name . '</span> ' . $s_tmp_required . '</label>';
 					$buff[] = 		'<div class="attr-value">';
 					$buff[] = 			'<div class="' . X2B_DOMAIN . '-row-kr-zip">';
-					$buff[] = 				'<input type="text" id="' . $s_meta_key . '_krzip" class="' . X2B_DOMAIN . '-krzip" name="' . $s_meta_key . '_krzip" value="' . $a_value[0] . '" placeholder="'. __( 'lbl_kr_zipcode', X2B_DOMAIN ) . '" READONLY style="width:160px;">';
+					$buff[] = 				'<input type="text" id="' . $s_meta_key . '_krzip" class="' . X2B_DOMAIN . '-krzip" name="' . $s_meta_key . '_krzip" value="' . $a_value[0] . '" onclick="x2board_kr_zipcode_search(\'' . $s_meta_key . '_krzip\', \'' . $s_meta_key . '_address_1\', \'' . $s_meta_key . '_address_2\', \'' . $s_meta_key . '_address_3\')" placeholder="'. __( 'lbl_kr_zipcode', X2B_DOMAIN ) . '" READONLY style="width:160px;">';
 					$buff[] = 				'<button type="button" class="' . X2B_DOMAIN . '-default-button-small ' . X2B_DOMAIN . '-krzip-search-button" onclick="x2board_kr_zipcode_search(\'' . $s_meta_key . '_krzip\', \'' . $s_meta_key . '_address_1\', \'' . $s_meta_key . '_address_2\', \'' . $s_meta_key . '_address_3\')">' . __( 'lbl_search', X2B_DOMAIN ) . '</button>';
 					$buff[] = 			'</div>';
 

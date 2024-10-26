@@ -459,8 +459,8 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postModel' ) ) {
 		 */
 		private function _set_to_all_post_extra_vars() {
 			global $G_X2B_CACHE;
-			static $checked_posts = array();
-			$_post_list           = &$G_X2B_CACHE['POST_LIST'];
+			$checked_posts = array();
+			$_post_list    = &$G_X2B_CACHE['POST_LIST'];
 
 			// X2B POST_LIST all posts that the object referred to the global variable settings
 			if ( count( $_post_list ) <= 0 ) {
