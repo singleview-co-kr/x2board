@@ -15,7 +15,6 @@ function callAddPostCart(document_length) {
 	addedPost = Array.from(new Set(addedPost));  // secure uniqueness of array
 	var params = [];
 	params.post_ids = addedPost.join(",");
-console.log(params);
 	// exec_xml("document","procDocumentAddCart", params, null);
 	x2board_ajax_lock = true;
 	jQuery.post(x2board_ajax_info.url, {
@@ -91,3 +90,35 @@ function checkboxToggleAll(itemName) {
 		}
 	}
 }
+
+// Function to show the popup
+function show_admin_popup() {
+	jQuery.post(x2board_ajax_info.url, {
+		'action': x2board_ajax_info.cmd_render_manage_post,
+		'board_id': x2board_ajax_info.board_id,
+		'security':x2board_ajax_info.nonce}, function(res) {
+			if(typeof callback === 'function') {
+				callback(res);
+			}
+			else {
+				if(res.result == 'error') {
+					alert(res.message);
+				}
+				jQuery('#mgmt-contents').html(res.tpl);
+				jQuery('#' + x2board_locale.lbl_x2b_domain + '-admin-popup').fadeIn();
+			}
+		});
+}
+
+jQuery(document).ready(function($) {
+	// Function to hide the popup
+	function hide_admin_popup() {
+		jQuery('#' + x2board_locale.lbl_x2b_domain + '-admin-popup').fadeOut();
+	}
+	// Hide the popup when the close button or overlay is clicked
+	jQuery('#' + x2board_locale.lbl_x2b_domain + '-close-admin-popup').on('click', function() {
+		hide_admin_popup();
+	});
+	// Show the popup after a delay (e.g., 3 seconds)
+	// setTimeout(show_admin_popup, 3000);
+});

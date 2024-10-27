@@ -171,7 +171,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 				case X2B_CMD_VIEW_MODIFY_COMMENT:
 				case X2B_CMD_VIEW_REPLY_COMMENT:
 				case X2B_CMD_VIEW_DELETE_COMMENT:
-				case X2B_CMD_VIEW_MANAGE_POST:
+				// case X2B_CMD_VIEW_MANAGE_POST:
 					$s_cmd = '_'.$s_cmd;
 					$this->$s_cmd();
 					break;
@@ -435,6 +435,19 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			\X2board\Includes\Classes\Context::set('total_page', $output->total_page);
 			\X2board\Includes\Classes\Context::set('page', $output->page);
 			\X2board\Includes\Classes\Context::set('page_navigation', $output->page_navigation);
+
+			// begin - html for admin layer popup
+			$o_logged_info = \X2board\Includes\Classes\Context::get( 'logged_info' );
+			if ( $o_logged_info->is_admin == 'Y' ) {
+				echo '<div id="' . X2B_DOMAIN . '-admin-popup" class="x2board-admin-popup-overlay">
+					<div class="x2board-admin-popup-content">
+						<span class="x2board-admin-close-popup" id="' . X2B_DOMAIN . '-close-admin-popup">&times;</span>
+						<div id="mgmt-contents"></div>
+					</div>
+				</div>';
+			}
+			unset( $o_logged_info );
+			// end - html for admin layer popup
 			return $output;
 		}
 
@@ -884,7 +897,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 		/**
 		 * @brief display post manage popup
 		 **/
-		private function _view_manage_post() {
+		/*private function _view_manage_post() {
 			if( ! $this->grant->is_admin ) {
 				return;
 			}
@@ -906,18 +919,18 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			else {
 				$a_post = array();
 			}
+			unset( $a_post_id );
 			\X2board\Includes\Classes\Context::set( 'post_list', $a_post );
 
 			$o_board_model = \X2board\Includes\get_model( 'board' );
 			$a_board_list = $o_board_model->get_board_list();
 			unset($o_board_model);
 			\X2board\Includes\Classes\Context::set( 'board_list', $a_board_list );
-
 			
 			$this->set_skin_path( X2B_PATH . DIRECTORY_SEPARATOR . 'common'. DIRECTORY_SEPARATOR . 'tpl' );
 			// setup the skin file
 			echo $this->render_skin_file( 'manage_post' );
-		}
+		}*/
 
 		/**
 		 * @brief display board message

@@ -122,8 +122,8 @@ if($mi->default_style !='viewer'):
 			<span class="font_select"><a class="select tg_btn2" href="#" data-href=".bd_font_select"><b class="tx_ico_chk">T</b><?php echo __('lbl_font', X2B_DOMAIN) ?><i class="arrow down"></i></a></span>
 	<?php endif ?>
 	<?php if($grant->manager):?>	<!-- <block cond="$grant->manager"> -->
-			<a href="<?php echo x2b_get_url('cmd', X2B_CMD_VIEW_WRITE_POST, 'post_id', '', 'page', '')?>"><b class="ico_16px setup"></b><?php echo __('cmd_setup', X2B_DOMAIN)?></a>
-			<a class="m_no" href="<?php echo x2b_get_url('module','post','cmd', X2B_CMD_VIEW_MANAGE_POST, 'post_id', '', 'page', '')?>" onclick="popopen(this.href,'managePost');return false"><b class="tx_ico_chk">✔</b><?php echo __('cmd_manage_post', X2B_DOMAIN) ?>11</a>
+			<a href="<?php echo admin_url('admin.php?page=x2b_disp_board_update&board_id='.$board_id);?>"><b class="ico_16px setup"></b><?php echo __('cmd_setup', X2B_DOMAIN)?></a>
+			<a class="m_no" id='btn_manage_post_header'><b class="tx_ico_chk">✔</b><?php echo __('cmd_manage_post', X2B_DOMAIN) ?></a>
 		<?php if($mi->default_style!='list'):?>	<!-- cond="$mi->default_style!='list'" -->
 			<input type="checkbox" onclick="XE.checkboxToggleAll({ doClick:true });" class="iCheck" title="Check All" />
 		<?php endif ?>			
@@ -332,7 +332,7 @@ else {
 					<?php endif ?>
 					<?php if($grant->manager):?><!-- <block cond="$grant->manager"> -->
 						<a class="btn_img" href="<?php echo admin_url('admin.php?page=x2b_disp_board_update&board_id='.$board_id);?>"><i class="ico_16px setup"></i> <?php echo __('cmd_setup', X2B_DOMAIN)?></a>
-						<a class="btn_img" id='btn_manage_post' href="<?php echo x2b_get_url('module','post','cmd', X2B_CMD_VIEW_MANAGE_POST, 'post_id', '', 'page', '')?>" onclick="popopen(this.href,'managePost');return false"><i class="tx_ico_chk">✔</i> <?php echo __('cmd_manage_post', X2B_DOMAIN)?></a>
+						<a class="btn_img" id='btn_manage_post_bottom'><i class="tx_ico_chk">✔</i> <?php echo __('cmd_manage_post', X2B_DOMAIN)?></a>
 					<?php endif?><!-- </block> -->
 				</div>
 			</div>
@@ -412,11 +412,12 @@ else {
 
 	<?php if($grant->manager ): ?>
 	<script>
-	jQuery('#btn_manage_post').click(function() {
-		let n_width = 500;
-		let n_height = 550;
-		let s_href = jQuery(this).attr('href');
-		window.open(s_href, 'x2board_manage_post', 'top='+(screen.availHeight*0.5-n_height*0.5)+',left='+(screen.availWidth*0.5-n_width*0.5)+',width='+n_width+',height='+n_height);
+	jQuery('#btn_manage_post_header').click(function() {
+		show_admin_popup();
+		return false;
+	});
+	jQuery('#btn_manage_post_bottom').click(function() {
+		show_admin_popup();
 		return false;
 	});
 	</script>

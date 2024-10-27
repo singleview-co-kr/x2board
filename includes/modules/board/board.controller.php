@@ -47,6 +47,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 				case X2B_CMD_PROC_DOWNLOAD_FILE:
 				case X2B_CMD_PROC_OUTPUT_FILE:
 				case X2B_CMD_PROC_AJAX_POST_ADD_CART:
+				case X2B_CMD_PROC_AJAX_RENDER_MANAGE_POST:
 				case X2B_CMD_PROC_AJAX_MANAGE_POST:
 					$s_cmd = '_' . $s_cmd;
 					$this->$s_cmd();
@@ -132,6 +133,51 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 			$o_post_controller->add_cart_post_ajax();
 			unset( $o_post_controller );
 			wp_send_json( array( 'result' => 'success' ) );
+		}
+
+		/**
+		 * @brief render cart post UX ajax
+		 **/
+		private function _proc_ajax_render_manage_post() {
+			check_ajax_referer( X2B_AJAX_SECURITY, 'security' );
+			if( ! $this->grant->is_admin ) {
+				return;
+			}
+			$a_post_id = array();
+			$a_flag_list = $_SESSION['x2b_post_management'];
+			if( count( $a_flag_list ) ) {
+				foreach( $a_flag_list as $key => $val ) {
+					if( ! is_bool( $val ) ) {
+						continue;
+					}
+					$a_post_id[] = $key;
+				}
+			}
+			if( count( $a_post_id ) ) {
+				$o_post_model = \X2board\Includes\get_model( 'post' );
+				$a_post = $o_post_model->get_posts( $a_post_id, $this->grant->is_admin );
+				unset( $o_post_model );
+			}
+			else {
+				$a_post = array();
+			}
+			unset( $a_post_id );
+			\X2board\Includes\Classes\Context::set( 'post_list', $a_post );
+
+			$o_board_model = \X2board\Includes\get_model( 'board' );
+			$a_board_list = $o_board_model->get_board_list();
+			unset($o_board_model);
+			\X2board\Includes\Classes\Context::set( 'board_list', $a_board_list );
+
+			$this->set_skin_path( X2B_PATH . DIRECTORY_SEPARATOR . 'common'. DIRECTORY_SEPARATOR . 'tpl' );
+			// setup the skin file
+
+			wp_send_json(
+				array(
+					'result'   => 'success',
+					'tpl' => $this->render_skin_file( 'manage_post' ),
+				)
+			);
 		}
 
 		/**

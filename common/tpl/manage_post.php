@@ -1,27 +1,36 @@
-<?php if(!defined('ABSPATH')) exit;?>
-
-<?php if( count($post_list) == 0 ):?>
-<script type="text/javascript">
-	alert( "<?php echo __( 'msg_no_post', X2B_DOMAIN )?>" );
-	window.open('', '_self', '');
-	window.close();
-</script>
-<?php endif ?>
+<?php if(!defined('ABSPATH')) exit;
+$n_count_to_display = 2;
+$n_post_count = count($post_list);
+?>
 
 <div class="x popup">
 	<div class="x_modal-header">
-		<h1><?php echo __( 'lbl_manage_post', X2B_DOMAIN )?></h1>
+		<h2><?php echo __( 'lbl_manage_post', X2B_DOMAIN )?></h2>
 	</div>
+	<?php if( count($post_list) == 0 ):?>
+	<p><?php echo __( 'msg_no_post', X2B_DOMAIN )?></p>
+	<?php else: ?>
 	<div class="x_modal-body x_form-horizontal" style="max-height:none">
-				<div class="x_control-group">
-			<div class="x_control-label"><?php echo __( 'lbl_selected_post_count', X2B_DOMAIN )?> (<?php echo count($post_list)?>)</div>
+		<div class="x_control-group">
+			<div class="x_control-label"><?php echo __( 'lbl_selected_post_count', X2B_DOMAIN )?> (<?php echo $n_post_count ?>)</div>
 			<div class="x_controls">
 				<ul style="margin-top:5px">
 					<?php foreach( $post_list as $_ => $o_post ): ?>
+						<input type="hidden" name="cart" value="<?php echo $o_post->post_id ?>" />
+					<?php endforeach;
+					$n_count = 0;
+					foreach( $post_list as $_ => $o_post ):
+					$n_count++;
+					if( $n_count > $n_count_to_display ) {
+						break;
+					}?>
 						<li class="post_list">
-							<input type="hidden" name="cart" value="<?php echo $o_post->post_id ?>" /><?php echo $o_post->title ?> <i class="vr">|</i> <?php echo $o_post->nick_name ?>
+							<?php echo $o_post->title ?> <i class="vr">|</i> <?php echo $o_post->nick_name ?>
 						</li>
-					<?php endforeach ?>				
+					<?php endforeach;
+					if( $n_post_count > 2 ) : ?>
+						<li class="post_list">외 <?php echo $n_post_count - $n_count_to_display ?> 포스트</li>
+					<?php endif ?>
 				</ul>
 			</div>
 		</div>
@@ -44,12 +53,6 @@
 				<select id="target_category_id" name="target_category_id"></select>
 			</div>
 		</div>
-		<!-- <div class="x_control-group">
-			<label class="x_control-label" for="message_content">쪽지 보내기</label>
-			<div class="x_controls" style="margin-right:14px">
-				<textarea name="message_content" id="message_content" rows="4" cols="42" style="width:100%"></textarea>
-			</div>
-		</div> -->
 	</div>
 	<div class="x_modal-footer">
 		<span class="x_btn-group x_pull-left">
@@ -61,6 +64,7 @@
 			<!-- <button type="button" class="x_btn x_btn-inverse" onclick="doManageDocument('copy');">복사</button> -->
 		</span>
 	</div>
+	<?php endif ?>
 </div>
 
 <script>
@@ -120,10 +124,7 @@ jQuery('#btn_move_post').click(function() {
 					alert(res.message);
 				}
 				else{
-					if(opener) { 
-						opener.window.location.href = '<?php echo get_the_permalink();?>';
-					}
-    			    window.close();
+					window.location.reload();
 				}
 			}
 		});
@@ -154,10 +155,7 @@ jQuery('#btn_delete_post').click(function() {
 					alert(res.message);
 				}
 				else{
-					if(opener) { 
-						opener.window.location.href = '<?php echo get_the_permalink();?>';
-					}
-    			    window.close();
+					window.location.reload();
 				}
 			}
 		});

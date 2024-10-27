@@ -64,6 +64,8 @@ function init_proc_cmd() {
 	add_action( 'wp_ajax_' . X2B_CMD_PROC_AJAX_FILE_DELETE, '\X2board\Includes\launch_x2b' );
 	add_action( 'wp_ajax_nopriv_' . X2B_CMD_PROC_AJAX_POST_ADD_CART, '\X2board\Includes\launch_x2b' );
 	add_action( 'wp_ajax_' . X2B_CMD_PROC_AJAX_POST_ADD_CART, '\X2board\Includes\launch_x2b' );
+	add_action( 'wp_ajax_nopriv_' . X2B_CMD_PROC_AJAX_RENDER_MANAGE_POST, '\X2board\Includes\launch_x2b' );
+	add_action( 'wp_ajax_' . X2B_CMD_PROC_AJAX_RENDER_MANAGE_POST, '\X2board\Includes\launch_x2b' );
 	add_action( 'wp_ajax_nopriv_' . X2B_CMD_PROC_AJAX_MANAGE_POST, '\X2board\Includes\launch_x2b' );
 	add_action( 'wp_ajax_' . X2B_CMD_PROC_AJAX_MANAGE_POST, '\X2board\Includes\launch_x2b' );
 }
@@ -98,25 +100,28 @@ function enqueue_user_scripts() {
 	wp_enqueue_script( X2B_JQUERY_VALIDATION, X2B_URL . 'common/js/jquery.validate.min.js', array( 'jquery' ), '1.19.5', true );
 	if ( current_user_can( 'manage_options' ) ) {
 		wp_enqueue_script( X2B_JS_HANDLER_USER, X2B_URL . 'common/js/admin_script.js', array( 'jquery' ), X2B_VERSION, true );
+		wp_enqueue_style(  X2B_DOMAIN . '-admin-popup-style', X2B_URL . 'common/css/admin_style.css', [], X2B_VERSION, 'all' );
 	}
 	else {
 		wp_enqueue_script( X2B_JS_HANDLER_USER, X2B_URL . 'common/js/guest_script.js', array( 'jquery' ), X2B_VERSION, true );
 	}
 
 	$a_ajax_info = array(
-		'url'               => admin_url( 'admin-ajax.php' ),
-		'board_id'          => intval( get_the_ID() ),
-		'cmd_file_upload'   => X2B_CMD_PROC_AJAX_FILE_UPLOAD,
-		'cmd_file_delete'   => X2B_CMD_PROC_AJAX_FILE_DELETE,
-		'cmd_post_add_cart' => X2B_CMD_PROC_AJAX_POST_ADD_CART,
-		'cmd_manage_post'   => X2B_CMD_PROC_AJAX_MANAGE_POST,
-		'nonce'             => wp_create_nonce( X2B_AJAX_SECURITY ),
+		'url'                    => admin_url( 'admin-ajax.php' ),
+		'board_id'               => intval( get_the_ID() ),
+		'cmd_file_upload'        => X2B_CMD_PROC_AJAX_FILE_UPLOAD,
+		'cmd_file_delete'        => X2B_CMD_PROC_AJAX_FILE_DELETE,
+		'cmd_post_add_cart'      => X2B_CMD_PROC_AJAX_POST_ADD_CART,
+		'cmd_render_manage_post' => X2B_CMD_PROC_AJAX_RENDER_MANAGE_POST,
+		'cmd_manage_post'        => X2B_CMD_PROC_AJAX_MANAGE_POST,
+		'nonce'                  => wp_create_nonce( X2B_AJAX_SECURITY ),
 	);
 	wp_localize_script( X2B_JS_HANDLER_USER, X2B_DOMAIN . '_ajax_info', $a_ajax_info );
 	unset( $a_ajax_info );
 
 	// 번역 등록
 	$a_localize = array(
+		'lbl_x2b_domain' => X2B_DOMAIN,
 		'lbl_required' => __( 'lbl_required', X2B_DOMAIN ),
 		'lbl_content'  => __( 'lbl_content', X2B_DOMAIN ),
 	);
