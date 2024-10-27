@@ -304,7 +304,7 @@ else {
 					<!--// 하단 검색창 -->
 					<?php if($mi->srch_btm!='N' && !wp_is_mobile()):?><!-- cond="$mi->srch_btm!='N' && !Mobile::isMobileCheckByAgent()"  -->
 						<form action="<?php echo x2b_get_url()?>" method="get" onsubmit="return procFilter(this, search)" class="bd_srch_btm<?php if($mi->srch_btm==2 || $search_keyword):?> on<?php endif ?>" no-error-return-url="true">
-							<input type="hidden" name="category" value="<?php echo htmlspecialchars($category) ?>" />
+							<input type="hidden" name="category" value="<?php echo htmlspecialchars((string)$category) ?>" />
 							<span class="btn_img itx_wrp">
 								<button type="submit" onclick="jQuery(this).parents('form.bd_srch_btm').submit();return false;" class="ico_16px search">Search</button>
 								<label for="bd_srch_btm_itx_<?php echo $board_id ?>"><?php echo __('cmd_search', X2B_DOMAIN)?></label>
@@ -352,7 +352,7 @@ else {
 	<form action="<?php echo x2b_get_url('cmd', '', 'post_id', '')?>" method="get" class="bd_pg clear">
 		<fieldset>
 		<legend class="blind">Board Pagination</legend>
-		<input type="hidden" name="category" value="<?php echo htmlspecialchars($category) ?>" />
+		<input type="hidden" name="category" value="<?php echo htmlspecialchars((string)$category) ?>" />
 		<input type="hidden" name="search_keyword" value="<?php echo htmlspecialchars((string)$search_keyword)?>" />
 		<input type="hidden" name="search_target" value="<?php echo sanitize_key($search_target) ?>" />
 		<input type="hidden" name="listStyle" value="<?php echo $mi->default_style ?>" />
