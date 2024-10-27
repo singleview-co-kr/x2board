@@ -38,7 +38,7 @@ $n_post_count = count($post_list);
 			<label class="x_control-label" for="_target_board"><?php echo __( 'lbl_target_board', X2B_DOMAIN )?></label>
 			<div class="x_controls">
 				<span class="x_input-append">
-				<select id="target_board_id" name="target_board_id">
+				<select id="target_board_id" name="target_board_id" style='padding-top:0px;padding-bottom:0px'>
 					<option value=""><?php echo __( 'msg_select_board', X2B_DOMAIN )?></option>
 					<?php foreach( $board_list as $_ => $o_board ): ?>
 						<option value="<?php echo $o_board->board_id ?>"><?php echo $o_board->board_title ?></option>
@@ -47,10 +47,10 @@ $n_post_count = count($post_list);
 				</span>
 			</div>
 		</div>
-		<div class="x_control-group">
+		<div class="x_control-group" id='div_select_category' style='display:none'>
 			<label class="x_control-label" for="target_category"><?php echo __( 'lbl_category', X2B_DOMAIN )?></label>
 			<div class="x_controls">
-				<select id="target_category_id" name="target_category_id"></select>
+				<select id="target_category_id" name="target_category_id" style='padding-top:0px;padding-bottom:0px'></select>
 			</div>
 		</div>
 	</div>
@@ -82,11 +82,16 @@ jQuery("#target_board_id").change(function(){
 				if(res.result == 'error') {
 					alert(res.message);
 				}
-				else{
-					jQuery("select#target_category_id option").remove();  // clear option
-					res.category.forEach (function (el, index) {
-						jQuery("#target_category_id").append(el);  // add option
-					});
+				else {
+					if( typeof res.category == 'object' && res.category.length ) {
+						jQuery("#div_select_category").show();
+						jQuery("select#target_category_id option").remove();  // clear option
+						res.category.forEach (function (el, index) {
+							jQuery("#target_category_id").append(el);  // add option
+						});
+					} else {
+						jQuery("#div_select_category").hide();
+					}
 				}
 			}
 		});
