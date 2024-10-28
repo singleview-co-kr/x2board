@@ -800,7 +800,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 
 			// if the comment is not granted, then back to the password input form
 			if(!$o_comment->is_granted()) {
-				return $this->render_skin_file('input_password_form');
+				echo $this->render_skin_file('input_password_form');
+				return;
 			}
 
 			\X2board\Includes\Classes\Context::set('o_the_comment',$o_comment);

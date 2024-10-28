@@ -616,6 +616,22 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 		 * procBoardVerificationPassword()
 		 **/
 		private function _proc_verify_password() {
+			$wp_verify_nonce = \X2board\Includes\Classes\Context::get( 'x2b_' . X2B_CMD_PROC_VERIFY_PASSWORD . '_nonce' );
+			if ( is_null( $wp_verify_nonce ) ) {
+				return new \X2board\Includes\Classes\BaseObject( -1, __( 'msg_invalid_request', X2B_DOMAIN ) . '1' );
+			}
+			if ( ! wp_verify_nonce( $wp_verify_nonce, 'x2b_' . X2B_CMD_PROC_VERIFY_PASSWORD ) ) {
+				return new \X2board\Includes\Classes\BaseObject( -1, __( 'msg_invalid_request', X2B_DOMAIN ) . '2' );
+			}
+			$s_verified_cmd = (string)trim(\X2board\Includes\Classes\Context::get( 'verified_cmd' ));
+			switch( $s_verified_cmd ) {
+				case X2B_CMD_VIEW_DELETE_COMMENT:
+				case X2B_CMD_VIEW_MODIFY_COMMENT:
+					break;
+				default:
+					return new \X2board\Includes\Classes\BaseObject( -1, __( 'msg_invalid_request', X2B_DOMAIN ) . '3' );
+			}
+
 			// get the id number of the post and the comment
 			$s_password     = \X2board\Includes\Classes\Context::get( 'password' );
 			$n_post_id      = \X2board\Includes\Classes\Context::get( 'post_id' );
@@ -639,7 +655,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 				}
 				$o_comment->set_grant();
 				unset( $o_comment );
-				$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MODIFY_COMMENT . '&post_id=' . $n_post_id . '&comment_id=' . $n_comment_id );
+				$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . $s_verified_cmd . '&post_id=' . $n_post_id . '&comment_id=' . $n_comment_id );
 			} else {  // get the post information
 				$o_post_model = \X2board\Includes\get_model( 'post' );
 				$o_post       = $o_post_model->get_post( $n_post_id );
