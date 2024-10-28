@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: x2board\n"
 "POT-Creation-Date: 2024-08-10 09:16+0900\n"
-"PO-Revision-Date: 2024-10-06 12:02+0900\n"
+"PO-Revision-Date: 2024-10-28 21:13+0900\n"
 "Last-Translator: singleviewcokr <singleviewcokr@gmail.com>\n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -951,7 +951,8 @@ msgstr "Check Extra info tab to Configure appending policy"
 
 #: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:193
 msgid "about_user_defined_address_field"
-msgstr "Privacy info will continue to appear to the administrator and only during the session time to the writer"
+msgstr ""
+"Privacy info will continue to appear to the administrator/consultation manager and only during the session time to the writer"
 
 #: includes/classes/user_define_fields/AdminUserDefineFieldsItem.class.php:300
 msgid "msg_allow_email_input_for_guest"

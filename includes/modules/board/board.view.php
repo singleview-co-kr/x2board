@@ -289,7 +289,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 					}
 
 					// check the manage grant
-					if($this->grant->manager) {
+					if( $this->grant->manager || $this->grant->consultation_read ) {
 						$o_post->set_grant();
 					}
 					// if the consultation function is enabled, and the post is not a notice
