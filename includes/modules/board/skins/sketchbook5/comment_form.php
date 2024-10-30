@@ -34,11 +34,6 @@ wp_enqueue_script('x2board-sketchbook5-editor', $skin_url . '/js/editor.js', [],
 <!--// 댓글 수정화면 -->
 <!-- onsubmit="<?php if(wp_is_mobile() && $mi->m_editor == ' '): ?>jQuery(this).find('input[name=content]').val(jQuery('#editor').html());<?php endif ?>return procFilter(this, insert_comment)"  -->
 <form action="<?php echo esc_url(x2b_get_url('cmd', '', 'post_id', '')) ?>" method="post"  class="bd_wrt bd_wrt_main clear" id="x2board-comment-form" >
-	<!-- <input type="hidden" name="mid" value="{$mid}" />
-	<input type="hidden" name="document_srl" value="{$oComment->get('document_srl')}" />
-	<input type="hidden" name="comment_srl" value="{$oComment->get('comment_srl')}" />
-	<input type="hidden" name="content" value="{htmlspecialchars($oComment->get('content'))}" />
-	<input type="hidden" name="parent_srl" value="{$oComment->get('parent_srl')}" /> -->
 	<?php x2b_write_comment_hidden_fields(); ?>
 	<?php if(!wp_is_mobile() || $mi->m_editor==3): ?><!-- cond="!wp_is_mobile() || $mi->m_editor==3"  -->
 		<div class="get_editor">
@@ -52,21 +47,20 @@ wp_enqueue_script('x2board-sketchbook5-editor', $skin_url . '/js/editor.js', [],
 		<div class="m_editor">
 			<!-- Textarea -->
 			<?php if($mi->m_editor==2): ?><!-- <block cond="$mi->m_editor==2"> -->
-				<load target="../../../editor/tpl/js/editor_common.min.js" />
-				<load target="../../../editor/skins/xpresseditor/js/xe_textarea.min.js" />
-						<input type="hidden" name="use_html" value="Y" />
-						<input type="hidden" id="htm_1" value="n" />
-						<textarea id="editor_1" col="50" rows="8"></textarea>
-				<script>
-					editorStartTextarea(1,"content","document_srl");
-				</script>
+				<!-- <load target="../../../editor/tpl/js/editor_common.min.js" /> -->
+				<!-- <load target="../../../editor/skins/xpresseditor/js/xe_textarea.min.js" /> -->
+				<script type="text/javascript" src="<?php echo $skin_url ?>/js/editor_textarea.js?ver=<?php echo X2B_VERSION ?>" id="<?php echo X2B_DOMAIN ?>-editor_textarea-js"></script>
+				<input type="hidden" name="use_html" value="Y" />
+				<input type="hidden" id="htm_1" value="n" />
+				<textarea id="editor_1" col="50" rows="8"></textarea>
+				<script>editorStartTextarea(1);</script>
 			<?php endif ?><!-- </block> -->
 			<!-- WYSIWYG -->
 			<?php if($mi->m_editor == ' '): ?><!-- <block cond="!$mi->m_editor"> -->
-				<load target="css/m_editor.css" />
+				<!-- <load target="css/m_editor.css" />
 				<load target="js/editor_wysiwyg.js" />
 				<load target="js/bootstrap-wysiwyg.js" />
-				<load target="js/jquery.hotkeys.js" />
+				<load target="js/jquery.hotkeys.js" /> -->
 					<div id="alerts"></div>
 					<div class="btn-toolbar clear" data-role="editor-toolbar" data-target="#editor">
 						<div class="btn-group">
@@ -99,12 +93,12 @@ wp_enqueue_script('x2board-sketchbook5-editor', $skin_url . '/js/editor.js', [],
 	<div class="edit_opt">
 		<?php if(!$is_logged): ?><!-- <block cond="!$is_logged"> -->
 			<span class="itx_wrp">
-				<label for="nick_name"><?php echo __('lbl_writer', X2B_DOMAIN)?></label>
-				<input type="text" name="nick_name" id="nick_name" class="itx n_p" value="<?php echo esc_html($o_source_comment->get_nick_name())?>" />
+				<!-- <label for="nick_name"><?php // echo __('lbl_writer', X2B_DOMAIN)?></label> -->
+				<input type="text" name="nick_name" id="nick_name" class="itx n_p" value="<?php echo esc_html($o_the_comment->get_nick_name())?>" placeholder="<?php echo __('lbl_writer', X2B_DOMAIN)?>"/>
 			</span>
 			<span class="itx_wrp">
-				<label for="password"><?php echo __('lbl_password', X2B_DOMAIN)?></label>
-				<input type="password" name="password" id="password" class="itx n_p" />
+				<!-- <label for="password"><?php // echo __('lbl_password', X2B_DOMAIN)?></label> -->
+				<input type="password" name="password" id="password" class="itx n_p" placeholder="<?php echo __('lbl_password', X2B_DOMAIN)?>"/>
 			</span>	
 			<!-- <span class="itx_wrp">
 				<label for="email_address">{$lang->email_address}</label>
@@ -120,7 +114,7 @@ wp_enqueue_script('x2board-sketchbook5-editor', $skin_url . '/js/editor.js', [],
 	</div>
 	<div class="regist">
 		<button type="button" onclick="history.back()" class="bd_btn"><?php echo __('cmd_back', X2B_DOMAIN)?></button>
-		<input type="submit" value="<?php echo __('cmd_submit', X2B_DOMAIN)?>" class="bd_btn blue" />
+		<input type="submit" value="<?php echo __('cmd_submit', X2B_DOMAIN)?>" class="bd_btn blue" id="submit_comment"/>
 	</div>
 </form>
 
