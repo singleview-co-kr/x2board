@@ -286,17 +286,17 @@ function board(bdObj){
 				$.removeCookie('socialxe_content');
 			});
 			if(bd.find('form>div.wysiwyg').length){
-				if($('#re_cmt').length) editorStartTextarea(2,'content','comment_srl');
+				if($('#re_cmt').length) editorStartTextarea(2,'content','comment_id');
 			} else {
 				$.getScript(x2board_path.modules_path_name + "/editor/tpl/js/editor_common.min.js",function(){
-					if($('#re_cmt').length) editorStartTextarea(2,'content','comment_srl');
+					if($('#re_cmt').length) editorStartTextarea(2,'content','comment_id');
 					var cmtWrt = bd.find('form.cmt_wrt textarea');
 					if(bd.find('form.bd_wrt_main textarea').length){
 						$.getScript('files/cache/js_filter_compiled/35d29adbe4b14641f9eac243af40093b.'+lang_type+'.compiled.js');
 						editorStartTextarea(1,'content','document_srl');
 					};
 					cmtWrt.each(function(){
-						editorStartTextarea($(this).attr('id').split('_')[1],'content','comment_srl');
+						editorStartTextarea($(this).attr('id').split('_')[1],'content','comment_id');
 					});
 				});
 			};	
@@ -419,17 +419,19 @@ function board(bdObj){
 					jQuery.removeCookie('socialxe_content');
 				});
 				if(bd.find('form>div.wysiwyg').length){
-					editorStartTextarea(2,'content','comment_srl');
+					editorStartTextarea(2,'content','comment_id');
 				} else {
 					jQuery.getScript(s_plugin_base_url + "includes/" + x2board_path.modules_path_name + "/editor/tpl/js/editor_common.min.js",function(){
-						editorStartTextarea(2,'content','comment_srl');
+						editorStartTextarea(2,'content','comment_id');
 						var cmtWrt = bd.find('form.cmt_wrt textarea');
 						if(default_style=='blog'){
 							cmtWrt.each(function(){
-								editorStartTextarea(jQuery(this).attr('id').split('_')[1],'content','comment_srl');
+								editorStartTextarea(2,'content','comment_id');
+								// editorStartTextarea(jQuery(this).attr('id').split('_')[1],'content','comment_id');
 							});
 						} else {
-							editorStartTextarea(cmtWrt.attr('id').split('_')[1],'content','comment_srl');
+							editorStartTextarea(2,'content','comment_id');
+							// editorStartTextarea(cmtWrt.attr('id').split('_')[1],'content','comment_id');
 							cmtWrt.val($.cookie('socialxe_content'))
 							.bind('keydown change',function(){
 								$.cookie('socialxe_content',$(this).val());
