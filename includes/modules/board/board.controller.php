@@ -509,6 +509,9 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 					$o_parent_comment = $o_comment_model->get_comment( $obj->parent_comment_id );
 					if ( ! $o_parent_comment->comment_id ) {
 						$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_invalid_request' );
+						unset( $obj );
+						unset( $o_comment_model );
+						unset( $o_comment_controller );
 						return;
 					}
 					$output = $o_comment_controller->insert_comment( $obj, $bAnonymous );
@@ -531,6 +534,9 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 			} else {  // update the comment if it is not existed
 				if ( ! $o_comment->is_granted() ) {  // check the grant
 					$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=msg_not_permitted' );
+					unset( $obj );
+					unset( $o_comment_model );
+					unset( $o_comment_controller );
 					return;
 				}
 				$output = $o_comment_controller->update_comment( $obj, $this->grant->manager );
@@ -538,11 +544,17 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 
 			if ( ! $output->to_bool() ) {
 				$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?cmd=' . X2B_CMD_VIEW_MESSAGE . '&message=' . $output->getMessage() );
+				unset( $obj );
+				unset( $o_comment_model );
+				unset( $o_comment_controller );
 				return;
 			}
 
 			// if s_wp_redirect_url is not added, automatically redirect to home_url
 			$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?' . X2B_CMD_VIEW_POST . '/' . $obj->parent_post_id . '#comment_id-' . $obj->comment_id );
+			unset( $obj );
+			unset( $o_comment_model );
+			unset( $o_comment_controller );
 		}
 
 		/**
