@@ -674,7 +674,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\UserDefineItemForGuest' ) ) 
 						$buff[] = '<div class="' . X2B_DOMAIN . '-attr-row">';
 						$buff[] = '<label class="attr-name" for="password"><span class="field-name">' . __( 'lbl_password', X2B_DOMAIN ) . '</span></label>';
 						$buff[] = '<div class="attr-value">';
-						$buff[] = '<input type="text" name="password" id="password" required/>';
+						$buff[] = '<input type="password" name="password" id="password" required/>';
 						$buff[] = '</div>';
 						$buff[] = '</div>';
 					}

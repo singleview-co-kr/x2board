@@ -637,6 +637,8 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 			}
 			$s_verified_cmd = (string)trim(\X2board\Includes\Classes\Context::get( 'verified_cmd' ));
 			switch( $s_verified_cmd ) {
+				case X2B_CMD_VIEW_MODIFY_POST:
+				case X2B_CMD_VIEW_DELETE_POST:
 				case X2B_CMD_VIEW_DELETE_COMMENT:
 				case X2B_CMD_VIEW_MODIFY_COMMENT:
 					break;
@@ -684,7 +686,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 				}
 				$o_post->set_grant();
 				unset( $o_post );
-				$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?' . X2B_CMD_VIEW_MODIFY_POST . '/' . $n_post_id );
+				$this->add( 's_wp_redirect_url', $this->_s_page_permlink . '?' . $s_verified_cmd . '/' . $n_post_id );
 			}
 			unset( $o_member_model );
 		}

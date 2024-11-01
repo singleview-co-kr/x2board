@@ -915,7 +915,7 @@ body.viewer_blk{background:#222}
 }
 /* android 800x480 landscape */
 @media screen and (max-width:533px){
-.m_no,.lst_btn,.show_srch,.bd .cTab li ul,#bd_srch,.simple_wrt .profile,.rd_hd .blog .wave,.bd_hd .rd_nav,
+.m_no,.lst_btn,.show_srch,.bd .cTab li ul,#bd_srch,.simple_wrt .profile,.rd_hd .blog .wave,/*.bd_hd .rd_nav,*/
 .bd_tb_lst .no,.bd_tb_lst .cate,#cloud_btn,
 .bd_wrt .color_wrp{display:none !important}
 #re_cmt .editor_select{display:block !important}
