@@ -413,11 +413,11 @@ else {
 	<?php if($grant->manager ): ?>
 	<script>
 	jQuery('#btn_manage_post_header').click(function() {
-		show_admin_popup();
+		show_admin_manage_post_popup();
 		return false;
 	});
 	jQuery('#btn_manage_post_bottom').click(function() {
-		show_admin_popup();
+		show_admin_manage_post_popup();
 		return false;
 	});
 	</script>

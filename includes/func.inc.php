@@ -64,8 +64,8 @@ function init_proc_cmd() {
 	add_action( 'wp_ajax_' . X2B_CMD_PROC_AJAX_FILE_DELETE, '\X2board\Includes\launch_x2b' );
 	add_action( 'wp_ajax_nopriv_' . X2B_CMD_PROC_AJAX_POST_ADD_CART, '\X2board\Includes\launch_x2b' );
 	add_action( 'wp_ajax_' . X2B_CMD_PROC_AJAX_POST_ADD_CART, '\X2board\Includes\launch_x2b' );
-	add_action( 'wp_ajax_nopriv_' . X2B_CMD_PROC_AJAX_RENDER_MANAGE_POST, '\X2board\Includes\launch_x2b' );
-	add_action( 'wp_ajax_' . X2B_CMD_PROC_AJAX_RENDER_MANAGE_POST, '\X2board\Includes\launch_x2b' );
+	add_action( 'wp_ajax_nopriv_' . X2B_CMD_PROC_AJAX_RENDER_MANAGE_X2B_POST, '\X2board\Includes\launch_x2b' );
+	add_action( 'wp_ajax_' . X2B_CMD_PROC_AJAX_RENDER_MANAGE_X2B_POST, '\X2board\Includes\launch_x2b' );
 	add_action( 'wp_ajax_nopriv_' . X2B_CMD_PROC_AJAX_MANAGE_POST, '\X2board\Includes\launch_x2b' );
 	add_action( 'wp_ajax_' . X2B_CMD_PROC_AJAX_MANAGE_POST, '\X2board\Includes\launch_x2b' );
 }
@@ -112,7 +112,7 @@ function enqueue_user_scripts() {
 		'cmd_file_upload'        => X2B_CMD_PROC_AJAX_FILE_UPLOAD,
 		'cmd_file_delete'        => X2B_CMD_PROC_AJAX_FILE_DELETE,
 		'cmd_post_add_cart'      => X2B_CMD_PROC_AJAX_POST_ADD_CART,
-		'cmd_render_manage_post' => X2B_CMD_PROC_AJAX_RENDER_MANAGE_POST,
+		'cmd_render_manage_x2b_post' => X2B_CMD_PROC_AJAX_RENDER_MANAGE_X2B_POST,
 		'cmd_manage_post'        => X2B_CMD_PROC_AJAX_MANAGE_POST,
 		'nonce'                  => wp_create_nonce( X2B_AJAX_SECURITY ),
 	);

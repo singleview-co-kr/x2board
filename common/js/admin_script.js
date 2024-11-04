@@ -91,10 +91,10 @@ function checkboxToggleAll(itemName) {
 	}
 }
 
-// Function to show the popup
-function show_admin_popup() {
+// Function to show the admin manage post popup
+function show_admin_manage_post_popup() {
 	jQuery.post(x2board_ajax_info.url, {
-		'action': x2board_ajax_info.cmd_render_manage_post,
+		'action': x2board_ajax_info.cmd_render_manage_x2b_post,
 		'board_id': x2board_ajax_info.board_id,
 		'security':x2board_ajax_info.nonce}, function(res) {
 			if(typeof callback === 'function') {
@@ -120,5 +120,5 @@ jQuery(document).ready(function($) {
 		hide_admin_popup();
 	});
 	// Show the popup after a delay (e.g., 3 seconds)
-	// setTimeout(show_admin_popup, 3000);
+	// setTimeout(show_admin_manage_post_popup, 3000);
 });

@@ -47,7 +47,8 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 				case X2B_CMD_PROC_DOWNLOAD_FILE:
 				case X2B_CMD_PROC_OUTPUT_FILE:
 				case X2B_CMD_PROC_AJAX_POST_ADD_CART:
-				case X2B_CMD_PROC_AJAX_RENDER_MANAGE_POST:
+				case X2B_CMD_PROC_AJAX_RENDER_MANAGE_X2B_POST:
+				case X2B_CMD_PROC_AJAX_RENDER_INSERT_WP_POST_TYPE:
 				case X2B_CMD_PROC_AJAX_MANAGE_POST:
 					$s_cmd = '_' . $s_cmd;
 					$this->$s_cmd();
@@ -138,7 +139,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 		/**
 		 * @brief render cart post UX ajax
 		 **/
-		private function _proc_ajax_render_manage_post() {
+		private function _proc_ajax_render_manage_x2b_post() {
 			check_ajax_referer( X2B_AJAX_SECURITY, 'security' );
 			if( ! $this->grant->is_admin ) {
 				return;
