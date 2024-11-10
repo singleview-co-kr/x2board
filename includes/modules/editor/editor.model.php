@@ -52,7 +52,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Editor\\editorModel' ) ) {
 				foreach( $a_matches[0] as $n_idx => $s_code ) {
 					$a_code = explode( '_', $s_code );
 					$o_wp_post_info = get_post( intval( $a_code[1] ) );
-					$s_wp_post_html = '<a href="' . $o_wp_post_info->guid . '"><div class="container">';
+					$s_wp_post_html = '<a href="' . $o_wp_post_info->guid . '"><div class="container_wp_post_type">';
 					if( has_post_thumbnail( intval( $a_code[1] ) ) ) {
 						$s_wp_post_html .= '<img src="' . get_the_post_thumbnail_url( intval( $a_code[1] ), array(100,100) ) . '" alt="Sample Image">';
 					}
