@@ -76,10 +76,29 @@ jQuery( '#btn_search_wp_post_type' ).on('click', function() {
 	}
 });
 
+// https://velog.io/@joyh7680/%ED%81%B4%EB%A6%BD%EB%B3%B4%EB%93%9C%EC%97%90-%ED%8A%B9%EC%A0%95-%ED%85%8D%EC%8A%A4%ED%8A%B8-%EB%B3%B5%EC%82%AC%ED%95%98%EA%B8%B0
 function copy_post_type_caller( n_wp_post_id ) {
 	let s_wp_posttype_caller = 'sv_' + n_wp_post_id + '_sv';  // refer to \includes\modules\editor\editor.model.php
-	// https://www.w3schools.com/howto/howto_js_copy_clipboard.asp
-	navigator.clipboard.writeText( s_wp_posttype_caller );
-	jQuery("#div_caller_rst").html( "Copied the code: " + s_wp_posttype_caller );
-}
+	if (navigator.clipboard !== undefined) {  // clipboard API 사용
+		navigator.clipboard
+		.writeText(s_wp_posttype_caller)
+		.then(() => {
+			alert('please manually copy and paset the code');
+		});
+	} else {  // execCommand 사용   clipboard API 는 localhost나 https 환경에서만 동작
+		const textArea = document.createElement('textarea');
+		textArea.value = s_wp_posttype_caller;
+		document.body.appendChild(textArea);
+		textArea.select();
+		textArea.setSelectionRange(0, 99999);
+		try {
+			document.execCommand('copy');
+		} catch (err) {
+			console.error('please manually copy and paset the code', err);
+		}
+		textArea.setSelectionRange(0, 0);
+		document.body.removeChild(textArea);
+	}
+	jQuery("#div_caller_rst").html( "the code: " + s_wp_posttype_caller );
+};
 </script>
