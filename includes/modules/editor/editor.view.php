@@ -61,9 +61,16 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Editor\\editorView' ) ) {
 			unset( $o_post );
 
 			ob_start();
+
+			$o_logged_info = \X2board\Includes\Classes\Context::get( 'logged_info' );
+			if ( $o_logged_info->is_admin == 'Y' ) {
+				echo '<input type="button" id="btn_insert_wp_post_type" value="' . __( 'lbl_enter_wp_post_type', X2B_DOMAIN ) . '">';
+			}
+			unset( $o_logged_info );
+
 			if ( $s_editor_type == 'ckeditor' ) {
 				$o_editor_conf                       = new \stdClass();
-				$o_editor_conf->module_type          = 'post'; // $s_content_type;
+				$o_editor_conf->module_type          = 'post';
 				$o_editor_conf->upload_target_id     = $n_current_post_id;
 				$o_editor_conf->primary_key_name     = 'post_id';
 				$o_editor_conf->s_content_field_name = $s_content_field_name;
@@ -88,14 +95,13 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Editor\\editorView' ) ) {
 			} else {
 				echo '<input type="hidden" name="use_editor" value="N">';
 				printf(
-					'<textarea id="%s" class="editor-textarea required" name="%s" rows="%s" placeholder="%s">%s</textarea>',
+					'<textarea id="%s" class="editor-textarea required" name="%s" rows="%s" placeholder="%s">%s</textarea>',  // cols="50" rows="'.$n_textarea_rows.'" style="overflow: hidden; min-height: 4em; height: 46px; width: 100%;" name="'.$content_field_name.'" placeholder="'.__('Add a comment', X2B_DOMAIN).'..." required>'.esc_textarea($content).'</textarea>';
 					esc_attr( $s_content_field_name ),
 					esc_attr( $s_content_field_name ),
 					$n_editor_height,
 					isset( $s_placeholder ) ? esc_attr( $s_placeholder ) : __( 'msg_type_what_you_think', X2B_DOMAIN ),
 					esc_textarea( strip_tags( $s_content ) )
 				);
-				// echo '<textarea class="comment-textarea" cols="50" rows="'.$n_textarea_rows.'" style="overflow: hidden; min-height: 4em; height: 46px; width: 100%;" name="'.$content_field_name.'" placeholder="'.__('Add a comment', X2B_DOMAIN).'..." required>'.esc_textarea($content).'</textarea>';
 			}
 			$s_editor_html = ob_get_clean();
 			unset( $o_editor_conf );
@@ -118,6 +124,12 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Editor\\editorView' ) ) {
 				$s_content = $o_the_comment->content;
 			}
 			unset( $o_the_comment );
+
+			$o_logged_info = \X2board\Includes\Classes\Context::get( 'logged_info' );
+			if ( $o_logged_info->is_admin == 'Y' ) {
+				echo '<input type="button" id="btn_insert_wp_post_type" value="' . __( 'lbl_enter_wp_post_type', X2B_DOMAIN ) . '" >';
+			}
+			unset( $o_logged_info );
 
 			if ( $s_editor_type == 'ckeditor' ) {
 				$o_editor_conf              = new \stdClass();

@@ -122,3 +122,25 @@ jQuery(document).ready(function($) {
 	// Show the popup after a delay (e.g., 3 seconds)
 	// setTimeout(show_admin_manage_post_popup, 3000);
 });
+
+// Function to show the admin insert all WP post type popup
+jQuery('#btn_insert_wp_post_type').click(function() {
+	jQuery.post(x2board_ajax_info.url, {
+		'action': x2board_ajax_info.cmd_render_insert_wp_post_type,
+		'board_id': x2board_ajax_info.board_id,
+		'mode': 'render_layer_popup',
+		'security':x2board_ajax_info.nonce
+	}, function(res) {
+		if(typeof callback === 'function') {
+			callback(res);
+		}
+		else {
+			if(res.result == 'error') {
+				alert(res.message);
+			}
+			jQuery('#mgmt-contents').html(res.tpl);
+			jQuery('#' + x2board_locale.lbl_x2b_domain + '-admin-popup').fadeIn();
+		}
+	});
+	return false;
+});

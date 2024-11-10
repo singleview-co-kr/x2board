@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: x2board\n"
 "POT-Creation-Date: 2024-08-10 09:16+0900\n"
-"PO-Revision-Date: 2024-10-28 21:13+0900\n"
+"PO-Revision-Date: 2024-11-09 20:59+0900\n"
 "Last-Translator: singleviewcokr <singleviewcokr@gmail.com>\n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -1515,6 +1515,18 @@ msgstr "new post"
 #: includes/admin/tpl/default-settings.php:186
 msgid "opt_new_comment"
 msgstr "new comment"
+
+#: common/tpl/insert_wp_post_type.php:14
+msgid "lbl_enter_wp_post_type"
+msgstr "Enter WP post"
+
+#: common/tpl/insert_wp_post_type.php:19
+msgid "lbl_wp_post_types"
+msgstr "WP post type"
+
+#: common/tpl/insert_wp_post_type.php:27
+msgid "lbl_wp_post_search"
+msgstr "Search WP post"
 
 #~ msgid "msg_not_available"
 #~ msgstr "Not available"

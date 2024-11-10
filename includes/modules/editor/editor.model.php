@@ -40,6 +40,36 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Editor\\editorModel' ) ) {
 		}
 
 		/**
+		 * @brief Translate WP post type caller, pattern: sv_%d_sv
+		 * refer to \common\tpl\insert_wp_post_type.php
+		 */
+		public function convert_wp_post_type_caller( &$s_content = 0 ) {
+			$s_pattern = '/sv_{1}[0-9]+_{1}sv/m';  // pattern: sv_%d_sv
+			$a_matches = array();
+			$n_matches = preg_match_all( $s_pattern, $s_content, $a_matches );
+			if ( $n_matches > 0 ) {
+				$a_replace = array();
+				foreach( $a_matches[0] as $n_idx => $s_code ) {
+					$a_code = explode( '_', $s_code );
+					$o_wp_post_info = get_post( intval( $a_code[1] ) );
+					$s_wp_post_html = '<a href="' . $o_wp_post_info->guid . '"><div class="container">';
+					if( has_post_thumbnail( intval( $a_code[1] ) ) ) {
+						$s_wp_post_html .= '<img src="' . get_the_post_thumbnail_url( intval( $a_code[1] ), array(100,100) ) . '" alt="Sample Image">';
+					}
+					$s_wp_post_html .= '<div class="text"><b>' . $o_wp_post_info->post_title . '</b></div></div></a>';
+					$a_replace[$s_code] = $s_wp_post_html;
+					unset( $a_code );
+					unset( $o_wp_post_info );
+				}
+				foreach( $a_replace as $s_code => $s_html ) {
+					$s_content = str_replace( $s_code, $s_html, $s_content );
+				}
+				unset( $a_replace );
+			}
+			unset( $a_matches );
+		}
+
+		/**
 		 * @brief Return editor template which contains settings of each board
 		 * Result of getBoardEditor() is as same as getEditor(). But getBoardEditor()uses additional settings of each board to generate an editor
 		 *
@@ -47,7 +77,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Editor\\editorModel' ) ) {
 		 * 2 types of editors can be used on a single board. For instance each for original post and reply port.
 		 * getModuleEditor($type = 'document', $module_srl, $upload_target_srl, $primary_key_name, $content_key_name)
 		 */
-		function get_board_editor( $o_editor_config ) {
+		public function get_board_editor( $o_editor_config ) {
 			$o_config              = new \stdClass();
 			$o_config->module_type = $o_editor_config->module_type;
 			$upload_target_id      = $o_editor_config->upload_target_id;

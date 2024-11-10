@@ -469,6 +469,9 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postItem' ) ) {
 			if ( $n_post_author_id < 0 ) {
 				$n_post_author_id = 0;
 			}
+			$o_editor_model = \X2board\Includes\get_model( 'editor' );
+			$o_editor_model->convert_wp_post_type_caller( $s_content );
+			unset( $o_editor_model );
 			$s_content = sprintf(
 				'<!--BeforePost(%d,%d)--><div class="post_%d_%d x2b_content">%s</div><!--AfterPost(%d,%d)-->',
 				$this->_n_wp_post_id,

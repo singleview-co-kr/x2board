@@ -261,6 +261,9 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentItem' ) ) {
 			if ( $n_comment_author_id < 0 ) {
 				$n_comment_author_id = 0;
 			}
+			$o_editor_model = \X2board\Includes\get_model( 'editor' );
+			$o_editor_model->convert_wp_post_type_caller( $s_content );  // $s_content would be changed
+			unset( $o_editor_model );
 			$s_content = sprintf(
 				'<!--BeforeComment(%d,%d)--><div class="comment_%d_%d x2b_content">%s</div><!--AfterComment(%d,%d)-->',
 				$this->comment_id,

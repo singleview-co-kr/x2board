@@ -65,6 +65,9 @@
 					<label for="is_secret_<?php echo $post->post_id?>"><?php echo __('lbl_secret', X2B_DOMAIN)?></label>
 				<!-- </block> -->
 				<?php endif ?>
+				<?php if($grant->manager): ?><!-- cond="$grant->manager"  -->
+					<input type="button" id="btn_insert_wp_post_type" value="<?php echo __('lbl_enter_wp_post_type', X2B_DOMAIN)?>" >
+				<?php endif ?>
 			</div>
 		</div>
 	</form>
@@ -106,6 +109,9 @@
 						<input type="checkbox" name="is_secret" value="Y" id="is_secret" /> <!-- checked="checked"|cond="@in_array('secret',$mi->wrt_opt)"  -->
 						<label for="is_secret"><?php echo __('lbl_secret', X2B_DOMAIN)?></label>
 					<?php endif ?><!-- </block> -->
+					<?php if($grant->manager): ?><!-- cond="$grant->manager"  -->
+						<input type="button" id="btn_insert_wp_post_type" value="<?php echo __('lbl_enter_wp_post_type', X2B_DOMAIN)?>" >
+					<?php endif ?>
 				</span>
 			</form>
 		</div>

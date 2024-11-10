@@ -171,14 +171,118 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 			\X2board\Includes\Classes\Context::set( 'board_list', $a_board_list );
 
 			$this->set_skin_path( X2B_PATH . DIRECTORY_SEPARATOR . 'common'. DIRECTORY_SEPARATOR . 'tpl' );
-			// setup the skin file
-
 			wp_send_json(
 				array(
 					'result'   => 'success',
-					'tpl' => $this->render_skin_file( 'manage_post' ),
+					'tpl' => $this->render_skin_file( 'manage_post' ), // setup the skin file
 				)
 			);
+		}
+
+		/**
+		 * @brief render cart post UX ajax
+		 **/
+		private function _proc_ajax_render_insert_wp_post_type() {
+			check_ajax_referer( X2B_AJAX_SECURITY, 'security' );
+			if( ! $this->grant->is_admin ) {
+				return;
+			}
+
+			$n_posts_per_page = 9;
+			$a_wp_post_type = array( 'post', 'product', 'page' );
+			\X2board\Includes\Classes\Context::set( 'a_post_type', $a_wp_post_type );
+
+			$s_mode = \X2board\Includes\Classes\Context::get( 'mode' );
+			if( $s_mode == 'render_layer_popup' ) {
+				global $wpdb;
+
+				// 블로그 검색
+				add_filter('posts_search', array( '\\X2board\\Includes\\Modules\\Board\\boardController', 'search_filter_by_title_only'), 10, 2);
+				$a_wp_post_args = array(
+					'post_type' => 'post',
+					'posts_per_page' => $n_posts_per_page,
+					'offset' => 0,
+				);
+				$o_blogs = new \WP_Query( $a_wp_post_args );
+				unset( $a_wp_post_args );
+				remove_filter('posts_search', array( '\\X2board\\Includes\\Modules\\Board\\boardController', 'search_filter_by_title_only'), 10);
+
+				\X2board\Includes\Classes\Context::set( 'post_list', $o_blogs->posts );
+				unset( $o_blogs );
+				unset( $a_wp_post_type );
+
+				$this->set_skin_path( X2B_PATH . DIRECTORY_SEPARATOR . 'common'. DIRECTORY_SEPARATOR . 'tpl' );
+				// setup the skin file
+				remove_filter('posts_search', array( '\\X2board\\Includes\\Modules\\Board\\boardController', 'search_filter_by_title_only'), 10);
+				wp_send_json(
+					array(
+						'result' => 'success',
+						'tpl'    => $this->render_skin_file( 'insert_wp_post_type' ),
+					)
+				);
+			} elseif( $s_mode == 'get_search_rst' ) {
+				$s_keyword = \X2board\Includes\Classes\Context::get( 'keyword' );
+				$n_page = intval( \X2board\Includes\Classes\Context::get( 'page' ) ) == 0 ? 1 : $n_page;
+				$s_wp_post_type = \X2board\Includes\Classes\Context::get( 'wp_post_type' );
+				if( isset( $a_wp_post_type[ $s_wp_post_type ] ) ) {
+					$s_wp_post_type = 'post';
+				}
+				$a_wp_post_args = array(
+					'post_type' => $s_wp_post_type,
+					'posts_per_page' => $n_posts_per_page,
+					'offset' => ($n_page - 1) * $n_posts_per_page,
+				);
+				if ($s_keyword != '') {
+					$a_wp_post_args['s'] = $s_keyword;
+				}
+
+				$o_wp_post = new \WP_Query( $a_wp_post_args );
+				unset( $a_wp_post_args );
+				remove_filter('posts_search', array( '\\X2board\\Includes\\Modules\\Board\\boardController', 'search_filter_by_title_only'), 10);
+
+				$a_buff = array();
+				if( count( $o_wp_post->posts ) ) {
+					foreach ( $o_wp_post->posts as $_ => $o_post ) {
+						$a_buff[] = '<li class="post_list" onClick=\'copy_post_type_caller( "' . $o_post->ID . '" )\'>' . $o_post->post_title . '<i class="vr">|</i> ' . $o_post->post_status . '</li>';
+					}
+				}
+				unset( $o_wp_post );
+				unset( $a_wp_post_type );
+
+				wp_send_json(
+					array(
+						'result'   => 'success',
+						'wp_post_type' => $a_buff,
+					)
+				);
+			}
+		}
+
+		static public function search_filter_by_title_only($search, $wp_query) {
+			global $wpdb;
+
+			if (empty($search)) {
+				return $search; // 검색어가 없다면 바로 반환
+			}
+
+			// WP_Query가 검색 모드인지 확인
+			if (!empty($wp_query->query_vars['search_terms'])) {
+				// 검색어가 있다면, 각 검색어에 대해 제목 검색 조건을 생성
+				$search_terms = $wp_query->query_vars['search_terms'];
+				$search = '';
+				foreach ($search_terms as $term) {
+					$search .= "{$wpdb->posts}.post_title LIKE '%" . esc_sql($wpdb->esc_like($term)) . "%' OR ";
+				}
+
+				// 마지막 'OR' 제거
+				$search = substr($search, 0, -4);
+				// WHERE 절에 AND로 검색 조건을 추가
+				$search = " AND ({$search}) ";
+				if (!is_user_logged_in()) {
+					$search .= " AND ({$wpdb->posts}.post_password = '') ";
+				}
+			}
+			return $search;
 		}
 
 		/**

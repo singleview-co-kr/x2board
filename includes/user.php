@@ -42,6 +42,7 @@ if ( ! defined( 'X2B_CMD_VIEW_LIST' ) ) {
 	define( 'X2B_CMD_PROC_AJAX_FILE_DELETE', 'proc_ajax_file_delete' );
 	define( 'X2B_CMD_PROC_AJAX_POST_ADD_CART', 'proc_ajax_post_add_cart' );
 	define( 'X2B_CMD_PROC_AJAX_RENDER_MANAGE_X2B_POST', 'proc_ajax_render_manage_x2b_post' );
+	define( 'X2B_CMD_PROC_AJAX_RENDER_INSERT_WP_POST_TYPE', 'proc_ajax_render_insert_wp_post_type' );
 	define( 'X2B_CMD_PROC_AJAX_MANAGE_POST', 'proc_ajax_manage_post' );
 }
 

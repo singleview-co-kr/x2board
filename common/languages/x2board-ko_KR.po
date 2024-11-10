@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: x2board\n"
 "POT-Creation-Date: 2024-08-10 09:04+0900\n"
-"PO-Revision-Date: 2024-10-28 21:13+0900\n"
+"PO-Revision-Date: 2024-11-09 20:57+0900\n"
 "Last-Translator: singleviewcokr <singleviewcokr@gmail.com>\n"
 "Language-Team: \n"
 "Language: ko_KR\n"
@@ -1639,6 +1639,18 @@ msgstr "새 글"
 #: includes/admin/tpl/default-settings.php:186
 msgid "opt_new_comment"
 msgstr "새 댓글"
+
+#: common/tpl/insert_wp_post_type.php:14
+msgid "lbl_enter_wp_post_type"
+msgstr "WP post 입력"
+
+#: common/tpl/insert_wp_post_type.php:19
+msgid "lbl_wp_post_types"
+msgstr "WP post 유형"
+
+#: common/tpl/insert_wp_post_type.php:27
+msgid "lbl_wp_post_search"
+msgstr "WP post 검색"
 
 #~ msgid "desc_term_condition"
 #~ msgstr "사용자 동의가 필요하면, 이용 약관을 입력하세요."

@@ -160,6 +160,19 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			// remember!! current_module_info has been already set
 			// \X2board\Includes\Classes\Context::set('module_info', $this->module_info);  
 
+			// begin - html for admin layer popup
+			$o_logged_info = \X2board\Includes\Classes\Context::get( 'logged_info' );
+			if ( $o_logged_info->is_admin == 'Y' ) {
+				echo '<div id="' . X2B_DOMAIN . '-admin-popup" class="x2board-admin-popup-overlay">
+					<div class="x2board-admin-popup-content">
+						<span class="' . X2B_DOMAIN . '-admin-close-popup" id="' . X2B_DOMAIN . '-close-admin-popup">&times;</span>
+						<div id="mgmt-contents"></div>
+					</div>
+				</div>';
+			}
+			unset( $o_logged_info );
+			// end - html for admin layer popup
+
 			$s_cmd = \X2board\Includes\Classes\Context::get('cmd');
 			switch( $s_cmd ) {
 				case X2B_CMD_VIEW_LIST:
@@ -435,19 +448,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 			\X2board\Includes\Classes\Context::set('total_page', $output->total_page);
 			\X2board\Includes\Classes\Context::set('page', $output->page);
 			\X2board\Includes\Classes\Context::set('page_navigation', $output->page_navigation);
-
-			// begin - html for admin layer popup
-			$o_logged_info = \X2board\Includes\Classes\Context::get( 'logged_info' );
-			if ( $o_logged_info->is_admin == 'Y' ) {
-				echo '<div id="' . X2B_DOMAIN . '-admin-popup" class="x2board-admin-popup-overlay">
-					<div class="x2board-admin-popup-content">
-						<span class="x2board-admin-close-popup" id="' . X2B_DOMAIN . '-close-admin-popup">&times;</span>
-						<div id="mgmt-contents"></div>
-					</div>
-				</div>';
-			}
-			unset( $o_logged_info );
-			// end - html for admin layer popup
 			return $output;
 		}
 
