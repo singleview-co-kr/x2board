@@ -54,14 +54,11 @@ function activate() {
 register_activation_hook( X2B__FILE__, 'X2board\Includes\Admin\activate' );
 
 /* Plugins Loaded Hook */
-function plugin_loaded() {
-	// this block is to POedit recognize virtual locale elements
-	__( 'lbl_title_content', X2B_DOMAIN );
-	__( 'lbl_nick_name', X2B_DOMAIN );
-	__( 'lbl_user_id', X2B_DOMAIN );
-}
-
-add_action( 'plugins_loaded', 'X2board\Includes\Admin\plugin_loaded' );
+// function plugin_loaded() {
+// 	// this block is to POedit recognize virtual locale elements
+// 	__( 'lbl_title_content', X2B_DOMAIN );
+// }
+// add_action( 'plugins_loaded', 'X2board\Includes\Admin\plugin_loaded' );
 
 global $A_X2B_ADMIN_SETTINGS_PAGE;
 

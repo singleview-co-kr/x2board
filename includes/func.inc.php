@@ -20,7 +20,9 @@ function plugin_loaded() {
 		session_start();  // activate $_SESSION while AJAX execution
 	}
 	// third parameter should be relative path to WP_PLUGIN_DIR
-	load_plugin_textdomain( X2B_DOMAIN, false, DIRECTORY_SEPARATOR . X2B_DOMAIN . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'languages' );
+	load_plugin_textdomain( X2B_DOMAIN, false, DIRECTORY_SEPARATOR . X2B_DOMAIN . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'lang-common' );
+	// load textdomain for skin_vars
+	load_plugin_textdomain( X2B_DOMAIN, false, DIRECTORY_SEPARATOR . X2B_DOMAIN . DIRECTORY_SEPARATOR . 'common' . DIRECTORY_SEPARATOR . 'lang-skin' );
 
 	register_post_type(
 		X2B_DOMAIN,
