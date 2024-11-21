@@ -781,6 +781,7 @@ function x2b_get_board_skins() {
 	$a_skins         = \X2board\Includes\Classes\FileHandler::read_dir( $s_skin_path_abs );
 
 	$a_skin_info = array();
+	$a_skin_info[ '' ] = __( 'cmd_select', X2B_DOMAIN );
 	foreach ( $a_skins as $_ => $s_skin_name ) {
 		$a_skin_info[ $s_skin_name ] = __( $s_skin_name, X2B_DOMAIN );
 	}
