@@ -70,6 +70,7 @@ global $G_X2B_CACHE;
 require_once X2B_PATH . 'includes/func.inc.php';
 add_action( 'init', '\X2board\Includes\init_proc_cmd', 5 );
 add_action( 'init', '\X2board\Includes\init_custom_route', 5 );
+add_action( 'init', '\X2board\Includes\load_textdomain', 100 );
 add_action( 'template_redirect', '\X2board\Includes\register_content_filter' );
 add_action( 'wp_enqueue_scripts', '\X2board\Includes\enqueue_user_scripts', 999 );
 add_action( 'plugins_loaded', '\X2board\Includes\plugin_loaded' );
