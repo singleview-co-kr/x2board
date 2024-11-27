@@ -11,6 +11,8 @@ if (! defined('ABSPATH') ) {
     exit;  // Exit if accessed directly.
 }
 
+require_once X2B_PATH . 'includes/classes/cache/CacheFileDisk.class.php';
+
 /**
  * post search API
  * a_board_id
