@@ -182,12 +182,15 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 
 			// handle [wp_page_title] specially
 			if( $_POST['wp_page_title'] != $o_rst->a_board_settings['wp_page_title'] ) {
+				$s_new_slug = sanitize_text_field( $_POST['wp_page_title'] );
 				$a_update_page = array(
 					'ID'         => $n_board_id,
-					'post_title' => sanitize_text_field($_POST['wp_page_title'] ),
+					'post_title' => $s_new_slug,
+					'post_name' => $s_new_slug
 				);
 				wp_update_post( $a_update_page );
 				unset( $a_update_page );
+				$_POST['board_use_rewrite'] = null;  // enforce to remove board_use_rewrite configuration
 			}
 
 			// handle access grant configuration specially
