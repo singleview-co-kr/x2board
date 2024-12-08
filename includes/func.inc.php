@@ -186,14 +186,21 @@ function launch_x2b( $s_cmd_type, $a_shortcode_args = null ) {
 		\X2board\Includes\Classes\Context::set( 'board_id', intval( $a_shortcode_args['board_id'] ) );
 	}
 
-	// if( wp_is_json_request() ) {
-	// $s_cmd_type == '' is primarily for admin import
-	// $_POST['action'] comes from AJAX only
-	if ( $s_cmd_type == '' && isset( $_POST['action'] ) ) {
-		$s_cmd_type      = 'proc';  // ajax call
-		$_REQUEST['cmd'] = sanitize_text_field( $_POST['action'] );
+	global $wpdb;
+	$n_board_id  = esc_sql( \X2board\Includes\Classes\Context::get( 'board_id') );
+	$s_board_cnt = $wpdb->get_var( "SELECT count(*) FROM `{$wpdb->prefix}x2b_mapper` WHERE `board_id`='$n_board_id'" );
+	if ( intval( $s_board_cnt ) == 1 ) {
+		// if( wp_is_json_request() ) {
+		// $s_cmd_type == '' is primarily for admin import
+		// $_POST['action'] comes from AJAX only
+		if ( $s_cmd_type == '' && isset( $_POST['action'] ) ) {
+			$s_cmd_type      = 'proc';  // ajax call
+			$_REQUEST['cmd'] = sanitize_text_field( $_POST['action'] );
+		}
+		$o_context->init( $s_cmd_type );
+	} else {  // deny zombie board
+		echo "<div style='border: 1px solid #DDD; background: #FAFAFA; text-align:center; margin: 1em 0;'><p style='margin: 1em;'>" . sprintf( __( 'msg_invalid_board_id', X2B_DOMAIN ), X2B_DOMAIN ) . '</p></div>';
 	}
-	$o_context->init( $s_cmd_type );
 	$o_context->close();
 	unset( $o_context );
 }
@@ -257,14 +264,14 @@ function register_content_filter() {
  */
 function launch_shortcode( $a_args ) {
 	if ( ! isset( $a_args['board_id'] ) || ! $a_args['board_id'] ) {
-		return sprintf( __( 'msg_invalid_board_id', X2B_DOMAIN ), X2B_DOMAIN );
+		return sprintf( __( 'msg_invalid_shortcode_board_id', X2B_DOMAIN ), X2B_DOMAIN );
 	}
 	// validate requested board id
 	global $wpdb;
 	$n_board_id  = esc_sql( $a_args['board_id'] );
 	$s_board_cnt = $wpdb->get_var( "SELECT count(*) FROM `{$wpdb->prefix}x2b_mapper` WHERE `board_id`='$n_board_id'" );
 	if ( intval( $s_board_cnt ) !== 1 ) {
-		return sprintf( __( 'msg_invalid_board_id', X2B_DOMAIN ), X2B_DOMAIN );
+		return sprintf( __( 'msg_invalid_shortcode_board_id', X2B_DOMAIN ), X2B_DOMAIN );
 	}
 	launch_x2b( 'view', $a_args );
 }

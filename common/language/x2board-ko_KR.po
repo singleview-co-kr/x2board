@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: x2board\n"
 "POT-Creation-Date: 2024-08-10 09:04+0900\n"
-"PO-Revision-Date: 2024-11-22 14:01+0900\n"
+"PO-Revision-Date: 2024-12-08 16:38+0900\n"
 "Last-Translator: singleviewcokr <singleviewcokr@gmail.com>\n"
 "Language-Team: \n"
 "Language: ko_KR\n"
@@ -1299,8 +1299,12 @@ msgid "desc_user_define_field_comment_status"
 msgstr "댓글 가능 여부"
 
 #: includes/func.inc.php:228 includes/func.inc.php:235
-msgid "msg_invalid_board_id"
+msgid "msg_invalid_shortcode_board_id"
 msgstr "%s 경고! shortcode를 통해서 유효하지 않은 board_id를 요청했습니다"
+
+#: includes/func.inc.php:228 includes/func.inc.php:282
+msgid "msg_invalid_board_id"
+msgstr "%s 경고! 유효하지 않은 board_id를 요청했습니다"
 
 #: includes/func.inc.php:817
 msgid "msg_security_warning_embed"

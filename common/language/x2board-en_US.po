@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: x2board\n"
 "POT-Creation-Date: 2024-08-10 09:16+0900\n"
-"PO-Revision-Date: 2024-11-22 14:08+0900\n"
+"PO-Revision-Date: 2024-12-08 16:40+0900\n"
 "Last-Translator: singleviewcokr <singleviewcokr@gmail.com>\n"
 "Language-Team: \n"
 "Language: en_US\n"
@@ -1226,8 +1226,12 @@ msgid "desc_user_define_field_comment_status"
 msgstr "Comment status of the post"
 
 #: includes/func.inc.php:228 includes/func.inc.php:235
-msgid "msg_invalid_board_id"
+msgid "msg_invalid_shortcode_board_id"
 msgstr "warning from %s! you requested invalid board_id via shortcode"
+
+#: includes/func.inc.php:228 includes/func.inc.php:282
+msgid "msg_invalid_board_id"
+msgstr "warning from %s! you requested invalid board_id"
 
 #: includes/func.inc.php:817
 msgid "msg_security_warning_embed"
