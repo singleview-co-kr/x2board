@@ -134,6 +134,7 @@ $mi->cmt_count = !isset($mi->cmt_count) || $mi->cmt_count == '-1' ? array() : $m
 $mi->ext_img = !isset($mi->ext_img) || $mi->ext_img == '-1' ? array() : $mi->ext_img;
 
 $mi->to_sns_small = !isset($mi->to_sns_small) || $mi->to_sns_small == ' ' ? ' ' : $mi->to_sns_small;
+$mi->to_sns_big = !isset($mi->to_sns_big) || $mi->to_sns_big == ' ' ? ' ' : $mi->to_sns_big;
 $mi->fdb_style = !isset($mi->fdb_style) || $mi->fdb_style == ' ' ? ' ' : $mi->fdb_style;
 $mi->profile_img = !isset($mi->profile_img) || $mi->profile_img == ' ' ? ' ' : $mi->profile_img;
 $mi->fdb_nav = !isset($mi->fdb_nav) || $mi->fdb_nav == ' ' ? ' ' : $mi->fdb_nav;

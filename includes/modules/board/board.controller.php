@@ -488,8 +488,10 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 				$msg_code = 'success_registed';
 				// send a notification via slack when a guest write a new post
 				if( ! current_user_can( 'manage_' . X2B_DOMAIN ) ) {
-					// if( class_exists('\Slack_Notifications\Notifications\Notification_Type') ) {
-					if ( is_plugin_active( 'dorzki-notifications-to-slack/slack-notifications.php' ) ) {  // plugin is activated
+					if( ! function_exists('is_plugin_active') ) {
+						include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+					}
+					if ( \is_plugin_active( 'dorzki-notifications-to-slack/slack-notifications.php' ) ) {  // plugin is activated
 						if( isset( $this->module_info->notify_slack['post'] ) && $this->module_info->notify_slack['post'] == 'post' ) {
 							$obj->notify_type = 'post';
 							$obj->post_link = $this->_s_page_permlink . '?' . X2B_CMD_VIEW_POST . '/' . $output->get( 'post_id' );
@@ -626,8 +628,10 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 
 				// send a notification via slack when a guest write a new comment
 				if( ! current_user_can( 'manage_' . X2B_DOMAIN ) ) {
-					// if( class_exists('\Slack_Notifications\Notifications\Notification_Type') ) {
-					if ( is_plugin_active( 'dorzki-notifications-to-slack/slack-notifications.php' ) ) {  // plugin is activated
+					if( ! function_exists('is_plugin_active') ) {
+						include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+					}
+					if ( \is_plugin_active( 'dorzki-notifications-to-slack/slack-notifications.php' ) ) {  // plugin is activated
 						if( isset( $this->module_info->notify_slack['comment'] ) && $this->module_info->notify_slack['comment'] == 'comment' ) {
 							$obj->title = $o_post->get_title_text();
 							$obj->notify_type = 'comment';

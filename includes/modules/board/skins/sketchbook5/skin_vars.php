@@ -1375,18 +1375,18 @@ $settings = array(
             'bubble'       => __( 'skin_opt_display_no', X2B_DOMAIN ), // 표시 안함
         ),
     ),
-    // 'to_sns_big'               => array(
-    //     'id'      => 'to_sns_big',
-    //     'name'    => __( "SNS 큰 버튼 정렬", X2B_DOMAIN ),
-    //     'desc'    => __( "위의 항목에서 '큰 아이콘' 사용 시에 정렬을 설정합니다.", X2B_DOMAIN ),
-    //     'type'    => 'radio',
-    //     'default' => ' ',
-    //     'options' => array(
-    //         ' '      => __( '가운데(기본)', X2B_DOMAIN ),
-    //         'left'       => __( "왼쪽", X2B_DOMAIN ),
-    //         'right'       => __( "오른쪽", X2B_DOMAIN ),
-    //     ),
-    // ),
+    'to_sns_big'               => array(
+        'id'      => 'to_sns_big',
+        'name'    => __( "SNS 큰 버튼 정렬", X2B_DOMAIN ),
+        'desc'    => __( "위의 항목에서 '큰 아이콘' 사용 시에 정렬을 설정합니다.", X2B_DOMAIN ),
+        'type'    => 'radio',
+        'default' => ' ',
+        'options' => array(
+            ' '      => __( '가운데(기본)', X2B_DOMAIN ),
+            'left'       => __( "왼쪽", X2B_DOMAIN ),
+            'right'       => __( "오른쪽", X2B_DOMAIN ),
+        ),
+    ),
     'to_sns_content'     => array(
         'id'      => 'to_sns_content',
         'name'    => __( 'skin_name_to_sns_content', X2B_DOMAIN ), // SNS 커스텀 버튼
