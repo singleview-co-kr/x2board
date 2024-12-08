@@ -879,7 +879,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardView')) {
 					$a_header['parent_post_id'] = $o_the_comment->get('parent_post_id');
 					$a_header['parent_comment_id'] = $o_the_comment->get('parent_comment_id');
 					$a_header['comment_id'] = $o_the_comment->get('comment_id');
-					$a_header['content'] = htmlspecialchars($o_the_comment->get('content'));
+					$a_header['content'] = htmlspecialchars((string)$o_the_comment->get('content'));
 					unset($o_the_comment);
 				}
 			}

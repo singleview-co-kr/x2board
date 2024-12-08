@@ -153,7 +153,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postController' ) ) {
 					}
 					$obj->content = nl2br( $obj->content );
 				}
-				$obj->tags = strip_tags( preg_replace( '/\s+/', '', $obj->tags ) );
+				$obj->tags = strip_tags( preg_replace( '/\s+/', '', (string)$obj->tags ) );
 			}
 			// Remove iframe and script if not a top adminisrator in the session.
 			if ( $o_logged_info->is_admin != 'Y' ) {
