@@ -93,7 +93,11 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\CacheFileDisk' ) ) {
 			require_once ABSPATH . 'wp-admin' . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-wp-filesystem-base.php';
 			require_once ABSPATH . 'wp-admin' . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-wp-filesystem-direct.php';
 			$o_wp_filesystem = new \WP_Filesystem_Direct( false );
-			$o_wp_filesystem->put_contents( $this->_s_cache_file, implode( PHP_EOL, $a_content ) );
+			$o_wp_filesystem->put_contents( 
+				$this->_s_cache_file, 
+				implode( PHP_EOL, $a_content ), 
+				(0664 & ~ umask()) // avoid PHP warning - Use of undefined constant FS_CHMOD_FILE
+			);
 			if ( function_exists( 'opcache_invalidate' ) ) {
 				@opcache_invalidate( $this->_s_cache_file, true );
 			}

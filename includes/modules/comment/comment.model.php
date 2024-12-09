@@ -230,7 +230,11 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Comment\\commentModel' ) ) {
 			require_once ABSPATH . 'wp-admin' . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-wp-filesystem-base.php';
 			require_once ABSPATH . 'wp-admin' . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-wp-filesystem-direct.php';
 			$o_wp_filesystem = new \WP_Filesystem_Direct( false );
-			$o_wp_filesystem->put_contents( $s_lock_file, '' ); // FileHandler::writeFile($s_lock_file, '');
+			$o_wp_filesystem->put_contents( 
+				$s_lock_file, 
+				'', 
+				(0664 & ~ umask()) // avoid PHP warning - Use of undefined constant FS_CHMOD_FILE
+			); // FileHandler::writeFile($s_lock_file, '');
 
 			// get a list
 			global $wpdb;

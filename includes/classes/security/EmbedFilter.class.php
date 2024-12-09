@@ -579,7 +579,11 @@ if (!class_exists('\\X2board\\Includes\\Classes\\Security\\\EmbedFilter')) {
 				$buff[] = '$whiteUrlList = ' . var_export($whiteUrlList, TRUE) . ';';
 				$buff[] = '$whiteIframeUrlList = ' . var_export($whiteIframeUrlList, TRUE) . ';';
 				
-				$o_wp_filesystem->put_contents($this->whiteUrlCacheFile, implode(PHP_EOL, $buff));
+				$o_wp_filesystem->put_contents(
+					$this->whiteUrlCacheFile, 
+					implode(PHP_EOL, $buff), 
+					(0664 & ~ umask()) // avoid PHP warning - Use of undefined constant FS_CHMOD_FILE
+				);
 				unset($o_wp_filesystem);
 			}
 		}

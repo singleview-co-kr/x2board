@@ -100,7 +100,11 @@ if ( ! class_exists( '\\X2board\\Includes\\Classes\\CacheFile' ) ) {
 				wp_mkdir_p( $s_cache_path );
 			}
 
-			$this->_o_wp_filesystem->put_contents( $cache_file, implode( PHP_EOL, $content ) );
+			$this->_o_wp_filesystem->put_contents( 
+				$cache_file, 
+				implode( PHP_EOL, $content ), 
+				(0664 & ~ umask()) // avoid PHP warning - Use of undefined constant FS_CHMOD_FILE
+			);
 			if ( function_exists( 'opcache_invalidate' ) ) {
 				@opcache_invalidate( $cache_file, true );
 			}

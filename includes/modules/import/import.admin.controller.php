@@ -100,7 +100,11 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Import\\importAdminControlle
 			// remove unzip directory
 			$this->_o_fileSystemDirect->rmdir( $s_base_path . DIRECTORY_SEPARATOR . 'unzipped', true );
 			// write mapper file
-			$this->_o_fileSystemDirect->put_contents( $s_base_path . DIRECTORY_SEPARATOR . $s_uploaded_filename . '.json', json_encode( $o_mapper ) );
+			$this->_o_fileSystemDirect->put_contents( 
+				$s_base_path . DIRECTORY_SEPARATOR . $s_uploaded_filename . '.json', 
+				json_encode( $o_mapper ), 
+				(0664 & ~ umask()) // avoid PHP warning - Use of undefined constant FS_CHMOD_FILE
+			);
 		}
 
 		private function _proc_xml_file( $file ) {
