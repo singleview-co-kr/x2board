@@ -77,8 +77,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\WpAdminClass\\WpBoardLis
 		public function get_columns(){
 			return array(
 					'cb' => '<input type="checkbox">',
-					'wp_page_id' => __('lbl_installed_wp_page', X2B_DOMAIN),
-					'board_name' => __('name_x2board_title', X2B_DOMAIN),
+					'wp_page_id' => __('lbl_visit_page', X2B_DOMAIN),
+					'board_name' => __('lbl_configure_board', X2B_DOMAIN),
 					'create_date' => __('lbl_create_date', X2B_DOMAIN),
 			);
 		}
@@ -90,10 +90,10 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\WpAdminClass\\WpBoardLis
 			switch( $column_name ) {
 				case 'wp_page_id':
 					$o_post = get_post(intval($item->wp_page_id)); 
-					return '<A HREF='.$o_post->guid.' target="_blank">'.__('lbl_visit_page', X2B_DOMAIN).' - '.$o_post->post_title.'</A>';
+					return '<A HREF='.$o_post->guid.' target="_blank">'.__('lbl_installed_wp_page', X2B_DOMAIN).' - '.$o_post->post_title.'</A>';
 				case 'board_name':
 					$o_post = get_post(intval($item->wp_page_id)); 
-					return '<A HREF='.admin_url( 'admin.php?page='.X2B_CMD_ADMIN_VIEW_BOARD_UPDATE.'&board_id='.$o_post->ID ).'>'.__('lbl_configure_board', X2B_DOMAIN).' - '.$item->board_title.'</A>';
+					return '<A HREF='.admin_url( 'admin.php?page='.X2B_CMD_ADMIN_VIEW_BOARD_UPDATE.'&board_id='.$o_post->ID ).'>'.__('name_x2board_title', X2B_DOMAIN).' - '.$item->board_title.'</A>';
 				case 'create_date':
 					return $item->$column_name;
 				default:
