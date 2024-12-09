@@ -180,14 +180,14 @@ function launch_x2b( $s_cmd_type, $a_shortcode_args = null ) {
 
 	$o_context = \X2board\Includes\Classes\Context::getInstance();
 
-	if ( is_null( $a_shortcode_args ) ) {
-		\X2board\Includes\Classes\Context::set( 'board_id', intval( get_the_ID() ) );
-	} else {
-		\X2board\Includes\Classes\Context::set( 'board_id', intval( $a_shortcode_args['board_id'] ) );
+	$n_board_id = is_null( $a_shortcode_args ) ? get_the_ID() : $a_shortcode_args['board_id'];
+	if( ! intval( $n_board_id ) ) {
+		$n_board_id = $_POST['board_id'] ? intval( $_POST['board_id'] ) : intval( $_GET['board_id'] );
 	}
+	\X2board\Includes\Classes\Context::set( 'board_id', $n_board_id );
 
 	global $wpdb;
-	$n_board_id  = esc_sql( \X2board\Includes\Classes\Context::get( 'board_id') );
+	$n_board_id = esc_sql( $n_board_id );
 	$s_board_cnt = $wpdb->get_var( "SELECT count(*) FROM `{$wpdb->prefix}x2b_mapper` WHERE `board_id`='$n_board_id'" );
 	if ( intval( $s_board_cnt ) == 1 ) {
 		// if( wp_is_json_request() ) {
