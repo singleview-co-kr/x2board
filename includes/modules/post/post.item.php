@@ -94,13 +94,6 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Post\\postItem' ) ) {
 				$this->add( 'is_secret', false );
 			}
 
-			// convert is_notice to boolean
-			if ( $this->get( 'is_notice' ) == 'Y' ) {
-				$this->add( 'is_notice', true );
-			} else {
-				$this->add( 'is_notice', false );
-			}
-
 			// set allow_comment as boolean
 			if ( $this->get( 'comment_status' ) == 'ALLOW' ) {
 				$this->add( 'allow_comment', true );
