@@ -52,7 +52,7 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminView')) {
 		 * Display the latest posts UX
 		 **/
 		public function disp_latest_post() {
-			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . X2B_MODULES_NAME . DIRECTORY_SEPARATOR . 'board\board.admin.model.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . X2B_MODULES_NAME . DIRECTORY_SEPARATOR . 'board' . DIRECTORY_SEPARATOR . 'board.admin.model.php';
 			$o_board_admin_model = new \X2board\Includes\Modules\Board\boardAdminModel();
 			$o_latest = $o_board_admin_model->get_latest_posts_wp_list();
 			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . 'latest_list.php';
