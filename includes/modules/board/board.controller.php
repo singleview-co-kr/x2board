@@ -169,6 +169,7 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Board\\boardController' ) ) 
 			$a_board_list = $o_board_model->get_board_list();
 			unset($o_board_model);
 			\X2board\Includes\Classes\Context::set( 'board_list', $a_board_list );
+			\X2board\Includes\Classes\Context::set( 'page_permlink', $this->_s_page_permlink );  // enforce to redirect to board list page
 
 			$this->set_skin_path( X2B_PATH . DIRECTORY_SEPARATOR . 'common'. DIRECTORY_SEPARATOR . 'tpl' );
 			wp_send_json(

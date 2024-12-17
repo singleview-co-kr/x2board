@@ -129,7 +129,8 @@ jQuery('#btn_move_post').click(function() {
 					alert(res.message);
 				}
 				else{
-					window.location.reload();
+					// enforce to redirect to board list page
+					window.location.replace("<?php echo $page_permlink ?>");
 				}
 			}
 		});
@@ -160,7 +161,8 @@ jQuery('#btn_delete_post').click(function() {
 					alert(res.message);
 				}
 				else{
-					window.location.reload();
+					// enforce to redirect to board list page
+					window.location.replace("<?php echo $page_permlink ?>");
 				}
 			}
 		});
