@@ -4,7 +4,7 @@
  * Description:       A qualified Korean style bbs plugin evolved from the XE2 board module
  * Requires at least: 5.8
  * Requires PHP:      7.0
- * Version:           0.0.1
+ * Version:           0.0.2
  * Author:            singleview.co.kr
  * Author URI: https://singleview.co.kr/
  * License:           GPL-2.0-or-later
@@ -17,7 +17,7 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 
 if ( !defined( 'X2B_VERSION' ) ) {
-    define('X2B_VERSION', '0.0.1');
+    define('X2B_VERSION', '0.0.2');
 }
 if ( !defined( 'X2B_DOMAIN' ) ) {
     define('X2B_DOMAIN', 'x2board');
