@@ -128,109 +128,8 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 		public function proc_update_board() {
 			check_admin_referer( X2B_CMD_ADMIN_PROC_UPDATE_BOARD );  // check nounce
 
-			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'FileHandler.class.php';
-			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . 'default-settings.php';
-			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . 'register-settings.php';
-
-			// begin - remove unnecessary params
-			unset( $_POST['_wpnonce']);
-			unset( $_POST['_wp_http_referer']);
-			unset( $_POST['action']);
-			unset( $_POST['submit']);
-			// end - remove unnecessary params
-			
-			// begin - do not handle category related params
-			unset($_POST['update_category_name']);
-			unset($_POST['current_category_name']);
-			unset($_POST['category_id']);
-			unset($_POST['parent_id']);
-			unset($_POST['new_category']);
-			unset($_POST['tree_category']);
-			// end - do not handle category related params
-
-			$_POST = stripslashes_deep($_POST);
-
-			// handle user define [fields] specially
-			if( isset($_POST['fields'] ) ) {
-				$this->_proc_user_define_fields();
-				unset( $_POST['fields']);
-			}
-
-			// handle list config [fields] specially
-			if( isset($_POST['board_list_fields'] ) ) {
-				$a_list_config = $this->_proc_list_fields_config();
-				unset( $_POST['board_list_fields']);
-				$_POST['board_list_fields'] = $a_list_config;
-				unset($a_list_config);
-			}
-
 			$n_board_id = intval(sanitize_text_field($_POST['board_id'] ));
-			$o_rst = \X2board\Includes\Admin\Tpl\x2b_load_settings( $n_board_id );
-			if( $o_rst->b_ok === false ) {
-				return false;
-			}
-
-			// handle [board_title] specially
-			if( $_POST['board_title'] != $o_rst->a_board_settings['board_title'] ) {
-				$update = array(
-					'data' => array ( 'board_title' => esc_sql(sanitize_text_field($_POST['board_title'] )) ),
-					'where' => array ( 'board_id' => esc_sql($n_board_id) ),
-				);
-				global $wpdb;
-				$wpdb->update ( "{$wpdb->prefix}x2b_mapper", $update['data'], $update['where'] );
-			}
-
-			// handle [wp_page_title] specially
-			if( $_POST['wp_page_title'] != $o_rst->a_board_settings['wp_page_title'] ) {
-				$s_new_slug = sanitize_text_field( $_POST['wp_page_title'] );
-				$a_update_page = array(
-					'ID'         => $n_board_id,
-					'post_title' => $s_new_slug,
-					'post_name' => $s_new_slug
-				);
-				wp_update_post( $a_update_page );
-				unset( $a_update_page );
-				$_POST['board_use_rewrite'] = null;  // enforce to remove board_use_rewrite configuration
-			}
-
-			// handle access grant configuration specially
-			$a_grant_name = array('board_grant_access', 'board_grant_list', 'board_grant_view', 'board_grant_write_post',
-								  'board_grant_write_comment', 'board_grant_consultation_read', 'board_grant_manager');
-			foreach( $a_grant_name as $s_grant_name) {
-				if($_POST[$s_grant_name] == X2B_CUSTOMIZE) {
-					$_POST['board_grant'][$s_grant_name] = $_POST['grant'][$s_grant_name][X2B_CUSTOMIZE];
-				}
-				unset($_POST['grant'][$s_grant_name]);
-			}
-
-			// handle skin vars configuration specially
-			$this->_save_skin_vars($o_rst->s_x2b_setting_skin_vars_title);
-
-			// do not save params below
-			unset( $_POST['board_id']);
-			unset( $_POST['board_title']);
-			unset( $_POST['wp_page_title']);
-			$s_board_use_rewrite = $_POST['board_use_rewrite'];
-			unset( $_POST['board_use_rewrite']);
-
-			// update WP option to x2board_settings_board_[board_id]
-			update_option( $o_rst->s_x2b_setting_board_title, $_POST );
-
-			// handle [board_use_rewrite] specially
-			$o_post = get_post( $n_board_id );
-			$a_board_rewrite_settings = get_option( X2B_REWRITE_OPTION_TITLE );
-			if( $s_board_use_rewrite == 'Y' ){
-				if( !is_array($a_board_rewrite_settings) ) {
-					$a_board_rewrite_settings = array();
-				}
-				$a_board_rewrite_settings[$n_board_id] = $o_post->post_name;
-			}
-			else {
-				if( is_array($a_board_rewrite_settings) ) {
-					unset( $a_board_rewrite_settings[$n_board_id] );
-				}
-			}
-			update_option( X2B_REWRITE_OPTION_TITLE, $a_board_rewrite_settings );
+			$this->_update_board( $n_board_id );
 			wp_redirect(admin_url('admin.php?page='.X2B_CMD_ADMIN_VIEW_BOARD_UPDATE.'&board_id=' . $n_board_id ));
 		}
 
@@ -338,15 +237,18 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 				unset($o_random);
 			}
 			else {  // keep old file info if no change
-				foreach($a_old_skin_vars as $s_skin_var_id => $o_val) {
-					if(is_array($o_val)) {
-						if(isset($o_val['abs_path']) && isset($o_val['full_url'])) {
-							$a_skin_var[$s_skin_var_id] = $o_val;
+				if( $a_old_skin_vars ) {
+					foreach($a_old_skin_vars as $s_skin_var_id => $o_val) {
+						if(is_array($o_val)) {
+							if(isset($o_val['abs_path']) && isset($o_val['full_url'])) {
+								$a_skin_var[$s_skin_var_id] = $o_val;
+							}
 						}
 					}
 				}
 			}
 			unset($a_valid_img_file);
+			unset($a_old_skin_vars);
 
 			// delete old image skin var, if requested
 			if( isset($_POST['delete_old_file'])) {
@@ -361,7 +263,6 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 					}
 				}
 			}
-			unset($a_old_skin_vars);
 
 			foreach( $_POST as $s_skin_var_id => $o_value) {
 				if(substr($s_skin_var_id, 0, $n_prefix_len) == X2B_SKIN_VAR_IDENTIFIER ) {
@@ -508,9 +409,19 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 			$n_page_id = wp_insert_post( $x2b_page, FALSE ); // Get Post ID - FALSE to return 0 instead of wp_error.
 			
 			// insert x2board
-			$s_x2board_title = isset($_POST['board_title']) ? esc_sql(sanitize_text_field($_POST['board_title'])) : '';
-			$this->_insert_new_board($n_page_id, $s_x2board_title);
-				
+			global $wpdb;
+			$wpdb->insert(
+				"{$wpdb->prefix}x2b_mapper",
+				array(
+					'board_id'   => $n_page_id,
+					'wp_page_id'   => $n_page_id,
+					'board_title'   => isset($_POST['board_title']) ? esc_sql(sanitize_text_field($_POST['board_title'])) : '',
+					'create_date'  => current_time('mysql')
+				),
+				array('%d', '%d', '%s', '%s')
+			);
+
+			$this->_update_board( $n_page_id );  // $n_board_id equals $n_page_id
 			if ( $n_page_id ) {
 				wp_redirect(admin_url('admin.php?page='.X2B_CMD_ADMIN_VIEW_BOARD_UPDATE.'&board_id='.$n_page_id));
 				exit;
@@ -561,23 +472,118 @@ if (!class_exists('\\X2board\\Includes\\Modules\\Board\\boardAdminController')) 
 			unset($o_cat_admin_controller);
 			wp_send_json(array('table_body'=>$s_table_body));
 		}
-			
+
 		/**
-		 * Insert new Board
-		 * @return void 
-		 */
-		private function _insert_new_board( $n_page_id, $s_x2board_title ) {
-			global $wpdb;
-			$wpdb->insert(
-				"{$wpdb->prefix}x2b_mapper",
-				array(
-					'board_id'   => $n_page_id,
-					'wp_page_id'   => $n_page_id,
-					'board_title'   => $s_x2board_title,
-					'create_date'  => current_time('mysql')
-				),
-				array('%d', '%d', '%s', '%s')
-			);
+		 * @brief update board configuration
+		 **/
+		private function _update_board( $n_board_id ) {
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'FileHandler.class.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . 'default-settings.php';
+			require_once X2B_PATH . 'includes' . DIRECTORY_SEPARATOR . 'admin' . DIRECTORY_SEPARATOR . 'tpl' . DIRECTORY_SEPARATOR . 'register-settings.php';
+
+			// begin - remove unnecessary params
+			unset( $_POST['_wpnonce']);
+			unset( $_POST['_wp_http_referer']);
+			unset( $_POST['action']);
+			unset( $_POST['submit']);
+			// end - remove unnecessary params
+
+			// begin - do not handle category related params
+			unset($_POST['update_category_name']);
+			unset($_POST['current_category_name']);
+			unset($_POST['category_id']);
+			unset($_POST['parent_id']);
+			unset($_POST['new_category']);
+			unset($_POST['tree_category']);
+			// end - do not handle category related params
+
+			$_POST = stripslashes_deep($_POST);
+
+			// handle user define [fields] specially
+			if( isset($_POST['fields'] ) ) {
+				$this->_proc_user_define_fields();
+				unset( $_POST['fields']);
+			}
+
+			// handle list config [fields] specially
+			if( isset($_POST['board_list_fields'] ) ) {
+				$a_list_config = $this->_proc_list_fields_config();
+				unset( $_POST['board_list_fields']);
+				$_POST['board_list_fields'] = $a_list_config;
+				unset($a_list_config);
+			}
+
+			// $n_board_id = intval(sanitize_text_field($_POST['board_id'] ));
+			$o_rst = \X2board\Includes\Admin\Tpl\x2b_load_settings( $n_board_id );
+			if( $o_rst->b_ok === false ) {
+				unset( $o_rst );
+				return false;
+			}
+
+			// handle [board_title] specially
+			if( $_POST['board_title'] != $o_rst->a_board_settings['board_title'] ) {
+				$update = array(
+					'data' => array ( 'board_title' => esc_sql(sanitize_text_field($_POST['board_title'] )) ),
+					'where' => array ( 'board_id' => esc_sql($n_board_id) ),
+				);
+				global $wpdb;
+				$wpdb->update ( "{$wpdb->prefix}x2b_mapper", $update['data'], $update['where'] );
+			}
+
+			// handle [wp_page_title] specially
+			if( $_POST['wp_page_title'] != $o_rst->a_board_settings['wp_page_title'] ) {
+				$s_new_slug = sanitize_text_field( $_POST['wp_page_title'] );
+				$a_update_page = array(
+					'ID'         => $n_board_id,
+					'post_title' => $s_new_slug,
+					'post_name' => $s_new_slug
+				);
+				wp_update_post( $a_update_page );
+				unset( $a_update_page );
+				$_POST['board_use_rewrite'] = null;  // enforce to remove board_use_rewrite configuration
+			}
+
+			// handle access grant configuration specially
+			$a_grant_name = array('board_grant_access', 'board_grant_list', 'board_grant_view', 'board_grant_write_post',
+								  'board_grant_write_comment', 'board_grant_consultation_read', 'board_grant_manager');
+			foreach( $a_grant_name as $s_grant_name) {
+				if($_POST[$s_grant_name] == X2B_CUSTOMIZE) {
+					$_POST['board_grant'][$s_grant_name] = $_POST['grant'][$s_grant_name][X2B_CUSTOMIZE];
+				}
+				unset($_POST['grant'][$s_grant_name]);
+			}
+
+			// handle skin vars configuration specially
+			$this->_save_skin_vars($o_rst->s_x2b_setting_skin_vars_title);
+
+			// do not save params below
+			unset( $_POST['board_id']);
+			unset( $_POST['board_title']);
+			unset( $_POST['wp_page_title']);
+			$s_board_use_rewrite = $_POST['board_use_rewrite'];
+			unset( $_POST['board_use_rewrite']);
+
+			// update WP option to x2board_settings_board_[board_id]
+			update_option( $o_rst->s_x2b_setting_board_title, $_POST );
+			unset( $o_rst );
+
+			// handle [board_use_rewrite] specially
+			$o_post = get_post( $n_board_id );
+			$a_board_rewrite_settings = get_option( X2B_REWRITE_OPTION_TITLE );
+			if( $s_board_use_rewrite == 'Y' ){
+				if( !is_array($a_board_rewrite_settings) ) {
+					$a_board_rewrite_settings = array();
+				}
+				$a_board_rewrite_settings[$n_board_id] = $o_post->post_name;
+			}
+			else {
+				if( is_array($a_board_rewrite_settings) ) {
+					unset( $a_board_rewrite_settings[$n_board_id] );
+				}
+			}
+			update_option( X2B_REWRITE_OPTION_TITLE, $a_board_rewrite_settings );
+			unset( $o_post );
+			unset( $a_board_rewrite_settings );
 		}
 	}
 }
