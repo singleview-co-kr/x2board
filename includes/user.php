@@ -66,6 +66,10 @@ if ( ! defined( 'X2B_ATTACH_FILE_PATH' ) ) {
 	define( 'X2B_ATTACH_FILE_PATH', X2B_DOMAIN . DIRECTORY_SEPARATOR . 'attach' );
 }
 
+if ( ! defined( 'X2B_WP_POST_TYPE_CALLER' ) ) {
+	define( 'X2B_WP_POST_TYPE_CALLER', '/sv_{1}[0-9]+_{1}sv/m' );  // pattern: sv_%d_sv
+}
+
 global $G_X2B_CACHE;
 require_once X2B_PATH . 'includes/func.inc.php';
 add_action( 'init', '\X2board\Includes\init_proc_cmd', 5 );

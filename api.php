@@ -25,8 +25,7 @@ require_once X2B_PATH . 'includes/classes/cache/CacheFileDisk.class.php';
  * n_content_trim_length
  * s_date_format
  */
-function get_quick_search( $o_param = null )
-{
+function get_quick_search( $o_param = null ) {
     global $wpdb;
 
     // begin - validate requested board_id
@@ -129,7 +128,6 @@ function get_quick_search( $o_param = null )
     $o_cache_handler->set_cache_key( $s_select_query );
     $a_retrieved_post = $o_cache_handler->get();
     if( ! $a_retrieved_post ) {  // load db
-// error_log(print_r('load x2b db', true));
         $a_posts = $wpdb->get_results( $s_select_query );
         // manipulate
         $a_board_permalink[$n_board_id] = esc_url(site_url() . '/' . urlencode(urldecode(get_post($n_board_id)->post_name)));
@@ -143,6 +141,7 @@ function get_quick_search( $o_param = null )
         foreach( $a_posts as $o_rec ) {
             $o_new_rec = new \stdClass();
             $o_new_rec->title = wp_trim_words(strip_tags($o_rec->title), $n_subject_trim_length, '...');
+            $o_rec->content = preg_replace( X2B_WP_POST_TYPE_CALLER, '', $o_rec->content );  // remove pattern: sv_%d_sv
             $o_new_rec->content = wp_trim_words(strip_tags($o_rec->content), $n_content_trim_length, '...');
             $o_new_rec->permalink = $s_board_permalink . '/' . $o_rec->post_id;
             if(intval($o_rec->category_id) != 0 ) {

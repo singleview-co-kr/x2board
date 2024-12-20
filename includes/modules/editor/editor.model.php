@@ -44,9 +44,8 @@ if ( ! class_exists( '\\X2board\\Includes\\Modules\\Editor\\editorModel' ) ) {
 		 * refer to \common\tpl\insert_wp_post_type.php
 		 */
 		public function convert_wp_post_type_caller( &$s_content = 0 ) {
-			$s_pattern = '/sv_{1}[0-9]+_{1}sv/m';  // pattern: sv_%d_sv
 			$a_matches = array();
-			$n_matches = preg_match_all( $s_pattern, $s_content, $a_matches );
+			$n_matches = preg_match_all( X2B_WP_POST_TYPE_CALLER, $s_content, $a_matches );
 			if ( $n_matches > 0 ) {
 				$a_replace = array();
 				foreach( $a_matches[0] as $n_idx => $s_code ) {
